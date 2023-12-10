@@ -1,5 +1,12 @@
-import { value } from './test-named.js';
-import newValue from './test-default.js';
+import express from 'express';
+//evoking app
+const app = express();
+//app responding to get requests home rout with controller that handles the requests
+app.get('/', (req, res) => {
+  res.send('hello world');
+});
 
-console.log(value);
-console.log(newValue);
+//listener on port 5100
+app.listen(5100, () => {
+  console.log('server is running');
+});
