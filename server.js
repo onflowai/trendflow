@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { nanoid } from 'nanoid';
 
-//test data for local storage
+//test data for local storage set as 'let' for modification
 let trends = [
   { id: nanoid(), trend: 'chatgpt', type: 'language model' },
   { id: nanoid(), trend: 'react', type: 'javascript framework' },
@@ -89,6 +89,31 @@ app.patch('/api/v1/trends/:id', (req, res) => {
   //4: response
   res.status(200).json({ msg: 'trend modified', trendObject }); //returning the found trend
 });
+
+//Delete trend
+app.delete('/api/v1/trends/:id', (req, res) => {
+  //1: find trend
+  const { id } = req.params;
+  //retrieve the trend if it equals the id in the data
+  const trendObject = trends.find((trend) => trend.id === id);
+  //if the trend does not exist
+  if (!trendObject) {
+    return res.status(404).json({ msg: `no trend found with id ${id}` });
+  }
+  //2: filter out all trends besides the one that is provided
+  const newTrendObject = trends.filter((trend) => trend.id !== id);
+  //3: Storing the new trends in the trends array
+  trends = newTrendObject;
+  res.status(200).json({ msg: 'trend deleted' }); //returning the found trend
+});
+
+//NOT found middleware
+//default use case when user tries to access something on a server that is not what is given
+app.use('*', (req, res) => {
+  res.status(404).json({ msg: 'not found' });
+});
+
+//ERROR middleware
 
 //this is done so that the hosting platform can inject the any value into the port with env
 const port = process.env.PORT || 5100;
