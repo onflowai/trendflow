@@ -1,6 +1,8 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+//routers
+import trendRouter from './routes/trendRouter.js';
 
 //setting up access to .env
 dotenv.config();
@@ -25,20 +27,7 @@ app.post('/', (req, res) => {
   res.json({ message: 'data received', data: req.body });
 });
 
-//GET a trend (setting up a retrieve/read all trends in a route /api/v1/trends)
-app.get('/api/v1/trends');
-
-//ADD a trend
-app.post('/api/v1/trends');
-
-//GET SINGLE trend
-app.get('/api/v1/trends/:id');
-
-//EDIT trend
-app.patch('/api/v1/trends/:id');
-
-//DELETE trend
-app.delete('/api/v1/trends/:id');
+app.use('/api/v1/trends', trendRouter);
 
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given
