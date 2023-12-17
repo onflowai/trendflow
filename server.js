@@ -31,10 +31,26 @@ app.post('/', (req, res) => {
   console.log(req);
   res.json({ message: 'data received', data: req.body });
 });
-//setting up a GET to retrieve/read data in a route /api/v1/trends
+//setting up a GET to retrieve/read all trends in a route /api/v1/trends
 app.get('/api/v1/trends', (req, res) => {
   //if there is anything but response 200 resource is not found
   res.status(200).json({ trends }); //response fot the client
+});
+
+//adding a trend
+app.post('/api/v1/trends', (req, res) => {
+  //retrieving the trend and type from client
+  const { trend, type } = req.body;
+  //checking if trend and type
+  if (!trend || !type) {
+    res.status(400).json({ msg: 'please provide a trend' });
+    return;
+  }
+  const id = nanoid(10); //nanoid generated 10 character id
+  const trendObject = { id, trend, type }; //object with added trends
+  trends.push(trendObject); //added trends pushed to the stack of all trends
+
+  res.status(200).json({ trendObject }); //response fot the client with created trend
 });
 
 //this is done so that the hosting platform can inject the any value into the port with env
