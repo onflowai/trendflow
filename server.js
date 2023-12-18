@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 //routers
 import trendRouter from './routes/trendRouter.js';
 
@@ -43,6 +44,14 @@ app.use((err, req, res, next) => {
 
 //this is done so that the hosting platform can inject the any value into the port with env
 const port = process.env.PORT || 5100;
+
+try {
+  await mongoose.connect(process.env.MONGODB_URL);
+  console.log(`server is running on port: ${port}...`);
+} catch (error) {
+  console.log(error);
+  process.exit(1);
+}
 
 //listener on port 5100
 app.listen(port, () => {
