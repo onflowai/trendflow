@@ -2,8 +2,8 @@ import { nanoid } from 'nanoid';
 
 //test data for local storage set as 'let' for modification
 let trends = [
-  { id: nanoid(), trend: 'chatgpt', type: 'language model' },
-  { id: nanoid(), trend: 'react', type: 'javascript framework' },
+  { id: nanoid(), trend: 'chatgpt', category: 'language model' },
+  { id: nanoid(), trend: 'react', category: 'javascript framework' },
 ];
 
 //GET a trend (setting up a retrieve/read all trends in a route /api/v1/trends)
@@ -14,15 +14,15 @@ export const getAllTrends = async (req, res) => {
 
 //ADD a trend
 export const createTrend = async (req, res) => {
-  //retrieving the trend and type from client
-  const { trend, type } = req.body;
-  //checking if trend and type
-  if (!trend || !type) {
+  //retrieving the trend and category from client
+  const { trend, category } = req.body;
+  //checking if trend and category
+  if (!trend || !category) {
     res.status(400).json({ msg: 'please provide a trend' });
     return;
   }
   const id = nanoid(10); //nanoid generated 10 character id
-  const trendObject = { id, trend, type }; //object with added trends
+  const trendObject = { id, trend, category }; //object with added trends
   trends.push(trendObject); //added trends pushed to the stack of all trends
   res.status(201).json({ trendObject }); //response fot the client with created trend is 201
 };
@@ -41,9 +41,9 @@ export const getSingleTrend = async (req, res) => {
 //EDIT trend
 export const editTrend = async (req, res) => {
   //1: find trend
-  const { trend, type } = req.body;
-  //checking if trend and type
-  if (!trend || !type) {
+  const { trend, category } = req.body;
+  //checking if trend and category
+  if (!trend || !category) {
     res.status(400).json({ msg: 'please provide a trend' });
     return;
   }
@@ -57,7 +57,7 @@ export const editTrend = async (req, res) => {
   }
   //3: modify the trend
   trendObject.trend = trend;
-  trendObject.type = type;
+  trendObject.category = category;
   //4: response
   res.status(200).json({ msg: 'trend modified', trendObject }); //returning the found trend
 };
