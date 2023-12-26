@@ -38,8 +38,13 @@ app.use('*', (req, res) => {
 
 //ERROR middleware
 app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({ msg: 'something went wrong' });
+  //try catch which prevents the server from shutting down on error
+  try {
+    console.log(err);
+    res.status(500).json({ msg: 'something went wrong' });
+  } catch (error) {
+    res.status(500).json({ msg: 'server error' });
+  }
 });
 
 //this is done so that the hosting platform can inject the any value into the port with env

@@ -28,7 +28,7 @@ const TrendSchema = new mongoose.Schema(
         'Natural Language',
         'Machine Learning',
       ],
-      default: 'Category',
+      default: 'Programming Languages',
     },
     trendTech: {
       type: String,
@@ -141,7 +141,7 @@ const TrendSchema = new mongoose.Schema(
         'Druid',
         'Apache Ignite',
       ],
-      default: 'Technology',
+      default: 'Python',
     },
     trendDesc: {
       type: String,
@@ -150,5 +150,5 @@ const TrendSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+//Name of the table is Trend
 export default mongoose.model('Trend', TrendSchema);

@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import trendModel from '../models/trendModel.js';
 
 //test data for local storage set as 'let' for modification
 let trends = [
@@ -14,16 +15,9 @@ export const getAllTrends = async (req, res) => {
 
 //ADD a trend
 export const createTrend = async (req, res) => {
-  //retrieving the trend and category from client
-  const { trend, category } = req.body;
-  //checking if trend and category
-  if (!trend || !category) {
-    res.status(400).json({ msg: 'please provide a trend' });
-    return;
-  }
-  const id = nanoid(10); //nanoid generated 10 character id
-  const trendObject = { id, trend, category }; //object with added trends
-  trends.push(trendObject); //added trends pushed to the stack of all trends
+  //VALIDATION NEEDED
+  //asynchronously adding a new trend object to the database
+  const trendObject = await trendModel.create(req.body);
   res.status(201).json({ trendObject }); //response fot the client with created trend is 201
 };
 //GET SINGLE trend
