@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
@@ -36,15 +37,11 @@ app.use('*', (req, res) => {
   res.status(404).json({ msg: 'not found' });
 });
 
-//ERROR middleware
+//ERROR middleware (SYNCHRONOUS)
 app.use((err, req, res, next) => {
   //try catch which prevents the server from shutting down on error
-  try {
-    console.log(err);
-    res.status(500).json({ msg: 'something went wrong' });
-  } catch (error) {
-    res.status(500).json({ msg: 'server error' });
-  }
+  console.log(err);
+  res.status(500).json({ msg: 'something went wrong' });
 });
 
 //this is done so that the hosting platform can inject the any value into the port with env

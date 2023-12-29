@@ -9,6 +9,8 @@ let trends = [
 
 //GET a trend (setting up a retrieve/read all trends in a route /api/v1/trends)
 export const getAllTrends = async (req, res) => {
+  //getting the trends
+  const trends = await trendModel.find({});
   //if there is anything but response 200 resource is not found
   res.status(200).json({ trends }); //response fot the client
 };
@@ -16,22 +18,24 @@ export const getAllTrends = async (req, res) => {
 //ADD a trend
 export const createTrend = async (req, res) => {
   //VALIDATION NEEDED
-  //asynchronously adding a new trend object to the database
+  //asynchronously adding a new trend object to the database (create looks for an object)
   const trendObject = await trendModel.create(req.body);
   res.status(201).json({ trendObject }); //response fot the client with created trend is 201
 };
+
 //GET SINGLE trend
 export const getSingleTrend = async (req, res) => {
   //retrieving the id
   const { id } = req.params;
   //retrieve the trend if it equals the id in the data
-  const trendObject = trends.find((trend) => trend.id === id);
+  const trendObject = await trendModel.findById(id);
   //if the trend does not exist
   if (!trendObject) {
     return res.status(404).json({ msg: `no trend found with id ${id}` });
   }
   res.status(200).json({ trendObject }); //returning the found trend
 };
+
 //EDIT trend
 export const editTrend = async (req, res) => {
   //1: find trend
@@ -55,6 +59,7 @@ export const editTrend = async (req, res) => {
   //4: response
   res.status(200).json({ msg: 'trend modified', trendObject }); //returning the found trend
 };
+
 //DELETE trend
 export const deleteTrend = async (req, res) => {
   //1: find trend
