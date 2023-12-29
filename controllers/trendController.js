@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import trendModel from '../models/trendModel.js';
+import { StatusCodes } from 'http-status-codes';
 
 //test data for local storage set as 'let' for modification
 let trends = [
@@ -12,7 +13,7 @@ export const getAllTrends = async (req, res) => {
   //getting the trends
   const trends = await trendModel.find({});
   //if there is anything but response 200 resource is not found
-  res.status(200).json({ trends }); //response fot the client
+  res.status(StatusCodes.OK).json({ trends }); //response fot the client
 };
 
 //ADD a trend
@@ -20,7 +21,7 @@ export const createTrend = async (req, res) => {
   //VALIDATION NEEDED
   //asynchronously adding a new trend object to the database (create looks for an object)
   const trendObject = await trendModel.create(req.body);
-  res.status(201).json({ trendObject }); //response fot the client with created trend is 201
+  res.status(StatusCodes.CREATED).json({ trendObject }); //response fot the client with created trend is 201
 };
 
 //GET SINGLE trend
@@ -38,26 +39,17 @@ export const getSingleTrend = async (req, res) => {
 
 //EDIT trend
 export const editTrend = async (req, res) => {
-  //1: find trend
-  const { trend, category } = req.body;
-  //checking if trend and category
-  if (!trend || !category) {
-    res.status(400).json({ msg: 'please provide a trend' });
-    return;
-  }
-  //2: check if there is id
   const { id } = req.params;
-  //retrieve the trend if it equals the id in the data
-  const trendObject = trends.find((trend) => trend.id === id);
+  // Mongoose method: findByIdAndUpdate passing in id, req.body, new: true returns the modified document rather than the original
+  const updateTrend = await trendModel.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
   //if the trend does not exist
-  if (!trendObject) {
+  if (!updateTrend) {
     return res.status(404).json({ msg: `no trend found with id ${id}` });
   }
-  //3: modify the trend
-  trendObject.trend = trend;
-  trendObject.category = category;
   //4: response
-  res.status(200).json({ msg: 'trend modified', trendObject }); //returning the found trend
+  res.status(200).json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
 };
 
 //DELETE trend
