@@ -64,15 +64,16 @@ export const editTrend = async (req, res) => {
 export const deleteTrend = async (req, res) => {
   //1: find trend
   const { id } = req.params;
-  //retrieve the trend if it equals the id in the data
-  const trendObject = trends.find((trend) => trend.id === id);
+  //using findByIdAndDelete to delete data out of trendModel based on id
+  const removeTrend = await trendModel.findByIdAndDelete(id);
+  console.log(removeTrend);
   //if the trend does not exist
-  if (!trendObject) {
+  if (!removeTrend) {
     return res.status(404).json({ msg: `no trend found with id ${id}` });
   }
   //2: filter out all trends besides the one that is provided
   const newTrendObject = trends.filter((trend) => trend.id !== id);
   //3: Storing the new trends in the trends array
   trends = newTrendObject;
-  res.status(200).json({ msg: 'trend deleted' }); //returning the found trend
+  res.status(200).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
 };
