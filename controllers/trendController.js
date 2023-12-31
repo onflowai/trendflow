@@ -45,9 +45,7 @@ export const editTrend = async (req, res) => {
     new: true,
   });
   //if the trend does not exist
-  if (!updateTrend) {
-    return res.status(404).json({ msg: `no trend found with id ${id}` });
-  }
+  if (!updateTrend) throw new NotFoundError(`not trend found with id ${id}`);
   //4: response
   res
     .status(StatusCodes.OK)
@@ -62,9 +60,7 @@ export const deleteTrend = async (req, res) => {
   const removeTrend = await trendModel.findByIdAndDelete(id);
   console.log(removeTrend);
   //if the trend does not exist
-  if (!removeTrend) {
-    return res.status(404).json({ msg: `no trend found with id ${id}` });
-  }
+  if (!removeTrend) throw new NotFoundError(`not trend found with id ${id}`);
   //2: filter out all trends besides the one that is provided
   const newTrendObject = trends.filter((trend) => trend.id !== id);
   //3: Storing the new trends in the trends array
