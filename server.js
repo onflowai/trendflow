@@ -7,8 +7,7 @@ import mongoose from 'mongoose';
 import trendRouter from './routes/trendRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-//validation
-import { body, validationResult } from 'express-validator';
+import { validateTest } from './middleware/validationMiddleware.js';
 
 //setting up access to .env
 dotenv.config();
@@ -28,29 +27,10 @@ app.get('/', (req, res) => {
   res.send('hello world');
 });
 //POST request with body express-validation
-app.post(
-  '/api/v1/test',
-  [
-    body('name')
-      .notEmpty()
-      .withMessage('name is required')
-      .isLength({ min: 50 })
-      .withMessage('name must be at least 50 characters'),
-  ],
-  (req, res, next) => {
-    const errors = validationResult(req);
-    //if isEmpty false there are errors
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((error) => error.msg);
-      return res.status(400).json({ errors: errorMessages });
-    }
-    next();
-  },
-  (req, res) => {
-    const { name } = req.body;
-    res.json({ message: `hello ${name}` });
-  }
-);
+app.post('/api/v1/test', validateTest, (req, res) => {
+  const { name } = req.body;
+  res.json({ message: `hello ${name}` });
+});
 
 app.use('/api/v1/trends', trendRouter);
 
