@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import trendModel from '../models/trendModel.js';
 import { StatusCodes } from 'http-status-codes';
+import { NotFoundError } from '../errors/customErrors.js';
 
 //test data for local storage set as 'let' for modification
 let trends = [
@@ -31,10 +32,9 @@ export const getSingleTrend = async (req, res) => {
   //retrieve the trend if it equals the id in the data
   const trendObject = await trendModel.findById(id);
   //if the trend does not exist
-  if (!trendObject) {
-    return res.status(404).json({ msg: `no trend found with id ${id}` });
-  }
-  res.status(200).json({ trendObject }); //returning the found trend
+  if (!trendObject) throw new NotFoundError(`not trend found with id ${id}`);
+
+  res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 
 //EDIT trend
@@ -49,7 +49,9 @@ export const editTrend = async (req, res) => {
     return res.status(404).json({ msg: `no trend found with id ${id}` });
   }
   //4: response
-  res.status(200).json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
 };
 
 //DELETE trend
@@ -67,5 +69,5 @@ export const deleteTrend = async (req, res) => {
   const newTrendObject = trends.filter((trend) => trend.id !== id);
   //3: Storing the new trends in the trends array
   trends = newTrendObject;
-  res.status(200).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
+  res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
 };
