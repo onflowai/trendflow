@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 //routers
 import trendRouter from './routes/trendRouter.js';
+//middleware
+import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 
 //setting up access to .env
 dotenv.config();
@@ -38,11 +40,7 @@ app.use('*', (req, res) => {
 });
 
 //ERROR middleware (SYNCHRONOUS)
-app.use((err, req, res, next) => {
-  //try catch which prevents the server from shutting down on error
-  console.log(err);
-  res.status(500).json({ msg: 'something went wrong' });
-});
+app.use(errorHandlerMiddleware);
 
 //this is done so that the hosting platform can inject the any value into the port with env
 const port = process.env.PORT || 5100;
