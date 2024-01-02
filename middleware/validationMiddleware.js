@@ -1,6 +1,7 @@
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
+import mongoose from 'mongoose';
 /**
  * validate test and error response
  * @param {*} validateValues
@@ -40,4 +41,10 @@ export const validateTrendInput = withValidationErrors([
   body('trendTech')
     .isIn(Object.values(TECHNOLOGIES))
     .withMessage('invalid trend stack'),
+]);
+//id validation set up as true and false
+export const validateIdParam = withValidationErrors([
+  param('id')
+    .custom((value) => mongoose.Types.ObjectId.isValid(value))
+    .withMessage('invalid mongodb id'),
 ]);
