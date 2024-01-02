@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 import trendRouter from './routes/trendRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-import { validateTest } from './middleware/validationMiddleware.js';
 
 //setting up access to .env
 dotenv.config();
@@ -27,10 +26,6 @@ app.get('/', (req, res) => {
   res.send('hello world');
 });
 //POST request with body express-validation
-app.post('/api/v1/test', validateTest, (req, res) => {
-  const { name } = req.body;
-  res.json({ message: `hello ${name}` });
-});
 
 app.use('/api/v1/trends', trendRouter);
 

@@ -8,12 +8,17 @@ import {
   deleteTrend,
   editTrend,
 } from '../controllers/trendController.js';
+import { validateTrendInput } from '../middleware/validationMiddleware.js';
 
 // router.get('/', getAllTrends);
 // router.post('/', createTrend)
 //route for base URL
-router.route('/').get(getAllTrends).post(createTrend);
+router.route('/').get(getAllTrends).post(validateTrendInput, createTrend);
 //route for base URL with route param
-router.route('/:id').get(getSingleTrend).patch(editTrend).delete(deleteTrend);
+router
+  .route('/:id')
+  .get(getSingleTrend)
+  .patch(validateTrendInput, editTrend)
+  .delete(deleteTrend);
 
 export default router;
