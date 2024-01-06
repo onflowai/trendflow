@@ -1,9 +1,10 @@
 import { body, param, validationResult } from 'express-validator';
 import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
+import trendModel from '../models/trendModel.js';
 import mongoose from 'mongoose';
 /**
- * validate test and error response
+ * VALIDATION LAYER test and error response
  * @param {*} validateValues
  * @returns
  */
@@ -17,6 +18,9 @@ const withValidationErrors = (validateValues) => {
       //if isEmpty false there are errors
       if (!errors.isEmpty()) {
         const errorMessages = errors.array().map((error) => error.msg);
+        if (errorMessages[0].startsWith('no trend')) {
+          throw new NotFoundError(errorMessages);
+        }
         throw new BadRequestError(errorMessages);
       }
       next();
@@ -32,7 +36,7 @@ const withValidationErrors = (validateValues) => {
 //     .withMessage('name must be at least 50 characters')
 //     .trim(),
 // ]);
-
+//Custom validation
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),
   body('trendCategory')
@@ -42,9 +46,17 @@ export const validateTrendInput = withValidationErrors([
     .isIn(Object.values(TECHNOLOGIES))
     .withMessage('invalid trend stack'),
 ]);
-//id validation set up as true and false
+//Async ID validation set up as true and false with mongoose
 export const validateIdParam = withValidationErrors([
-  param('id')
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage('invalid mongodb id'),
+  param('id').custom(async (value) => {
+    //isValidId returns true or false
+    const isValidId = mongoose.Types.ObjectId.isValid(value);
+    //condition for the error
+    if (!isValidId) throw new BadRequestError('invalid mongodb id');
+    //retrieve the trend if it equals the id in the data
+    const trendObject = await trendModel.findById(value);
+    //if the trend does not exist get the NotfoundError
+    if (!trendObject)
+      throw new NotFoundError(`no trend found with id ${value}`);
+  }),
 ]);
