@@ -10,25 +10,21 @@ let trends = [
 
 //GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends)
 export const getAllTrends = async (req, res) => {
-  //getting the trends
-  const trends = await trendModel.find({});
-  //if there is anything but response 200 resource is not found
-  res.status(StatusCodes.OK).json({ trends }); //response fot the client
+  const trends = await trendModel.find({}); //getting the trends
+  res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
 
 //ADD A TREND
 export const createTrend = async (req, res) => {
   //VALIDATION NEEDED
-  //asynchronously adding a new trend object to the database (create looks for an object)
-  const trendObject = await trendModel.create(req.body);
-  //response fot the client with created trend is 201
-  res.status(StatusCodes.CREATED).json({ trendObject });
+  const trendObject = await trendModel.create(req.body); //async adding a new trend object to the database (create looks for an object)
+  res.status(StatusCodes.CREATED).json({ trendObject }); //response fot the client with created trend is 201
 };
 
 //GET SINGLE TREND
 export const getSingleTrend = async (req, res) => {
   const { id } = req.params; //retrieving the id
-  const trendObject = await trendModel.findById(id); //retrieve the trend if it equals the id in the data
+  const trendObject = await trendModel.findById(req.params.id); //retrieve the trend if it equals the id in the data
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 
@@ -47,14 +43,10 @@ export const editTrend = async (req, res) => {
 
 //DELETE TREND
 export const deleteTrend = async (req, res) => {
-  //1: find trend
-  const { id } = req.params;
-  //using findByIdAndDelete to delete data out of trendModel based on id
-  const removeTrend = await trendModel.findByIdAndDelete(id);
+  const { id } = req.params; //1: find trend
+  const removeTrend = await trendModel.findByIdAndDelete(id); //using findByIdAndDelete to delete data out of trendModel based on id
   console.log(removeTrend);
-  //2: filter out all trends besides the one that is provided
-  const newTrendObject = trends.filter((trend) => trend.id !== id);
-  //3: Storing the new trends in the trends array
-  trends = newTrendObject;
+  const newTrendObject = trends.filter((trend) => trend.id !== id); //2: filter out all trends besides the one that is provided
+  trends = newTrendObject; //3: Storing the new trends in the trends array
   res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
 };
