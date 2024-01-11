@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 //routers
 import trendRouter from './routes/trendRouter.js';
+import authRouter from './routes/authRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 
@@ -24,10 +25,10 @@ app.use(express.json());
 //app responding to get requests home rout with controller that handles the requests
 app.get('/', (req, res) => {
   res.send('hello world');
-});
-//POST request with body express-validation
+}); //POST request with body express-validation
 
-app.use('/api/v1/trends', trendRouter);
+app.use('/api/v1/trends', trendRouter); //base url
+app.use('/api/v1/auth', authRouter);
 
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given
