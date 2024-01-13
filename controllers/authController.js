@@ -23,6 +23,12 @@ export const login = async (req, res) => {
   );
   if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials');
   const token = createJWT({ userID: user._id, role: user.role }); //encoding user id user role into the token + iat and exp generated
+  const oneDay = 86400000; //one day in milliseconds
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production', //when secure true, transmit in https if not http
+  }); //cookie named token with value token is stored on frontend with HTTP only cookies with every request
 
-  res.json({ token });
+  res.json(StatusCodes.OK).json({ msg: 'user logged in' });
 };
