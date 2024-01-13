@@ -2,6 +2,7 @@ import { body, param, validationResult } from 'express-validator';
 import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
 import TrendModel from '../models/TrendModel.js';
+import UserModel from '../models/UserModel.js';
 import mongoose from 'mongoose';
 /**
  * VALIDATION LAYER test and error response
@@ -55,4 +56,43 @@ export const validateIdParam = withValidationErrors([
     if (!trendObject)
       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
   }),
+]);
+
+//Create user validation
+export const validateRegisterInput = withValidationErrors([
+  body('username')
+    .notEmpty()
+    .withMessage('username is required')
+    .isLength({ min: 4, max: 20 })
+    .withMessage('Username must be between 4 and 20 characters long.')
+    .matches(/^[A-Za-z0-9_-]+$/)
+    .withMessage(
+      'Username must contain only letters, numbers, underscores, or hyphens.'
+    )
+    .matches(/^[A-Za-z]/)
+    .withMessage('Username must start with a letter.')
+    .custom(async (username) => {
+      const user = await UserModel.findOne({ username }); //search the user based on the username if present throw error
+      if (user) {
+        throw new BadRequestError('username already exists');
+      }
+    }),
+  body('email')
+    .notEmpty()
+    .withMessage('email is required')
+    .isEmail()
+    .withMessage('invalid email format')
+    .custom(async (email) => {
+      const user = await UserModel.findOne({ email }); //search the user based on the email if present throw error
+      if (user) {
+        throw new BadRequestError('email already exists');
+      }
+    }),
+  body('password')
+    .notEmpty()
+    .withMessage('password is required')
+    .isLength({ min: 8 })
+    .withMessage('password must be at least 8 characters long'),
+  body('name').notEmpty().withMessage('name is required'),
+  body('lastName').notEmpty().withMessage('last name is required'),
 ]);
