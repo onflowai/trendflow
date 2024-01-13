@@ -16,7 +16,7 @@ export class BadRequestError extends Error {
     this.statusCode = StatusCodes.BAD_REQUEST;
   }
 }
-//error constructor for UNAUTHENTICATED
+//error constructor for UNAUTHENTICATED 401
 export class UnauthenticatedError extends Error {
   constructor(message) {
     super(message);
