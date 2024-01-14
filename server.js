@@ -3,11 +3,13 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 //routers
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
+import { authenticateUser } from './middleware/authMiddleware.js';
 
 //setting up access to .env
 dotenv.config();
@@ -19,15 +21,15 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-//setting up middleware json
-app.use(express.json());
+app.use(express.json()); //setting up middleware json
+app.use(cookieParser()); //cookie parser
 
 //app responding to get requests home rout with controller that handles the requests
 app.get('/', (req, res) => {
   res.send('hello world');
 }); //POST request with body express-validation
 
-app.use('/api/v1/trends', trendRouter); //base url
+app.use('/api/v1/trends', authenticateUser, trendRouter); //base url
 app.use('/api/v1/auth', authRouter);
 
 //NOT found middleware

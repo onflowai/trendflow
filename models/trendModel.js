@@ -18,6 +18,10 @@ const TrendSchema = new mongoose.Schema(
       type: String,
       default: 'description',
     },
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+    },
   },
   { timestamps: true }
 );
