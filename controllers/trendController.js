@@ -10,7 +10,7 @@ let trends = [
 
 //GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends)
 export const getAllTrends = async (req, res) => {
-  // console.log(req);
+  console.log(req.user);
   const trends = await TrendModel.find({}); //getting the trends
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
