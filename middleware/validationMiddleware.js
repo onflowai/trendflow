@@ -37,6 +37,13 @@ const withValidationErrors = (validateValues) => {
 //     .withMessage('name must be at least 50 characters')
 //     .trim(),
 // ]);
+export const adminOnly = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ msg: 'Access denied, admin only.' });
+  }
+};
 //Custom validation
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),

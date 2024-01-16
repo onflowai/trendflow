@@ -3,21 +3,45 @@ import TrendModel from '../models/TrendModel.js';
 import { StatusCodes } from 'http-status-codes';
 
 //test data for local storage set as 'let' for modification
-let trends = [
-  { id: nanoid(), trend: 'chatgpt', category: 'language model' },
-  { id: nanoid(), trend: 'react', category: 'javascript framework' },
-];
+// let trends = [
+//   { id: nanoid(), trend: 'chatgpt', category: 'language model' },
+//   { id: nanoid(), trend: 'react', category: 'javascript framework' },
+// ];
+export const submitTrend = async (req, res) => {
+  const { trend } = req.body;
+  const existingTrend = await TrendModel.findOne({ trend });
+  if (existingTrend) {
+    return res.status(400).json({ msg: 'Trend already exists' });
+  }
+  req.body.createdBy = req.user.userID;
+  const trendObject = await TrendModel.create({
+    ...req.body,
+    isApproved: false,
+  });
+  res.status(StatusCodes.CREATED).json({ trendObject });
+};
 
-//GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends)
 export const getAllTrends = async (req, res) => {
-  console.log(req.user);
-  const trends = await TrendModel.find({}); //getting the trends
+  // console.log(req.user);
+  const trends = await TrendModel.find(); //getting the trends belonging to user that provided cookie and token
+  res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
+};
+
+//GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)
+export const getUserTrends = async (req, res) => {
+  // console.log(req.user);
+  const trends = await TrendModel.find({ createdBy: req.user.userID }); //getting the trends belonging to user that provided cookie and token
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
 
 //ADD A TREND
 export const createTrend = async (req, res) => {
-  //VALIDATION NEEDED
+  if (req.user.role !== 'admin') {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ msg: 'Unauthorized access' });
+  }
+  req.body.createdBy = req.user.userID; //createdBy populated with userDI
   const trendObject = await TrendModel.create(req.body); //async adding a new trend object to the database (create looks for an object)
   res.status(StatusCodes.CREATED).json({ trendObject }); //response fot the client with created trend is 201
 };
@@ -50,4 +74,15 @@ export const deleteTrend = async (req, res) => {
   const newTrendObject = trends.filter((trend) => trend.id !== id); //2: filter out all trends besides the one that is provided
   trends = newTrendObject; //3: Storing the new trends in the trends array
   res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
+};
+
+export const approveTrend = async (req, res) => {
+  const { id } = req.params; //this controller allows admins to approve trends and sets isApproved to true
+  const trend = await TrendModel.findById(id);
+  if (!trend) {
+    return res.status(404).json({ msg: 'Trend not found' });
+  }
+  trend.isApproved = true;
+  await trend.save();
+  res.status(StatusCodes.OK).json({ msg: 'Trend approved', trend });
 };
