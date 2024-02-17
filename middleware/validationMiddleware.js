@@ -64,6 +64,7 @@ export const validateTrendInput = withValidationErrors([
 //       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
 //   }),
 // ]);
+//validateSlugParam middleware validates that a provided slug exists in the database
 export const validateSlugParam = withValidationErrors([
   param('slug').custom(async (value) => {
     const trendObject = await trendModel.findOne({ slug: value }); // Retrieve the trend by slug instead of ID
