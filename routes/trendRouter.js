@@ -13,7 +13,7 @@ import {
 } from '../controllers/trendController.js';
 import {
   adminOnly,
-  validateIdParam,
+  validateSlugParam,
   validateTrendInput,
 } from '../middleware/validationMiddleware.js';
 import { authenticateUser } from '../middleware/authMiddleware.js';
@@ -32,15 +32,15 @@ router.post(
 );
 //route for base URL with route param
 router
-  .route('/:id')
-  .get(validateIdParam, getSingleTrend)
+  .route('/:slug')
+  .get(validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
     validateTrendInput,
-    validateIdParam,
+    validateSlugParam,
     adminOnly,
     editTrend
   )
-  .delete(authenticateUser, validateIdParam, adminOnly, deleteTrend);
-router.patch('/:id/approve', authenticateUser, adminOnly, approveTrend);
+  .delete(authenticateUser, validateSlugParam, adminOnly, deleteTrend);
+router.patch('/:slug/approve', authenticateUser, adminOnly, approveTrend);
 export default router;

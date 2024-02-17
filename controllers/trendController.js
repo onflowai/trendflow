@@ -49,18 +49,29 @@ export const createTrend = async (req, res) => {
 
 //GET SINGLE TREND
 export const getSingleTrend = async (req, res) => {
-  const { id } = req.params; //retrieving the id
-  const trendObject = await trendModel.findById(req.params.id); //retrieve the trend if it equals the id in the data
+  const { slug } = req.params; //retrieving the id
+  const trendObject = await trendModel.findOne({ slug: slug }); //retrieve the trend if it equals the id in the data
+  if (!trendObject) {
+    return res.status(404).json({ msg: 'Trend not found' });
+  }
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 
 //EDIT / UPDATE TREND
 export const editTrend = async (req, res) => {
-  const { id } = req.params;
-  // Mongoose method: findByIdAndUpdate passing in id, req.body, new: true returns the modified document rather than the original
-  const updateTrend = await trendModel.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const { slug } = req.params;
+  // use Mongoose's findOneAndUpdate method to find a trend by its slug and update it with the new data provided in req.body.
+  // the option { new: true } ensures that the method returns the modified document rather than the original.
+  const updateTrend = await trendModel.findOneAndUpdate(
+    { slug: slug }, // the filter to find the document by slug.
+    req.body,
+    {
+      new: true, // option to return the updated document instead of the original document before the update.
+    }
+  );
+  if (!updateTrend) {
+    return res.status(404).json({ msg: 'Trend not found' });
+  }
   //response
   res
     .status(StatusCodes.OK)
@@ -68,22 +79,37 @@ export const editTrend = async (req, res) => {
 };
 
 //DELETE TREND
+// export const deleteTrend = async (req, res) => {
+//   const { id } = req.params; //1: find trend
+//   const removeTrend = await trendModel.findByIdAndDelete(id); //using findByIdAndDelete to delete data out of TrendModel based on id
+//   console.log(removeTrend);
+//   const newTrendObject = trends.filter((trend) => trend.id !== id); //2: filter out all trends besides the one that is provided
+//   trends = newTrendObject; //3: Storing the new trends in the trends array
+//   res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
+// };
+//DELETE TREND
 export const deleteTrend = async (req, res) => {
-  const { id } = req.params; //1: find trend
-  const removeTrend = await trendModel.findByIdAndDelete(id); //using findByIdAndDelete to delete data out of TrendModel based on id
-  console.log(removeTrend);
-  const newTrendObject = trends.filter((trend) => trend.id !== id); //2: filter out all trends besides the one that is provided
-  trends = newTrendObject; //3: Storing the new trends in the trends array
-  res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
-};
-
-export const approveTrend = async (req, res) => {
-  const { id } = req.params; //this controller allows admins to approve trends and sets isApproved to true
-  const trend = await trendModel.findById(id);
-  if (!trend) {
+  const { slug } = req.params; //1: find trend
+  const removeTrend = await trendModel.findOneAndDelete({ slug: slug });
+  if (!removeTrend) {
     return res.status(404).json({ msg: 'Trend not found' });
   }
-  trend.isApproved = true;
-  await trend.save();
-  res.status(StatusCodes.OK).json({ msg: 'Trend approved', trend });
+  res.status(StatusCodes.OK).json({ msg: 'Trend deleted', trend: removeTrend });
+};
+
+//APPROVE TREND
+export const approveTrend = async (req, res) => {
+  const { slug } = req.params; // Use slug from the request parameters
+  try {
+    const trend = await trendModel.findOne({ slug: slug }); // Find the trend using the slug
+    if (!trend) {
+      return res.status(404).json({ msg: 'Trend not found' });
+    }
+    trend.isApproved = true; // Set isApproved to true
+    await trend.save(); // Save the updated trend document
+
+    res.status(StatusCodes.OK).json({ msg: 'Trend approved', trend });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
 };

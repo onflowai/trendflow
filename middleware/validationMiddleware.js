@@ -55,13 +55,20 @@ export const validateTrendInput = withValidationErrors([
     .withMessage('invalid trend stack'),
 ]);
 //Async trend ID validation set up as true and false with mongoose
-export const validateIdParam = withValidationErrors([
-  param('id').custom(async (value) => {
-    const isValidId = mongoose.Types.ObjectId.isValid(value); //isValidId returns true or false
-    if (!isValidId) throw new BadRequestError('invalid mongodb id'); //condition for the error
-    const trendObject = await trendModel.findById(value); //retrieve the trend if it equals the id in the data
+// export const validateIdParam = withValidationErrors([
+//   param('slug').custom(async (value) => {
+//     const isValidId = mongoose.Types.ObjectId.isValid(value); //isValidId returns true or false
+//     if (!isValidId) throw new BadRequestError('invalid mongodb id'); //condition for the error
+//     const trendObject = await trendModel.findById(value); //retrieve the trend if it equals the id in the data
+//     if (!trendObject)
+//       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
+//   }),
+// ]);
+export const validateSlugParam = withValidationErrors([
+  param('slug').custom(async (value) => {
+    const trendObject = await trendModel.findOne({ slug: value }); // Retrieve the trend by slug instead of ID
     if (!trendObject)
-      throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
+      throw new NotFoundError(`No trend found with slug ${value}`); // If the trend does not exist, throw NotFoundError
   }),
 ]);
 
