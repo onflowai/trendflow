@@ -57,7 +57,7 @@ export const getSingleTrend = async (req, res) => {
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 
-//EDIT / UPDATE TREND
+//UPDATE TREND
 export const editTrend = async (req, res) => {
   const { slug } = req.params;
   // use Mongoose's findOneAndUpdate method to find a trend by its slug and update it with the new data provided in req.body.

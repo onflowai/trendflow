@@ -53,6 +53,7 @@ export const validateTrendInput = withValidationErrors([
   body('trendTech')
     .isIn(Object.values(TECHNOLOGIES))
     .withMessage('invalid trend stack'),
+  body('role').not().exists().withMessage('Cannot change role'),
 ]);
 //Async trend ID validation set up as true and false with mongoose
 // export const validateIdParam = withValidationErrors([
@@ -119,4 +120,8 @@ export const validateLoginInput = withValidationErrors([
     .isEmail()
     .withMessage('invalid email format'),
   body('password').notEmpty().withMessage('password is required'),
+]);
+
+export const validateUserUpdate = withValidationErrors([
+  body('role').not().exists().withMessage('Cannot change role'),
 ]);
