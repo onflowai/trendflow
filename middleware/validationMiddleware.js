@@ -1,5 +1,9 @@
 import { body, param, validationResult } from 'express-validator';
-import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+} from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
@@ -37,13 +41,13 @@ const withValidationErrors = (validateValues) => {
 //     .withMessage('name must be at least 50 characters')
 //     .trim(),
 // ]);
-export const adminOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    next();
-  } else {
-    res.status(403).json({ msg: 'Access denied, admin only.' });
-  }
-};
+// export const adminOnly = (req, res, next) => {
+//   if (req.user && req.user.role === 'admin') {
+//     next();
+//   } else {
+//     throw new UnauthenticatedError('Unauthorized to access this page');
+//   }
+// };
 //Custom validation
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),
@@ -124,4 +128,18 @@ export const validateLoginInput = withValidationErrors([
 
 export const validateUserUpdate = withValidationErrors([
   body('role').not().exists().withMessage('Cannot change role'),
+  body('username').not().exists().withMessage('Cannot change username'),
+  body('email')
+    .notEmpty()
+    .withMessage('email is required')
+    .isEmail()
+    .withMessage('invalid email format')
+    .custom(async (email, { req }) => {
+      const user = await UserModel.findOne({ email }); //search the user based on the email if present throw error
+      if (user && user._id.toString() !== req.user.userID) {
+        throw new BadRequestError('email already exists'); //method allows users to submit updates to their profile without changing their email
+      }
+    }),
+  body('name').notEmpty().withMessage('name is required'),
+  body('lastName').notEmpty().withMessage('last name is required'),
 ]);

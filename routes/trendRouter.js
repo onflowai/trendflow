@@ -13,11 +13,13 @@ import {
   editTrend,
 } from '../controllers/trendController.js';
 import {
-  adminOnly,
   validateSlugParam,
   validateTrendInput,
 } from '../middleware/validationMiddleware.js';
-import { authenticateUser } from '../middleware/authMiddleware.js';
+import {
+  authenticateUser,
+  authorizedPermissions,
+} from '../middleware/authMiddleware.js';
 /**
  *
  */
@@ -25,7 +27,7 @@ router.route('/submit').post(authenticateUser, validateTrendInput, submitTrend);
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router
   .route('/admin/all-trends')
-  .get(authenticateUser, adminOnly, getAllTrends);
+  .get(authenticateUser, authorizedPermissions('admin'), getAllTrends);
 router.route('/my-trends').get(authenticateUser, getUserTrends);
 router.post(
   '/add-trend',
@@ -42,9 +44,19 @@ router
     authenticateUser,
     validateTrendInput,
     validateSlugParam,
-    adminOnly,
+    authorizedPermissions('admin'),
     editTrend
   )
-  .delete(authenticateUser, validateSlugParam, adminOnly, deleteTrend);
-router.patch('/:slug/approve', authenticateUser, adminOnly, approveTrend);
+  .delete(
+    authenticateUser,
+    validateSlugParam,
+    authorizedPermissions('admin'),
+    deleteTrend
+  );
+router.patch(
+  '/:slug/approve',
+  authenticateUser,
+  authorizedPermissions('admin'),
+  approveTrend
+);
 export default router;
