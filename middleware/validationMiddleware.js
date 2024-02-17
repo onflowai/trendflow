@@ -1,7 +1,7 @@
 import { body, param, validationResult } from 'express-validator';
 import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
-import TrendModel from '../models/TrendModel.js';
+import trendModel from '../models/trendModel.js';
 import UserModel from '../models/UserModel.js';
 import mongoose from 'mongoose';
 /**
@@ -54,12 +54,12 @@ export const validateTrendInput = withValidationErrors([
     .isIn(Object.values(TECHNOLOGIES))
     .withMessage('invalid trend stack'),
 ]);
-//Async ID validation set up as true and false with mongoose
+//Async trend ID validation set up as true and false with mongoose
 export const validateIdParam = withValidationErrors([
   param('id').custom(async (value) => {
     const isValidId = mongoose.Types.ObjectId.isValid(value); //isValidId returns true or false
     if (!isValidId) throw new BadRequestError('invalid mongodb id'); //condition for the error
-    const trendObject = await TrendModel.findById(value); //retrieve the trend if it equals the id in the data
+    const trendObject = await trendModel.findById(value); //retrieve the trend if it equals the id in the data
     if (!trendObject)
       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
   }),

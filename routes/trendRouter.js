@@ -16,16 +16,31 @@ import {
   validateIdParam,
   validateTrendInput,
 } from '../middleware/validationMiddleware.js';
-
-router.route('/submit').post(validateTrendInput, submitTrend);
-router.route('/').get(getAllTrends);
-router.route('/my-trends').get(getUserTrends);
-router.post(validateTrendInput, adminOnly, createTrend);
+import { authenticateUser } from '../middleware/authMiddleware.js';
+/**
+ *
+ */
+router.route('/submit').post(authenticateUser, validateTrendInput, submitTrend);
+router.route('/').get(authenticateUser, getAllTrends);
+router.route('/my-trends').get(authenticateUser, getUserTrends);
+router.post(
+  '/add-trend',
+  authenticateUser,
+  validateTrendInput,
+  adminOnly,
+  createTrend
+);
 //route for base URL with route param
 router
   .route('/:id')
   .get(validateIdParam, getSingleTrend)
-  .patch(validateTrendInput, validateIdParam, adminOnly, editTrend)
-  .delete(validateIdParam, adminOnly, deleteTrend);
-router.patch('/:id/approve', adminOnly, approveTrend);
+  .patch(
+    authenticateUser,
+    validateTrendInput,
+    validateIdParam,
+    adminOnly,
+    editTrend
+  )
+  .delete(authenticateUser, validateIdParam, adminOnly, deleteTrend);
+router.patch('/:id/approve', authenticateUser, adminOnly, approveTrend);
 export default router;

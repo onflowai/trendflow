@@ -9,7 +9,6 @@ import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-import { authenticateUser } from './middleware/authMiddleware.js';
 
 //setting up access to .env
 dotenv.config();
@@ -29,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('hello world');
 }); //POST request with body express-validation
 
-app.use('/api/v1/trends', authenticateUser, trendRouter); //base url
+app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter);
 
 //NOT found middleware
