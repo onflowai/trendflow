@@ -22,7 +22,7 @@ import { authenticateUser } from '../middleware/authMiddleware.js';
  *
  */
 router.route('/submit').post(authenticateUser, validateTrendInput, submitTrend);
-router.route('/').get(getApprovedTrends);
+router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router
   .route('/admin/all-trends')
   .get(authenticateUser, adminOnly, getAllTrends);
@@ -34,7 +34,7 @@ router.post(
   adminOnly,
   createTrend
 );
-//route for base URL with route param
+//route for base URL with route param NOTE user does not need to have an account to see each Trend
 router
   .route('/:slug')
   .get(validateSlugParam, getSingleTrend)

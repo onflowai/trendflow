@@ -26,5 +26,11 @@ const UserSchema = new mongoose.Schema({
     default: 'user',
   },
 });
+//instance method to limit getCurrentUser return data (removing password)
+UserSchema.methods.toJSON = function () {
+  let obj = this.toObject(); //transforming UserSchema to object
+  delete obj.password; //deleting the password out of this object
+  return obj;
+};
 
 export default mongoose.model('User', UserSchema);

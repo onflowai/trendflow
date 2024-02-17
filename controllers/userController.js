@@ -7,7 +7,9 @@ import TrendModel from '../models/trendModel.js';
  */
 //Getting current user retrieved every time user is in the dashboard
 export const getCurrentUser = async (req, res) => {
-  res.status(StatusCodes.OK).json({ msg: 'get current user' });
+  const user = await UserModel.findOne({ _id: req.user.userID }); //NOTE user data is stored and managed server-side with JWT
+  const userControlled = user.toJSON(); //userControlled is user without password implemented in the model
+  res.status(StatusCodes.OK).json({ user: userControlled });
 };
 //
 export const getApplicationStats = async (req, res) => {
