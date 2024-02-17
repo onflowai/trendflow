@@ -8,7 +8,7 @@ import { verifyJWT } from '../utils/tokenUtils.js';
  * @param {*} res
  * @param {*} next
  */
-export const authenticateUser = async (req, res, next) => {
+export const authenticateUser = (req, res, next) => {
   // console.log('token: ', req.cookies);
   // next();
   const { token } = req.cookies; //accessing the cookies called 'token' generated in authController

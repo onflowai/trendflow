@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 //routers
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
+import userRouter from './routes/userRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 
@@ -29,7 +30,8 @@ app.get('/', (req, res) => {
 }); //POST request with body express-validation
 
 app.use('/api/v1/trends', trendRouter); //base url
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authRouter); //authentication
+app.use('/api/v1/users', userRouter); //
 
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given

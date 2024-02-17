@@ -2,7 +2,7 @@ import { body, param, validationResult } from 'express-validator';
 import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
 import trendModel from '../models/trendModel.js';
-import UserModel from '../models/UserModel.js';
+import UserModel from '../models/userModel.js';
 import mongoose from 'mongoose';
 /**
  * VALIDATION LAYER test and error response
