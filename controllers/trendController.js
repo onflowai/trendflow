@@ -20,7 +20,7 @@ export const submitTrend = async (req, res) => {
   });
   res.status(StatusCodes.CREATED).json({ trendObject });
 };
-
+//GET ALL TRENDS
 export const getAllTrends = async (req, res) => {
   // console.log(req);
   console.log('user object: ', req.user);
@@ -111,5 +111,18 @@ export const approveTrend = async (req, res) => {
     res.status(StatusCodes.OK).json({ msg: 'Trend approved', trend });
   } catch (error) {
     res.status(500).json({ msg: error.message });
+  }
+};
+
+//GET APPROVED TRENDS
+export const getApprovedTrends = async (req, res) => {
+  try {
+    // Query the database for trends where isApproved is true
+    const trends = await trendModel.find({ isApproved: true });
+    // Directly respond with the list of approved trends (could be an empty array)
+    res.status(StatusCodes.OK).json({ trends });
+  } catch (error) {
+    // Handle any potential errors during the database query
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };

@@ -2,6 +2,7 @@ import { Router } from 'express';
 //Instantiating the Router
 const router = Router();
 import {
+  getApprovedTrends,
   approveTrend,
   submitTrend,
   getAllTrends,
@@ -21,7 +22,10 @@ import { authenticateUser } from '../middleware/authMiddleware.js';
  *
  */
 router.route('/submit').post(authenticateUser, validateTrendInput, submitTrend);
-router.route('/').get(authenticateUser, getAllTrends);
+router.route('/').get(getApprovedTrends);
+router
+  .route('/admin/all-trends')
+  .get(authenticateUser, adminOnly, getAllTrends);
 router.route('/my-trends').get(authenticateUser, getUserTrends);
 router.post(
   '/add-trend',
