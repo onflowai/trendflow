@@ -15,7 +15,7 @@ export const action = async ({ request }) => {
   // console.log(data);
   try {
     await customFetch.post('/auth/register', data); //POST call with data payload
-    toast.success('Registration Successful');
+    toast.success(<CustomErrorToast message={'Registration Successful'} />);
     return redirect('/login'); //function has to return something in this case a redirect
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
