@@ -1,28 +1,32 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Form, redirect, useNavigation, Link } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPage';
-import { Logo, Form } from '../components';
+import { Logo, FormComponent } from '../components';
 /**
  * Register page will have a registration form for the user should they choose to have an account
- * Using From component
+ * Using From component with 'action' post
  * @returns
  */
 const Register = () => {
   return (
     <Container>
-      <form className="form">
+      <Form method="post" className="form">
         <Logo />
         <h4>Register</h4>
         {/* NAME */}
-        <Form type="text" name="name" defaultValue="Steve" />
-        <Form
+        <FormComponent type="text" name="name" defaultValue="Steve" />
+        <FormComponent
           type="text"
           name="name"
           defaultValue="Brooks"
           labelText="Last Name"
         />
-        <Form type="email" name="email" defaultValue="test@test.com" />
-        <Form type="password" name="password" defaultValue="password123" />
+        <FormComponent type="email" name="email" defaultValue="test@test.com" />
+        <FormComponent
+          type="password"
+          name="password"
+          defaultValue="password123"
+        />
         <button type="submit" className="btn btn-block">
           Submit
         </button>
@@ -32,7 +36,7 @@ const Register = () => {
             Login
           </Link>
         </p>
-      </form>
+      </Form>
     </Container>
   );
 };

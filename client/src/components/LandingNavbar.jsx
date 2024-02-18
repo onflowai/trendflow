@@ -33,7 +33,11 @@ const LandingNavbar = () => {
           {/* <!-- left this comment on purpose --> */}
           <LandingNavbarLinks parentClass="nav-links" itemClass="nav-link" />
           <span className="vertical-line"></span>
-          <Link to="/login">login</Link>
+          <div className="nav-links">
+            <Link className="nav-link login-link" to="/login">
+              login
+            </Link>
+          </div>
           <span className="vertical-line"></span>
           <ul className="nav-icons">
             {socialLinks.map((link) => {

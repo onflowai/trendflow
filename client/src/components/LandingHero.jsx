@@ -21,7 +21,7 @@ const LandingHero = () => {
             <Link to="/register" className="btn register-link">
               Create Account
             </Link>
-            <Link to="/login" className="btn btn-color register-link">
+            <Link to="/dashboard" className="btn btn-color register-link">
               Start Using
             </Link>
           </div>

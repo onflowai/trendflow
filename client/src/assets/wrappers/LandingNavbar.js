@@ -76,7 +76,7 @@ const Container = styled.section`
     height: 25px; /* The height of your line */
     width: 1.5px; /* The width of your line */
     background-color: var(--grey-70); /* The color of your line */
-    margin: 0 15px; /* Add some margin to separate the line from adjacent content */
+    margin: 0 1px; /* Add some margin to separate the line from adjacent content */
     vertical-align: middle; /* This will vertically center the line with adjacent icons/text */
   }
   .nav-toggle {
@@ -111,8 +111,11 @@ const Container = styled.section`
   .nav-link {
     margin-right: 0.7rem;
   }
+  .login-link {
+    margin-left: 0.7rem;
+  }
   .nav-icon {
-    margin-right: 0.7rem;
+    margin-left: 0.7rem;
     color: var(--grey-500);
     font-size: 1.2rem;
     transition: var(--transition);

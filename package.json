@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "setup-project": "npm i && cd client && npm i",
-    "dev": "nodemon server.js",
-    "watch": "node --watch server.js"
+    "server": "nodemon server",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
   },
   "keywords": [],
   "author": "",
@@ -28,7 +29,7 @@
     "helmet": "^7.0.0",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.3.4",
+    "mongoose": "^7.6.8",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^4.0.2",

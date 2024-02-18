@@ -29,6 +29,11 @@ app.get('/', (req, res) => {
   res.send('hello world');
 }); //POST request with body express-validation
 
+//testing proxy
+app.use('/api/v1/test', (req, res) => {
+  res.json({ msg: 'test route' });
+});
+
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
 app.use('/api/v1/users', userRouter); //
