@@ -26,6 +26,7 @@ checkDefaultTheme();
 
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
+import { loader as dashboardLoader } from './pages/DashboardLayout';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <DashboardLayout />,
+        loader: dashboardLoader,
         children: [
           {
             index: true,

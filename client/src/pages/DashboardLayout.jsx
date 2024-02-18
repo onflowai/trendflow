@@ -1,14 +1,26 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, redirect, useLoaderData } from 'react-router-dom';
 import Container from '../assets/wrappers/Dashboard';
 import { SidebarSmall, Sidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
+import customFetch from '../utils/customFetch';
 
 /**
- * Dashboard Layout takes on components and sets up the layout
+ * Dashboard Layout takes on components and sets up the layout. NOTE loader is used.
+ * Loader allows to preload data to the route before it renders in this case user which we fetch
+ * from the backend. Outlet is then used to pass
  * @returns
  * React Router: user, sidebar (theme). User should be coming from a server
  */
+export const loader = async () => {
+  try {
+    const { data } = await customFetch.get('/users/current-user');
+    return data; //returning data from get
+  } catch (error) {
+    return redirect('/'); //if backend does not return user redirect home
+  }
+  return 'hello loader'; //must return something
+}; //this is where data which you want to be preloaded is passed
 
 const user = { name: 'Steve' };
 
@@ -16,6 +28,8 @@ const user = { name: 'Steve' };
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
+  const data = useLoaderData();
+  console.log(data);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
 
@@ -55,7 +69,7 @@ const DashboardLayout = () => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>

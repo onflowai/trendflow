@@ -30,5 +30,12 @@ const Container = styled.section`
     letter-spacing: var(--letter-spacing);
     margin-left: 0.25rem;
   }
+  .fade-in {
+  opacity: 0;
+  transition: opacity 400ms ease-in;
+  }
+  .fade-in.visible {
+  opacity: 1;
+  }
 `;
 export default Container;
