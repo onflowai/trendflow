@@ -1,3 +1,4 @@
+export { default as CustomErrorToast } from './CustomErrorToast';
 export { default as Logo } from './Logo';
 export { default as FormComponent } from './FormComponent';
 export { default as Footer } from './Footer';

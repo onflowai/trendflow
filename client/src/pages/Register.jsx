@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, redirect, useNavigation, Link } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPage';
-import { Logo, FormComponent } from '../components';
+import { Logo, FormComponent, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
+import { toast } from 'react-toastify';
 /**
  * Register page will have a registration form for the user should they choose to have an account
  * Using From component with 'action' post
@@ -14,9 +15,11 @@ export const action = async ({ request }) => {
   // console.log(data);
   try {
     await customFetch.post('/auth/register', data); //POST call with data payload
+    toast.success('Registration Successful');
     return redirect('/login'); //function has to return something in this case a redirect
   } catch (error) {
-    console.log(error);
+    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    // console.log(error);
     return error;
   }
 };
