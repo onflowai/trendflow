@@ -21,6 +21,10 @@ export const action = async ({ request }) => {
   }
 };
 const Register = () => {
+  const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
+  console.log(navigation);
+  //if the navigation state is 'submitting', isSubmitting is true; otherwise, it's false.
+  const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
   return (
     <Container>
       <Form method="post" className="form">
@@ -41,8 +45,8 @@ const Register = () => {
           name="password"
           defaultValue="password123"
         />
-        <button type="submit" className="btn btn-block">
-          Submit
+        <button type="submit" className="btn btn-block" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
         <p>
           Already have an Account?
