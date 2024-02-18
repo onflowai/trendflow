@@ -38,7 +38,7 @@ export const Container = styled.div`
     grid-template-columns: repeat(2, 1fr);
   }
    .title-box {
-    border-radius: 8px;
+    border-radius: 0.5rem;
     background-color: var(--grey-50);
     display: flex;
     align-items: center;
@@ -47,7 +47,7 @@ export const Container = styled.div`
   }
 
   .project-box {
-    border-radius: 8px;
+    border-radius: 0.5rem;
     background: #fff;
     padding: 1rem;
     display: flex;

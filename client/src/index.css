@@ -50,7 +50,8 @@ html {
   --extra-small-text: 0.7em;
 
   /* rest of the vars */
-  --border-radius: 3rem;
+  --border-radius: 0.5rem;
+  --input-radius: 3rem;
   --letter-spacing: 1px;
   --transition: 0.1s ease-in-out all;
   --max-width: 1120px;
@@ -223,7 +224,7 @@ ul {
   color: var(--grey-500);
   background: var(--white);
   border: 1px solid var(--grey-200);
-  border-radius: var(--border-radius);
+  border-radius: var(--input-radius);
   letter-spacing: var(--letter-spacing);
   padding: 0.6rem 0.75rem;
   box-shadow: var(--shadow-1);
@@ -302,9 +303,9 @@ button:disabled {
 .form-select {
   width: 100%;
   padding: 0.375rem 0.75rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--input-radius);
   background: var(--background-color);
-  border: 1px solid var(--grey-300);
+  border: 1px solid var(--grey-50);
   color: var(--text-color);
 }
 .form-input,
