@@ -8,12 +8,12 @@ export const landingLinks = [
 //links used in the SIDEBAR of the dashboard
 export const dashboardLinks = [
   {
-    text: 'add trend',
+    text: 'trends',
     path: '.',
   },
   {
-    text: 'all trends',
-    path: 'all-trends',
+    text: 'add trend',
+    path: 'add-trend',
   },
   {
     text: 'stats',
@@ -31,8 +31,8 @@ export const dashboardLinks = [
 //links used in the NAVBAR of the dashboard
 export const dashboardNavLinks = [
   {
-    text: 'all trends',
-    path: 'all-trends',
+    text: 'trends',
+    path: 'trends',
   },
   {
     text: 'profile',
@@ -42,12 +42,12 @@ export const dashboardNavLinks = [
 //all links used in the SMALL-SIDEBAR
 export const dashboardAllLinks = [
   {
-    text: 'add trend',
+    text: 'trends',
     path: '.',
   },
   {
-    text: 'all trends',
-    path: 'all-trends',
+    text: 'add trend',
+    path: 'add-trend',
   },
   {
     text: 'stats',

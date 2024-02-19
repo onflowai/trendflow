@@ -58,15 +58,15 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AddTrend />,
+            element: <AllTrends />,
           },
           {
             path: 'stats',
             element: <Stats />,
           },
           {
-            path: 'all-trends',
-            element: <AllTrends />,
+            path: 'trends',
+            element: <AddTrend />,
           },
           {
             path: 'admin',

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Outlet, redirect, useLoaderData } from 'react-router-dom';
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/Dashboard';
 import { SidebarSmall, Sidebar, Navbar } from '../components';
 import { checkDefaultTheme } from '../App';
