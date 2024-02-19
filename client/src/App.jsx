@@ -65,7 +65,7 @@ const router = createBrowserRouter([
             element: <Stats />,
           },
           {
-            path: 'trends',
+            path: 'add-trend',
             element: <AddTrend />,
           },
           {

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/Dashboard';
-import { SidebarSmall, Sidebar, Navbar } from '../components';
+import { SidebarSmall, Sidebar, Navbar, CustomErrorToast } from '../components';
 import { checkDefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';
+import { toast } from 'react-toastify';
 
 /**
  * Dashboard Layout takes on components and sets up the layout. NOTE loader is used.
@@ -19,7 +20,6 @@ export const loader = async () => {
   } catch (error) {
     return redirect('/'); //if backend does not return user redirect home
   }
-  return 'hello loader'; //must return something
 }; //this is where data which you want to be preloaded is passed
 
 const user = { name: 'Steve' };
@@ -28,8 +28,8 @@ const user = { name: 'Steve' };
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
-  const data = useLoaderData();
-  console.log(data);
+  const { data } = useLoaderData(); //passing the user data
+  const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
 
@@ -47,7 +47,9 @@ const DashboardLayout = () => {
 
   //async function which will connect to the server
   const logoutUser = async () => {
-    console.log('user logging out');
+    navigate('/'); //THIS NEEDS TO BE CHANGED
+    await customFetch.get('/auth/logout');
+    toast.success(<CustomErrorToast message={'Logging Out'} />);
   };
 
   //RETURN -------------------------- RETURN
