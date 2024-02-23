@@ -10,3 +10,4 @@ export { default as LandingFeatured } from './LandingFeatured';
 export { default as Sidebar } from './Sidebar';
 export { default as SidebarSmall } from './SidebarSmall';
 export { default as Navbar } from './Navbar';
+export { default as FormSelector } from './FormSelector';

@@ -1,10 +1,19 @@
-import { FormComponent } from '../components';
+import { FormComponent, FormSelector } from '../components';
 import Container from '../assets/wrappers/DashboardForm';
 import { useOutletContext } from 'react-router-dom';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
+
+export const action = async ({ request }) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  try {
+    await customFetch.post('/submit', data);
+  } catch (error) {}
+  return null;
+};
 
 const AddTrend = () => {
   const { user } = useOutletContext(); //getting the user from DashboardLayout
@@ -16,6 +25,18 @@ const AddTrend = () => {
         <h4 className="form-title">Add Trend</h4>
         <div className="form-center">
           <FormComponent type="text" name="trend" />
+          <FormSelector
+            labelText="Category"
+            name="trendCategory"
+            defaultValue={TREND_CATEGORY.PROGRAMMING_LANGUAGES}
+            list={Object.values(TREND_CATEGORY)}
+          />
+          <FormSelector
+            labelText="Technology"
+            name="trendTech"
+            defaultValue={TECHNOLOGIES.ADA}
+            list={Object.values(TECHNOLOGIES)}
+          />
           <button
             type="submit"
             className="btn btn-block form-btn"

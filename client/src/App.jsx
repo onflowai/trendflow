@@ -27,6 +27,7 @@ checkDefaultTheme();
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
 import { loader as dashboardLoader } from './pages/DashboardLayout';
+import { action as addTrendAction } from './pages/AddTrend';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -67,6 +68,7 @@ const router = createBrowserRouter([
           {
             path: 'add-trend',
             element: <AddTrend />,
+            action: addTrendAction,
           },
           {
             path: 'admin',
