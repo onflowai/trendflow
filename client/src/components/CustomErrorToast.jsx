@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../assets/images/error.svg';
 import Container from '../assets/wrappers/CustomErrorToast';
 /**
- * Custom Toast, styling is in index.css
+ * Custom Error Toast, styling is in index.css
  * @param {} param0
  * @returns
  */

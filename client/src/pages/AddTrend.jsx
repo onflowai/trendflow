@@ -1,4 +1,9 @@
-import { FormComponent, FormSelector, CustomErrorToast } from '../components';
+import {
+  FormComponent,
+  FormSelector,
+  CustomErrorToast,
+  CustomSuccessToast,
+} from '../components';
 import Container from '../assets/wrappers/DashboardForm';
 import { useOutletContext } from 'react-router-dom';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
@@ -11,7 +16,7 @@ export const action = async ({ request }) => {
   const data = Object.fromEntries(formData);
   try {
     await customFetch.post('/trends/submit', data);
-    toast.success(<CustomErrorToast message={'Login Successful'} />);
+    toast.success(<CustomSuccessToast message={'Login Successful'} />);
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
