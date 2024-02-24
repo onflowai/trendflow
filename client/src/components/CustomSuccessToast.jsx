@@ -1,12 +1,8 @@
 import React from 'react';
-import logo from '../assets/images/error.svg';
+import logo from '../assets/images/test-logo.svg';
 import Container from '../assets/wrappers/CustomErrorToast';
-/**
- * Custom Toast, styling is in index.css
- * @param {} param0
- * @returns
- */
-const CustomErrorToast = ({ message }) => (
+
+const CustomSuccessToast = ({ message }) => (
   <Container>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img
@@ -19,4 +15,4 @@ const CustomErrorToast = ({ message }) => (
   </Container>
 );
 
-export default CustomErrorToast;
+export default CustomSuccessToast;

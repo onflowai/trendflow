@@ -7,7 +7,12 @@ import {
   useActionData,
 } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPage';
-import { Logo, FormComponent, CustomErrorToast } from '../components';
+import {
+  Logo,
+  FormComponent,
+  CustomErrorToast,
+  CustomSuccessToast,
+} from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 /**
@@ -24,7 +29,7 @@ export const action = async ({ request }) => {
   }
   try {
     await customFetch.post('/auth/login', data);
-    toast.success(<CustomErrorToast message={'Login Successful'} />);
+    toast.success(<CustomSuccessToast message={'Login Successful'} />);
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
