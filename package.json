@@ -33,6 +33,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^4.0.2",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "react-select": "^5.8.0"
   }
 }
