@@ -5,6 +5,7 @@ export { default as AllTrends } from './AllTrends';
 export { default as DashboardLayout } from './DashboardLayout';
 export { default as DeleteTrend } from './DeleteTrend';
 export { default as EditTrend } from './EditTrend';
+export { default as TrendPage } from './TrendPage';
 export { default as Error } from './Error';
 export { default as HomeLayout } from './HomeLayout';
 export { default as Landing } from './Landing';

@@ -9,7 +9,7 @@ import { useDashboardContext } from '../pages/DashboardLayout';
 
 function Navbar() {
   //toggle sidebar coming from DashboardLayout.jsx as context
-  const { showSidebar, toggleSidebar } = useDashboardContext();
+  const { showSidebar, toggleSidebar } = useDashboardContext() || {};
   //using useState to set scroll initially to false
   const [hasScrolled, setHasScrolled] = useState(false);
   //Setting hasScrolled to true if scrolled down, false if scrolled to top

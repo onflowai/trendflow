@@ -35,8 +35,7 @@ router.post(
   validateTrendInput,
   authorizedPermissions('admin'),
   createTrend
-);
-//route for base URL with route param NOTE user does not need to have an account to see each Trend
+); //route for base URL with route param NOTE user does not need to have an account to see each Trend
 router
   .route('/:slug')
   .get(validateSlugParam, getSingleTrend)

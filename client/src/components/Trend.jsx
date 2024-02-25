@@ -54,7 +54,15 @@ function Trend({
               </div>
             </div>
             <footer className="actions">
-              <Link className="btn info-btn">{trend}</Link>
+              <Link to={`/dashboard/trend/${slug}`} className="btn info-btn">
+                {trend}
+              </Link>
+              <Link
+                to={`/dashboard/edit-trend/${slug}`}
+                className="btn info-btn"
+              >
+                Edit
+              </Link>
             </footer>
           </div>
         </div>

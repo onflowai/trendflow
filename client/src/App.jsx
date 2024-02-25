@@ -7,6 +7,7 @@ import {
   Login,
   DashboardLayout,
   EditTrend,
+  TrendPage,
   Error,
   AddTrend,
   AllTrends,
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
           {
             path: 'profile',
             element: <Profile />,
+          },
+          {
+            path: 'edit-trend',
+            element: <EditTrend />,
+          },
+          {
+            path: 'trend/:slug',
+            element: <TrendPage />,
           },
         ],
       },
