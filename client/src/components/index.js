@@ -12,3 +12,5 @@ export { default as Sidebar } from './Sidebar';
 export { default as SidebarSmall } from './SidebarSmall';
 export { default as Navbar } from './Navbar';
 export { default as FormSelector } from './FormSelector';
+export { default as Trends } from './Trends';
+export { default as SearchTrends } from './SearchTrends';

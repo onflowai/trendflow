@@ -4,7 +4,7 @@ import React from 'react';
  * @returns
  */
 function SearchTrends() {
-  return <div></div>;
+  return <div>Search Trends</div>;
 }
 
 export default SearchTrends;
