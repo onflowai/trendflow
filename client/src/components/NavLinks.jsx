@@ -10,7 +10,7 @@ import { NavLink } from 'react-router-dom';
  * @returns
  */
 const NavLinks = ({ isSidebar }) => {
-  const { toggleSidebar } = useDashboardContext();
+  const { toggleSidebar } = useDashboardContext() || {};
   return (
     <div>
       <div className="nav-links">
