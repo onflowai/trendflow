@@ -19,7 +19,7 @@ import customFetch from '../utils/customFetch';
 //Fetching the trend data
 export const loader = async ({ params }) => {
   try {
-    const { data } = await customFetch.get(`/trends/${params.slug}`);
+    const { data } = await customFetch.get(`/trends/edit/${params.slug}`);
     return data;
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -27,14 +27,54 @@ export const loader = async ({ params }) => {
   }
 };
 
-export const action = async () => {
+export const action = async ({ request, params }) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  try {
+    await customFetch.patch(`/trends/edit/${params.slug}`, data);
+    toast.success(<CustomSuccessToast message={'Trend Edited'} />);
+    return redirect('/dashboard/');
+  } catch (error) {
+    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+  }
   return null;
 };
 
 const EditTrend = () => {
   const { trendObject } = useLoaderData();
-  console.log(trendObject);
-  return <h1>EditTrend Page</h1>;
+  const navigation = useLoaderData();
+  const isSubmitting = navigation.state === 'submitting';
+  return (
+    <Form method="post" className="form">
+      <h4 className="form-title">Edit Trend:</h4>
+      <div className="form-center">
+        <FormComponent
+          type="text"
+          name="trend"
+          defaultValue={trendObject.trend}
+        />
+        <FormSelector
+          labelText="Category"
+          name="trendCategory"
+          defaultValue={trendObject.trendCategory}
+          list={Object.values(TREND_CATEGORY)}
+        />
+        <FormSelector
+          labelText="Technology"
+          name="trendTech"
+          defaultValue={trendObject.trendTech}
+          list={Object.values(TECHNOLOGIES)}
+        />
+        <button
+          type="submit"
+          className="btn btn-block from-btn"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'submitting...' : 'submit'}
+        </button>
+      </div>
+    </Form>
+  );
 };
 
 export default EditTrend;

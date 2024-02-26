@@ -37,7 +37,7 @@ router.post(
   createTrend
 ); //route for base URL with route param NOTE user does not need to have an account to see each Trend
 router
-  .route('/:slug')
+  .route('/edit/:slug')
   .get(validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
