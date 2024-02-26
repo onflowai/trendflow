@@ -10,10 +10,10 @@ import NavLinks from './NavLinks';
  * @returns
  */
 const SidebarSmall = () => {
-  const data = useDashboardContext();
+  const data = useDashboardContext() || {};
   console.log(data);
 
-  const { showSidebar, toggleSidebar } = useDashboardContext();
+  const { showSidebar, toggleSidebar } = useDashboardContext() || {};
 
   return (
     <Container>

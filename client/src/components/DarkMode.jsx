@@ -4,7 +4,7 @@ import { HiOutlineSun, HiSun } from 'react-icons/hi';
 import Container from '../assets/wrappers/DarkMode';
 
 const DarkMode = () => {
-  const { isDarkTheme, toggleDarkTheme } = useDashboardContext();
+  const { isDarkTheme, toggleDarkTheme } = useDashboardContext() || {};
 
   return (
     <Container onClick={toggleDarkTheme} className={isDarkTheme ? 'dark' : ''}>

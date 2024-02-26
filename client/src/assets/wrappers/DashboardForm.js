@@ -26,6 +26,15 @@ const Container = styled.section`
     display: grid;
     place-items: center;
   }
+  .delete-btn {
+    height: 30px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+  }
+  .info-btn {
+    margin-right: 0.5rem;
+  }
   @media (min-width: 992px) {
     .form-center {
       grid-template-columns: 1fr 1fr;

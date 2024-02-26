@@ -10,7 +10,7 @@ import NavLinks from './NavLinks';
  * @returns
  */
 const Sidebar = () => {
-  const { showSidebar } = useDashboardContext();
+  const { showSidebar } = useDashboardContext() || {};
   return (
     <Container>
       <div

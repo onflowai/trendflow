@@ -8,7 +8,7 @@ import { useDashboardContext } from '../pages/DashboardLayout';
  */
 const UserDropdown = () => {
   const [showDropdown, setDropdown] = useState(false);
-  const { user, logoutUser } = useDashboardContext();
+  const { user, logoutUser } = useDashboardContext() || {};
   return (
     <Container>
       <button
@@ -24,7 +24,7 @@ const UserDropdown = () => {
           logout user
         </button>
         <button type="button" className="dropdown-btn">
-          Add acount
+          Add Account
         </button>
       </div>
     </Container>
