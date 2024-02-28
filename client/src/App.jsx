@@ -33,6 +33,7 @@ import { loader as allTrendsLoader } from './pages/AllTrends';
 import { action as editTrendAction } from './pages/EditTrend';
 import { loader as editTrendLoader } from './pages/EditTrend';
 import { action as deleteTrendAction } from './pages/DeleteTrend';
+import { loader as singleTrendLoader } from './pages/TrendPage';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -89,6 +90,11 @@ const router = createBrowserRouter([
             element: <EditTrend />,
             loader: editTrendLoader,
             action: editTrendAction,
+          },
+          {
+            path: 'trend/:slug',
+            element: <TrendPage />,
+            loader: singleTrendLoader,
           },
         ],
       },

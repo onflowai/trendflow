@@ -6,9 +6,8 @@ import {
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/DashboardForm';
-import { useLoaderData, useParams, Link, useNavigate } from 'react-router-dom';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
-import { Form, useNavigation, redirect } from 'react-router-dom';
+import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 /**
@@ -26,7 +25,7 @@ export const loader = async ({ params }) => {
     return redirect('/dashboard');
   }
 };
-
+//action for editing the trend
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -42,7 +41,7 @@ export const action = async ({ request, params }) => {
 
 const EditTrend = () => {
   const { trendObject } = useLoaderData();
-  const navigate = useNavigate(); // Changed here
+  const navigate = useNavigate();
   const navigation = useLoaderData();
   const isSubmitting = navigation.state === 'submitting';
 
