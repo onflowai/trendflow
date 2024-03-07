@@ -1,6 +1,5 @@
 import React from 'react';
 import Trend from './Trend';
-import { useAllTrendsContext } from '../pages/AllTrends';
 import Container from '../assets/wrappers/TrendsContainer';
 
 /**
@@ -8,9 +7,7 @@ import Container from '../assets/wrappers/TrendsContainer';
  * @returns
  */
 
-function Trends() {
-  const { data } = useAllTrendsContext();
-  const { trends } = data; //destructuring trends in the data
+function Trends({ trends, onApprove }) {
   console.log(trends);
   if (trends.length === 0) {
     return (
@@ -23,7 +20,9 @@ function Trends() {
     <Container>
       <div className="trends">
         {trends.map((trend) => {
-          return <Trend key={trend._id} {...trend}></Trend>;
+          return (
+            <Trend key={trend._id} {...trend} onApprove={onApprove}></Trend>
+          );
         })}
       </div>
     </Container>

@@ -34,6 +34,7 @@ import { action as editTrendAction } from './pages/EditTrend';
 import { loader as editTrendLoader } from './pages/EditTrend';
 import { action as deleteTrendAction } from './pages/DeleteTrend';
 import { loader as singleTrendLoader } from './pages/TrendPage';
+import { loader as allTrendAdminLoader } from './pages/Admin';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
           {
             path: 'admin',
             element: <Admin />,
+            loader: allTrendAdminLoader,
           },
           {
             path: 'profile',

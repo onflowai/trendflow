@@ -59,11 +59,15 @@ const Login = () => {
             {errors.msg}
           </p>
         )}
-        <FormComponent type="email" name="email" defaultValue="test@test.com" />
+        <FormComponent
+          type="email"
+          name="email"
+          defaultValue="steven3@gmail.com"
+        />
         <FormComponent
           type="password"
           name="password"
-          defaultValue="password123"
+          defaultValue="Sammuel1234"
         />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'Signing In' : 'Sign In'}

@@ -1,5 +1,11 @@
 import React from 'react';
-import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
+import {
+  FcElectricity,
+  FcCalendar,
+  FcApproval,
+  FcCheckmark,
+  FcCancel,
+} from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 import Container from '../assets/wrappers/Trend';
 import day from 'dayjs';
@@ -11,6 +17,7 @@ day.extend(advancedFormat);
  * @returns
  */
 function Trend({
+  onApprove,
   createdAt,
   createdBy,
   isApproved,
@@ -52,6 +59,14 @@ function Trend({
                 </span>
                 <span className="text">{createdBy}</span>
               </div>
+              <div className="info-section">
+                <span className="icon">
+                  {isApproved ? <FcCheckmark /> : <FcCancel />}
+                </span>
+                <span className="text">
+                  {isApproved ? 'Approved' : 'Not Approved'}
+                </span>
+              </div>
             </div>
             <footer className="actions">
               <Link to={`/dashboard/trend/${slug}`} className="btn info-btn">
@@ -63,6 +78,9 @@ function Trend({
               >
                 Edit
               </Link>
+              <button className="btn info-btn" onClick={() => onApprove(slug)}>
+                Approve
+              </button>
             </footer>
           </div>
         </div>

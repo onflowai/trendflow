@@ -84,11 +84,11 @@ const EditTrend = () => {
           >
             {isSubmitting ? 'submitting...' : 'submit'}
           </button>
+          <button type="button" onClick={handleDelete} className="btn info-btn">
+            Delete
+          </button>
         </div>
       </Form>
-      <button type="button" onClick={handleDelete} className="btn info-btn">
-        Delete
-      </button>
     </Container>
   );
 };

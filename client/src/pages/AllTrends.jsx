@@ -5,7 +5,7 @@ import customFetch from '../utils/customFetch';
 import { useLoaderData } from 'react-router-dom';
 import { useContext, createContext } from 'react';
 /**
- * Uses Trends and Search Trends using react fragment. Using AllTrendsContext we are passing the data to Trends component
+ * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends component
  * @returns
  */
 export const loader = async () => {
@@ -18,18 +18,14 @@ export const loader = async () => {
   }
 };
 
-const AllTrendsContext = createContext();
-
 const AllTrends = () => {
   const { data } = useLoaderData();
   return (
-    <AllTrendsContext.Provider value={{ data }}>
+    <>
       <SearchTrends />
-      <Trends />
-    </AllTrendsContext.Provider>
+      <Trends trends={data.trends} />
+    </>
   );
 };
-
-export const useAllTrendsContext = () => useContext(AllTrendsContext);
 
 export default AllTrends;
