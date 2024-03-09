@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
-import Container from '../assets/wrappers/DashboardContiner';
+import Container from '../assets/wrappers/DashboardContainer';
 import { SidebarSmall, Sidebar, Navbar, CustomErrorToast } from '../components';
 import { checkDefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';
@@ -16,19 +16,17 @@ import { toast } from 'react-toastify';
 export const loader = async () => {
   try {
     const { data } = await customFetch.get('/users/current-user');
-    return data; //returning data from get
+    return data; //returning data from get containing user
   } catch (error) {
     return redirect('/'); //if backend does not return user redirect home
   }
 }; //this is where data which you want to be preloaded is passed
 
-const user = { name: 'Steve' };
-
 //Setting up context for SidebarSmall and Sidebar
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
-  const { data } = useLoaderData(); //passing the user data
+  const { user } = useLoaderData(); //passing the user data from loader
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
@@ -64,6 +62,7 @@ const DashboardLayout = () => {
         logoutUser,
       }}
     >
+      {console.log(user)}
       <Container>
         <main className="dashboard">
           <SidebarSmall />

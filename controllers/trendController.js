@@ -24,7 +24,7 @@ export const submitTrend = async (req, res) => {
 export const getAllTrends = async (req, res) => {
   // console.log(req);
   console.log('user object: ', req.user);
-  const trends = await trendModel.find(); //getting the trends belonging to user that provided cookie and token
+  const trends = await trendModel.find().populate('createdBy', 'username -_id'); //getting the trends belonging to user that provided cookie and token
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
 
@@ -118,7 +118,9 @@ export const approveTrend = async (req, res) => {
 export const getApprovedTrends = async (req, res) => {
   try {
     // Query the database for trends where isApproved is true
-    const trends = await trendModel.find({ isApproved: true });
+    const trends = await trendModel
+      .find({ isApproved: true })
+      .populate('createdBy', 'username -_id');
     // Directly respond with the list of approved trends (could be an empty array)
     res.status(StatusCodes.OK).json({ trends });
   } catch (error) {

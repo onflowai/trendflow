@@ -57,16 +57,18 @@ function Trend({
                 <span className="icon">
                   <FcApproval />
                 </span>
-                <span className="text">{createdBy}</span>
+                <span className="text">{createdBy.username}</span>
               </div>
-              <div className="info-section">
-                <span className="icon">
-                  {isApproved ? <FcCheckmark /> : <FcCancel />}
-                </span>
-                <span className="text">
-                  {isApproved ? 'Approved' : 'Not Approved'}
-                </span>
-              </div>
+              {isAdminPage && (
+                <div className="info-section">
+                  <span className="icon">
+                    {isApproved ? <FcCheckmark /> : <FcCancel />}
+                  </span>
+                  <span className="text">
+                    {isApproved ? 'Approved' : 'Not Approved'}
+                  </span>
+                </div>
+              )}
             </div>
             <footer className="actions">
               <Link to={`/dashboard/trend/${slug}`} className="btn info-btn">

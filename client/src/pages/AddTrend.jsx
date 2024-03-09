@@ -4,7 +4,7 @@ import {
   CustomErrorToast,
   CustomSuccessToast,
 } from '../components';
-import Container from '../assets/wrappers/DashboardFormContiner';
+import Container from '../assets/wrappers/DashboardFormContainer';
 import { useOutletContext } from 'react-router-dom';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';

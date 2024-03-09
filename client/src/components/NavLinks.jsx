@@ -10,12 +10,15 @@ import { NavLink } from 'react-router-dom';
  * @returns
  */
 const NavLinks = ({ isSidebar }) => {
-  const { toggleSidebar } = useDashboardContext() || {};
+  const { toggleSidebar, user } = useDashboardContext() || {};
   return (
     <div>
       <div className="nav-links">
         {dashboardAllLinks.map((link) => {
           const { text, path } = link;
+          const { role } = user;
+          console.log(role);
+          if (path === 'admin' && role !== 'admin') return;
           return (
             <NavLink
               to={path}

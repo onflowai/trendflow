@@ -3,7 +3,8 @@ import Trend from './Trend';
 import Container from '../assets/wrappers/TrendsContainer';
 
 /**
- * Trends Component displays all of the Trends in the AllTrends page
+ * Trends Component displays all of the Trends in the AllTrends page. Here styling is created for the layout of the trend cards
+ * and it is where values from AllTrends and Admin is passed then used in child component trend which displays very single trend
  * @returns
  */
 

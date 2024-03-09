@@ -11,10 +11,10 @@ const Container = styled.nav`
     props.hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.1)' : 'none'};
   background: var(--background-color);
   .nav-center {
-    display: flex;
-    width: 90vw;
-    align-items: center;
-    justify-content: space-between;
+     display: flex;
+  width: 95vw; /* Adjusted to match the Dashboard layout's width */
+  align-items: center;
+  justify-content: space-between;
   }
   .navbar-link {
     display: flex; // Align links in a row
@@ -66,7 +66,7 @@ const Container = styled.nav`
     position: sticky;
     top: 0;
     .nav-center {
-      width: 90%;
+      width: 95%;
     }
     .logo {
       /* display: none; */
