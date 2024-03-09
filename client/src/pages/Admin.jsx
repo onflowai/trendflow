@@ -2,7 +2,8 @@ import React from 'react';
 import { useLoaderData, redirect } from 'react-router-dom';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
-import Container from '../assets/wrappers/Admin';
+import { useOutletContext } from 'react-router-dom';
+import Container from '../assets/wrappers/AdminContiner';
 import { toast } from 'react-toastify';
 
 export const loader = async () => {
@@ -27,10 +28,17 @@ const Admin = () => {
     }
   };
   const { data } = useLoaderData();
+  const { user } = useOutletContext();
+  const isAdminPage = user.role === 'admin';
+  console.log(user);
   return (
     <>
       <SearchTrends />
-      <Trends trends={data.trends} onApprove={approveTrend} />
+      <Trends
+        trends={data.trends}
+        onApprove={approveTrend}
+        isAdminPage={isAdminPage}
+      />
     </>
   );
 };

@@ -5,7 +5,7 @@ import {
   CustomErrorToast,
   CustomSuccessToast,
 } from '../components';
-import Container from '../assets/wrappers/DashboardForm';
+import Container from '../assets/wrappers/DashboardFormContiner';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
 import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';

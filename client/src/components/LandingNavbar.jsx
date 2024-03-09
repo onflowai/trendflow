@@ -3,7 +3,7 @@ import { socialLinks } from '../assets/utils/data';
 import { Link } from 'react-router-dom';
 import LandingNavbarLinks from './LandingNavbarLinks';
 import LandingNavbarSocials from './LandingNavbarSocials';
-import Container from '../assets/wrappers/LandingNavbar';
+import Container from '../assets/wrappers/LandingNavbarContainer';
 import Logo from './Logo';
 const LandingNavbar = () => {
   //using useState to set scroll initially to false

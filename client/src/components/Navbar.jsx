@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Container from '../assets/wrappers/Navbar';
+import Container from '../assets/wrappers/NavbarContainer';
 import UserDropdown from './UserDropdown';
 import DarkMode from './DarkMode';
 import { IoIosArrowForward, IoIosArrowBack, IoIosMenu } from 'react-icons/io';

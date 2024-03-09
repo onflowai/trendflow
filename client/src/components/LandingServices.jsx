@@ -1,7 +1,7 @@
 import React from 'react';
 import LandingTitle from './LandingTitle';
 import { services } from '../assets/utils/data'; // Import services from data.js
-import Container from '../assets/wrappers/LandingServices'; // Import styled components
+import Container from '../assets/wrappers/LandingServicesContainer'; // Import styled components
 
 const LandingServices = () => {
   return (

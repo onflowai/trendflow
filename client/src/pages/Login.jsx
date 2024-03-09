@@ -6,7 +6,7 @@ import {
   useNavigation,
   useActionData,
 } from 'react-router-dom';
-import Container from '../assets/wrappers/RegisterLoginPage';
+import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
   Logo,
   FormComponent,

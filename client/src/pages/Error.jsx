@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useRouteError } from 'react-router-dom';
-import Container from '../assets/wrappers/ErrorPage';
+import Container from '../assets/wrappers/ErrorPageContainer';
 import img from '../assets/images/test-error.svg';
 /**
  * Simple Error page with useRouteError which give simple info about the errors such as "404", "",

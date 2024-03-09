@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import { HiOutlineSun, HiSun } from 'react-icons/hi';
-import Container from '../assets/wrappers/DarkMode';
+import Container from '../assets/wrappers/DarkModeContiner';
 
 const DarkMode = () => {
   const { isDarkTheme, toggleDarkTheme } = useDashboardContext() || {};

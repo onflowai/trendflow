@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
-import Container from '../assets/wrappers/UserDropdown';
+import Container from '../assets/wrappers/UserDropdownContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
 /**
  * Component responsible for the user dropdown fucntionality in the dashboard

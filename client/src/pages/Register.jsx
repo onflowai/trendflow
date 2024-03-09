@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, redirect, useNavigation, Link } from 'react-router-dom';
-import Container from '../assets/wrappers/RegisterLoginPage';
+import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import { Logo, FormComponent, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';

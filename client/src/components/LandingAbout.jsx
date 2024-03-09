@@ -1,5 +1,5 @@
 import LandingTitle from './LandingTitle';
-import Container from '../assets/wrappers/LandingAbout';
+import Container from '../assets/wrappers/LandingAboutContainer';
 //This component is set up right after the Hero to give a little description of trendFlow
 const LandingAbout = () => {
   return (

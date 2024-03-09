@@ -1,6 +1,6 @@
 import React from 'react';
 import img from '../assets/images/test-img.jpg';
-import Container from '../assets/wrappers/LandingPage';
+import Container from '../assets/wrappers/LandingPageContainer';
 import { Link } from 'react-router-dom';
 import {
   LandingNavbar,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
 import { CustomErrorToast } from '../components';
-import Container from '../assets/wrappers/TrendPage';
+import Container from '../assets/wrappers/TrendPageContainer';
 import {
   redirect,
   useLoaderData,

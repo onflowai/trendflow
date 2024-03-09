@@ -7,7 +7,7 @@ import {
   FcCancel,
 } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
-import Container from '../assets/wrappers/Trend';
+import Container from '../assets/wrappers/TrendContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
@@ -17,6 +17,7 @@ day.extend(advancedFormat);
  * @returns
  */
 function Trend({
+  isAdminPage,
   onApprove,
   createdAt,
   createdBy,
@@ -34,7 +35,6 @@ function Trend({
   return (
     <Container>
       <header>
-        <div className="main-icon">{trend.charAt(0)}</div>
         <div className="info">
           <h5>{trend}</h5>
           <p>{trendCategory}</p>
@@ -78,9 +78,22 @@ function Trend({
               >
                 Edit
               </Link>
-              <button className="btn info-btn" onClick={() => onApprove(slug)}>
-                Approve
-              </button>
+              {isAdminPage &&
+                (isApproved ? (
+                  <button
+                    className="btn danger-btn"
+                    onClick={() => onRemove(slug)}
+                  >
+                    Remove
+                  </button>
+                ) : (
+                  <button
+                    className="btn info-btn"
+                    onClick={() => onApprove(slug)}
+                  >
+                    Approve
+                  </button>
+                ))}
             </footer>
           </div>
         </div>

@@ -7,7 +7,7 @@ import Container from '../assets/wrappers/TrendsContainer';
  * @returns
  */
 
-function Trends({ trends, onApprove }) {
+function Trends({ trends, onApprove, isAdminPage }) {
   console.log(trends);
   if (trends.length === 0) {
     return (
@@ -21,7 +21,12 @@ function Trends({ trends, onApprove }) {
       <div className="trends">
         {trends.map((trend) => {
           return (
-            <Trend key={trend._id} {...trend} onApprove={onApprove}></Trend>
+            <Trend
+              key={trend._id}
+              {...trend}
+              onApprove={onApprove}
+              isAdminPage={isAdminPage}
+            ></Trend>
           );
         })}
       </div>

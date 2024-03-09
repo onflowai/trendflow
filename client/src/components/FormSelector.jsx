@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import Container from '../assets/wrappers/FormSelector';
+import Container from '../assets/wrappers/FormSelectorContainer';
 /**
  * Component responsible for setting up selector programtialy
  * Object.values = list

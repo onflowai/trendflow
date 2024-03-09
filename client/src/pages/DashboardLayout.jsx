@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
-import Container from '../assets/wrappers/Dashboard';
+import Container from '../assets/wrappers/DashboardContiner';
 import { SidebarSmall, Sidebar, Navbar, CustomErrorToast } from '../components';
 import { checkDefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';

@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from '../assets/wrappers/SidebarSmall';
+import Container from '../assets/wrappers/SidebarSmallContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import { IoIosClose } from 'react-icons/io';
 import Logo from './Logo';

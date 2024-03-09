@@ -1,6 +1,6 @@
 import React from 'react';
 import img from '../assets/images/test-img.jpg';
-import Container from '../assets/wrappers/LandingHero';
+import Container from '../assets/wrappers/LandingHeroContainer';
 import { Link } from 'react-router-dom';
 const LandingHero = () => {
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from '../assets/wrappers/Sidebar';
+import Container from '../assets/wrappers/SidebarContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import { dashboardLinks } from '../assets/utils/data';
 import Logo from './Logo';
