@@ -24,13 +24,12 @@ export const authenticateUser = (req, res, next) => {
     throw new UnauthenticatedError('authentication invalid');
   }
 };
-
+//
 export const authorizedPermissions = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       throw new UnauthenticatedError('Unauthorized to access this page');
     }
-    console.log(roles);
     next();
   };
 };

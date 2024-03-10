@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Container = styled.section`
   border-radius: var(--border-radius);
   width: 100%;
-  background: var(--background-secondary-color);
+  background: var(--background-second-color);
   padding: 3rem 2rem 4rem;
   .form-title {
     margin-bottom: 2rem;

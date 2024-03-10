@@ -20,6 +20,7 @@ import {
   authenticateUser,
   authorizedPermissions,
 } from '../middleware/authMiddleware.js';
+import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 /**
  *
  */
@@ -36,7 +37,7 @@ router.post(
   authorizedPermissions('admin'),
   createTrend
 ); //route for base URL with route param NOTE user does not need to have an account to see each Trend
-router.route('/:slug').get(validateSlugParam, getSingleTrend);
+router.route('/:slug').get(validateSlugParam, incrementViews, getSingleTrend);
 router
   .route('/edit/:slug')
   .get(validateSlugParam, getSingleTrend)

@@ -47,6 +47,10 @@ const TrendSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

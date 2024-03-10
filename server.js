@@ -10,7 +10,8 @@ import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-
+//schedulers
+// import { startScheduledJobs } from './schedulers/scheduledJobs.js';
 //setting up access to .env
 dotenv.config();
 //evoking app
@@ -53,6 +54,7 @@ const port = process.env.PORT || 5100;
 try {
   await mongoose.connect(process.env.MONGODB_URL);
   console.log(`server is running on port: ${port}...`);
+  // startScheduledJobs();//redis
 } catch (error) {
   console.log(error);
   process.exit(1);

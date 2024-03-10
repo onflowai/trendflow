@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.article`
-  background: var(--background-secondary-color);
+  background: var(--background-color);
   border-radius: var(--border-radius);
   display: grid;
   grid-template-rows: 1fr auto;
