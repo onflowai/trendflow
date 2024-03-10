@@ -14,4 +14,4 @@ export { default as Navbar } from './Navbar';
 export { default as FormSelector } from './FormSelector';
 export { default as Trends } from './Trends';
 export { default as SearchTrends } from './SearchTrends';
-export { default as StatObject } from './StatObject';
+export { default as StatComponent } from './StatComponent';

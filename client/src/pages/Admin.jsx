@@ -4,12 +4,13 @@ import {
   Trends,
   SearchTrends,
   CustomErrorToast,
-  StatObject,
+  StatComponent,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/AdminContainer';
 import { toast } from 'react-toastify';
+import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
 export const loader = async () => {
   // try {
@@ -53,7 +54,35 @@ const Admin = () => {
   console.log(user);
   return (
     <>
-      <StatObject stats={stats} />
+      <StatComponent
+        user={user.name}
+        stats={[
+          {
+            title: 'Total Users',
+            value: stats.users,
+            icon: <FcApprove />,
+            change: 1.01,
+          },
+          {
+            title: 'Total Trends',
+            value: stats.trends,
+            icon: <FcLineChart />,
+            change: -1.01,
+          },
+          {
+            title: 'Total Approved Trends',
+            value: stats.approved,
+            icon: <FcCheckmark />,
+            change: 1.01,
+          },
+          {
+            title: 'Total Unapproved Trends',
+            value: stats.unapproved,
+            icon: <FcCancel />,
+            change: 1.01,
+          },
+        ]}
+      />
       <SearchTrends />
       <Trends
         trends={trends}
