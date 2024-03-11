@@ -34,19 +34,19 @@ const Register = () => {
         <Logo />
         <h4>Register</h4>
         {/* NAME */}
-        <FormComponent type="text" name="username" defaultValue="Steve7" />
+        <FormComponent type="text" name="username" defaultValue="Steve" />
         <FormComponent type="email" name="email" defaultValue="test@test.com" />
         <FormComponent type="text" name="name" defaultValue="Steve" />
         <FormComponent
           type="text"
           name="lastName"
-          defaultValue="Brooks"
+          defaultValue="Layden"
           labelText="Last Name"
         />
         <FormComponent
           type="password"
           name="password"
-          defaultValue="password123"
+          defaultValue="Samuel12$"
         />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Submit'}

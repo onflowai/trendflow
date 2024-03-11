@@ -34,6 +34,7 @@ function Trend({
 
   return (
     <Container>
+      {console.log(createdBy.username)}
       <header>
         <div className="info">
           <h5>{trend}</h5>

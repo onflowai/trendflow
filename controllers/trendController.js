@@ -25,6 +25,7 @@ export const getAllTrends = async (req, res) => {
   // console.log(req);
   console.log('user object: ', req.user);
   const trends = await trendModel.find().populate('createdBy', 'username -_id'); //getting the trends belonging to user that provided cookie and token
+  console.log(trends);
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
 

@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
  */
 export const loader = async () => {
   try {
-    const { data } = await customFetch.get('/users/current-user');
+    const { data } = await customFetch.get('/users/current-user'); //return data has user and stats
     return data; //returning data from get containing user
   } catch (error) {
     return redirect('/'); //if backend does not return user redirect home
@@ -26,11 +26,10 @@ export const loader = async () => {
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
-  const { user } = useLoaderData(); //passing the user data from loader
+  const { user, stats } = useLoaderData(); //passing the user data from loader
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
-
   //function responsible for setting the dark theme
   const toggleDarkTheme = () => {
     const newDarkTheme = !isDarkTheme; //newDarkTheme is opposite of isDarkTheme
@@ -70,7 +69,7 @@ const DashboardLayout = () => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet context={{ user }} />
+              <Outlet context={{ user, stats }} />
             </div>
           </div>
         </main>

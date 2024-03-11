@@ -12,7 +12,10 @@ import mongoose from 'mongoose';
  * 0
  */
 const UserSchema = new mongoose.Schema({
-  username: String,
+  username: {
+    type: String,
+    required: true,
+  },
   name: String,
   email: String,
   password: String,
@@ -25,6 +28,8 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
+  profile_img: String,
+  profile_img_id: String,
 });
 //instance method to limit getCurrentUser return data (removing password)
 UserSchema.methods.toJSON = function () {

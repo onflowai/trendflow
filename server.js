@@ -4,14 +4,24 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+
 //routers
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
+
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
-//schedulers
+//schedulers (using redis and node-cron to limit number of calls for stats)
 // import { startScheduledJobs } from './schedulers/scheduledJobs.js';
+
+//public (for public assets and complete frontend build folder developed in client ES6 modules)
+import { dirname } from 'path'; //
+import { fileURLToPath } from 'url'; //
+import path from 'path'; //
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 //setting up access to .env
 dotenv.config();
 //evoking app
@@ -21,7 +31,7 @@ if (process.env.NODE_ENV === 'development') {
   //HTTP request LOGGER middleware for Node calling dev
   app.use(morgan('dev'));
 }
-
+app.use(express.static(path.resolve(__dirname, './public'))); //
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
 
