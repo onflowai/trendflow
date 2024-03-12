@@ -1,6 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import UserModel from '../models/userModel.js';
 import TrendModel from '../models/trendModel.js';
+import sharp from 'sharp';
+import fs from 'fs/promises';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import mongoose from 'mongoose';
 /**
  * Since the user is authenticated using cookie token on the backend we need to send data about the user
@@ -37,10 +45,31 @@ export const getCurrentUser = async (req, res) => {
 };
 //UPDATE USER is not set back current user will get updates, this only updates changes
 export const updateUser = async (req, res) => {
-  const obj = { ...req.body };
-  delete obj.password; //if password somehow exists deleting it once again
-  const updateUser = await UserModel.findByIdAndUpdate(req.user.userID, obj); //updating user by ID when user updates some value like last name (role not updatable)
-  res.status(StatusCodes.OK).json({ msg: 'user updated' });
+  try {
+    const userID = req.user.userID;
+    let updateObj = { ...req.body };
+    if (req.file) {
+      const targetDir = path.join(__dirname, '..', 'public', 'uploads'); //use the previously defined __dirname to compute the target directory
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const targetPath = path.join(targetDir, filename);
+      const fileBuffer = await fs.readFile(req.file.path); //process the image with sharp and save it to the target path
+      await sharp(fileBuffer)
+        .resize(300, 300)
+        .jpeg({ quality: 80 })
+        .toFile(targetPath);
+      updateObj.profileImagePath = `/uploads/${filename}`; //update the user object with the path of the processed image
+    }
+    //continue updating the user
+    const updatedUser = await UserModel.findByIdAndUpdate(userID, updateObj, {
+      new: true,
+    });
+    res.status(StatusCodes.OK).json({ msg: 'User updated', user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: 'An error occurred', error: error.message });
+  }
 };
 //STATS route which will display simple statistics
 export const getApplicationStats = async (req, res) => {

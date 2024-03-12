@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form, useLoaderData, redirect } from 'react-router-dom';
+import { Form, useLoaderData, redirect, useNavigation } from 'react-router-dom';
 import {
   Trends,
   SearchTrends,
+  CustomSuccessToast,
   CustomErrorToast,
   StatComponent,
   FormComponent,
@@ -13,34 +14,34 @@ import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
-export const loader = async () => {
-  // try {
-  //   const { data } = await customFetch.get('/trends/admin/all-trends');
-  //   return { data };
-  // } catch (error) {
-  //   toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-  //   return redirect('/dashboard');
-  // }
+/**
+ * Profile utilizes few components it uses From with encType='multipart/form-data' to pass data with files in this case
+ * images.
+ * @returns
+ */
+export const action = async ({ request }) => {
+  const formData = await request.formData(); //getting the form data out of the request where it is loaded with react
+  const file = formData.get('profile_img'); //pointing to the image upload by user
+  if (file && file.size > 50000000) {
+    toast.error('image size too large'); //changed to automatic compression on backend and user can upload whatever image with npm sharp
+    return null;
+  }
   try {
-    // Fetching all trends
-    const trendsResponse = await customFetch.get('trends/admin/all-trends');
-    const trendsData = trendsResponse.data;
-
-    // Fetching application stats
-    const statsResponse = await customFetch.get('users/admin/app-stats');
-    const statsData = statsResponse.data;
-
-    // Return both sets of data
-    return { trends: trendsData.trends, stats: statsData };
+    await customFetch.patch('users/update-user', formData);
+    toast.success(
+      <CustomSuccessToast message={'Profile Updated Successfully'} />
+    );
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    return redirect('/dashboard');
   }
+  return null;
 };
 
 const Profile = () => {
   const { user, stats } = useOutletContext();
   const { username, name, lastName, email } = user;
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
   return (
     <>
       <StatComponent
@@ -73,8 +74,10 @@ const Profile = () => {
         ]}
       />
       <SearchTrends />
-      <Form method="post" className="form">
-        <h4 className="form-title">Profile</h4>
+      <Form method="post" className="form" encType="multipart/form-data">
+        <h4 type="text" name="username">
+          {username}
+        </h4>
         <div className="form-center">
           <div className="form-row">
             <label htmlFor="avatar" className="form-label">
@@ -82,16 +85,12 @@ const Profile = () => {
             </label>
             <input
               type="file"
+              name="profile_img"
               id="profile_img"
               className="form-input"
               accept="image/*"
             />
           </div>
-          <FormComponent
-            type="text"
-            name="name"
-            defaultValue={username}
-          ></FormComponent>
           <FormComponent
             type="text"
             name="name"
@@ -107,6 +106,13 @@ const Profile = () => {
             name="lastName"
             defaultValue={lastName}
           ></FormComponent>
+          <button
+            className="btn btn-block from-btn"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'submitting...' : 'submit'}
+          </button>
         </div>
       </Form>
     </>

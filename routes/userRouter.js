@@ -9,6 +9,7 @@ import {
   authorizedPermissions,
 } from '../middleware/authMiddleware.js';
 import { validateUserUpdate } from '../middleware/validationMiddleware.js';
+import uploadMulter from '../middleware/multerMiddleware.js';
 
 const router = Router();
 
@@ -19,6 +20,12 @@ router.get(
   authorizedPermissions('admin'),
   getApplicationStats
 );
-router.patch('/update-user', authenticateUser, validateUserUpdate, updateUser);
+router.patch(
+  '/update-user',
+  uploadMulter.single('profile_img'),
+  authenticateUser,
+  validateUserUpdate,
+  updateUser
+);
 
 export default router;
