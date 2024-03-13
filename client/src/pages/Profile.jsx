@@ -80,9 +80,7 @@ const Profile = () => {
         </h4>
         <div className="form-center">
           <div className="form-row">
-            <label htmlFor="avatar" className="form-label">
-              Select an image file (max 0.5 MB)
-            </label>
+            <label htmlFor="avatar" className="form-label"></label>
             <input
               type="file"
               name="profile_img"

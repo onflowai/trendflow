@@ -41,23 +41,24 @@ export const getCurrentUser = async (req, res) => {
 
 //UPDATE USER is not set back current user will get updates, this only updates changes + image compression
 export const updateUser = async (req, res) => {
-  const newUser = { ...req.body };
+  const newUser = { ...req.body }; //using spread operator to copy properties from req.body into newUser object
   delete newUser.password; //if password somehow exists deleting it once again
-
+  //if file attached with request then:
   if (req.file) {
     const response = await cloudinary.v2.uploader.upload(req.file.path); //upload file
     await fs.unlink(req.file.path); //removing the image if file uploaded
-    newUser.profile_img = response.secure_url;
-    newUser.profile_img_id = response.public_id;
+    newUser.profile_img = response.secure_url; //updating newUser object with the URL and ID of the uploaded image
+    newUser.profile_img_id = response.public_id; //public_id used for future reference or deletion.
   }
   const updatedUser = await UserModel.findByIdAndUpdate(
     req.user.userID,
-    newUser
+    newUser //new data to update the user with
+    // { new: true }
   ); //updating user by ID when user updates some value like last name (role not updatable)
   res.status(StatusCodes.OK).json({ msg: 'user updated' });
   //checking to see if there is already an image in cloud for the user
   if (req.file && updatedUser.profile_img_id) {
-    await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id);
+    await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id); //then delete the old image from Cloudinary using its public_id
   }
 }; //end updateUser
 

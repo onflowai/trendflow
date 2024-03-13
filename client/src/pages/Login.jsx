@@ -5,6 +5,7 @@ import {
   redirect,
   useNavigation,
   useActionData,
+  useNavigate,
 } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
@@ -37,13 +38,30 @@ export const action = async ({ request }) => {
   return null;
 };
 const Login = () => {
+  const navigate = useNavigate();
+  const testUser = async () => {
+    const data = {
+      username: 'user',
+      name: 'user',
+      email: 'test@test.com',
+      password: 'dkflt!4FdsCds&',
+      lastName: 'user',
+    };
+    try {
+      await customFetch.post('/auth/login', data);
+      toast.success(<CustomSuccessToast message={'Welcome to trendFlow'} />);
+      return navigate('/dashboard');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //testUser signs in using a dummy user already in database
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const errors = useActionData(); //
   const [showError, setShowError] = useState(false);
   useEffect(() => {
-    // Automatically reset and potentially trigger the fade-in effect
-    // whenever actionData is updated and contains an error message.
+    //automatically reset and potentially trigger the fade-in effect
+    //whenever actionData is updated and contains an error message.
     if (errors?.msg) {
       setShowError(false); // reset to ensure the fade-in effect can be re-triggered.
       setTimeout(() => setShowError(true), 10); // Short delay to trigger CSS transition
@@ -68,7 +86,11 @@ const Login = () => {
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'Signing In' : 'Sign In'}
         </button>
-        <button type="submit" className="btn btn-color btn-block">
+        <button
+          type="button"
+          className="btn btn-color btn-block"
+          onClick={testUser}
+        >
           Create Account Later
         </button>
       </Form>

@@ -7,6 +7,7 @@ import {
 import {
   authenticateUser,
   authorizedPermissions,
+  testUserUnauthorized,
 } from '../middleware/authMiddleware.js';
 import { validateUserUpdate } from '../middleware/validationMiddleware.js';
 import { uploadMulter, processImage } from '../middleware/imageMiddleware.js';
@@ -22,6 +23,7 @@ router.get(
 );
 router.patch(
   '/update-user',
+  testUserUnauthorized,
   uploadMulter.single('profile_img'),
   processImage,
   authenticateUser,

@@ -1,4 +1,8 @@
-import { UnauthenticatedError } from '../errors/customErrors.js';
+import {
+  UnauthenticatedError,
+  UnauthorizedError,
+  BadRequestError,
+} from '../errors/customErrors.js';
 import { verifyJWT } from '../utils/tokenUtils.js';
 /**
  * Creating restricted access to trend routs if the cookies are not present or jwt is not valid
@@ -18,7 +22,8 @@ export const authenticateUser = (req, res, next) => {
     // const user = verifyJWT(token);
     // console.log(user);
     const { userID, role } = verifyJWT(token); //destructuring user from the token data which has userID and role
-    req.user = { userID, role }; //creating new object 'user' with userID and role to pass to a controller
+    const testUser = userID === '65f1116e6acee7cf85c0cc87'; //manually passing the testUser id from mongo
+    req.user = { userID, role, testUser }; //creating new object 'user' with userID and role to pass to a controller
     next(); //next passes to next middleware
   } catch (error) {
     throw new UnauthenticatedError('authentication invalid');
@@ -28,8 +33,16 @@ export const authenticateUser = (req, res, next) => {
 export const authorizedPermissions = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      throw new UnauthenticatedError('Unauthorized to access this page');
+      throw new UnauthorizedError('Unauthorized to access this page');
     }
     next();
   };
+};
+//this only throws bad request if testUser is trying to access the route with this middleware
+export const testUserUnauthorized = (req, res, next) => {
+  if (req.user.testUser)
+    throw new BadRequestError(
+      'trendFlow test user, create account for full features.'
+    );
+  next();
 };
