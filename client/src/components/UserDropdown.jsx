@@ -16,8 +16,12 @@ const UserDropdown = () => {
         className="user-btn"
         onClick={() => setDropdown(!showDropdown)}
       >
-        <FaUserCircle className="user" />
-        {/* {user?.name} */}
+        {user.profile_img ? (
+          <img src={user.profile_img} alt="user image" className="img" />
+        ) : (
+          <FaUserCircle className="user" />
+        )}
+        {user?.name}
       </button>
       <div className={showDropdown ? 'dropdown show-dropdown' : 'dropdown'}>
         <button type="button" className="dropdown-btn" onClick={logoutUser}>

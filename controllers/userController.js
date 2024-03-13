@@ -1,19 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import UserModel from '../models/userModel.js';
 import TrendModel from '../models/trendModel.js';
-import sharp from 'sharp';
-import fs from 'fs/promises';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
+import fs from 'fs/promises'; //allows to remove the image
+import cloudinary from 'cloudinary';
 import mongoose from 'mongoose';
 /**
  * Since the user is authenticated using cookie token on the backend we need to send data about the user
  * This is where this data is passed to the frontend
  */
+
 //GET CURRENT USER retrieved every time user is in the dashboard
 export const getCurrentUser = async (req, res) => {
   const userID = req.user.userID;
@@ -42,35 +37,30 @@ export const getCurrentUser = async (req, res) => {
       totalSiteTrends,
     },
   });
-};
-//UPDATE USER is not set back current user will get updates, this only updates changes
+}; //end getCurrentUser
+
+//UPDATE USER is not set back current user will get updates, this only updates changes + image compression
 export const updateUser = async (req, res) => {
-  try {
-    const userID = req.user.userID;
-    let updateObj = { ...req.body };
-    if (req.file) {
-      const targetDir = path.join(__dirname, '..', 'public', 'uploads'); //use the previously defined __dirname to compute the target directory
-      const filename = `${Date.now()}-${req.file.originalname}`;
-      const targetPath = path.join(targetDir, filename);
-      const fileBuffer = await fs.readFile(req.file.path); //process the image with sharp and save it to the target path
-      await sharp(fileBuffer)
-        .resize(300, 300)
-        .jpeg({ quality: 80 })
-        .toFile(targetPath);
-      updateObj.profileImagePath = `/uploads/${filename}`; //update the user object with the path of the processed image
-    }
-    //continue updating the user
-    const updatedUser = await UserModel.findByIdAndUpdate(userID, updateObj, {
-      new: true,
-    });
-    res.status(StatusCodes.OK).json({ msg: 'User updated', user: updatedUser });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: 'An error occurred', error: error.message });
+  const newUser = { ...req.body };
+  delete newUser.password; //if password somehow exists deleting it once again
+
+  if (req.file) {
+    const response = await cloudinary.v2.uploader.upload(req.file.path); //upload file
+    await fs.unlink(req.file.path); //removing the image if file uploaded
+    newUser.profile_img = response.secure_url;
+    newUser.profile_img_id = response.public_id;
   }
-};
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user.userID,
+    newUser
+  ); //updating user by ID when user updates some value like last name (role not updatable)
+  res.status(StatusCodes.OK).json({ msg: 'user updated' });
+  //checking to see if there is already an image in cloud for the user
+  if (req.file && updatedUser.profile_img_id) {
+    await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id);
+  }
+}; //end updateUser
+
 //STATS route which will display simple statistics
 export const getApplicationStats = async (req, res) => {
   const users = await UserModel.countDocuments();
@@ -78,4 +68,4 @@ export const getApplicationStats = async (req, res) => {
   const approved = await TrendModel.countDocuments({ isApproved: true });
   const unapproved = await TrendModel.countDocuments({ isApproved: false });
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
-};
+}; //end getApplicationStats

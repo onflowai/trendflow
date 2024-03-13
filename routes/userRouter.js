@@ -9,7 +9,7 @@ import {
   authorizedPermissions,
 } from '../middleware/authMiddleware.js';
 import { validateUserUpdate } from '../middleware/validationMiddleware.js';
-import uploadMulter from '../middleware/multerMiddleware.js';
+import { uploadMulter, processImage } from '../middleware/imageMiddleware.js';
 
 const router = Router();
 
@@ -23,6 +23,7 @@ router.get(
 router.patch(
   '/update-user',
   uploadMulter.single('profile_img'),
+  processImage,
   authenticateUser,
   validateUserUpdate,
   updateUser

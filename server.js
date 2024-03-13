@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import cloudinary from 'cloudinary';
 
 //routers
 import trendRouter from './routes/trendRouter.js';
@@ -15,15 +16,22 @@ import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 //schedulers (using redis and node-cron to limit number of calls for stats)
 // import { startScheduledJobs } from './schedulers/scheduledJobs.js';
 
-//public (for public assets and complete frontend build folder developed in client ES6 modules)
-import { dirname } from 'path'; //
+//setting up access to .env
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+//public (for public assets and complete frontend build folder developed in client ES6 modules using ESM syntax)
+import { dirname } from 'path'; //__dirname and __filename, which are readily available in CommonJS modules
 import { fileURLToPath } from 'url'; //
 import path from 'path'; //
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-//setting up access to .env
-dotenv.config();
 //evoking app
 const app = express();
 //if we are in dev log the data if not do not
