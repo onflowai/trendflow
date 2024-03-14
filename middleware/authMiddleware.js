@@ -12,37 +12,72 @@ import { verifyJWT } from '../utils/tokenUtils.js';
  * @param {*} res
  * @param {*} next
  */
+const rolePermissions = {
+  user: ['read', 'write'],
+  admin: ['read', 'write', 'delete'],
+  testUser: ['read'],
+};
+
 export const authenticateUser = (req, res, next) => {
-  // console.log('token: ', req.cookies);
-  // next();
-  const { token } = req.cookies; //accessing the cookies called 'token' generated in authController
-  console.log('Token:', token);
-  if (!token) throw new UnauthenticatedError('authentication invalid');
+  const { token } = req.cookies;
+  if (!token) {
+    req.user = { role: 'testUser' }; // Keep it simple; permissions will be derived from the role
+    return next();
+  }
+
   try {
-    // const user = verifyJWT(token);
-    // console.log(user);
-    const { userID, role } = verifyJWT(token); //destructuring user from the token data which has userID and role
-    const testUser = userID === '65f1116e6acee7cf85c0cc87'; //manually passing the testUser id from mongo
-    req.user = { userID, role, testUser }; //creating new object 'user' with userID and role to pass to a controller
-    next(); //next passes to next middleware
+    const { userID, role } = verifyJWT(token);
+    req.user = { userID, role };
+    next();
   } catch (error) {
-    throw new UnauthenticatedError('authentication invalid');
+    throw new UnauthenticatedError('Authentication invalid');
   }
 };
-//
-export const authorizedPermissions = (...roles) => {
+
+export const authorizedPermissions = (requiredPermission) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      throw new UnauthorizedError('Unauthorized to access this page');
+    // Default to an empty object if req.user is undefined
+    const userRole = req.user ? req.user.role : 'guest';
+    const userPermissions = rolePermissions[userRole] || [];
+
+    if (!userPermissions.includes(requiredPermission)) {
+      throw new UnauthorizedError('Unauthorized to access this resource');
     }
     next();
   };
 };
-//this only throws bad request if testUser is trying to access the route with this middleware
-export const testUserUnauthorized = (req, res, next) => {
-  if (req.user.testUser)
-    throw new BadRequestError(
-      'trendFlow test user, create account for full features.'
-    );
-  next();
-};
+
+// export const authenticateUser = (req, res, next) => {
+//   // console.log('token: ', req.cookies);
+//   // next();
+//   const { token } = req.cookies; //accessing the cookies called 'token' generated in authController
+//   console.log('Token:', token);
+//   if (!token) throw new UnauthenticatedError('authentication invalid');
+//   try {
+//     // const user = verifyJWT(token);
+//     // console.log(user);
+//     const { userID, role } = verifyJWT(token); //destructuring user from the token data which has userID and role
+//     const testUser = userID === '65f1116e6acee7cf85c0cc87'; //manually passing the testUser id from mongo
+//     req.user = { userID, role, testUser }; //creating new object 'user' with userID and role to pass to a controller
+//     next(); //next passes to next middleware
+//   } catch (error) {
+//     throw new UnauthenticatedError('authentication invalid');
+//   }
+// };
+// //
+// export const authorizedPermissions = (...roles) => {
+//   return (req, res, next) => {
+//     if (!roles.includes(req.user.role)) {
+//       throw new UnauthorizedError('Unauthorized to access this page');
+//     }
+//     next();
+//   };
+// };
+// //this only throws bad request if testUser is trying to access the route with this middleware
+// export const testUserUnauthorized = (req, res, next) => {
+//   if (req.user.testUser)
+//     throw new BadRequestError(
+//       'trendFlow test user, create account for full features.'
+//     );
+//   next();
+// };

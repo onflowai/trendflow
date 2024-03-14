@@ -44,6 +44,7 @@ const Login = () => {
       username: 'user',
       name: 'user',
       email: 'test@test.com',
+      role: 'testUser',
       password: 'dkflt!4FdsCds&',
       lastName: 'user',
     };
