@@ -5,7 +5,7 @@ import { generateSlug } from '../utils/slugUtils.js';
 /**
  * 
  * Example:
-_id:
+_id: ObjectId('*****')
 trend:
 trendCategory:
 trendTech:
