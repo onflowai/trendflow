@@ -22,9 +22,9 @@ export const getCurrentUser = async (req, res) => {
   }); //user stats
   const totalSiteTrends = await TrendModel.countDocuments(); // this is a total trends, not user-specific
   const totalTrendViews = await TrendModel.aggregate([
-    { $match: { createdBy: userID } },
-    { $group: { _id: null, totalViews: { $sum: '$views' } } },
-  ]); //user stats
+    { $match: { createdBy: userID } }, //referencing the user with $match user specific
+    { $group: { _id: null, totalViews: { $sum: '$views' } } }, //
+  ]); //using mongodb aggregation operation (looks for array) to count views of each trend
   const viewsResult =
     totalTrendViews.length > 0 ? totalTrendViews[0].totalViews : 0;
   const userControlled = user.toJSON(); //userControlled is user without password implemented in the model

@@ -3,19 +3,18 @@ import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { generateSlug } from '../utils/slugUtils.js';
 //building the database schema
 /**
- * 
+ *
  * Example:
-_id: ObjectId('*****')
-trend:
-trendCategory:
-trendTech:
-trendDesc:
-createdBy:
-isApproved:
-createdAt:
-updatedAt:
-__v
-0
+ * _id: ObjectId('id_of_the_trend')
+ * trend:
+ * trendCategory:
+ * trendTech:
+ * trendDesc:
+ * createdBy: ObjectId('id_of_the_user')
+ * isApproved:
+ * createdAt: 2024-03-16T02:22:50.315+00:00
+ * updatedAt: 2024-03-16T02:22:50.315+00:00
+ * __v: 0
  */
 const TrendSchema = new mongoose.Schema(
   {

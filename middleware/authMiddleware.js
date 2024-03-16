@@ -15,13 +15,13 @@ import { verifyJWT } from '../utils/tokenUtils.js';
 const rolePermissions = {
   user: ['read', 'write'],
   admin: ['read', 'write', 'delete'],
-  testUser: ['read'],
+  guestUser: ['read'],
 };
 
 export const authenticateUser = (req, res, next) => {
   const { token } = req.cookies;
   if (!token) {
-    req.user = { role: 'testUser' }; // Keep it simple; permissions will be derived from the role
+    req.user = { role: 'guestUser' }; // Keep it simple; permissions will be derived from the role
     return next();
   }
 

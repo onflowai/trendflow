@@ -11,6 +11,7 @@ import {
   createTrend,
   deleteTrend,
   editTrend,
+  adminStats,
 } from '../controllers/trendController.js';
 import {
   validateSlugParam,
@@ -33,6 +34,7 @@ router
     submitTrend
   );
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
+router.route('/admin/stats').get(adminStats);
 router
   .route('/admin/all-trends')
   .get(authenticateUser, authorizedPermissions('delete'), getAllTrends);

@@ -39,12 +39,12 @@ export const action = async ({ request }) => {
 };
 const Login = () => {
   const navigate = useNavigate();
-  const testUser = async () => {
+  const guestUser = async () => {
     const data = {
-      username: 'user',
+      username: 'guest',
       name: 'user',
-      email: 'test@test.com',
-      role: 'testUser',
+      email: 'user@trendflow.com',
+      role: 'guestUser',
       password: 'dkflt!4FdsCds&',
       lastName: 'user',
     };
@@ -55,7 +55,7 @@ const Login = () => {
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
-  }; //testUser signs in using a dummy user already in database
+  }; //guestUser signs in using a dummy user already in database
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const errors = useActionData(); //
@@ -90,7 +90,7 @@ const Login = () => {
         <button
           type="button"
           className="btn btn-color btn-block"
-          onClick={testUser}
+          onClick={guestUser}
         >
           Create Account Later
         </button>

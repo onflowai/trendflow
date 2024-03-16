@@ -8,29 +8,35 @@ import mongoose from 'mongoose';
  * password
  * lastName
  * role
- * __v
- * 0
+ * createdAt:
+ * updatedAt:
+ * __v: 0
  */
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    name: String,
+    email: String,
+    password: String,
+    lastName: {
+      type: String,
+      default: 'lastName',
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin', 'guestUser'],
+      default: 'user',
+    },
+    profile_img: String,
+    profile_img_id: String,
   },
-  name: String,
-  email: String,
-  password: String,
-  lastName: {
-    type: String,
-    default: 'lastName',
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin', 'testUser'],
-    default: 'user',
-  },
-  profile_img: String,
-  profile_img_id: String,
-});
+  {
+    timestamps: true,
+  }
+);
 //instance method to limit getCurrentUser return data (removing password)
 UserSchema.methods.toJSON = function () {
   let obj = this.toObject(); //transforming UserSchema to object
