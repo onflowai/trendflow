@@ -17,7 +17,7 @@ router.get('/current-user', authenticateUser, getCurrentUser);
 router.get(
   '/admin/app-stats',
   authenticateUser,
-  authorizedPermissions('admin'),
+  authorizedPermissions('delete'),
   getApplicationStats
 );
 router.patch(

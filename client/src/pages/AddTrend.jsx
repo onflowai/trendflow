@@ -16,7 +16,9 @@ export const action = async ({ request }) => {
   const data = Object.fromEntries(formData);
   try {
     await customFetch.post('/trends/submit', data);
-    toast.success(<CustomSuccessToast message={'Login Successful'} />);
+    toast.success(
+      <CustomSuccessToast message={'Thank You, Trend Was Submitted'} />
+    );
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);

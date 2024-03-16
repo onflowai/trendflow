@@ -22,26 +22,26 @@ import {
 } from '../middleware/authMiddleware.js';
 import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 /**
- *
+ *First, authenticate the user to determine their role
  */
 router
   .route('/submit')
   .post(
-    authorizedPermissions,
     authenticateUser,
+    authorizedPermissions('write'),
     validateTrendInput,
     submitTrend
   );
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router
   .route('/admin/all-trends')
-  .get(authenticateUser, authorizedPermissions('admin'), getAllTrends);
+  .get(authenticateUser, authorizedPermissions('delete'), getAllTrends);
 router.route('/my-trends').get(authenticateUser, getUserTrends);
 router.post(
   '/add-trend',
   authenticateUser,
+  authorizedPermissions('write'),
   validateTrendInput,
-  authorizedPermissions('admin'),
   createTrend
 ); //route for base URL with route param NOTE user does not need to have an account to see each Trend
 router.route('/:slug').get(validateSlugParam, incrementViews, getSingleTrend); //route to trend page
@@ -50,21 +50,21 @@ router
   .get(validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
+    authorizedPermissions('write'),
     validateTrendInput,
     validateSlugParam,
-    authorizedPermissions('admin'),
     editTrend
   )
   .delete(
     authenticateUser,
+    authorizedPermissions('delete'),
     validateSlugParam,
-    authorizedPermissions('admin'),
     deleteTrend
   );
 router.patch(
   '/:slug/approve',
   authenticateUser,
-  authorizedPermissions('admin'),
+  authorizedPermissions('write'),
   approveTrend
 );
 export default router;
