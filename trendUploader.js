@@ -1,8 +1,8 @@
 import { readFile } from 'fs/promises';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import trendModel from '../models/trendModel.js';
-import userModel from '../models/userModel.js';
+import trendModel from './models/trendModel.js';
+import userModel from './models/userModel.js';
 dotenv.config();
 /**
  * File used to load trends in batches in this format

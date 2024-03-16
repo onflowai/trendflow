@@ -12,6 +12,7 @@ export const TREND_CATEGORY = {
   FRONTEND_FRAMEWORK: 'Frontend Framework',
   BACKEND_FRAMEWORK: 'Backend Framework',
   DATA_SCIENCE: 'Data Science',
+  QUANTUM_COMPUTING: 'Quantum Computing',
   DATABASE_TECHNOLOGIES: 'Database Technologies',
   CYBERSECURITY: 'Cybersecurity',
   SOFTWARE_AS_A_SERVICE: 'Software as a Service',
@@ -24,11 +25,17 @@ export const TREND_CATEGORY = {
   FRAMEWORKS: 'Frameworks',
   WEB_TECHNOLOGIES: 'Web Technologies',
   EDGE_COMPUTING: 'Edge Computing',
-  NATURAL_LANGUAGE: 'Natural Language',
   MACHINE_LEARNING: 'Machine Learning',
+  ARTIFICIAL_INTELLIGENCE: 'Artificial Intelligence',
+  AUGMENTED_REALITY: 'Augmented Reality',
 };
 
 export const TECHNOLOGIES = {
+  LANGUAGE_AGNOSTIC: 'Language Agnostic',
+  BLOCKCHAIN: 'Blockchain',
+  DEEP_LEARNING_AI: 'Deep Learning AI',
+  NATURAL_LANGUAGE_PROCESSING: 'Natural Language Processing',
+  GENERATIVE_AI: 'Generative AI',
   ADA: 'Ada',
   AEROSPIKE: 'Aerospike',
   AMAZON_AURORA: 'Amazon Aurora',

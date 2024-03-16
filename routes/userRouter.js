@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { logVisit } from '../controllers/visitController.js';
 import {
   getApplicationStats,
   getCurrentUser,
@@ -29,5 +30,6 @@ router.patch(
   validateUserUpdate,
   updateUser
 );
+router.post('/visits', logVisit);
 
 export default router;

@@ -11,8 +11,8 @@ import {
   createTrend,
   deleteTrend,
   editTrend,
-  adminStats,
 } from '../controllers/trendController.js';
+import { adminStats } from '../controllers/visitController.js';
 import {
   validateSlugParam,
   validateTrendInput,

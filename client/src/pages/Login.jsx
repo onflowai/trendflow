@@ -50,6 +50,7 @@ const Login = () => {
     };
     try {
       await customFetch.post('/auth/login', data);
+      await customFetch.post('/users/visits', { role: 'guestUser' });
       toast.success(<CustomSuccessToast message={'Welcome to trendFlow'} />);
       return navigate('/dashboard');
     } catch (error) {

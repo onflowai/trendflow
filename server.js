@@ -55,7 +55,7 @@ app.use('/api/v1/test', (req, res) => {
 
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
-app.use('/api/v1/users', userRouter); //
+app.use('/api/v1/users', userRouter); //user routers
 
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given

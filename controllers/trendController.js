@@ -1,8 +1,5 @@
 import trendModel from '../models/trendModel.js';
-import userModel from '../models/userModel.js';
 import { StatusCodes } from 'http-status-codes';
-import mongoose from 'mongoose';
-import dayjs from 'dayjs';
 /**
  * This is where functionality of trends implemented
  * @param {*} req
@@ -135,54 +132,4 @@ export const getApprovedTrends = async (req, res) => {
     // Handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-};
-//ADMIN STATS: returns count of monthly submitted-trends and monthly visited-users (more stats in userController)
-export const adminStats = async (req, res) => {
-  let monthTrends = await trendModel.aggregate([
-    { $match: { isApproved: false } }, //match only not approved trends so aggregating all submitted trends
-    {
-      $group: {
-        _id: {
-          year: { $year: '$createdAt' },
-          month: { $month: '$createdAt' },
-        },
-        count: { $sum: 1 },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        year: '$_id.year',
-        month: '$_id.month',
-        count: 1,
-      },
-    },
-    {
-      $sort: { year: 1, month: 1 }, // Sorting results by year and month
-    },
-  ]);
-  let monthUsers = await userModel.aggregate([
-    {
-      $group: {
-        _id: {
-          year: { $year: '$createdAt' },
-          month: { $month: '$createdAt' },
-        },
-        count: { $sum: 1 },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        year: '$_id.year',
-        month: '$_id.month',
-        count: 1,
-      },
-    },
-    {
-      $sort: { year: 1, month: 1 }, // Sorting results by year and month
-    },
-  ]);
-
-  res.status(StatusCodes.OK).json({ monthUsers, monthTrends });
 };
