@@ -10,14 +10,18 @@ import Container from '../assets/wrappers/ChartsContainer';
  */
 function ChartsComponent({ data }) {
   const [barChart, setBarChart] = useState(true); //value used to toggle between char and graph charts
-
+  const { monthUsers, monthTrends, guestUserVisit } = data; //destructuring data
   return (
     <Container>
       <h5>Stats:</h5>
       <button type="button" onClick={() => setBarChart(!barChart)}>
         {barChart ? 'more stats' : 'more stats'}
       </button>
-      {barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
+      {barChart ? (
+        <AreaChart data={monthTrends} />
+      ) : (
+        <BarChart data={monthTrends} />
+      )}
     </Container>
   );
 }

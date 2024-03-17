@@ -26,6 +26,7 @@ function CustomizedAxisTick(props) {
         textAnchor="middle"
         fill="#b3b3b3"
         transform="rotate(0)"
+        fontSize={13}
       >
         {payload.value}
       </Text>
@@ -51,12 +52,27 @@ function AreaChartComponent({ data }) {
             strokeWidth={0.4}
             vertical={false}
           />
-          <XAxis dataKey="date" height={60} tick={<CustomizedAxisTick />} />
+          <XAxis
+            axisLine={{ stroke: '#b3b3b3' }}
+            dataKey="date"
+            height={60}
+            tick={<CustomizedAxisTick />}
+          />
           <YAxis
+            axisLine={{ stroke: '#b3b3b3' }}
             allowDecimals={false}
             tick={{ fill: '#b3b3b3', fontSize: 13 }}
           />
-          <Tooltip />
+          <Tooltip
+            cursor={{ fill: '#ededed' }}
+            contentStyle={{
+              backgroundColor: '#f6f6f6',
+              border: 'none',
+              radius: '8px',
+              borderRadius: '10px',
+              padding: '10px',
+            }}
+          />
           <Area
             type="monotone"
             dataKey="count"
