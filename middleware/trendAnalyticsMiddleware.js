@@ -1,4 +1,5 @@
 // import { redisClient } from '../redisClient.js';
+import trendModel from '../models/trendModel.js';
 /**
  * Here calculation are made for statistics metrics such as count of views per each trend viewed
  * @param {*} req
@@ -8,7 +9,7 @@
 export const incrementViews = async (req, res, next) => {
   const { slug } = req.params;
   try {
-    const trend = await TrendModel.findOneAndUpdate(
+    const trend = await trendModel.findOneAndUpdate(
       { slug: slug },
       { $inc: { views: 1 } },
       { new: true }

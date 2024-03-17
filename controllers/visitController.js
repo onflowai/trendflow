@@ -3,8 +3,12 @@ import trendModel from '../models/trendModel.js';
 import visitModel from '../models/visitModel.js';
 import userModel from '../models/userModel.js';
 import mongoose from 'mongoose';
-import dayjs from 'dayjs';
-
+import day from 'dayjs';
+/**
+ * In this controller we use a visit count which logs visits of guest users and other metrics for
+ * @param {*} req
+ * @param {*} res
+ */
 export const logVisit = async (req, res) => {
   const { role } = req.body;
   try {
@@ -24,24 +28,33 @@ export const adminStats = async (req, res) => {
     {
       $group: {
         _id: {
-          year: { $year: '$createdAt' },
-          month: { $month: '$createdAt' },
+          year: { $year: '$createdAt' }, //filtered by year
+          month: { $month: '$createdAt' }, //filtered by month
         },
-        count: { $sum: 1 },
+        count: { $sum: 1 }, //for each year + month calculating total count of trends
       },
     },
     {
       $project: {
-        _id: 0,
-        year: '$_id.year',
-        month: '$_id.month',
-        count: 1,
+        _id: 0, //excluding the _id field from the output.
+        year: '$_id.year', //formatting the output
+        month: '$_id.month', //filtered by month
+        count: 1, ///including the count of documents in the group.
       },
     },
     {
       $sort: { year: 1, month: 1 }, // Sorting results by year and month
     },
-  ]);
+  ]); //end monthTrends
+  monthTrends = monthTrends.map((trend) => {
+    const { count, year, month } = trend;
+    const date = day()
+      .month(month - 1)
+      .year(year)
+      .format('MMM YYYY')
+      .toUpperCase();
+    return { date, count };
+  });
   let monthUsers = await userModel.aggregate([
     {
       $group: {

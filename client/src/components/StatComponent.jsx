@@ -1,7 +1,11 @@
 import React from 'react';
 import Container from '../assets/wrappers/StatObjectContainer';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-
+/**
+ * 4 values stats used in Admin and Profile
+ * @param {*} param0
+ * @returns
+ */
 function StatComponent({ user, stats }) {
   return (
     <Container>

@@ -5,6 +5,7 @@ import {
   SearchTrends,
   CustomErrorToast,
   StatComponent,
+  ChartsComponent,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
@@ -13,24 +14,21 @@ import { toast } from 'react-toastify';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
 export const loader = async () => {
-  // try {
-  //   const { data } = await customFetch.get('/trends/admin/all-trends');
-  //   return { data };
-  // } catch (error) {
-  //   toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-  //   return redirect('/dashboard');
-  // }
   try {
     // Fetching all trends
     const trendsResponse = await customFetch.get('trends/admin/all-trends');
     const trendsData = trendsResponse.data;
 
-    // Fetching application stats
+    // Fetching basic application stats
     const statsResponse = await customFetch.get('users/admin/app-stats');
     const statsData = statsResponse.data;
 
+    // Fetching stats for the charts
+    const chartsResponse = await customFetch.get('/trends/admin/stats');
+    const chartsData = chartsResponse.data;
+
     // Return both sets of data
-    return { trends: trendsData.trends, stats: statsData };
+    return { trends: trendsData.trends, stats: statsData, charts: chartsData };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return redirect('/dashboard');
@@ -48,7 +46,8 @@ const Admin = () => {
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     }
   };
-  const { trends, stats } = useLoaderData();
+  const { trends, stats, charts } = useLoaderData();
+  console.log(charts);
   const { user } = useOutletContext();
   const isAdminPage = user.role === 'admin';
   console.log(user);
@@ -83,6 +82,9 @@ const Admin = () => {
           },
         ]}
       />
+      {charts.monthTrends?.length > 1 && (
+        <ChartsComponent data={charts.monthTrends} />
+      )}
       <SearchTrends />
       <Trends
         trends={trends}

@@ -12,6 +12,8 @@ import { generateSlug } from '../utils/slugUtils.js';
  * trendDesc:
  * createdBy: ObjectId('id_of_the_user')
  * isApproved:
+ * slug:
+ * views:
  * createdAt: 2024-03-16T02:22:50.315+00:00
  * updatedAt: 2024-03-16T02:22:50.315+00:00
  * __v: 0

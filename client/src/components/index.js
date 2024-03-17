@@ -16,3 +16,4 @@ export { default as Trends } from './Trends';
 export { default as SearchTrends } from './SearchTrends';
 export { default as StatComponent } from './StatComponent';
 export { default as SubmitButton } from './SubmitButton';
+export { default as ChartsComponent } from './ChartsComponent';

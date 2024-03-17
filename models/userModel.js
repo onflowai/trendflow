@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 /**
  * Example
- * _id
- * username
- * name
- * email
- * password
- * lastName
- * role
+ * _id: ObjectId('user_id')
+ * username:
+ * name:
+ * email:
+ * password:
+ * lastName:
+ * role:
  * createdAt:
  * updatedAt:
  * __v: 0

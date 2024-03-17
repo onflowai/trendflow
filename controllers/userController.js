@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import UserModel from '../models/userModel.js';
-import TrendModel from '../models/trendModel.js';
+import userModel from '../models/userModel.js';
+import trendModel from '../models/trendModel.js';
 import fs from 'fs/promises'; //allows to remove the image
 import cloudinary from 'cloudinary';
 import mongoose from 'mongoose';
@@ -12,17 +12,17 @@ import mongoose from 'mongoose';
 //GET CURRENT USER retrieved every time user is in the dashboard
 export const getCurrentUser = async (req, res) => {
   const userID = req.user.userID;
-  const user = await UserModel.findOne({ _id: userID }); //NOTE user data is stored and managed server-side with JWT
-  const approvedTrends = await TrendModel.countDocuments({
+  const user = await userModel.findOne({ _id: userID }); //NOTE user data is stored and managed server-side with JWT
+  const approvedTrends = await trendModel.countDocuments({
     createdBy: userID,
     isApproved: true,
   }); //user stats
-  const submittedTrends = await TrendModel.countDocuments({
+  const submittedTrends = await trendModel.countDocuments({
     createdBy: userID,
   }); //user stats
-  const totalSiteTrends = await TrendModel.countDocuments(); // this is a total trends, not user-specific
-  const totalTrendViews = await TrendModel.aggregate([
-    { $match: { createdBy: userID } }, //referencing the user with $match user specific
+  const totalSiteTrends = await trendModel.countDocuments(); // this is a total trends, not user-specific
+  const totalTrendViews = await trendModel.aggregate([
+    { $match: { createdBy: new mongoose.Types.ObjectId(userID) } }, //referencing the user with $match user specific
     { $group: { _id: null, totalViews: { $sum: '$views' } } }, //
   ]); //using mongodb aggregation operation (looks for array) to count views of each trend
   const viewsResult =
@@ -50,7 +50,7 @@ export const updateUser = async (req, res) => {
     newUser.profile_img = response.secure_url; //updating newUser object with the URL and ID of the uploaded image
     newUser.profile_img_id = response.public_id; //public_id used for future reference or deletion.
   }
-  const updatedUser = await UserModel.findByIdAndUpdate(
+  const updatedUser = await userModel.findByIdAndUpdate(
     req.user.userID,
     newUser //new data to update the user with
     // { new: true }
@@ -64,9 +64,9 @@ export const updateUser = async (req, res) => {
 
 //STATS route which will display simple statistics
 export const getApplicationStats = async (req, res) => {
-  const users = await UserModel.countDocuments();
-  const trends = await TrendModel.countDocuments();
-  const approved = await TrendModel.countDocuments({ isApproved: true });
-  const unapproved = await TrendModel.countDocuments({ isApproved: false });
+  const users = await userModel.countDocuments();
+  const trends = await trendModel.countDocuments();
+  const approved = await trendModel.countDocuments({ isApproved: true });
+  const unapproved = await trendModel.countDocuments({ isApproved: false });
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
 }; //end getApplicationStats

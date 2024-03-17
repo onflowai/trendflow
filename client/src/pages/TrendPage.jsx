@@ -20,6 +20,7 @@ day.extend(advancedFormat);
  */
 //Fetching the trend data
 export const loader = async ({ params }) => {
+  console.log(params.slug);
   try {
     const { data } = await customFetch.get(`/trends/${params.slug}`);
     return data;
