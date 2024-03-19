@@ -1,26 +1,60 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Select from 'react-select'; // Import Select from react-select
 import BarChart from './BarChartComponent';
 import AreaChart from './AreaChartComponent';
 import Container from '../assets/wrappers/ChartsContainer';
-/**
- * Conditionally displays charts components and passes the data accordingly
- * @param {*} param0
- * @returns
- */
+
 function ChartsComponent({ data }) {
-  const [barChart, setBarChart] = useState(true); //value used to toggle between char and graph charts
-  const { monthUsers, monthTrends, guestUserVisit } = data; //destructuring data
+  const [chartType, setChartType] = useState('trends');
+  const [chartOption, setChartOption] = useState({
+    value: 'bar',
+    label: 'Bar Chart',
+  }); // Use object for react-select
+
+  // Destructuring the passed data
+  const { monthUsers, monthTrends, guestUserVisit } = data;
+
+  const chartOptions = [
+    { value: 'bar', label: 'Bar Chart' },
+    { value: 'area', label: 'Area Chart' },
+  ];
+
+  const getCurrentData = () => {
+    switch (chartType) {
+      case 'users':
+        return monthUsers;
+      case 'guest users':
+        return guestUserVisit;
+      case 'trends':
+      default:
+        return monthTrends;
+    }
+  };
+
+  // Handles changing the chart type from the dropdown
+  const handleChartTypeChange = (selectedOption) => {
+    setChartOption(selectedOption);
+  };
+
   return (
     <Container>
       <h5>Stats:</h5>
-      <button type="button" onClick={() => setBarChart(!barChart)}>
-        {barChart ? 'more stats' : 'more stats'}
-      </button>
-      {barChart ? (
-        <AreaChart data={monthTrends} />
+      <div>
+        <button onClick={() => setChartType('users')}>Users</button>
+        <button onClick={() => setChartType('guest users')}>Guest Users</button>
+        <button onClick={() => setChartType('trends')}>Trends</button>
+      </div>
+      <div>
+        <Select
+          value={chartOption}
+          onChange={handleChartTypeChange}
+          options={chartOptions}
+        />
+      </div>
+      {chartOption.value === 'bar' ? (
+        <BarChart data={getCurrentData()} />
       ) : (
-        <BarChart data={monthTrends} />
+        <AreaChart data={getCurrentData()} />
       )}
     </Container>
   );
