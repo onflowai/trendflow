@@ -1,5 +1,6 @@
 import trendModel from '../models/trendModel.js';
 import { StatusCodes } from 'http-status-codes';
+import { executePythonScript } from '../utils/script_controller.js';
 /**
  * This is where functionality of trends implemented
  * @param {*} req
@@ -110,11 +111,26 @@ export const approveTrend = async (req, res) => {
     if (!trend) {
       return res.status(404).json({ msg: 'Trend not found' });
     }
-    trend.isApproved = true; // Set isApproved to true
-    await trend.save(); // Save the updated trend document
+    //CALLING THE PYTHON SCRIPT
+    const scriptOutput = await executePythonScript(trend.trend);
+    console.log(trend.trend);
+    console.log(scriptOutput);
 
-    res.status(StatusCodes.OK).json({ msg: 'Trend approved', trend });
+    const data = JSON.parse(scriptOutput); //parsing the JSON output
+
+    const updatedTrend = await trendModel.findOneAndUpdate(
+      { slug: slug },
+      { $set: { interestOverTime: data, isApproved: true } },
+      { new: true } //returns the updated document instead of the original
+    ); // updating the trend with the data fetched by the script and approve it
+
+    // await trend.save(); // save the updated trend document
+
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Trend approved', trend: updatedTrend });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: error.message });
   }
 };

@@ -31,17 +31,9 @@ const TrendSchema = new mongoose.Schema(
       enum: Object.values(TECHNOLOGIES),
       default: TECHNOLOGIES.JAVASCRIPT,
     },
-    trendDesc: {
-      type: String,
-      default: 'description',
-    },
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
-    },
-    isApproved: {
-      type: Boolean,
-      default: false,
     },
     slug: {
       type: String,
@@ -52,6 +44,35 @@ const TrendSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    //AFTER APPROVAL DATA:
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    trendStatsFetched: Boolean,
+    interestOverTime: {
+      previousYear: [
+        {
+          date: String,
+          count: Number,
+        },
+      ],
+      currentYear: [
+        {
+          date: String,
+          count: Number,
+        },
+      ],
+    },
+    trendDesc: {
+      type: String,
+      default: 'description',
+    },
+    generatedBlogPost: {
+      type: String,
+      default: '',
+    },
+    contentGenerated: Boolean,
   },
   { timestamps: true }
 );
