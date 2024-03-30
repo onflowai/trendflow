@@ -64,6 +64,10 @@ const TrendSchema = new mongoose.Schema(
         },
       ],
     },
+    trendStatus: {
+      type: String,
+      default: 'undefined',
+    },
     trendDesc: {
       type: String,
       default: 'description',
