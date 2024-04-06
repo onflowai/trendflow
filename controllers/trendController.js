@@ -120,9 +120,15 @@ export const approveTrend = async (req, res) => {
 
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
-      { $set: { interestOverTime: data, isApproved: true } },
+      {
+        $set: {
+          interestOverTime: data.trends_data,
+          trendStatus: data.status,
+          isApproved: true,
+        },
+      },
       { new: true } //returns the updated document instead of the original
-    ); // updating the trend with the data fetched by the script and approve it
+    ); // updating the trend with the 'data' fetched from the script and approve it
 
     // await trend.save(); // save the updated trend document
 

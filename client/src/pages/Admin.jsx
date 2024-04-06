@@ -47,7 +47,7 @@ const Admin = () => {
     }
   };
   const { trends, stats, charts } = useLoaderData();
-  console.log(charts);
+  console.log('Logging Charts: ', charts);
   const { user } = useOutletContext();
   const isAdminPage = user.role === 'admin';
   console.log(user);
