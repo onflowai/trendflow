@@ -1,6 +1,7 @@
 import trendModel from '../models/trendModel.js';
 import { StatusCodes } from 'http-status-codes';
 import { executePythonScript } from '../utils/script_controller.js';
+import { generatePostContent } from '../api/trendPostGenerator.js';
 /**
  * This is where functionality of trends implemented
  * @param {*} req
@@ -117,6 +118,12 @@ export const approveTrend = async (req, res) => {
     console.log(scriptOutput);
 
     const data = JSON.parse(scriptOutput); //parsing the JSON output
+    //CALLING THE OPENAI
+    const postContent = await generatePostContent(
+      trend.trend,
+      trend.trendCategory,
+      trend.trendTech
+    );
 
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
@@ -124,6 +131,8 @@ export const approveTrend = async (req, res) => {
         $set: {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
+          flashChart: data.flashChart,
+          postContent: postContent,
           isApproved: true,
         },
       },

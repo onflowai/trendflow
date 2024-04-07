@@ -64,6 +64,9 @@ const TrendSchema = new mongoose.Schema(
         },
       ],
     },
+    flashChart: {
+      count: Number,
+    },
     trendStatus: {
       type: String,
       default: 'undefined',

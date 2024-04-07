@@ -35,9 +35,14 @@
     "nanoid": "^4.0.2",
     "node-cron": "^3.0.3",
     "nodemon": "^2.0.22",
+    "openai": "^3.3.0",
     "react-icons": "^5.0.1",
     "react-select": "^5.8.0",
     "redis": "^4.6.13",
     "sharp": "^0.32.6"
+  },
+  "engines": {
+    "node": ">=19.3.0",
+    "npm": ">=9.2.0"
   }
 }
