@@ -5,6 +5,7 @@ import {
   RESPONSE_SYSTEM_ROLE,
   RESPONSE_USER_DESC,
   RESPONSE_USER_USE,
+  TREND_URL_BUTTON,
 } from '../utils/openaiPromptData.js';
 import * as dotenv from 'dotenv';
 /**
@@ -24,14 +25,14 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
     apiKey: process.env.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(config); //new instance of openai
-  let blogPost, trendDesc, trendUse;
+  let trendPost, trendDesc, trendUse;
   console.log(RESPONSE_USER_USE);
   // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-4-1106-vision-preview
   try {
     const blogPostResponse = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       temperature: 0.7,
-      max_tokens: 1500,
+      max_tokens: 500,
       messages: [
         {
           role: 'system',
@@ -39,13 +40,13 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
         },
         {
           role: 'user',
-          content: `${USER_ROLE_POST} about the ${trend} in the technology category of ${trendCategory}, specifically focusing on ${trendTech} technology.`,
+          content: `${USER_ROLE_POST} about the ${trend} in the technology category of ${trendCategory}, specifically focusing on ${trendTech} technology. ${TREND_URL_BUTTON}`,
         },
       ],
     });
     const blogPostContent = blogPostResponse.data.choices[0]?.message?.content;
-    console.log('BLOG HERE ----------------------> ', blogPostContent);
-    blogPost = blogPostContent;
+    // console.log('BLOG HERE ----------------------> ', blogPostContent);
+    trendPost = blogPostContent || '';
   } catch (error) {
     console.error('Error generating startup/how-to blog post:', error);
     throw new Error('Failed to generate startup/how-to blog post');
@@ -53,7 +54,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
   }
 
   // Using blogPost to generate a short description and best use using gpt with older training data
-  if (blogPost) {
+  if (trendPost) {
     try {
       const trendDescResponse = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
@@ -63,7 +64,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
           { role: 'system', content: RESPONSE_SYSTEM_ROLE },
           {
             role: 'user',
-            content: `${RESPONSE_USER_DESC} here is the blog post: "${blogPost}"`,
+            content: `${RESPONSE_USER_DESC} here is the blog post: "${trendPost}"`,
           },
         ],
       });
@@ -77,7 +78,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
           { role: 'system', content: RESPONSE_SYSTEM_ROLE },
           {
             role: 'user',
-            content: `${RESPONSE_USER_USE} (trendDesc) of the trend and list its best uses (trendUse): "${blogPost}"`,
+            content: `${RESPONSE_USER_USE} (trendDesc) of the trend and list its best uses (trendUse): "${trendPost}"`,
           },
         ],
       });
@@ -89,9 +90,8 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
       // Optionally, handle this error in a way that doesn't stop execution, depending on your requirements
     }
   }
-
   return {
-    blogPost,
+    trendPost,
     trendDesc,
     trendUse,
   };

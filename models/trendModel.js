@@ -56,12 +56,14 @@ const TrendSchema = new mongoose.Schema(
           date: String,
           count: Number,
         },
+        { _id: false },
       ],
       currentYear: [
         {
           date: String,
           count: Number,
         },
+        { _id: false },
       ],
     },
     flashChart: {
@@ -76,6 +78,10 @@ const TrendSchema = new mongoose.Schema(
       default: 'description',
     },
     generatedBlogPost: {
+      type: String,
+      default: '',
+    },
+    trendUse: {
       type: String,
       default: '',
     },

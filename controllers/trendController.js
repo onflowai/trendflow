@@ -119,7 +119,7 @@ export const approveTrend = async (req, res) => {
 
     const data = JSON.parse(scriptOutput); //parsing the JSON output
     //CALLING THE OPENAI
-    const postContent = await generatePostContent(
+    const { trendPost, trendDesc, trendUse } = await generatePostContent(
       trend.trend,
       trend.trendCategory,
       trend.trendTech
@@ -132,7 +132,9 @@ export const approveTrend = async (req, res) => {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
           flashChart: data.flashChart,
-          postContent: postContent,
+          generatedBlogPost: trendPost,
+          trendDesc: trendDesc,
+          trendUse: trendUse,
           isApproved: true,
         },
       },
