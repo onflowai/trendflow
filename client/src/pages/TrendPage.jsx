@@ -34,7 +34,7 @@ const EditTrend = () => {
   const { trendObject } = useLoaderData(); //getting the trend from the loader above
   const { trend, trendCategory, trendTech, updatedAt } = trendObject;
   const upDate = day(updatedAt).format('MM YYYY');
-  console.log(trendObject);
+  console.log('OBJECT: ', trendObject);
   return (
     <Container>
       <div className="trend">

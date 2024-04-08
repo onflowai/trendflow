@@ -29,7 +29,7 @@ const Container = styled.article`
   .content-center {
     display: flex;
     flex-direction: column;
-    margin-top: 1rem;
+    margin-top: 0.1;
     margin-bottom: 1.5rem;
     row-gap: 1rem; // Adjusted to manage space between rows
   }

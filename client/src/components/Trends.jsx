@@ -9,7 +9,7 @@ import Container from '../assets/wrappers/TrendsContainer';
  */
 
 function Trends({ trends, onApprove, isAdminPage }) {
-  console.log(trends);
+  console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
       <Container>
