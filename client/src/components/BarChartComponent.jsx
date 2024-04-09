@@ -60,6 +60,7 @@ function BarChartComponent({ data }) {
               backgroundColor: '#f6f6f6',
               border: 'none',
               radius: '8px',
+              outline: 'none',
             }}
           />
           <defs>

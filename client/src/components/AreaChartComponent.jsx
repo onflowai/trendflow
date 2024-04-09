@@ -69,6 +69,7 @@ function AreaChartComponent({ data }) {
               backgroundColor: '#f6f6f6',
               border: 'none',
               radius: '8px',
+              outline: 'none',
               borderRadius: '10px',
               padding: '10px',
             }}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.main`
-margin-top: 4rem;
+margin-top: 0rem;
   text-align: center;
   button {
     background: transparent;

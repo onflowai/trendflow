@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
 const Container = styled.article`
-  background: var(--background-color);
+  /* background: var(--background-color); */
+  background: var(--grey-30);
   border-radius: var(--border-radius);
   display: grid;
   grid-template-rows: 1fr auto;
-  box-shadow: var(--shadow-2);
   header {
-    padding: 1rem 1.5rem;
+    padding: 0rem;
     display: grid;
-    grid-template-columns: auto 1fr;
+     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
   }
   .info {

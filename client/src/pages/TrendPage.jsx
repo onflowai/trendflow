@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
-import { CustomErrorToast } from '../components';
+import { CustomErrorToast, ScrollSpyComponent } from '../components';
 import Container from '../assets/wrappers/TrendPageContainer';
+import { useDashboardContext } from '../pages/DashboardLayout';
 import {
   redirect,
   useLoaderData,
@@ -30,11 +31,24 @@ export const loader = async ({ params }) => {
   }
 };
 
-const EditTrend = () => {
+const TrendPage = () => {
   const { trendObject } = useLoaderData(); //getting the trend from the loader above
-  const { trend, trendCategory, trendTech, updatedAt } = trendObject;
+  const {
+    trend,
+    trendCategory,
+    trendTech,
+    updatedAt,
+    generatedBlogPost,
+    trendUse,
+    interestOverTime,
+  } = trendObject;
   const upDate = day(updatedAt).format('MM YYYY');
   console.log('OBJECT: ', trendObject);
+  const { setSidebarVisibility } = useDashboardContext();
+  useEffect(() => {
+    setSidebarVisibility(true); // opening the sidebar when the component mounts
+    return () => setSidebarVisibility(false); // closing the sidebar when the component unmounts
+  }, [setSidebarVisibility]);
   return (
     <Container>
       <div className="trend">
@@ -49,8 +63,10 @@ const EditTrend = () => {
         </span>
         <span className="">{upDate}</span>
       </div>
+      {/* Add this line where it fits into your layout */}
+      <ScrollSpyComponent sectionIds={['section1', 'section2', 'section3']} />
     </Container>
   );
 };
 
-export default EditTrend;
+export default TrendPage;

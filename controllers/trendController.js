@@ -26,7 +26,7 @@ export const submitTrend = async (req, res) => {
   });
   res.status(StatusCodes.CREATED).json({ trendObject });
 };
-//GET ALL TRENDS
+//GET ALL TRENDS (only for ADMIN)
 export const getAllTrends = async (req, res) => {
   // console.log(req);
   console.log('user object: ', req.user);
@@ -155,9 +155,9 @@ export const approveTrend = async (req, res) => {
 //GET APPROVED TRENDS
 export const getApprovedTrends = async (req, res) => {
   try {
-    // Query the database for trends where isApproved is true
+    // Query the database for trends where isApproved is true (return without: blogPost, )
     const trends = await trendModel
-      .find({ isApproved: true })
+      .find({ isApproved: true }, '-generatedBlogPost -trendUse')
       .populate('createdBy', 'username -_id');
     // Directly respond with the list of approved trends (could be an empty array)
     res.status(StatusCodes.OK).json({ trends });

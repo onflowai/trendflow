@@ -8,7 +8,6 @@ const Container = styled.section`
     margin-bottom: 2rem;
   }
   .trend {
-
   width: 90vw;
   background: var(--background-second-color);
   border-radius: var(--border-radius);
@@ -26,8 +25,8 @@ const Container = styled.section`
     display: grid;
     row-gap: 1rem;
   }
+  /* CSS for Scroll-Spy */
 
- 
   @media (min-width: 992px) {
     .trend-center {
       grid-template-columns: 1fr 1fr;

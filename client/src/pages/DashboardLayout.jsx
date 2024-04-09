@@ -22,13 +22,13 @@ export const loader = async () => {
   }
 }; //this is where data which you want to be preloaded is passed
 
-//Setting up context for SidebarSmall and Sidebar
-const DashboardContext = createContext();
+const DashboardContext = createContext(); // setting up context for SidebarSmall and Sidebar
 
 const DashboardLayout = () => {
   const { user, stats } = useLoaderData(); //passing the user data from loader
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
+  const setSidebarVisibility = (visible) => setShowSidebar(visible); // control the sidebar for TrendPage
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
   //function responsible for setting the dark theme
   const toggleDarkTheme = () => {
@@ -59,6 +59,7 @@ const DashboardLayout = () => {
         toggleSidebar,
         toggleDarkTheme,
         logoutUser,
+        setSidebarVisibility,
       }}
     >
       {console.log(user)}

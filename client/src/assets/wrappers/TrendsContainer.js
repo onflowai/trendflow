@@ -18,7 +18,7 @@ margin-top: 4rem;
   @media (min-width: 480px) { // Adjust for small screens
     .trends {
       grid-template-columns: repeat(1, 1fr); // 2 cards in a row
-      gap: 2rem;
+      gap: 1rem;
     }
   }
 
