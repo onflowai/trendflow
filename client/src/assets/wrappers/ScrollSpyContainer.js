@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.section`
- .spy-scroll-section {
+.spy-scroll-section {
   position: fixed;
   right: 20px;
   top: 100px;
@@ -20,7 +20,7 @@ const Container = styled.section`
   border-left: 3px solid blue; /* Example highlight */
   padding-left: 5px;
 }
- 
+
 `;
 
 export default Container;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Container from '../assets/wrappers/ScrollSpyContainer';
 
 const ScrollSpyComponent = ({ sectionIds }) => {
   const [activeSection, setActiveSection] = useState('');
@@ -23,17 +24,21 @@ const ScrollSpyComponent = ({ sectionIds }) => {
   }, [sectionIds]);
 
   return (
-    <div className="spy-scroll-section">
-      {sectionIds.map((sectionId) => (
-        <div
-          key={sectionId}
-          className={`spy-item ${activeSection === sectionId ? 'active' : ''}`}
-        >
-          {sectionId}
-        </div>
-      ))}
-      {/* Place for related trends */}
-    </div>
+    <Container>
+      <div className="spy-scroll-section">
+        {sectionIds.map((sectionId) => (
+          <div
+            key={sectionId}
+            className={`spy-item ${
+              activeSection === sectionId ? 'active' : ''
+            }`}
+          >
+            {sectionId}
+          </div>
+        ))}
+        {/* Place for related trends */}
+      </div>
+    </Container>
   );
 };
 

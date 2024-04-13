@@ -5,7 +5,7 @@ import {
   SearchTrends,
   CustomErrorToast,
   StatComponent,
-  ChartsComponent,
+  ChartAdminComponent,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
@@ -82,7 +82,7 @@ const Admin = () => {
           },
         ]}
       />
-      {charts.monthTrends?.length > 1 && <ChartsComponent data={charts} />}
+      {charts.monthTrends?.length > 1 && <ChartAdminComponent data={charts} />}
       <SearchTrends />
       <Trends
         trends={trends}
