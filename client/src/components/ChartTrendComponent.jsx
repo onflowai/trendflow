@@ -5,6 +5,11 @@ import AreaChart from './AreaChartComponent';
 import Container from '../assets/wrappers/ChartsContainer';
 
 function ChartTrendComponent({ data }) {
+  const { previousYear, currentYear } = data;
+  const combinedData = [...previousYear, ...currentYear];
+  console.log('CHART DATA', combinedData);
+  const [chartData, setChartData] = useState(combinedData);
+  const [dataView, setDataView] = useState('combined'); //keeping track of current data displayed
   const [chartOption, setChartOption] = useState({
     value: 'bar',
     label: 'Bar Chart',
@@ -19,10 +24,31 @@ function ChartTrendComponent({ data }) {
   const handleChartTypeChange = (selectedOption) => {
     setChartOption(selectedOption);
   };
+  const handleArrowClick = (type) => {
+    if (dataView === type) {
+      // If already showing this year, switch to combined
+      setChartData(combinedData);
+      setDataView('combined');
+    } else {
+      // Otherwise, show the selected year
+      if (type === 'previous') {
+        setChartData(previousYear);
+      } else if (type === 'current') {
+        setChartData(currentYear);
+      }
+      setDataView(type);
+    }
+  };
 
   return (
     <Container>
       <div>
+        <button onClick={() => handleArrowClick('previous')}>
+          ← Previous Year
+        </button>
+        <button onClick={() => handleArrowClick('current')}>
+          Current Year →
+        </button>
         <Select
           value={chartOption}
           onChange={handleChartTypeChange}
@@ -30,9 +56,9 @@ function ChartTrendComponent({ data }) {
         />
       </div>
       {chartOption.value === 'bar' ? (
-        <AreaChart data={data} />
+        <AreaChart data={chartData} />
       ) : (
-        <BarChart data={data} />
+        <BarChart data={chartData} />
       )}
     </Container>
   );

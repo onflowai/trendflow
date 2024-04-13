@@ -47,9 +47,6 @@ const TrendPage = () => {
     trendUse,
     interestOverTime,
   } = trendObject;
-  const { previousYear, currentYear } = interestOverTime;
-  const combinedData = [...previousYear, ...currentYear];
-  console.log('CHART DATA', combinedData);
   const upDate = day(updatedAt).format('MM YYYY');
   console.log('OBJECT: ', trendObject);
   const { setSidebarVisibility } = useDashboardContext();
@@ -65,7 +62,7 @@ const TrendPage = () => {
   return (
     <Container>
       <div className="trend">
-        <ChartTrendComponent data={combinedData} />
+        <ChartTrendComponent data={interestOverTime} />
         <h4 className="trend-title">{trend}</h4>
         <div className="trend-center">{trendCategory}</div>
         <span className="icon">
