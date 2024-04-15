@@ -10,7 +10,7 @@ const Container = styled.section`
   padding: 2rem 2.5rem;
   margin: 3rem auto;
   margin: 0;
-  max-width: 80%;
+  max-width: 100%; //if I just this to 80% that is where I want the screen to be in a big size screen
   width: 100%;
   }
   .trend-row {

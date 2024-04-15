@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/DashboardContainer';
 import { SidebarSmall, Sidebar, Navbar, CustomErrorToast } from '../components';
@@ -28,7 +28,24 @@ const DashboardLayout = () => {
   const { user, stats } = useLoaderData(); //passing the user data from loader
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
-  const setSidebarVisibility = (visible) => setShowSidebar(visible); // control the sidebar for TrendPage
+  const [userToggled, setUserToggled] = useState(false);
+  const setSidebarVisibility = (visible) => {
+    if (!userToggled) {
+      setShowSidebar(visible); // only auto-adjusts if the user hasn't manually toggled
+    }
+  }; // control the sidebar for TrendPage
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.matchMedia('(max-width: 992px)').matches;
+      if (!userToggled) {
+        setShowSidebar(!isMobile); // with respect to users toggle
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [userToggled]); // dependency on userToggled to reset when user manually toggles
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
   //function responsible for setting the dark theme
   const toggleDarkTheme = () => {
@@ -39,7 +56,8 @@ const DashboardLayout = () => {
   };
   //setting the sidebar equal to opposite of showSidebar
   const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
+    setShowSidebar((prevState) => !prevState);
+    setUserToggled(true); // indicates manual toggle
   };
 
   //async function which will connect to the server

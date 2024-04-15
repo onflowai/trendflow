@@ -35,7 +35,6 @@ export const loader = async ({ params }) => {
     return redirect('/dashboard');
   }
 };
-
 const TrendPage = () => {
   const { trendObject } = useLoaderData(); //getting the trend from the loader above
   const {
@@ -51,14 +50,11 @@ const TrendPage = () => {
   console.log('OBJECT: ', trendObject);
   const { setSidebarVisibility } = useDashboardContext();
   useEffect(() => {
-    const handleResize = () => {
-      const isMobile = window.matchMedia('(max-width: 992px)').matches;
-      setSidebarVisibility(!isMobile);
+    setSidebarVisibility(true); // opens sidebar on initial component mount
+    return () => {
+      setSidebarVisibility(false); // reset on component unmount if desired
     };
-    handleResize(); // calling once to set initial state based on current screen size
-    window.addEventListener('resize', handleResize); // listening for screen resize events
-    return () => window.removeEventListener('resize', handleResize); // cleanup function to remove the event listener
-  }, [setSidebarVisibility]);
+  }, [setSidebarVisibility]); // ensure this only runs on mount and unmount
   return (
     <Container>
       <div className="trend">
