@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
 import {
   CustomErrorToast,
@@ -35,6 +35,19 @@ export const loader = async ({ params }) => {
     return redirect('/dashboard');
   }
 };
+function useWindowSize() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 992);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  return isMobile;
+}
 const TrendPage = () => {
   const { trendObject } = useLoaderData(); //getting the trend from the loader above
   const {
@@ -46,36 +59,46 @@ const TrendPage = () => {
     trendUse,
     interestOverTime,
   } = trendObject;
+  const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   console.log('OBJECT: ', trendObject);
   const { setSidebarVisibility } = useDashboardContext();
   useEffect(() => {
-    setSidebarVisibility(true); // opens sidebar on initial component mount
+    setSidebarVisibility(!isMobile); // opens sidebar on initial component mount
     return () => {
       setSidebarVisibility(false); // reset on component unmount if desired
     };
-  }, [setSidebarVisibility]); // ensure this only runs on mount and unmount
+  }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
   return (
     <Container>
-      <div className="trend">
-        <ChartTrendComponent data={interestOverTime} />
-        <h4 className="trend-title">{trend}</h4>
-        <div className="trend-center">{trendCategory}</div>
-        <span className="icon">
-          <FcElectricity />
-        </span>
-        <span className="">{trendTech}</span>
-        <span className="icon">
-          <FcCalendar />
-        </span>
-        <span className="">{trendUse}</span>
-        <span className="">{upDate}</span>
-        <div className="">{generatedBlogPost}</div>
+      <div className="page-layout">
+        <div className="trend">
+          <ChartTrendComponent data={interestOverTime} />
+          <h4 className="trend-title">{trend}</h4>
+          <div className="trend-center">
+            <div className="trend-category">{trendCategory}</div>
+            <div className="trend-tech">{trendTech}</div>
+            <div className="">{trendUse}</div>
+            <div className="">{upDate}</div>
+            <div className="">{generatedBlogPost}</div>
+          </div>
+        </div>
+        <aside className="scroll-spy-sidebar">
+          <ScrollSpyComponent
+            sectionIds={['section1', 'section2', 'section3']}
+          />
+          {!isMobile && (
+            <div className="related-trend">
+              <RelatedTrendsComponent />
+            </div>
+          )}
+        </aside>
+        {isMobile && (
+          <div className="related-trend">
+            <RelatedTrendsComponent />
+          </div>
+        )}
       </div>
-      <aside className="scroll-spy-sidebar">
-        <ScrollSpyComponent sectionIds={['section1', 'section2', 'section3']} />
-        <RelatedTrendsComponent />
-      </aside>
     </Container>
   );
 };

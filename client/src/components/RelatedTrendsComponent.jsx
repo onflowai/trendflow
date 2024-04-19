@@ -9,6 +9,66 @@ const RelatedTrendsComponent = () => {
       <div>RELATED TRENDS</div>
       <div>RELATED TRENDS</div>
       <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
+      <div>RELATED TRENDS</div>
     </Container>
   );
 };
