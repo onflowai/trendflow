@@ -5,70 +5,42 @@ const RelatedTrendsComponent = () => {
   // Fetch related trends or pass them as props
   return (
     <Container>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
-      <div>RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
+      <div className="related-trend">RELATED TRENDS</div>
     </Container>
   );
 };

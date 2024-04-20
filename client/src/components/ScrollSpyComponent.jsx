@@ -36,7 +36,6 @@ const ScrollSpyComponent = ({ sectionIds }) => {
             {sectionId}
           </div>
         ))}
-        {/* Place for related trends */}
       </div>
     </Container>
   );

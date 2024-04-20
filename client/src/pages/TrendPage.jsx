@@ -73,25 +73,33 @@ const TrendPage = () => {
     <Container>
       <div className="page-layout">
         <div className="trend">
-          <ChartTrendComponent data={interestOverTime} />
-          <h4 className="trend-title">{trend}</h4>
+          <div id="section1">
+            <ChartTrendComponent data={interestOverTime} />
+          </div>
+          <h4 className="trend-title" id="section2">
+            {trend}
+          </h4>
           <div className="trend-center">
             <div className="trend-category">{trendCategory}</div>
             <div className="trend-tech">{trendTech}</div>
             <div className="">{trendUse}</div>
             <div className="">{upDate}</div>
-            <div className="">{generatedBlogPost}</div>
+            <div className="" id="section3">
+              {generatedBlogPost}
+            </div>
           </div>
         </div>
-        <aside className="scroll-spy-sidebar">
-          <ScrollSpyComponent
-            sectionIds={['section1', 'section2', 'section3']}
-          />
-          {!isMobile && (
-            <div className="related-trend">
-              <RelatedTrendsComponent />
-            </div>
-          )}
+        <aside className="scroll-spy-sidebar-aside">
+          <div className="scroll-spy-sidebar">
+            <ScrollSpyComponent
+              sectionIds={['section1', 'section2', 'section3']}
+            />
+            {!isMobile && (
+              <div className="related-trend">
+                <RelatedTrendsComponent />
+              </div>
+            )}
+          </div>
         </aside>
         {isMobile && (
           <div className="related-trend">
