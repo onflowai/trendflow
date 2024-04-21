@@ -13,16 +13,38 @@ html {
 
 :root {
   /* colors */
-  --primary-50: #feeeb5;
-  --primary-100: #fde99c;
-  --primary-200: #fde384;
-  --primary-300: #fdde6b;
-  --primary-400: #fcd852;
-  --primary-500: #fcd33a;
-  --primary-600: #fccd21;
-  --primary-700: #fcc809;
-  --primary-800: #e2b408;
-  --primary-900: #c9a007;
+  --primary-50: #d0cff7;
+  --primary-100: #c1bff6;
+  --primary-200: #a6a3ef;
+  --primary-300: #9592e8;
+  --primary-400: #8683db;
+  --primary-500: #6864d4;
+  --primary-600: #625eda;
+  --primary-700: #534edc;
+  --primary-800: #4a45da;
+  --primary-900: #352fdc;
+
+  --primary2-50: #f9d3ee;
+  --primary2-100: #f7c3e7;
+  --primary2-200: #f8b4e3;
+  --primary2-300: #f1a5db;
+  --primary2-400: #ec8fd0;
+  --primary2-500: #e976c7;
+  --primary2-600: #e976c7;
+  --primary2-700: #e659bc;
+  --primary2-800: #e54db7;
+  --primary2-900: #ea41b7;
+
+  --primary3-50: #fffae6;
+  --primary3-100: #fdf5d4;
+  --primary3-200: #faefc4;
+  --primary3-300: #fbeebc;
+  --primary3-400: #fdf0bb;
+  --primary3-500: #f9e79e;
+  --primary3-600: #fbe797;
+  --primary3-700: #fce690;
+  --primary3-800: #fae488;
+  --primary3-900: #fdd949;
 
   /* grey */
   --grey-30: #f6f6f6;
@@ -45,6 +67,7 @@ html {
   --red-dark: #842029;
   --green-light: #d1e7dd;
   --green-dark: #0f5132;
+  --white-overlay: #fafafa03;
 
   --small-text: 0.875rem;
   --extra-small-text: 0.7em;
@@ -406,11 +429,11 @@ button:disabled {
 }
 
 .loading {
-  width: 6rem;
-  height: 6rem;
-  border: 5px solid var(--grey-400);
+  width: 8rem;
+  height: 8rem;
+  border: 5px solid var(--grey-70);
   border-radius: 50%;
-  border-top-color: var(--primary-500);
+  border-top-color: var(--grey-200);
   animation: spinner 0.6s linear infinite;
 }
 

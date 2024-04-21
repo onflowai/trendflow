@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLoaderData, redirect } from 'react-router-dom';
 import {
   Trends,
@@ -36,14 +36,19 @@ export const loader = async () => {
 };
 //Approved Trends,  Total Trend Views, Submitted Trends, Total Site Trends
 const Admin = () => {
+  const [loadingSlug, setLoadingSlug] = useState(null);
+
   const approveTrend = async (slug) => {
     try {
+      setLoadingSlug(slug); // start loading
       await customFetch.patch(`trends/${slug}/approve`);
       // Handle successful approval (e.g., show a success message, refresh the list of trends, etc.)
       toast.success('Trend approved successfully!');
     } catch (error) {
       // Handle error (e.g., show an error message)
       toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setLoadingSlug(null); // stop loading regardless of success or failure
     }
   };
   const { trends, stats, charts } = useLoaderData();
@@ -88,6 +93,7 @@ const Admin = () => {
         trends={trends}
         onApprove={approveTrend}
         isAdminPage={isAdminPage}
+        loadingSlug={loadingSlug}
       />
     </>
   );
