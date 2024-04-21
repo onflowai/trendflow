@@ -9,7 +9,7 @@ const Container = styled.section`
     flex-direction: column; // stack children vertically
     width: 100%; // full width
     max-width: 100%; // limit width to 100%
-    overflow-x: hidden; // prevents horizontal overflow
+    overflow-x: clip; // prevents horizontal overflow
   }
 
   .trend {
@@ -18,10 +18,6 @@ const Container = styled.section`
     max-width: 100%; // limit width to 100%
     margin-bottom: 2rem; // margin below each trend
   }
-  .scroll-spy-sidebar-aside {
-  position: sticky; // Ensure the sidebar remains visible when scrolling
-  top: var(--nav-height); // Start below the navbar
-  }
 
   .scroll-spy-sidebar {
     background: inherit; // inherit background color
@@ -29,7 +25,10 @@ const Container = styled.section`
     width: 250px; // fixed width
     overflow-y: auto; // allows vertical scrolling
     transition: transform 0.3s ease; // smooth transform transition
-
+    right: 0;
+    top: var(--nav-height);
+    height: 100vh; // Full height
+    overflow-y: auto; // Allows scrolling
   }
 
     .trend {
@@ -43,6 +42,17 @@ const Container = styled.section`
       grid-template-columns: 4fr 1fr; // proportion between main content and sidebar
       /* grid-template-rows: 1000px 100%; */
     }
+    .scroll-spy-sidebar-aside {
+    padding-top: 1rem;
+    position: -webkit-sticky; // Make sidebar sticky
+    top: var(--nav-height); // Start below the navbar, use a CSS variable or specific value
+    position: sticky;
+    right: 0;
+    width: 250px; // fixed width
+    height: calc(100vh - var(--nav-height)); // Full height minus the navbar height
+    /* overflow-x: auto; // allows vertical scrolling */
+    z-index: 3; // ensure it is stacked properly
+  }
     .scroll-spy-sidebar {
     position: sticky; // Maintain sticky positioning
     top: var(--nav-height); // Start below the navbar, adjust this value accordingly

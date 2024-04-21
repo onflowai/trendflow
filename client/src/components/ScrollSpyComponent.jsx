@@ -6,10 +6,12 @@ const ScrollSpyComponent = ({ sectionIds }) => {
 
   const onScroll = () => {
     let currentSection = '';
+    const offset = 110; // adjusting this value based on other CSS styling
     sectionIds.forEach((sectionId) => {
       const section = document.getElementById(sectionId);
-      const scrollPosition = window.scrollY + window.innerHeight / 2; // Adjust based on your layout
-      if (section.offsetTop <= scrollPosition) {
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const scrollPosition = window.scrollY + offset;
+      if (sectionTop <= scrollPosition) {
         currentSection = sectionId;
       }
     });
@@ -23,6 +25,13 @@ const ScrollSpyComponent = ({ sectionIds }) => {
     };
   }, [sectionIds]);
 
+  const handleClick = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <Container>
       <div className="spy-scroll-section">
@@ -32,6 +41,7 @@ const ScrollSpyComponent = ({ sectionIds }) => {
             className={`spy-item ${
               activeSection === sectionId ? 'active' : ''
             }`}
+            onClick={() => handleClick(sectionId)}
           >
             {sectionId}
           </div>

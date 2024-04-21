@@ -22,3 +22,5 @@ export { default as TrendChartComponent } from './TrendChartComponent';
 export { default as ScrollSpyComponent } from './ScrollSpyComponent';
 export { default as TrendFlashChart } from './TrendFlashChart';
 export { default as RelatedTrendsComponent } from './RelatedTrendsComponent';
+export { default as DangerousHTML } from './DangerousHTML';
+export { default as Loading } from './Loading';

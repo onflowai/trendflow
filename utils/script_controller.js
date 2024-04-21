@@ -1,10 +1,16 @@
 import { exec } from 'child_process';
-import trendModel from '../models/trendModel.js';
-
+import { quote } from 'shell-quote';
+/**
+ * Script management. Triggers the python scripts
+ * @param {*} keywords
+ * @returns
+ */
 export const executePythonScript = (keywords) => {
   return new Promise((resolve, reject) => {
+    console.log('trend keyword in script controller: ', keywords);
+    const safeKeywords = quote([keywords]); // Correct usage of quote to escape keywords
     exec(
-      `python py_scripts/trend_analytics.py "${keywords}"`,
+      `python py_scripts/trend_analytics.py "${safeKeywords}"`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
@@ -21,3 +27,10 @@ export const executePythonScript = (keywords) => {
     );
   });
 };
+executePythonScript('MongoDB')
+  .then((output) => {
+    console.log('Output from Python:', output);
+  })
+  .catch((err) => {
+    console.error('Error executing Python script:', err);
+  });

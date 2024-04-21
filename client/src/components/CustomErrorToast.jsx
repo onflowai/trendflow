@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../assets/images/error.svg';
-import Container from '../assets/wrappers/CustomErrorToastContiner';
+import Container from '../assets/wrappers/CustomErrorToastContainer';
 /**
  * Custom Error Toast, styling is in index.css
  * @param {} param0

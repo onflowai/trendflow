@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
 import {
+  DangerousHTML,
   CustomErrorToast,
   ScrollSpyComponent,
   ChartTrendComponent,
@@ -21,6 +22,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
 /**
  * Trend Page will display detailed information about the trend
+ * RelatedTrendsComponent needs to receive the current trends category to fetch related trends
  * @returns
  *
  */
@@ -72,8 +74,8 @@ const TrendPage = () => {
   return (
     <Container>
       <div className="page-layout">
-        <div className="trend">
-          <div id="section1">
+        <div id="section1" className="trend">
+          <div>
             <ChartTrendComponent data={interestOverTime} />
           </div>
           <h4 className="trend-title" id="section2">
@@ -83,9 +85,11 @@ const TrendPage = () => {
             <div className="trend-category">{trendCategory}</div>
             <div className="trend-tech">{trendTech}</div>
             <div className="">{trendUse}</div>
-            <div className="">{upDate}</div>
             <div className="" id="section3">
-              {generatedBlogPost}
+              {upDate}
+            </div>
+            <div className="">
+              <DangerousHTML html={generatedBlogPost} />
             </div>
           </div>
         </div>

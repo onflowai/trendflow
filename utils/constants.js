@@ -114,6 +114,7 @@ export const TECHNOLOGIES = {
   NEO4J: 'Neo4j',
   NIM: 'Nim',
   NODE_JS: 'Node.js',
+  NOSQL: 'NoSQL',
   OBJECTIVEC: 'Objective-C',
   OCAML: 'OCaml',
   OPENCV: 'OpenCV',

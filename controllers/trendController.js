@@ -1,5 +1,6 @@
 import trendModel from '../models/trendModel.js';
 import { StatusCodes } from 'http-status-codes';
+import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
 /**
@@ -113,9 +114,9 @@ export const approveTrend = async (req, res) => {
       return res.status(404).json({ msg: 'Trend not found' });
     }
     //CALLING THE PYTHON SCRIPT
+
     const scriptOutput = await executePythonScript(trend.trend);
-    console.log(trend.trend);
-    console.log(scriptOutput);
+    console.log('Script output: ', scriptOutput);
 
     const data = JSON.parse(scriptOutput); //parsing the JSON output
     //CALLING THE OPENAI
@@ -124,7 +125,7 @@ export const approveTrend = async (req, res) => {
       trend.trendCategory,
       trend.trendTech
     );
-
+    const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
       {
@@ -132,7 +133,7 @@ export const approveTrend = async (req, res) => {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
           flashChart: data.flashChart,
-          generatedBlogPost: trendPost,
+          generatedBlogPost: safeTrendPost,
           trendDesc: trendDesc,
           trendUse: trendUse,
           isApproved: true,
@@ -150,7 +151,7 @@ export const approveTrend = async (req, res) => {
     console.error(error);
     res.status(500).json({ msg: error.message });
   }
-};
+}; //end APPROVE TREND
 
 //GET APPROVED TRENDS
 export const getApprovedTrends = async (req, res) => {
