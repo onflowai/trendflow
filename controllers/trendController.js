@@ -16,17 +16,19 @@ import { generatePostContent } from '../api/trendPostGenerator.js';
 // ];
 export const submitTrend = async (req, res) => {
   const { trend } = req.body;
+  trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
   const existingTrend = await trendModel.findOne({ trend });
   if (existingTrend) {
     return res.status(400).json({ msg: 'Trend already exists' });
   }
-  req.body.createdBy = req.user.userID;
+  req.body.createdBy = req.user.userID; //adding createdBy property storing user id
   const trendObject = await trendModel.create({
     ...req.body,
     isApproved: false,
-  });
+  }); //create a new document spreading current properties
   res.status(StatusCodes.CREATED).json({ trendObject });
-};
+}; //end SUBMIT
+
 //GET ALL TRENDS (only for ADMIN)
 export const getAllTrends = async (req, res) => {
   // console.log(req);
@@ -62,6 +64,7 @@ export const getSingleTrend = async (req, res) => {
   if (!trendObject) {
     return res.status(404).json({ msg: 'Trend not found' });
   }
+  trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html in case
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 

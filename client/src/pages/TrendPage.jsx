@@ -90,6 +90,7 @@ const TrendPage = () => {
             </div>
             <div className="">
               <DangerousHTML html={generatedBlogPost} />
+              {generatedBlogPost}
             </div>
           </div>
         </div>
