@@ -88,7 +88,7 @@ const TrendPage = () => {
             <div className="" id="section3">
               {upDate}
             </div>
-            <div className="">
+            <div>
               <DangerousHTML html={generatedBlogPost} />
               {generatedBlogPost}
             </div>

@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+#py_scripts
+py_scripts/
+
+#utils
+utils/constants.js
+utils/openaiPromptData.js
+utils/script_data_sample.json
