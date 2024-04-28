@@ -60,6 +60,9 @@ const TrendPage = () => {
     generatedBlogPost,
     trendUse,
     interestOverTime,
+    views,
+    trendStatus,
+    createdBy,
   } = trendObject;
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
@@ -92,6 +95,7 @@ const TrendPage = () => {
               <DangerousHTML html={generatedBlogPost} />
               {generatedBlogPost}
             </div>
+            {views}
           </div>
         </div>
         <aside className="scroll-spy-sidebar-aside">

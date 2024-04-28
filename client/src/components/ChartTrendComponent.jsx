@@ -7,9 +7,18 @@ import Container from '../assets/wrappers/ChartsContainer';
 function ChartTrendComponent({ data }) {
   const { previousYear, currentYear } = data;
   const combinedData = [...previousYear, ...currentYear];
+  const forecast = [
+    { date: 'Apr 2024', count: 84 },
+    { date: 'May 2024', count: 84 },
+    { date: 'Jun 2024', count: 86 },
+    { date: 'Jul 2024', count: 88 },
+  ];
   console.log('CHART DATA', combinedData);
+  console.log('FORECAST IN COMPONENT ', forecast);
   const [chartData, setChartData] = useState(combinedData);
   const [dataView, setDataView] = useState('combined'); //keeping track of current data displayed
+  const [forecastData, setForecastData] = useState([]);
+  const [showForecast, setShowForecast] = useState(false);
   const [chartOption, setChartOption] = useState({
     value: 'bar',
     label: 'Bar Chart',
@@ -23,6 +32,9 @@ function ChartTrendComponent({ data }) {
   // Handles changing the chart type from the dropdown
   const handleChartTypeChange = (selectedOption) => {
     setChartOption(selectedOption);
+  };
+  const toggleForecast = () => {
+    setForecastData(forecastData.length ? [] : forecast);
   };
   const handleArrowClick = (type) => {
     if (dataView === type) {
@@ -43,6 +55,9 @@ function ChartTrendComponent({ data }) {
   return (
     <Container>
       <div>
+        <div>
+          <button onClick={toggleForecast}>Toggle Forecast</button>
+        </div>
         <button onClick={() => handleArrowClick('previous')}>
           ← Previous Year
         </button>
@@ -56,9 +71,9 @@ function ChartTrendComponent({ data }) {
         />
       </div>
       {chartOption.value === 'bar' ? (
-        <AreaChart data={chartData} />
+        <AreaChart data={chartData} forecastData={forecastData} />
       ) : (
-        <BarChart data={chartData} />
+        <BarChart data={chartData} forecastData={forecastData} />
       )}
     </Container>
   );

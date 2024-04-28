@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+/lightning_logs
 
 node_modules
 dist
@@ -31,3 +32,4 @@ py_scripts/
 utils/constants.js
 utils/openaiPromptData.js
 utils/script_data_sample.json
+utils/trend_traning_data.txt

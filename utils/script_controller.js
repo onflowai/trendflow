@@ -10,7 +10,7 @@ export const executePythonScript = (keywords) => {
     console.log('trend keyword in script controller: ', keywords);
     const safeKeywords = quote([keywords]); // Correct usage of quote to escape keywords
     exec(
-      `python py_scripts/trend_analytics.py "${safeKeywords}"`,
+      `python py_scripts/trend_controller.py "${safeKeywords}"`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);

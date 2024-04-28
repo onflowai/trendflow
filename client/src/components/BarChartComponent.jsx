@@ -31,9 +31,11 @@ function CustomizedAxisTick(props) {
   );
 }
 
-function BarChartComponent({ data }) {
+function BarChartComponent({ data, forecastData }) {
+  // const chartData = forecastData.length ? [...data, ...forecastData] : data;
   return (
     <Container>
+      {console.log('FORECAST IN CHART: ', forecastData)}
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}
