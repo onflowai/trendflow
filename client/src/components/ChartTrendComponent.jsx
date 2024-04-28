@@ -56,7 +56,7 @@ function ChartTrendComponent({ data }) {
     <Container>
       <div>
         <div>
-          <button onClick={toggleForecast}>Toggle Forecast</button>
+          <button onClick={toggleForecast}>Forecast</button>
         </div>
         <button onClick={() => handleArrowClick('previous')}>
           ← Previous Year

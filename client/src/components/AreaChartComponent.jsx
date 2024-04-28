@@ -93,7 +93,7 @@ function AreaChartComponent({ data, forecastData }) {
               type="monotone"
               dataKey="count"
               data={allData}
-              stroke="#82ca9d"
+              stroke="#4541de"
               fill="url(#colorForecast)"
               animationDuration={400}
               animationEasing="ease-out"

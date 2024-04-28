@@ -33,6 +33,7 @@ function CustomizedAxisTick(props) {
 
 function BarChartComponent({ data, forecastData }) {
   // const chartData = forecastData.length ? [...data, ...forecastData] : data;
+  const allData = [...data, ...forecastData];
   return (
     <Container>
       {console.log('FORECAST IN CHART: ', forecastData)}
@@ -71,7 +72,22 @@ function BarChartComponent({ data, forecastData }) {
               <stop offset="95%" stopColor="#e976c7" stopOpacity={0.05} />
             </linearGradient>
           </defs>
-          <Bar dataKey="count" fill="url(#barColor)" radius={[8, 8, 0, 0]} />
+          {/* <Bar dataKey="count" fill="url(#barColor)" radius={[8, 8, 0, 0]} /> */}
+          {allData.length > 0 && (
+            <Bar
+              dataKey="count"
+              fill="url(#barColor)"
+              radius={[8, 8, 0, 0]}
+              type="monotone"
+              // dataKey="count"
+              data={allData}
+              // radius={[8, 8, 0, 0]}
+              // stroke="#82ca9d"
+              // fill="url(#colorForecast)"
+              animationDuration={400}
+              animationEasing="ease-out"
+            />
+          )}
         </BarChart>
       </ResponsiveContainer>
     </Container>
