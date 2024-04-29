@@ -27,10 +27,10 @@ export const executePythonScript = (keywords) => {
     );
   });
 };
-executePythonScript('MongoDB')
-  .then((output) => {
-    console.log('Output from Python:', output);
-  })
-  .catch((err) => {
-    console.error('Error executing Python script:', err);
-  });
+// executePythonScript('MongoDB')
+//   .then((output) => {
+//     console.log('Output from Python:', output);
+//   })
+//   .catch((err) => {
+//     console.error('Error executing Python script:', err);
+//   });

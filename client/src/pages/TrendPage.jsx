@@ -61,6 +61,7 @@ const TrendPage = () => {
     trendUse,
     interestOverTime,
     views,
+    forecast,
     trendStatus,
     createdBy,
   } = trendObject;

@@ -70,7 +70,7 @@ function AreaChartComponent({ data, forecastData = [] }) {
             allowDecimals={false}
             tick={{ fill: '#b3b3b3', fontSize: 13 }}
           />
-          <Tooltip
+          {/* <Tooltip
             cursor={{ fill: '#ededed' }}
             contentStyle={{
               backgroundColor: '#f6f6f6',
@@ -80,7 +80,7 @@ function AreaChartComponent({ data, forecastData = [] }) {
               borderRadius: '10px',
               padding: '10px',
             }}
-          />
+          /> */}
           <Area
             type="monotone"
             dataKey="count"

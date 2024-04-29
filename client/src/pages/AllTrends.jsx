@@ -5,7 +5,8 @@ import customFetch from '../utils/customFetch';
 import { useLoaderData } from 'react-router-dom';
 import { useContext, createContext } from 'react';
 /**
- * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends component
+ * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
+ * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
 export const loader = async () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   FcElectricity,
   FcCalendar,
@@ -6,25 +7,34 @@ import {
   FcCheckmark,
   FcCancel,
 } from 'react-icons/fc';
-import TrendChartComponent from './TrendChartComponent';
-import Loading from './Loading';
-import { Link } from 'react-router-dom';
-import Container from '../assets/wrappers/TrendContainer';
+import { TrendChartComponent, Loading } from '../components';
+import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
 /**
- *
+ * This component is used in the large screens with more info, data is passed from Trend.jsx
  * @returns
  */
-function TrendLarge() {
+function TrendLarge({
+  slug,
+  trend,
+  trendTech,
+  trendCategory,
+  trendDesc,
+  updatedAt,
+  isLoading,
+  upDate,
+  interestOverTime,
+  isAdminPage,
+  onApprove,
+  createdBy,
+  isApproved,
+}) {
+  // const upDate = day(updatedAt).format('MM YYYY');
+  // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
     <Container>
-      {/* {isLoading && (
-        <div className="loading-overlay">
-          <Loading />
-        </div>
-      )} */}
       {console.log(interestOverTime)}
       <header>
         <div className="overlay">
