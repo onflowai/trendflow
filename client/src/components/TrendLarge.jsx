@@ -7,7 +7,6 @@ import {
   FcCancel,
 } from 'react-icons/fc';
 import TrendChartComponent from './TrendChartComponent';
-import TrendLarge from './TrendLarge';
 import Loading from './Loading';
 import { Link } from 'react-router-dom';
 import Container from '../assets/wrappers/TrendContainer';
@@ -15,29 +14,10 @@ import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
 /**
- * This component is used by Trends.jsx to display each trend in a trend card with its detail like the chart, trend name etc.
- * This component uses: TrendChartComponent, TrendChart, TrendFlashChart,
+ *
  * @returns
  */
-function Trend({
-  interestOverTime,
-  isAdminPage,
-  onApprove,
-  createdAt,
-  createdBy,
-  isApproved,
-  slug,
-  trend,
-  trendCategory,
-  trendDesc,
-  trendTech,
-  _id,
-  updatedAt,
-  loadingSlug,
-}) {
-  const upDate = day(updatedAt).format('MM YYYY');
-  const isLoading = loadingSlug === slug; // determining if this specific trend is loading
-
+function TrendLarge() {
   return (
     <Container>
       {/* {isLoading && (
@@ -124,4 +104,4 @@ function Trend({
   );
 }
 
-export default Trend;
+export default TrendLarge;

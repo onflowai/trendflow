@@ -10,7 +10,12 @@ import {
   Text,
 } from 'recharts';
 import Container from '../assets/wrappers/BarChartContainer';
-
+/**
+ * Bar Chart takes on values from multiple pages: Admin, TrendPage, and Trends to display a rechart
+ * forecastData = [] (this returns empty array if there is no value) is passed from TrendPage
+ * @param {*} props
+ * @returns
+ */
 function CustomizedAxisTick(props) {
   const { x, y, payload } = props;
   return (
@@ -31,7 +36,7 @@ function CustomizedAxisTick(props) {
   );
 }
 
-function BarChartComponent({ data, forecastData }) {
+function BarChartComponent({ data, forecastData = [] }) {
   // const chartData = forecastData.length ? [...data, ...forecastData] : data;
   const allData = [...data, ...forecastData];
   return (

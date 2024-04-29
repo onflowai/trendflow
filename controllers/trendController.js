@@ -121,7 +121,7 @@ export const approveTrend = async (req, res) => {
     const scriptOutput = await executePythonScript(trend.trend);
     console.log('Script output: ', scriptOutput);
 
-    const data = JSON.parse(scriptOutput); //parsing the JSON output
+    const data = JSON.parse(scriptOutput); //parsing the JSON output from scripts
     //CALLING THE OPENAI
     const { trendPost, trendDesc, trendUse } = await generatePostContent(
       trend.trend,
@@ -129,6 +129,7 @@ export const approveTrend = async (req, res) => {
       trend.trendTech
     );
     const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
+    //UPDATING MONGO
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
       {
@@ -140,6 +141,7 @@ export const approveTrend = async (req, res) => {
           trendDesc: trendDesc,
           trendUse: trendUse,
           isApproved: true,
+          forecast: data.forecast,
         },
       },
       { new: true } //returns the updated document instead of the original

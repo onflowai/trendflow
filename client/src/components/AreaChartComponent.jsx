@@ -11,7 +11,8 @@ import {
 } from 'recharts';
 import Container from '../assets/wrappers/AreaChartContainer';
 /**
- *
+ * Area Chart takes on values from multiple pages: Admin, TrendPage, and Trends to display a rechart
+ * forecastData = [] (this returns empty array if there is no value) is passed from TrendPage
  * @param {*} props
  * @returns
  */
@@ -33,7 +34,7 @@ function CustomizedAxisTick(props) {
     </g>
   );
 }
-function AreaChartComponent({ data, forecastData }) {
+function AreaChartComponent({ data, forecastData = [] }) {
   // const chartData = forecastData.length ? [...data, ...forecastData] : data;
   const allData = [...data, ...forecastData];
   return (

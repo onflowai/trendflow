@@ -51,20 +51,26 @@ const TrendSchema = new mongoose.Schema(
     },
     trendStatsFetched: Boolean,
     interestOverTime: {
-      previousYear: [
-        {
-          date: String,
-          count: Number,
-        },
-        { _id: false },
-      ],
-      currentYear: [
-        {
-          date: String,
-          count: Number,
-        },
-        { _id: false },
-      ],
+      previousYear: {
+        type: [
+          {
+            date: String,
+            count: Number,
+          },
+        ],
+        _id: false, // Prevents MongoDB from creating a default _id field
+        default: [], // Ensures that the array is initialized even if not provided
+      },
+      currentYear: {
+        type: [
+          {
+            date: String,
+            count: Number,
+          },
+        ],
+        _id: false, // No _id for sub-documents in this array either
+        required: true, // Ensures this array must be provided
+      },
     },
     flashChart: {
       count: Number,
@@ -86,6 +92,28 @@ const TrendSchema = new mongoose.Schema(
       default: '',
     },
     contentGenerated: Boolean,
+    forecast: {
+      previousYear: {
+        type: [
+          {
+            date: String,
+            count: Number,
+          },
+        ],
+        _id: false, // Prevents MongoDB from creating a default _id field
+        default: [], // Ensures that the key exists even if empty
+      },
+      currentYear: {
+        type: [
+          {
+            date: String,
+            count: Number,
+          },
+        ],
+        _id: false, // Similar purpose as above
+        required: true, // Ensures this field must be provided
+      },
+    },
   },
   { timestamps: true }
 );
