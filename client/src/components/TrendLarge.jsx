@@ -45,8 +45,13 @@ function TrendLarge({
               </div>
             )}
             <TrendChartComponent data={interestOverTime} />
-            <h5>{trend}</h5>
-            <p>{trendCategory}</p>
+            <div className="trend-title-container">
+              <h3 className="mono-heading-bold">{trend}</h3>
+              <h6 className="mono-heading">{trendCategory}</h6>
+            </div>
+            <div className="description-container">
+              <h5 className="mono-heading">{trendDesc}</h5>
+            </div>
             <div className="content">
               <div className="content-center">
                 {/* Inline the icon and text presentation */}

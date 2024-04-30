@@ -19,6 +19,15 @@ const Container = styled.article`
       color: var(--text-secondary-color);
     }
   }
+  .trend-title-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .description-container{
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
   .content {
     padding: 1rem 1.5rem;
   }

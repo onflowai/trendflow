@@ -36,6 +36,7 @@ day.extend(advancedFormat);
 function Trend({
   interestOverTime,
   views,
+  trendStatus,
   isAdminPage,
   flashChart,
   onApprove,
@@ -61,6 +62,7 @@ function Trend({
     slug,
     trend,
     trendTech,
+    trendStatus,
     trendCategory,
     trendDesc,
     isLoading,

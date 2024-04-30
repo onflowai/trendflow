@@ -43,7 +43,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       >
         <p>{label}</p>
         <p>
-          <b>Count:</b> {payload[0].value}
+          <b> Δ :</b> {`${payload[0].value}%`}
         </p>
       </div>
     );
@@ -54,10 +54,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 function AreaChartComponent({ data }) {
   return (
     <Container>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={290}>
         <AreaChart
           data={data}
-          margin={{ top: 10, right: 0, left: -60, bottom: 0 }}
+          margin={{ top: 5, right: 0, left: -60, bottom: -10 }}
         >
           <defs>
             <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
@@ -67,10 +67,12 @@ function AreaChartComponent({ data }) {
           </defs>
 
           <XAxis
-            axisLine={{ stroke: '#b3b3b3' }}
+            axisLine={{ stroke: '#c3c3c3' }}
             dataKey="date"
             height={60}
             tick={<CustomizedAxisTick />} // Reintroduced X-axis ticks
+            stroke="#cccccc"
+            tickFormatter={(value) => `${value} units`}
           />
           <YAxis
             axisLine={false}
