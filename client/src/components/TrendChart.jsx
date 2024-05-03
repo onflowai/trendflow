@@ -84,10 +84,13 @@ function AreaChartComponent({ data }) {
             wrapperStyle={{ outline: 'none' }}
           />
           <Area
+            style={{ cursor: 'pointer' }}
             type="monotone"
             dataKey="count"
             stroke="#4541de"
             fill="url(#colorCount)"
+            animationDuration={400}
+            animationEasing="ease-out"
           />
         </AreaChart>
       </ResponsiveContainer>

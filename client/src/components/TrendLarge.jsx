@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FcElectricity,
   FcCalendar,
@@ -7,6 +7,8 @@ import {
   FcCheckmark,
   FcCancel,
 } from 'react-icons/fc';
+import { CiEdit } from 'react-icons/ci';
+// import { PiEyeThin } from 'react-icons/pi';
 import { TrendChartComponent, Loading } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
@@ -31,11 +33,14 @@ function TrendLarge({
   createdBy,
   isApproved,
 }) {
+  const navigate = useNavigate(); // Use navigate for navigation
+  const navigateToTrend = () => {
+    navigate(`/dashboard/trend/${slug}`);
+  };
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
-    <Container>
-      {console.log(interestOverTime)}
+    <Container onClick={navigateToTrend} className="trend-large-card">
       <header>
         <div className="overlay">
           <div className="info">
@@ -84,34 +89,28 @@ function TrendLarge({
                   </div>
                 )}
               </div>
-              <footer className="actions">
-                <Link to={`/dashboard/trend/${slug}`} className="btn info-btn">
-                  {trend}
-                </Link>
-                <Link
-                  to={`/dashboard/edit-trend/${slug}`}
-                  className="btn info-btn"
-                >
-                  Edit
-                </Link>
-                {isAdminPage &&
-                  (isApproved ? (
-                    <button
-                      className="btn danger-btn"
-                      onClick={() => onRemove(slug)}
-                    >
-                      Remove
-                    </button>
-                  ) : (
-                    <button
-                      className="btn info-btn"
-                      onClick={() => onApprove(slug)}
-                    >
-                      Approve
-                    </button>
-                  ))}
-              </footer>
             </div>
+            <footer className="actions">
+              <Link to={`/dashboard/edit-trend/${slug}`} className="edit-btn">
+                <CiEdit />
+              </Link>
+              {isAdminPage &&
+                (isApproved ? (
+                  <button
+                    className="btn danger-btn"
+                    onClick={() => onRemove(slug)}
+                  >
+                    Remove
+                  </button>
+                ) : (
+                  <button
+                    className="btn action-btn"
+                    onClick={() => onApprove(slug)}
+                  >
+                    Approve
+                  </button>
+                ))}
+            </footer>
           </div>
         </div>
       </header>

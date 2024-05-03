@@ -8,7 +8,7 @@ import {
   FcCancel,
 } from 'react-icons/fc';
 import { TrendLarge, TrendSmall } from '../components';
-import Container from '../assets/wrappers/TrendContainer';
+import Container from '../assets/wrappers/TrendContainer'; //general layout, color and loading
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
@@ -60,6 +60,7 @@ function Trend({
   // Props for TrendLarge
   const largeProps = {
     slug,
+    views,
     trend,
     trendTech,
     trendStatus,

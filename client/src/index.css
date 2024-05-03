@@ -76,6 +76,8 @@ html {
   /* rest of the vars */
   --border-radius: 0.5rem;
   --input-radius: 3rem;
+  --button-radius: 3rem;
+  --button-square-radius: 0.8rem;
   --letter-spacing: 1px;
   --transition: 0.1s ease-in-out all;
   --max-width: 1120px;
@@ -128,13 +130,13 @@ html {
   --background-third-color: var(--dark-mode-bg-third-color);
 }
 /* FONTS */
-.mono-heading {
+/* .mono-heading {
   font-family: 'JetBrains Mono', monospace;
 }
 .mono-heading-bold {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
-}
+} */
 body {
   background: var(--background-color);
   color: var(--text-color);
@@ -255,7 +257,7 @@ ul {
   color: var(--grey-500);
   background: var(--white);
   border: 1px solid var(--grey-200);
-  border-radius: var(--input-radius);
+  border-radius: var(--button-radius);
   letter-spacing: var(--letter-spacing);
   padding: 0.6rem 0.75rem;
   box-shadow: var(--shadow-1);
@@ -263,7 +265,6 @@ ul {
   text-transform: capitalize;
   display: inline-block;
 }
-
 .btn:hover {
   background: var(--grey-50);
   box-shadow: var(--shadow-3);

@@ -9,12 +9,12 @@ import Container from '../assets/wrappers/ChartsContainer';
  * @returns
  */
 function TrendChartComponent({ data }) {
-  // Destructuring the passed charts data
-  const { previousYear, currentYear } = data;
+  const { previousYear, currentYear } = data; // destructuring the passed charts data
   const combinedData = [...previousYear, ...currentYear];
+  const latestData = combinedData.slice(-12); // getting only the latest 12 data points
   return (
     <Container>
-      <TrendChart data={combinedData} />
+      <TrendChart data={latestData} />
     </Container>
   );
 }
