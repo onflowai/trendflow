@@ -44,6 +44,7 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
     padding-right: 1rem;
   }
   .description-container{
+    height: 30px;
     padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -54,24 +55,30 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
     flex-direction: column; // Stacks child elements vertically
     justify-content: space-between; // Distributes space around items
     padding: 1rem 1rem;
+    border: 1px red;
   }
   .content-center {
-    display: flex;
-    flex-direction: column;
-    margin-top: 0.1;
-    margin-bottom: 1.5rem;
-    row-gap: 1rem; // Adjusted to manage space between rows
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // Creates two columns
+  grid-gap: 0.2rem; // Adds space between the grid items
+  margin-top: 0.1rem;
+  margin-bottom: 1rem;
+}
   .info-section {
-    display: flex;
-    align-items: center;
+  display: flex;
+  padding: 0.5rem;
+  align-items: center;
+  padding: 0.1rem; // Add padding inside each info section
+  margin: 0.1rem; // Optionally add some margin for spacing between sections
+  border-radius: 0.25rem; // Optional: rounded corners
     .icon {
       font-size: 1rem;
-      margin-right: 1rem;
+      margin-right: 0.4rem;
       display: flex;
       align-items: center;
     }
     .text {
+      font-size: 0.9rem;
       text-transform: capitalize;
       letter-spacing: var(--letter-spacing);
       margin-bottom: 0;
@@ -127,6 +134,14 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
 }
 .btn-block {
   width: 100%;
+}
+.bookmark-btn{
+  size: 30px;
+  border: none;            /* Removes the border */
+  background: none;        /* Optional: Removes background if desired */
+  cursor: pointer;         /* Makes it clear it's clickable */
+  padding: 0;              /* Optional: Adjusts padding to zero */
+  outline: none;  
 }
 `;
 

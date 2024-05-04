@@ -130,10 +130,11 @@ html {
   --background-third-color: var(--dark-mode-bg-third-color);
 }
 /* FONTS */
-/* .mono-heading {
+.mono-font {
   font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
 }
-.mono-heading-bold {
+/* .mono-heading-bold {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
 } */

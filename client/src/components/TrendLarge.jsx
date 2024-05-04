@@ -1,12 +1,7 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  FcElectricity,
-  FcCalendar,
-  FcApproval,
-  FcCheckmark,
-  FcCancel,
-} from 'react-icons/fc';
+import { IoIosCheckmark, IoIosClose } from 'react-icons/io';
+import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { CiEdit } from 'react-icons/ci';
 import {
   PiUserCircleThin,
@@ -41,6 +36,9 @@ function TrendLarge({
   createdBy,
   isApproved,
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
   const navigate = useNavigate(); // Use navigate for navigation
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${slug}`);
@@ -60,13 +58,27 @@ function TrendLarge({
                 <Loading />
               </div>
             )}
+            {isAdminPage && (
+              <div className="info-section">
+                <span className="icon">
+                  {isApproved ? <IoIosCheckmark /> : <IoIosClose />}
+                </span>
+                <span className="text">
+                  {isApproved ? 'Approved' : 'Not Approved'}
+                </span>
+              </div>
+            )}
             <TrendChartComponent data={interestOverTime} />
             <div className="trend-title-container">
               <h3 className="mono-heading-bold">{trend}</h3>
               <h6 className="mono-heading">{trendCategory}</h6>
             </div>
             <div className="description-container">
-              <h5 className="mono-heading">{trendDesc}</h5>
+              <h5 className="description">
+                {trendDesc.length > 80
+                  ? trendDesc.substring(0, 80) + '...'
+                  : trendDesc}
+              </h5>
             </div>
             {/* INFO SECTION */}
             <div className="content">
@@ -96,32 +108,41 @@ function TrendLarge({
                   </span>
                   <span className="text">{upDate}</span>
                 </div>
-                {isAdminPage && (
-                  <div className="info-section">
-                    <span className="icon">
-                      {isApproved ? <FcCheckmark /> : <FcCancel />}
-                    </span>
-                    <span className="text">
-                      {isApproved ? 'Approved' : 'Not Approved'}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
+            {/* USER & BUTTONS */}
             <footer className="actions">
-              <div className="info-section">
+              <div className="user-section">
                 <span className="icon">
                   <PiUserCircleThin />
                 </span>
                 <span className="text">{createdBy.username}</span>
               </div>
-              <Link
-                to={`/dashboard/edit-trend/${slug}`}
-                className="edit-btn"
-                onClick={handleInnerClick}
-              >
-                <CiEdit />
-              </Link>
+              {isAdminPage ? (
+                <Link
+                  to={`/dashboard/edit-trend/${slug}`}
+                  className="edit-btn"
+                  onClick={handleInnerClick}
+                >
+                  <CiEdit />
+                </Link>
+              ) : (
+                <Link
+                  className="bookmark-btn"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={(e) => {
+                    handleInnerClick(e);
+                    onSave(slug);
+                  }}
+                >
+                  {isHovered ? (
+                    <BsFillBookmarkFill size="20px" />
+                  ) : (
+                    <BsBookmark size="20px" />
+                  )}
+                </Link>
+              )}
               {isAdminPage &&
                 (isApproved ? (
                   <button
