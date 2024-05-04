@@ -70,6 +70,11 @@ export const socialLinks = [
   { id: 3, href: 'https://www.twitter.com', icon: 'fab fa-squarespace' },
 ];
 
+export const tagLarge = 'Find Out About New Tech Trends';
+
+export const tagSmall =
+  "Don't struggle staying in the know about all new technologies you wish you knew existed, starting now 🌀 .";
+
 export const services = [
   {
     id: 1,

@@ -1,5 +1,6 @@
 import React from 'react';
 import img from '../assets/images/test-img.jpg';
+import { tagLarge, tagSmall } from '../assets/utils/data';
 import Container from '../assets/wrappers/LandingHeroContainer';
 import { Link } from 'react-router-dom';
 const LandingHero = () => {
@@ -9,15 +10,10 @@ const LandingHero = () => {
         <div className="container page">
           <div className="info">
             <h1>
-              Trend<span>Flow</span>
+              trend<span>Flow</span>
             </h1>
-            <h1>
-              Find Out About New Tech Trends<span></span>
-            </h1>
-            <p>
-              Track and find tech trends trends and learn how to make small
-              projects to learn.
-            </p>
+            <h1>{tagLarge}</h1>
+            <p>{tagSmall}</p>
             <Link to="/register" className="btn register-link">
               Create Account
             </Link>

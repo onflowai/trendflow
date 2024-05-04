@@ -1,23 +1,20 @@
-import React from 'react';
-import highlightKeywords from '../utils/dangerous_highlight';
-import { keywordStyles } from '../utils/dangerous_keywords';
+import React, { useEffect } from 'react';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/default.css'; // Choose a style that suits your application
 import Container from '../assets/wrappers/DangerousHTMLContainer';
+import 'highlight.js/styles/github.css';
 
-// function highlightKeywords(html) {
-//   const keywords = ['@import', 'div', '']; // Add more keywords as needed
-//   keywords.forEach((keyword) => {
-//     const regex = new RegExp(`(${keyword})`, 'gi');
-//     html = html.replace(regex, '<span class="highlight">$1</span>');
-//   });
-//   return html;
-// }
 const DangerousHTML = ({ html }) => {
-  const processedHtml = highlightKeywords(html, keywordStyles);
+  useEffect(() => {
+    // Initialize highlight.js to highlight code blocks
+    hljs.highlightAll();
+  }, [html]); // Re-run effect when HTML content changes
+
   return (
     <Container>
       <div
         className="html-content"
-        dangerouslySetInnerHTML={{ __html: processedHtml }}
+        dangerouslySetInnerHTML={{ __html: html }}
       />
     </Container>
   );

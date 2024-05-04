@@ -55,7 +55,7 @@ const Container = styled.section`
     margin: 10px 0; // Space above and below the code block
     font-family: Menlo; // Monospace font for code
   }
-  p > code,
+  /* p > code,
   li > code,
   dd > code,
   td > code {
@@ -64,6 +64,6 @@ const Container = styled.section`
   box-decoration-break: clone;
   padding: .1rem .3rem .2rem;
   border-radius: .2rem;
-    }
+    } */
 `;
 export default Container;
