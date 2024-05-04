@@ -27,7 +27,7 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
   }
   .info {
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
     h5 {
       font-size: 0.8rem;
@@ -84,6 +84,10 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
     flex-wrap: wrap;
     gap: 0.5rem; // Provides spacing between buttons when wrapped
   }
+  .edit-btn svg {
+  width: 1.5em;  // Icon width scales with text size
+  height: 1.5em; // Icon height scales with text size
+}
   /* BUTTON STYLING */
   .edit-btn,
   .action-btn,

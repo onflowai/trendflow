@@ -8,7 +8,13 @@ import {
   FcCancel,
 } from 'react-icons/fc';
 import { CiEdit } from 'react-icons/ci';
-// import { PiEyeThin } from 'react-icons/pi';
+import {
+  PiUserCircleThin,
+  PiHashLight,
+  PiEyeThin,
+  PiTimerThin,
+  PiTrendUpLight,
+} from 'react-icons/pi'; //PiEyeThin
 import { TrendChartComponent, Loading } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
@@ -20,22 +26,27 @@ day.extend(advancedFormat);
  */
 function TrendLarge({
   slug,
+  views,
   trend,
   trendTech,
   trendCategory,
   trendDesc,
-  updatedAt,
+  trendStatus,
   isLoading,
   upDate,
   interestOverTime,
   isAdminPage,
   onApprove,
+  onDelete,
   createdBy,
   isApproved,
 }) {
   const navigate = useNavigate(); // Use navigate for navigation
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${slug}`);
+  };
+  const handleInnerClick = (event) => {
+    event.stopPropagation(); // stops the click from reaching the container
   };
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
@@ -57,26 +68,33 @@ function TrendLarge({
             <div className="description-container">
               <h5 className="mono-heading">{trendDesc}</h5>
             </div>
+            {/* INFO SECTION */}
             <div className="content">
               <div className="content-center">
                 {/* Inline the icon and text presentation */}
                 <div className="info-section">
                   <span className="icon">
-                    <FcElectricity />
+                    <PiHashLight />
                   </span>
                   <span className="text">{trendTech}</span>
                 </div>
                 <div className="info-section">
                   <span className="icon">
-                    <FcCalendar />
+                    <PiTrendUpLight />
                   </span>
-                  <span className="text">{upDate}</span>
+                  <span className="text">{trendStatus}</span>
                 </div>
                 <div className="info-section">
                   <span className="icon">
-                    <FcApproval />
+                    <PiEyeThin />
                   </span>
-                  <span className="text">{createdBy.username}</span>
+                  <span className="text">{views}</span>
+                </div>
+                <div className="info-section">
+                  <span className="icon">
+                    <PiTimerThin />
+                  </span>
+                  <span className="text">{upDate}</span>
                 </div>
                 {isAdminPage && (
                   <div className="info-section">
@@ -91,21 +109,37 @@ function TrendLarge({
               </div>
             </div>
             <footer className="actions">
-              <Link to={`/dashboard/edit-trend/${slug}`} className="edit-btn">
+              <div className="info-section">
+                <span className="icon">
+                  <PiUserCircleThin />
+                </span>
+                <span className="text">{createdBy.username}</span>
+              </div>
+              <Link
+                to={`/dashboard/edit-trend/${slug}`}
+                className="edit-btn"
+                onClick={handleInnerClick}
+              >
                 <CiEdit />
               </Link>
               {isAdminPage &&
                 (isApproved ? (
                   <button
                     className="btn danger-btn"
-                    onClick={() => onRemove(slug)}
+                    onClick={(e) => {
+                      handleInnerClick(e);
+                      onDelete(slug);
+                    }}
                   >
                     Remove
                   </button>
                 ) : (
                   <button
                     className="btn action-btn"
-                    onClick={() => onApprove(slug)}
+                    onClick={(e) => {
+                      handleInnerClick(e);
+                      onApprove(slug);
+                    }}
                   >
                     Approve
                   </button>

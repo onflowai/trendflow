@@ -51,6 +51,19 @@ const Admin = () => {
       setLoadingSlug(null); // stop loading regardless of success or failure
     }
   };
+  const removeTrend = async (slug) => {
+    try {
+      setLoadingSlug(slug); // start loading
+      await customFetch.delete(`/trends/edit/${slug}`);
+      // Handle successful approval (e.g., show a success message, refresh the list of trends, etc.)
+      toast.success('Trend deleted successfully!');
+    } catch (error) {
+      // Handle error (e.g., show an error message)
+      toast.error(error?.response?.data?.msg || 'Error deleting trend');
+    } finally {
+      setLoadingSlug(null); // stop loading regardless of success or failure
+    }
+  };
   const { trends, stats, charts } = useLoaderData();
   console.log('Logging Charts: ', charts);
   const { user } = useOutletContext();
@@ -91,6 +104,7 @@ const Admin = () => {
       <SearchTrends />
       <Trends
         trends={trends}
+        onDelete={removeTrend}
         onApprove={approveTrend}
         isAdminPage={isAdminPage}
         loadingSlug={loadingSlug}
