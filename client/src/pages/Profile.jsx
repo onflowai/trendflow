@@ -1,12 +1,11 @@
 import React from 'react';
 import { Form, useLoaderData, redirect, useNavigation } from 'react-router-dom';
 import {
-  Trends,
-  SearchTrends,
   CustomSuccessToast,
   CustomErrorToast,
   StatComponent,
   FormComponent,
+  ProfileHeader,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
@@ -43,44 +42,46 @@ const Profile = () => {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   return (
-    <>
+    <Container>
+      <ProfileHeader user={user} />
       <StatComponent
-        user={user.name}
         stats={[
           {
             title: 'Approved Trends',
             value: stats.approvedTrends,
             icon: <FcApprove />,
-            change: 1.01,
           },
           {
             title: 'Total Trend Views',
             value: stats.totalTrendViews,
             icon: <FcLineChart />,
-            change: -1.01,
           },
           {
             title: 'Submitted Trends',
             value: stats.submittedTrends,
             icon: <FcCheckmark />,
-            change: 1.01,
           },
           {
             title: 'Total Site Trends',
             value: stats.totalSiteTrends,
             icon: <FcCancel />,
-            change: 1.01,
           },
         ]}
       />
-      <SearchTrends />
-      <Form method="post" className="form" encType="multipart/form-data">
+      <Form method="post" className="user-form" encType="multipart/form-data">
+        <div className="user-image">
+          {user.profile_img ? (
+            <img src={user.profile_img} alt="user image" className="img" />
+          ) : (
+            <FaUserCircle className="user" />
+          )}
+        </div>
         <h4 type="text" name="username">
           {username}
         </h4>
         <div className="form-center">
           <div className="form-row">
-            <label htmlFor="avatar" className="form-label"></label>
+            <label htmlFor="avatar" className="form-label-user"></label>
             <input
               type="file"
               name="profile_img"
@@ -113,7 +114,7 @@ const Profile = () => {
           </button>
         </div>
       </Form>
-    </>
+    </Container>
   );
 };
 

@@ -3,9 +3,10 @@ import styled from 'styled-components';
 const Container = styled.article`
   /* background: var(--background-color); */
   position: relative;
-  background: var(--white);
+  /* background: var(--white); */
+  background: var(--primary-5);
   border-radius: var(--border-radius);
-  border: 1px solid var(--grey-70);
+  border: 1.5px solid var(--grey-70);
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;

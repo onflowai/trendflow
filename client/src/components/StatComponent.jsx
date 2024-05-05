@@ -9,10 +9,6 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 function StatComponent({ user, stats }) {
   return (
     <Container>
-      <header>
-        <h1>Welcome Back, {user} </h1>
-        <p>Here is the information about all your trends</p>
-      </header>
       <div className="stats-container">
         {stats.map((stat, index) => (
           <div key={index} className="stat">
@@ -23,15 +19,6 @@ function StatComponent({ user, stats }) {
               </div>
               <div className="icon-box">{stat.icon}</div>
             </div>
-            {stat.change && (
-              <div
-                className={`change ${
-                  stat.change > 0 ? 'positive' : 'negative'
-                }`}
-              >
-                <FaArrowLeft /> {stat.change}% this week
-              </div>
-            )}
           </div>
         ))}
       </div>

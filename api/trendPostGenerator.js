@@ -1,5 +1,8 @@
 import { OpenAIApi, Configuration } from 'openai'; //openai's SDK
 import {
+  MAX_TOKENS_POST,
+  MAX_TOKENS_DESC,
+  MAX_TOKENS_USE,
   SYSTEM_ROLE_POST,
   USER_ROLE_POST,
   RESPONSE_SYSTEM_ROLE,
@@ -32,7 +35,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
     const blogPostResponse = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: MAX_TOKENS_POST,
       messages: [
         {
           role: 'system',
@@ -59,21 +62,22 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
       const trendDescResponse = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
-        max_tokens: 500,
+        max_tokens: MAX_TOKENS_DESC,
         messages: [
           { role: 'system', content: RESPONSE_SYSTEM_ROLE },
           {
             role: 'user',
-            content: `${RESPONSE_USER_DESC} here is the blog post: "${trendPost}"`,
+            content: `${RESPONSE_USER_DESC} here is the blog post:= ${trendPost}`,
           },
         ],
       });
+      //Using blogPost to generate a paragraph of best uses for the trend
       const response = trendDescResponse.data.choices[0]?.message?.content;
       trendDesc = response;
       const trendUseResponse = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
-        max_tokens: 800,
+        max_tokens: MAX_TOKENS_USE,
         messages: [
           { role: 'system', content: RESPONSE_SYSTEM_ROLE },
           {

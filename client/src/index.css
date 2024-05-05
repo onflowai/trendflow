@@ -14,7 +14,8 @@ html {
 
 :root {
   /* colors */
-  --primary-50: #d0cff7;
+  --primary-5: #fbfbff;
+  --primary-50: #e1e0f7;
   --primary-100: #c1bff6;
   --primary-200: #a6a3ef;
   --primary-300: #9592e8;

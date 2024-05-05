@@ -54,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 function AreaChartComponent({ data }) {
   return (
     <Container>
-      <ResponsiveContainer width="100%" height={290}>
+      <ResponsiveContainer width="100%" height={290} debounce={500}>
         <AreaChart
           data={data}
           margin={{ top: 5, right: 0, left: -60, bottom: -10 }}

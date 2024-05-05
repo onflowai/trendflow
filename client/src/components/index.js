@@ -26,3 +26,4 @@ export { default as DangerousHTML } from './DangerousHTML';
 export { default as TrendLarge } from './TrendLarge';
 export { default as Loading } from './Loading';
 export { default as TrendSmall } from './TrendSmall';
+export { default as ProfileHeader } from './ProfileHeader';
