@@ -70,3 +70,29 @@ export const getApplicationStats = async (req, res) => {
   const unapproved = await trendModel.countDocuments({ isApproved: false });
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
 }; //end getApplicationStats
+
+//SAVE USER TREND:
+export const saveUserTrend = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const user = await userModel.findById(req.user.userID);
+    console.log('_id in saveUserTrend: ', _id);
+    console.log('req.user.userID in saveUserTrend: ', req.user.userID);
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    if (user.savedTrends.includes(_id)) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: 'Trend already saved' });
+    } // checking if _id already exists in savedTrends array
+    user.savedTrends.push(_id); // adding _id to savedTrends array
+    await user.save();
+    res.status(StatusCodes.OK).json({ msg: 'Trend saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: 'Something went wrong' });
+  }
+};

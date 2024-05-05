@@ -32,6 +32,12 @@ const UserSchema = new mongoose.Schema(
     },
     profile_img: String,
     profile_img_id: String,
+    savedTrends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Trend', // reference to the Trend model prevents duplication
+      },
+    ],
   },
   {
     timestamps: true,

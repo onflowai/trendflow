@@ -40,6 +40,7 @@ function Trend({
   isAdminPage,
   flashChart,
   onApprove,
+  onSave,
   onDelete,
   createdAt,
   createdBy,
@@ -60,6 +61,7 @@ function Trend({
 
   // Props for TrendLarge
   const largeProps = {
+    _id,
     slug,
     views,
     trend,
@@ -73,6 +75,7 @@ function Trend({
     isAdminPage,
     onApprove,
     onDelete,
+    onSave,
     createdAt,
     createdBy,
     isApproved,
@@ -80,6 +83,7 @@ function Trend({
 
   // Props for TrendSmall
   const smallProps = {
+    _id,
     trend,
     trendTech,
     trendCategory,

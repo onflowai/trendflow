@@ -15,7 +15,11 @@ import {
   Admin,
   Stats,
 } from './pages';
-
+/**
+ * using React Router from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
+ * 'loader' property allows you to specify a loader function that fetches data asynchronously before rendering the corresponding component
+ * @returns
+ */
 //Function responsible for setting DarkTheme by persisting it in local storage
 export const checkDefaultTheme = () => {
   //retrieving the state of the darkTheme to check if it true

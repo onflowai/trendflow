@@ -18,13 +18,30 @@ export const loader = async () => {
     return error;
   }
 };
+//function for bookmarking trends for each user
+const onSave = async (_id) => {
+  console.log('ID in onSave: ', _id);
+  try {
+    const response = await customFetch.patch('/users/save-trend', { _id });
+    if (response.status === 200) {
+      toast.success('Trend saved successfully');
+    } else {
+      toast.error('Failed to save trend');
+    }
+  } catch (error) {
+    toast.error('An error occurred while saving trend');
+    console.error(error);
+  }
+};
+console.log('ON SAVE: ', onSave);
 
 const AllTrends = () => {
   const { data } = useLoaderData();
+  console.log('Trends: ', data.trends);
   return (
     <>
       <SearchTrends />
-      <Trends trends={data.trends} />
+      <Trends trends={data.trends} onSave={onSave} />
     </>
   );
 };

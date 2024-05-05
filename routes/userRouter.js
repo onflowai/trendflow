@@ -4,6 +4,7 @@ import {
   getApplicationStats,
   getCurrentUser,
   updateUser,
+  saveUserTrend,
 } from '../controllers/userController.js';
 import {
   authenticateUser,
@@ -31,5 +32,7 @@ router.patch(
   updateUser
 );
 router.post('/visits', logVisit);
+
+router.patch('/save-trend', authenticateUser, saveUserTrend);
 
 export default router;

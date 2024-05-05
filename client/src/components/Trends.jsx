@@ -8,7 +8,14 @@ import Container from '../assets/wrappers/TrendsContainer';
  * @returns
  */
 
-function Trends({ trends, onApprove, onDelete, isAdminPage, loadingSlug }) {
+function Trends({
+  trends,
+  onApprove,
+  onDelete,
+  isAdminPage,
+  loadingSlug,
+  onSave,
+}) {
   console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
@@ -29,6 +36,7 @@ function Trends({ trends, onApprove, onDelete, isAdminPage, loadingSlug }) {
               onApprove={onApprove}
               isAdminPage={isAdminPage}
               loadingSlug={loadingSlug}
+              onSave={onSave}
             ></Trend>
           );
         })}

@@ -20,6 +20,7 @@ day.extend(advancedFormat);
  * @returns
  */
 function TrendLarge({
+  _id,
   slug,
   views,
   trend,
@@ -33,9 +34,11 @@ function TrendLarge({
   isAdminPage,
   onApprove,
   onDelete,
+  onSave,
   createdBy,
   isApproved,
 }) {
+  console.log('ID____: ', _id);
   const [isHovered, setIsHovered] = useState(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -133,7 +136,7 @@ function TrendLarge({
                   onMouseLeave={handleMouseLeave}
                   onClick={(e) => {
                     handleInnerClick(e);
-                    onSave(slug);
+                    onSave(_id);
                   }}
                 >
                   {isHovered ? (
