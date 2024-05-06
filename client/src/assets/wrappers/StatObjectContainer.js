@@ -26,7 +26,7 @@ const Container = styled.main`
   }
 
   .stats-container {
-   display: flex;
+  display: flex;
   justify-content: space-around; /* This distributes children with space around them */
   border: 1.5px solid #eee;
   padding-top: 0.5rem;

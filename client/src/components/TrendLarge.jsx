@@ -35,6 +35,7 @@ function TrendLarge({
   onApprove,
   onDelete,
   onSave,
+  savedTrends,
   createdBy,
   isApproved,
 }) {
@@ -49,6 +50,7 @@ function TrendLarge({
   const handleInnerClick = (event) => {
     event.stopPropagation(); // stops the click from reaching the container
   };
+  const isSaved = savedTrends.includes(_id); // checking if the current trend is saved
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
@@ -139,7 +141,7 @@ function TrendLarge({
                     onSave(_id);
                   }}
                 >
-                  {isHovered ? (
+                  {isSaved || isHovered ? (
                     <BsFillBookmarkFill size="20px" />
                   ) : (
                     <BsBookmark size="20px" />

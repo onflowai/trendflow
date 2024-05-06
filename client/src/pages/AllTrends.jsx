@@ -11,11 +11,19 @@ import { useContext, createContext } from 'react';
  */
 export const loader = async () => {
   try {
-    const { data } = await customFetch.get('/trends');
-    return { data };
+    const { data: trendsData } = await customFetch.get('/trends');
+    const { data: savedTrendsData } = await customFetch.get(
+      '/users/saved-trends'
+    );
+    //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
+    const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    return {
+      trends: trendsData,
+      savedTrendIds,
+    };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    return error;
+    return { error: error?.response?.data?.msg || 'An error occurred' };
   }
 };
 //function for bookmarking trends for each user
@@ -36,12 +44,19 @@ const onSave = async (_id) => {
 console.log('ON SAVE: ', onSave);
 
 const AllTrends = () => {
-  const { data } = useLoaderData();
-  console.log('Trends: ', data.trends);
+  const { trends, savedTrendIds, error } = useLoaderData();
+  console.log('savedTrends: ', savedTrendIds);
+  if (error) {
+    return <div>Error loading data: {error}</div>;
+  }
   return (
     <>
       <SearchTrends />
-      <Trends trends={data.trends} onSave={onSave} />
+      <Trends
+        trends={trends.trends}
+        savedTrends={savedTrendIds}
+        onSave={onSave}
+      />
     </>
   );
 };

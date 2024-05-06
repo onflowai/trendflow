@@ -71,7 +71,7 @@ export const getApplicationStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
 }; //end getApplicationStats
 
-//SAVE USER TREND:
+//SAVE USER bookmarked TREND:
 export const saveUserTrend = async (req, res) => {
   try {
     const { _id } = req.body;
@@ -94,5 +94,20 @@ export const saveUserTrend = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: 'Something went wrong' });
+  }
+};
+//GET USER bookmarked TREND
+export const getUserSavedTrends = async (req, res) => {
+  try {
+    const user = await userModel // fetching the user document with savedTrends populated
+      .findById(req.user.userID)
+      .populate('savedTrends');
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    const savedTrends = user.savedTrends; // extracting the saved trends from the user document
+    res.status(StatusCodes.OK).json({ savedTrends }); // returning the saved trends
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // handle errors
   }
 };

@@ -16,7 +16,7 @@ import {
   Stats,
 } from './pages';
 /**
- * using React Router from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
+ * using React Router v6 from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
  * 'loader' property allows you to specify a loader function that fetches data asynchronously before rendering the corresponding component
  * @returns
  */
@@ -34,6 +34,7 @@ import { action as loginAction } from './pages/Login';
 import { loader as dashboardLoader } from './pages/DashboardLayout';
 import { action as addTrendAction } from './pages/AddTrend';
 import { loader as allTrendsLoader } from './pages/AllTrends';
+import { loader as getUserSavedTrends } from './pages/AllTrends';
 import { action as editTrendAction } from './pages/EditTrend';
 import { loader as editTrendLoader } from './pages/EditTrend';
 import { action as deleteTrendAction } from './pages/DeleteTrend';
@@ -73,6 +74,7 @@ const router = createBrowserRouter([
             index: true,
             element: <AllTrends />,
             loader: allTrendsLoader,
+            loader: getUserSavedTrends,
           },
           {
             path: 'stats',
