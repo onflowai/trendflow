@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoIosCheckmark, IoIosClose } from 'react-icons/io';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { CiEdit } from 'react-icons/ci';
+import { LiaClock } from 'react-icons/lia';
 import {
   PiUserCircleThin,
   PiHashLight,
-  PiEyeThin,
-  PiTimerThin,
-  PiTrendUpLight,
+  PiEyeLight,
+  PiTrendUp,
 } from 'react-icons/pi'; //PiEyeThin
 import { TrendChartComponent, Loading } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
@@ -50,7 +50,7 @@ function TrendLarge({
   const handleInnerClick = (event) => {
     event.stopPropagation(); // stops the click from reaching the container
   };
-  const isSaved = savedTrends.includes(_id); // checking if the current trend is saved
+  const isSaved = savedTrends?.includes(_id); // checking if the current trend is saved
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
@@ -97,19 +97,19 @@ function TrendLarge({
                 </div>
                 <div className="info-section">
                   <span className="icon">
-                    <PiTrendUpLight />
+                    <PiTrendUp />
                   </span>
                   <span className="text">{trendStatus}</span>
                 </div>
                 <div className="info-section">
                   <span className="icon">
-                    <PiEyeThin />
+                    <PiEyeLight />
                   </span>
                   <span className="text">{views}</span>
                 </div>
                 <div className="info-section">
                   <span className="icon">
-                    <PiTimerThin />
+                    <LiaClock />
                   </span>
                   <span className="text">{upDate}</span>
                 </div>

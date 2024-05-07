@@ -65,6 +65,7 @@ transition: background-color 0.3s ease; // Smooth transition for background colo
   margin-bottom: 1rem;
 }
   .info-section {
+  color: var(--grey-400);
   display: flex;
   padding: 0.5rem;
   align-items: center;

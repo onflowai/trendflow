@@ -3,8 +3,10 @@ import styled from 'styled-components';
 const Container = styled.article`
   /* background: var(--background-color); */
   position: relative;
-  /* background: var(--white); */
-  background: var(--primary-5);
+  background: var(--white);
+  /* background: var(--grey-5); */
+  /* background: var(--primary-5); */
+  /* background: var(--grey-30); */
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-70);
   display: grid;
