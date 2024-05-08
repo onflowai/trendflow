@@ -2,7 +2,7 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useOutletContext } from 'react-router-dom';
 import { useContext, createContext } from 'react';
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
@@ -12,14 +12,10 @@ import { useContext, createContext } from 'react';
 export const loader = async () => {
   try {
     const { data: trendsData } = await customFetch.get('/trends');
-    const { data: savedTrendsData } = await customFetch.get(
-      '/users/saved-trends'
-    );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
-    const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    // const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
     return {
       trends: trendsData,
-      savedTrendIds,
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -44,7 +40,10 @@ const onSave = async (_id) => {
 console.log('ON SAVE: ', onSave);
 
 const AllTrends = () => {
-  const { trends, savedTrendIds, error } = useLoaderData();
+  const { user } = useOutletContext();
+  const savedTrendIds = user.savedTrends;
+  const { trends, error } = useLoaderData();
+  console.log('IN DASHBOARD ', user.savedTrends);
   console.log('savedTrends: ', savedTrendIds);
   if (error) {
     return <div>Error loading data: {error}</div>;

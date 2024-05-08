@@ -80,7 +80,7 @@ const DashboardLayout = () => {
         setSidebarVisibility,
       }}
     >
-      {console.log(user)}
+      {console.log('IN DASHBOARD USER: ', user)}
       <Container>
         <main className="dashboard">
           <SidebarSmall />

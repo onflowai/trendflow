@@ -18,6 +18,22 @@ import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
  * images.
  * @returns
  */
+export const loader = async () => {
+  try {
+    const { data: trendsData } = await customFetch.get('/trends');
+    const { data: savedTrendsData } = await customFetch.get(
+      '/users/saved-trends'
+    );
+    //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
+    // const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    return {
+      trends: trendsData,
+    };
+  } catch (error) {
+    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    return { error: error?.response?.data?.msg || 'An error occurred' };
+  }
+};
 export const action = async ({ request }) => {
   const formData = await request.formData(); //getting the form data out of the request where it is loaded with react
   const file = formData.get('profile_img'); //pointing to the image upload by user
@@ -38,6 +54,7 @@ export const action = async ({ request }) => {
 
 const Profile = () => {
   const { user, stats } = useOutletContext();
+  console.log('PROFILE: ', user);
   const { username, name, lastName, email } = user;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
@@ -84,67 +101,66 @@ const Profile = () => {
           },
         ]}
       />
-      <Form
-        method="post"
-        className="user-form-container"
-        encType="multipart/form-data"
-      >
-        <div className="user-image">
-          {user.profile_img ? (
-            <img src={user.profile_img} alt="user image" className="img" />
-          ) : (
-            <FaUserCircle className="user" /> // Fallback User Icon
-          )}
-          <div className="edit-button-wrapper">
-            <button
-              className="edit-button"
-              type="button"
-              onClick={handleEditClick}
-            >
-              Edit
-            </button>
-            {isDropdownVisible && (
-              <div className="dropdown" ref={dropdownRef}>
-                <label htmlFor="profile_img" className="dropdown-option">
-                  Upload
-                </label>
-                <input
-                  type="file"
-                  name="profile_img"
-                  id="profile_img"
-                  className="form-input"
-                  accept="image/*"
-                />
-                <label className="dropdown-option">Remove</label>
-              </div>
+      <div className="user-form-container">
+        <Form method="post" encType="multipart/form-data">
+          <div className="user-image">
+            {user.profile_img ? (
+              <img src={user.profile_img} alt="user image" className="img" />
+            ) : (
+              <FaUserCircle className="user" /> // Fallback User Icon
             )}
+            <div className="edit-button-wrapper">
+              <button
+                className="edit-button"
+                type="button"
+                onClick={handleEditClick}
+              >
+                Edit
+              </button>
+              {isDropdownVisible && (
+                <div className="dropdown" ref={dropdownRef}>
+                  <label htmlFor="profile_img" className="dropdown-option">
+                    Upload
+                  </label>
+                  <input
+                    type="file"
+                    name="profile_img"
+                    id="profile_img"
+                    className="form-input"
+                    accept="image/*"
+                  />
+                  <label className="dropdown-option">Remove</label>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="form-user">
-          <FormComponent
-            type="text"
-            name="name"
-            defaultValue={name}
-          ></FormComponent>
-          <FormComponent
-            type="email"
-            name="email"
-            defaultValue={email}
-          ></FormComponent>
-          <FormComponent
-            type="text"
-            name="lastName"
-            defaultValue={lastName}
-          ></FormComponent>
-          <button
-            className="btn btn-block from-btn"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'submitting...' : 'submit'}
-          </button>
-        </div>
-      </Form>
+          <h5>{username}</h5>
+          <div className="form-user">
+            <FormComponent
+              type="text"
+              name="name"
+              defaultValue={name}
+            ></FormComponent>
+            <FormComponent
+              type="email"
+              name="email"
+              defaultValue={email}
+            ></FormComponent>
+            <FormComponent
+              type="text"
+              name="lastName"
+              defaultValue={lastName}
+            ></FormComponent>
+            <button
+              className="btn btn-block from-btn"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'submitting...' : 'submit'}
+            </button>
+          </div>
+        </Form>
+      </div>
     </Container>
   );
 };
