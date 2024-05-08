@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Form, useLoaderData, redirect, useNavigation } from 'react-router-dom';
 import {
   CustomSuccessToast,
@@ -26,7 +26,7 @@ export const action = async ({ request }) => {
     return null;
   }
   try {
-    await customFetch.patch('users/update-user', formData);
+    await customFetch.patch('users/update-user', formData); //uploading users Image
     toast.success(
       <CustomSuccessToast message={'Profile Updated Successfully'} />
     );
@@ -41,6 +41,22 @@ const Profile = () => {
   const { username, name, lastName, email } = user;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
+  const handleEditClick = () => {
+    setIsDropdownVisible(!isDropdownVisible); // toggles dropdown visibility
+  };
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false); // closing dropdown if clicked outside
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
     <Container>
       <ProfileHeader user={user} />
@@ -68,28 +84,43 @@ const Profile = () => {
           },
         ]}
       />
-      <Form method="post" className="user-form" encType="multipart/form-data">
+      <Form
+        method="post"
+        className="user-form-container"
+        encType="multipart/form-data"
+      >
         <div className="user-image">
           {user.profile_img ? (
             <img src={user.profile_img} alt="user image" className="img" />
           ) : (
-            <FaUserCircle className="user" />
+            <FaUserCircle className="user" /> // Fallback User Icon
           )}
-        </div>
-        <h4 type="text" name="username">
-          {username}
-        </h4>
-        <div className="form-center">
-          <div className="form-row">
-            <label htmlFor="avatar" className="form-label-user"></label>
-            <input
-              type="file"
-              name="profile_img"
-              id="profile_img"
-              className="form-input"
-              accept="image/*"
-            />
+          <div className="edit-button-wrapper">
+            <button
+              className="edit-button"
+              type="button"
+              onClick={handleEditClick}
+            >
+              Edit
+            </button>
+            {isDropdownVisible && (
+              <div className="dropdown" ref={dropdownRef}>
+                <label htmlFor="profile_img" className="dropdown-option">
+                  Upload
+                </label>
+                <input
+                  type="file"
+                  name="profile_img"
+                  id="profile_img"
+                  className="form-input"
+                  accept="image/*"
+                />
+                <label className="dropdown-option">Remove</label>
+              </div>
+            )}
           </div>
+        </div>
+        <div className="form-user">
           <FormComponent
             type="text"
             name="name"

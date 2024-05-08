@@ -8,7 +8,8 @@ const Container = styled.article`
   /* background: var(--primary-5); */
   /* background: var(--grey-30); */
   border-radius: var(--border-radius);
-  border: 1.5px solid var(--grey-70);
+  border: 1.5px solid var(--grey-50);
+  /* border: 1.5px solid var(--grey-70); */
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;

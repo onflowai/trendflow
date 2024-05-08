@@ -28,7 +28,7 @@ const Container = styled.main`
   .stats-container {
   display: flex;
   justify-content: space-around; /* This distributes children with space around them */
-  border: 1.5px solid #eee;
+  border: 1.5px solid var(--grey-50);
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   border-radius: var(--border-radius);
@@ -45,7 +45,7 @@ align-items: center; /* This centers the flex children, might need adjustment ba
 width: 100%; /* Ensure stat takes full width for spacing to take effect, adjust as needed */
 padding: 1rem;
 text-align: left;
-border-right: 1.5px solid #eee;
+border-right: 1.5px solid var(--grey-50);
   &:last-child {
     border-right: none;
   }
@@ -65,7 +65,7 @@ border-right: 1.5px solid #eee;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px var(--grey-30);;
     border-radius: 10px;
     margin-right: 2em;
   }
@@ -79,29 +79,14 @@ border-right: 1.5px solid #eee;
 
   p {
     font-size: 1.2rem;
-    color: #888;
+    color: var(--grey-300);;
     margin: 0;
-  }
-
-  .change {
-    width: 100%;
-    text-align: left;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin-top: 0.5rem;
-    margin-left: 2rem;
-    &.positive {
-      color: #4CAF50;
-    }
-    &.negative {
-      color: #F44336;
-    }
   }
 
   @media (max-width: 768px) {
     .stat {
       flex-direction: column;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--grey-50);;
       &:last-child {
         border-bottom: none;
       }
@@ -127,7 +112,7 @@ border-right: 1.5px solid #eee;
     justify-content: start; /* Align items to start of the container */
     width: 100%; /* Full width */
     padding: 0.5rem; /* Reduced padding */
-    border-bottom: 1px solid #eee; /* Separator */
+    border-bottom: 1px solid var(--grey-50); /* Separator */
   }
 
   .icon-box {
