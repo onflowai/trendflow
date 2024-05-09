@@ -32,6 +32,14 @@ day.extend(advancedFormat);
  * @param {string} trendStatus - trend status based on data
  * @param {string} trendUse - string with more HTML structured data
  * @returns {JSX.Element} The TrendCard component populated with the trend data and chart.
+ * @param {string[]} savedTrends is array which is extracted from user object and saved with onSave to db
+ * @param {string[]} onSave
+ * @param {string[]}
+ * @param {string[]}
+ * @param {string[]}
+ * @param {string[]}
+ * @param {string[]}
+ *
  */
 function Trend({
   interestOverTime,

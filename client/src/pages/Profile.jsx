@@ -6,11 +6,13 @@ import {
   StatComponent,
   FormComponent,
   ProfileHeader,
+  UserTrends,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
+import { FaUserCircle } from 'react-icons/fa';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
 /**
@@ -20,14 +22,13 @@ import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
  */
 export const loader = async () => {
   try {
-    const { data: trendsData } = await customFetch.get('/trends');
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
-    // const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    const savedTrends = savedTrendsData.savedTrends || [];
     return {
-      trends: trendsData,
+      trends: savedTrends,
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -53,8 +54,10 @@ export const action = async ({ request }) => {
 };
 
 const Profile = () => {
+  const { trends } = useLoaderData(); //bookmarked trends from loader
+  console.log('trends in PROFILE: ', trends);
   const { user, stats } = useOutletContext();
-  console.log('PROFILE: ', user);
+  console.log('PROFILE: ', user.savedTrends);
   const { username, name, lastName, email } = user;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
@@ -160,6 +163,13 @@ const Profile = () => {
             </button>
           </div>
         </Form>
+        <div className="trends-container">
+          <UserTrends
+            className="bookmark-trends"
+            trends={trends}
+            savedTrends={user.savedTrends}
+          />
+        </div>
       </div>
     </Container>
   );

@@ -8,15 +8,9 @@ import Container from '../assets/wrappers/UserTrendsContainer';
  * @returns
  */
 
-function UserTrends({
-  trends,
-  onApprove,
-  onDelete,
-  isAdminPage,
-  loadingSlug,
-  onSave,
-  savedTrends,
-}) {
+function UserTrends({ trends, savedTrends }) {
+  console.log('savedTrends:', savedTrends);
+  const isAdminPage = false; // hardcoding value to prevent tampering
   console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
@@ -29,7 +23,14 @@ function UserTrends({
     <Container>
       <div className="trends">
         {trends.map((trend) => {
-          return <Trend key={trend._id} {...trend} />;
+          return (
+            <Trend
+              key={trend._id}
+              {...trend}
+              isAdminPage={isAdminPage}
+              savedTrends={savedTrends}
+            ></Trend>
+          );
         })}
       </div>
     </Container>

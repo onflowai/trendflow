@@ -34,13 +34,13 @@ import { action as loginAction } from './pages/Login';
 import { loader as dashboardLoader } from './pages/DashboardLayout';
 import { action as addTrendAction } from './pages/AddTrend';
 import { loader as allTrendsLoader } from './pages/AllTrends';
-import { loader as getUserSavedTrends } from './pages/AllTrends';
 import { action as editTrendAction } from './pages/EditTrend';
 import { loader as editTrendLoader } from './pages/EditTrend';
 import { action as deleteTrendAction } from './pages/DeleteTrend';
 import { loader as singleTrendLoader } from './pages/TrendPage';
 import { loader as allTrendAdminLoader } from './pages/Admin';
 import { action as profileAction } from './pages/Profile';
+import { loader as getUserSavedTrends } from './pages/Profile';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -74,7 +74,6 @@ const router = createBrowserRouter([
             index: true,
             element: <AllTrends />,
             loader: allTrendsLoader,
-            loader: getUserSavedTrends,
           },
           {
             path: 'stats',
@@ -94,6 +93,7 @@ const router = createBrowserRouter([
             path: 'profile',
             element: <Profile />,
             action: profileAction,
+            loader: getUserSavedTrends,
           },
           {
             path: 'edit-trend/:slug',

@@ -43,8 +43,6 @@ const AllTrends = () => {
   const { user } = useOutletContext();
   const savedTrendIds = user.savedTrends;
   const { trends, error } = useLoaderData();
-  console.log('IN DASHBOARD ', user.savedTrends);
-  console.log('savedTrends: ', savedTrendIds);
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
