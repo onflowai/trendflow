@@ -104,71 +104,81 @@ const Profile = () => {
           },
         ]}
       />
-      <div className="user-form-container">
-        <Form method="post" encType="multipart/form-data">
-          <div className="user-image">
-            {user.profile_img ? (
-              <img src={user.profile_img} alt="user image" className="img" />
-            ) : (
-              <FaUserCircle className="user" /> // Fallback User Icon
-            )}
-            <div className="edit-button-wrapper">
-              <button
-                className="edit-button"
-                type="button"
-                onClick={handleEditClick}
-              >
-                Edit
-              </button>
-              {isDropdownVisible && (
-                <div className="dropdown" ref={dropdownRef}>
-                  <label htmlFor="profile_img" className="dropdown-option">
-                    Upload
-                  </label>
-                  <input
-                    type="file"
-                    name="profile_img"
-                    id="profile_img"
-                    className="form-input"
-                    accept="image/*"
-                  />
-                  <label className="dropdown-option">Remove</label>
-                </div>
+      <div className="profile-content">
+        <div className="user-form-container">
+          <Form method="post" encType="multipart/form-data">
+            <div className="user-image">
+              {user.profile_img ? (
+                <img src={user.profile_img} alt="user image" className="img" />
+              ) : (
+                <FaUserCircle className="user" /> // Fallback User Icon
               )}
+              <div className="edit-button-wrapper">
+                <button
+                  className="edit-button"
+                  type="button"
+                  onClick={handleEditClick}
+                >
+                  Edit
+                </button>
+                {isDropdownVisible && (
+                  <div className="dropdown" ref={dropdownRef}>
+                    <label htmlFor="profile_img" className="dropdown-option">
+                      Upload
+                    </label>
+                    <input
+                      type="file"
+                      name="profile_img"
+                      id="profile_img"
+                      className="form-input"
+                      accept="image/*"
+                    />
+                    <label className="dropdown-option">Remove</label>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          <h5>{username}</h5>
-          <div className="form-user">
-            <FormComponent
-              type="text"
-              name="name"
-              defaultValue={name}
-            ></FormComponent>
-            <FormComponent
-              type="email"
-              name="email"
-              defaultValue={email}
-            ></FormComponent>
-            <FormComponent
-              type="text"
-              name="lastName"
-              defaultValue={lastName}
-            ></FormComponent>
-            <button
-              className="btn btn-block from-btn"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'submitting...' : 'submit'}
-            </button>
-          </div>
-        </Form>
-        <div className="trends-container">
-          <UserTrends
-            className="bookmark-trends"
-            trends={trends}
-            savedTrends={user.savedTrends}
-          />
+            <h5>{username}</h5>
+            <div className="form-and-trends-container">
+              <div>
+                <div className="form-user">
+                  <FormComponent
+                    type="text"
+                    name="name"
+                    defaultValue={name}
+                  ></FormComponent>
+                  <FormComponent
+                    type="email"
+                    name="email"
+                    defaultValue={email}
+                  ></FormComponent>
+                  <FormComponent
+                    type="text"
+                    name="lastName"
+                    defaultValue={lastName}
+                  ></FormComponent>
+                  <button
+                    className="btn btn-block from-btn"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'submitting...' : 'submit'}
+                  </button>
+                </div>
+                <div className="form-user-settings">
+                  <h5>User Settings</h5>
+                  {/* Add your settings components here */}
+                </div>
+              </div>
+              <div className="trends-container">
+                <UserTrends
+                  className="bookmark-trends"
+                  trends={trends}
+                  savedTrends={user.savedTrends}
+                />
+              </div>
+            </div>
+          </Form>
         </div>
       </div>
     </Container>

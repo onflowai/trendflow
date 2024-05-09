@@ -3,7 +3,12 @@ import styled from 'styled-components';
 const Container = styled.main`
 /* USER IMAGE STYLING */
   position: relative;
-  
+.form-and-trends-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; 
+}
+  /* USER IMAGE STYLING */
   .user{
     width: 29px;
     height: 29px;
@@ -84,7 +89,7 @@ const Container = styled.main`
   }
   /* FROM STYLING */
   .user-form-container {
-  width: 100%;
+  flex: 1; /* Take up 1/4 of the space */
   background: var(--white);
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
@@ -92,10 +97,22 @@ const Container = styled.main`
   margin: 1rem auto;
 }
 .form-user{
+  flex: 2; /* Take up 1/4 of the space */
+  /* width: 100%; */
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
   padding: 1rem 1rem;
   margin: 1rem;
+  height: 350px;
+}
+.form-user-settings {
+  flex: 2; /* Takes up remaining space under form-user */
+  /* max-width: 100%; */
+  background: var(--white);
+  border-radius: var(--border-radius);
+  border: 1.5px solid var(--grey-50);
+  padding: 1rem;
+  margin-top: 1rem;
 }
 .form-label-user {
   display: block;
@@ -135,6 +152,29 @@ const Container = styled.main`
   color: var(--red-dark);
   letter-spacing: var(--letter-spacing);
   text-transform: capitalize;
+}
+/* BOOKMARK TRENDS */
+.trends-container {
+  flex: 5; /* Takes up 3/4 of the space */
+  max-width: 75%; /* Ensures it doesn't exceed 75% width */
+  background: var(--white);
+  border-radius: var(--border-radius);
+  border: 1.5px solid var(--grey-50);
+  padding: 1rem;
+  /* overflow: auto; allows scrolling if content overflows */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 868px) {
+  .form-and-trends-container {
+    flex-direction: column; /* Stack vertically */
+  }
+  .form-user,
+  .trends-container {
+    flex: 1 1 100%; /* Each takes up the full width */
+    max-width: 100%; /* Ensures full width usage */
+    /* overflow: auto; allows scrolling if content overflows */
+  }
 }
 `;
 export default Container;
