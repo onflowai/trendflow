@@ -35,6 +35,7 @@ function TrendLarge({
   onApprove,
   onDelete,
   onSave,
+  onRemove,
   savedTrends,
   createdBy,
   isApproved,
@@ -44,13 +45,23 @@ function TrendLarge({
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
   const navigate = useNavigate(); // Use navigate for navigation
+  const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id)); // checking if the current trend is saved
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${slug}`);
   };
   const handleInnerClick = (event) => {
     event.stopPropagation(); // stops the click from reaching the container
   };
-  const isSaved = savedTrends?.includes(_id); // checking if the current trend is saved
+  const handleBookmarkClick = async (e) => {
+    e.stopPropagation(); // Prevent event from propagating further
+    if (isSaved) {
+      await onRemove(_id);
+      setIsSaved(false); // Update isSaved state on successful remove
+    } else {
+      await onSave(_id);
+      setIsSaved(true); // Update isSaved state on successful save
+    }
+  };
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
@@ -136,10 +147,7 @@ function TrendLarge({
                   className="bookmark-btn"
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
-                  onClick={(e) => {
-                    handleInnerClick(e);
-                    onSave(_id);
-                  }}
+                  onClick={handleBookmarkClick}
                 >
                   {isSaved || isHovered ? (
                     <BsFillBookmarkFill size="20px" />

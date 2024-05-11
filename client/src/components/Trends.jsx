@@ -15,6 +15,7 @@ function Trends({
   isAdminPage,
   loadingSlug,
   onSave,
+  onRemove,
   savedTrends,
 }) {
   console.log('TRENDS:', trends);
@@ -38,6 +39,7 @@ function Trends({
               isAdminPage={isAdminPage}
               loadingSlug={loadingSlug}
               onSave={onSave}
+              onRemove={onRemove}
               savedTrends={savedTrends}
             ></Trend>
           );

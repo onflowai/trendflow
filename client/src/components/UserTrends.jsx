@@ -8,7 +8,7 @@ import Container from '../assets/wrappers/UserTrendsContainer';
  * @returns
  */
 
-function UserTrends({ trends, savedTrends }) {
+function UserTrends({ trends, savedTrends, onRemove }) {
   console.log('savedTrends:', savedTrends);
   const isAdminPage = false; // hardcoding value to prevent tampering
   console.log('TRENDS:', trends);
@@ -29,6 +29,7 @@ function UserTrends({ trends, savedTrends }) {
               {...trend}
               isAdminPage={isAdminPage}
               savedTrends={savedTrends}
+              onRemove={onRemove}
             ></Trend>
           );
         })}

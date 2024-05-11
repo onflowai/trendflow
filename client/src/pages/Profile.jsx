@@ -25,10 +25,12 @@ export const loader = async () => {
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     );
+    const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
     const savedTrends = savedTrendsData.savedTrends || [];
     return {
       trends: savedTrends,
+      savedTrendIds,
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -52,9 +54,9 @@ export const action = async ({ request }) => {
   }
   return null;
 };
-
 const Profile = () => {
-  const { trends } = useLoaderData(); //bookmarked trends from loader
+  const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
+  const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   console.log('trends in PROFILE: ', trends);
   const { user, stats } = useOutletContext();
   console.log('PROFILE: ', user.savedTrends);
@@ -69,6 +71,32 @@ const Profile = () => {
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownVisible(false); // closing dropdown if clicked outside
+    }
+  };
+  // Function to refetch trends
+  const refetchTrends = async () => {
+    try {
+      const { data: savedTrendsData } = await customFetch.get(
+        '/users/saved-trends'
+      );
+      setLocalSavedTrends(savedTrendsData.savedTrends || []);
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  };
+  //function for removing bookmarked trends
+  const onRemove = async (_id) => {
+    try {
+      const response = await customFetch.patch('/users/remove-trend', { _id });
+      if (response.status === 200) {
+        toast.success('Trend unmarked successfully');
+        await refetchTrends();
+      } else {
+        toast.error('Failed to unmarked trend');
+      }
+    } catch (error) {
+      toast.error('An error occurred');
+      console.error(error);
     }
   };
   useEffect(() => {
@@ -173,8 +201,9 @@ const Profile = () => {
               <div className="trends-container">
                 <UserTrends
                   className="bookmark-trends"
-                  trends={trends}
-                  savedTrends={user.savedTrends}
+                  trends={localSavedTrends}
+                  savedTrends={savedTrendIds}
+                  onRemove={onRemove}
                 />
               </div>
             </div>

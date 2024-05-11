@@ -111,3 +111,24 @@ export const getUserSavedTrends = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // handle errors
   }
 };
+export const removeUserTrend = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const user = await userModel.findById(req.user.userID);
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    const index = user.savedTrends.indexOf(_id);
+    if (index === -1) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: 'Trend not found in saved Trends' });
+    }
+    user.savedTrends.splice(index, 1); // Removing the trend from the array
+    await user.save();
+    res.status(StatusCodes.OK).json({ msg: 'Trend removed successfully' }); // Ensure to send a response here
+  } catch (error) {
+    console.error('Error during trend removal:', error); // Log any errors
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // Handle errors
+  }
+}; // End removeUserTrend
