@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
 import Container from '../assets/wrappers/UserDropdownContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
+import { UserImgSmall } from '../components';
 /**
  * Component responsible for the user dropdown fucntionality in the dashboard
  * @returns
@@ -16,12 +16,8 @@ const UserDropdown = () => {
         className="user-btn"
         onClick={() => setDropdown(!showDropdown)}
       >
-        {user.profile_img ? (
-          <img src={user.profile_img} alt="user image" className="img" />
-        ) : (
-          <FaUserCircle className="user" />
-        )}
-        {user?.name}
+        <UserImgSmall user_img={user.profile_img} />
+        {/* {user?.name} */}
       </button>
       <div className={showDropdown ? 'dropdown show-dropdown' : 'dropdown'}>
         <button type="button" className="dropdown-btn" onClick={logoutUser}>

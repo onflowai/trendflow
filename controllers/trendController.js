@@ -161,10 +161,10 @@ export const approveTrend = async (req, res) => {
 //GET APPROVED TRENDS
 export const getApprovedTrends = async (req, res) => {
   try {
-    // Query the database for trends where isApproved is true (return without: blogPost, )
+    // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     const trends = await trendModel
       .find({ isApproved: true }, '-generatedBlogPost -trendUse')
-      .populate('createdBy', 'username -_id');
+      .populate('createdBy', 'username profile_img -_id');
     // Directly respond with the list of approved trends (could be an empty array)
     res.status(StatusCodes.OK).json({ trends });
   } catch (error) {

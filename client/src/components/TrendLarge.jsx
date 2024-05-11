@@ -10,7 +10,7 @@ import {
   PiEyeLight,
   PiTrendUp,
 } from 'react-icons/pi'; //PiEyeThin
-import { TrendChartComponent, Loading } from '../components';
+import { TrendChartComponent, Loading, UserImgSmall } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -129,9 +129,7 @@ function TrendLarge({
             {/* USER & BUTTONS */}
             <footer className="actions">
               <div className="user-section">
-                <span className="icon">
-                  <PiUserCircleThin />
-                </span>
+                <UserImgSmall user_img={createdBy.profile_img} />
                 <span className="text">{createdBy.username}</span>
               </div>
               {isAdminPage ? (

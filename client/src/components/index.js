@@ -28,3 +28,5 @@ export { default as Loading } from './Loading';
 export { default as TrendSmall } from './TrendSmall';
 export { default as ProfileHeader } from './ProfileHeader';
 export { default as UserTrends } from './UserTrends';
+export { default as UserImgSmall } from './UserImgSmall';
+export { default as UserImgLarge } from './UserImgLarge';
