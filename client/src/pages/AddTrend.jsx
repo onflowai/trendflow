@@ -1,10 +1,12 @@
 import {
-  FormComponent,
+  LogoCarousel,
   FormSelector,
+  UserImgLarge,
+  FormComponent,
   CustomErrorToast,
   CustomSuccessToast,
 } from '../components';
-import Container from '../assets/wrappers/DashboardFormContainer';
+import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';
@@ -32,18 +34,21 @@ const AddTrend = () => {
   const isSubmitting = navigation.state === 'submitting';
   return (
     <Container>
+      <UserImgLarge user_img={user.profile_img} />
+      <h5>{user.username}</h5>
       <Form method="post" className="form">
         <h4 className="form-title">Add Trend</h4>
         <div className="form-center">
-          <FormComponent type="text" name="trend" />
+          <LogoCarousel />
+          <FormComponent type="text" name="Any tech on your mind?" />
           <FormSelector
-            labelText="Category"
+            labelText="Choose Category:"
             name="trendCategory"
             defaultValue={TREND_CATEGORY.PROGRAMMING_LANGUAGES}
             list={Object.values(TREND_CATEGORY)}
           />
           <FormSelector
-            labelText="Technology"
+            labelText="Choose Technology:"
             name="trendTech"
             defaultValue={TECHNOLOGIES.ADA}
             list={Object.values(TECHNOLOGIES)}

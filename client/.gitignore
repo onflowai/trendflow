@@ -26,3 +26,6 @@ dist-ssr
 
 #utils
 dangerous_keywords.js
+
+#assets
+logos/

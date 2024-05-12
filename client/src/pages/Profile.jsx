@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, useLoaderData, redirect, useNavigation } from 'react-router-dom';
+import { Form, useLoaderData, useNavigation } from 'react-router-dom';
 import {
   CustomSuccessToast,
   CustomErrorToast,
@@ -13,7 +13,6 @@ import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
-import { FaUserCircle } from 'react-icons/fa';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
 /**
