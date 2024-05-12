@@ -31,3 +31,4 @@ export { default as UserTrends } from './UserTrends';
 export { default as UserImgSmall } from './UserImgSmall';
 export { default as UserImgLarge } from './UserImgLarge';
 export { default as LogoCarousel } from './LogoCarousel';
+export { default as FormComponentLogos } from './FormComponentLogos';

@@ -4,6 +4,7 @@ import {
   UserImgLarge,
   FormComponent,
   CustomErrorToast,
+  FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/SubmitFormContainer';
@@ -39,8 +40,13 @@ const AddTrend = () => {
       <Form method="post" className="form">
         <h4 className="form-title">Add Trend</h4>
         <div className="form-center">
-          <LogoCarousel />
-          <FormComponent type="text" name="Any tech on your mind?" />
+          {/* <LogoCarousel /> */}
+          <FormComponentLogos
+            type="text"
+            name="Trend"
+            placeholder="Any tech on your mind?"
+          />
+          {/* <FormComponent type="text" name="Any tech on your mind?" /> */}
           <FormSelector
             labelText="Choose Category:"
             name="trendCategory"

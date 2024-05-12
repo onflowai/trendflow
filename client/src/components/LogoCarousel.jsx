@@ -4,6 +4,15 @@ import Container from '../assets/wrappers/LogoCarouselContainer';
 const svgModules = import.meta.globEager('../assets/images/logos/*.svg'); // importing all SVG files from the logos directory
 const logos = Object.values(svgModules).map((module) => module.default); // Converting imported modules into an array of their default exports (the SVG content)
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+} //randomizing the array
+
+shuffleArray(logos); //shuffling on load
+
 const LogoCarousel = ({ interval = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
