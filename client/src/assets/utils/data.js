@@ -12,8 +12,8 @@ export const dashboardLinks = [
     path: '.',
   },
   {
-    text: 'add trend',
-    path: 'add-trend',
+    text: 'submit',
+    path: 'submit',
   },
   {
     text: 'stats',
@@ -46,8 +46,8 @@ export const dashboardAllLinks = [
     path: '.',
   },
   {
-    text: 'add trend',
-    path: 'add-trend',
+    text: 'submit',
+    path: 'submit',
   },
   {
     text: 'stats',

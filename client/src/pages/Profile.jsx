@@ -6,6 +6,7 @@ import {
   StatComponent,
   FormComponent,
   ProfileHeader,
+  UserImgLarge,
   UserTrends,
 } from '../components';
 import customFetch from '../utils/customFetch';
@@ -136,11 +137,7 @@ const Profile = () => {
         <div className="user-form-container">
           <Form method="post" encType="multipart/form-data">
             <div className="user-image">
-              {user.profile_img ? (
-                <img src={user.profile_img} alt="user image" className="img" />
-              ) : (
-                <FaUserCircle className="user" /> // Fallback User Icon
-              )}
+              <UserImgLarge user_img={user.profile_img} />
               <div className="edit-button-wrapper">
                 <button
                   className="edit-button"

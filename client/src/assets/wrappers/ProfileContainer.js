@@ -20,11 +20,6 @@ const Container = styled.main`
     background: transparent;
     border: none;
   }
-  .img {
-    width: 7rem;
-    height: 7rem;
-    border-radius: 50%;
-  }
   /* USER IMG BUTTON */
   .edit-button-wrapper {
     position: absolute;

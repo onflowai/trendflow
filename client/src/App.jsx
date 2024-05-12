@@ -80,7 +80,7 @@ const router = createBrowserRouter([
             element: <Stats />,
           },
           {
-            path: 'add-trend',
+            path: 'submit',
             element: <AddTrend />,
             action: addTrendAction,
           },
