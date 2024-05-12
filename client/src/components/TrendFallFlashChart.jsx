@@ -2,7 +2,11 @@ import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from 'recharts';
 import Container from '../assets/wrappers/FlashChartContainer';
 
-function AreaChartComponent({ data }) {
+function TrendFallFlashChart() {
+  const data = Array.from({ length: 4 }, (_, i) => ({
+    date: `Month ${i + 1}`,
+    count: Math.floor(Math.random() * (80 - 40 + 1)) + 40, // Generates a random count between 0 and 99 (between 40 and 80)
+  }));
   return (
     <Container>
       <ResponsiveContainer width="100%" height={240}>
@@ -11,9 +15,9 @@ function AreaChartComponent({ data }) {
           margin={{ top: 5, right: 0, left: -60, bottom: -40 }}
         >
           <defs>
-            <linearGradient id="colorCountTwo" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4541de" stopOpacity={1} />
-              <stop offset="95%" stopColor="#e976c7" stopOpacity={0} />
+            <linearGradient id="fallback" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#4e4e4e" stopOpacity={1} />
+              <stop offset="95%" stopColor="#d4d4d4" stopOpacity={0} />
             </linearGradient>
           </defs>
 
@@ -26,8 +30,8 @@ function AreaChartComponent({ data }) {
           <Area
             type="monotone"
             dataKey="count"
-            stroke="#4541de"
-            fill="url(#colorCountTwo)"
+            stroke="#838383"
+            fill="url(#fallback)"
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -35,4 +39,4 @@ function AreaChartComponent({ data }) {
   );
 }
 
-export default AreaChartComponent;
+export default TrendFallFlashChart;

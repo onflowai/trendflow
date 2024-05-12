@@ -74,17 +74,10 @@ function TrendLarge({
                 <Loading />
               </div>
             )}
-            {isAdminPage && (
-              <div className="info-section">
-                <span className="icon">
-                  {isApproved ? <IoIosCheckmark /> : <IoIosClose />}
-                </span>
-                <span className="text">
-                  {isApproved ? 'Approved' : 'Not Approved'}
-                </span>
-              </div>
-            )}
-            <TrendChartComponent data={interestOverTime} />
+            <TrendChartComponent
+              data={interestOverTime}
+              isApproved={isApproved}
+            />
             <div className="trend-title-container">
               <h3 className="mono-heading-bold">{trend}</h3>
               <h6 className="mono-heading">{trendCategory}</h6>

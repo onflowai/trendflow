@@ -107,6 +107,7 @@ function Trend({
     flashChart,
     updatedAt,
     isLoading,
+    isApproved,
     isAdminPage,
     onApprove,
   };

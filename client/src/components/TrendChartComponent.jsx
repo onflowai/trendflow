@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select'; // Import Select from react-select
 import BarChart from './BarChartComponent';
+import FallbackChart from './FallbackChart';
 import TrendChart from './TrendChart';
 import Container from '../assets/wrappers/ChartsContainer';
 /**
@@ -8,13 +9,13 @@ import Container from '../assets/wrappers/ChartsContainer';
  * @param {*} param0
  * @returns
  */
-function TrendChartComponent({ data }) {
+function TrendChartComponent({ data, isApproved }) {
   const { previousYear, currentYear } = data; // destructuring the passed charts data
   const combinedData = [...previousYear, ...currentYear];
   const latestData = combinedData.slice(-12); // getting only the latest 12 data points
   return (
     <Container>
-      <TrendChart data={latestData} />
+      {isApproved ? <TrendChart data={latestData} /> : <FallbackChart />}
     </Container>
   );
 }

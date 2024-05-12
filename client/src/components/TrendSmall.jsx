@@ -7,7 +7,7 @@ import {
   FcCheckmark,
   FcCancel,
 } from 'react-icons/fc';
-import { TrendFlashChart, Loading } from '../components';
+import { TrendFlashChart, Loading, TrendFallFlashChart } from '../components';
 import Container from '../assets/wrappers/TrendSmallContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -25,6 +25,7 @@ function TrendSmall({
   flashChart,
   updatedAt,
   isLoading,
+  isApproved,
   isAdminPage,
   onApprove,
 }) {
@@ -38,7 +39,11 @@ function TrendSmall({
                 <Loading />
               </div>
             )}
-            <TrendFlashChart data={flashChart} />
+            {isApproved ? (
+              <TrendFlashChart data={flashChart} />
+            ) : (
+              <TrendFallFlashChart />
+            )}
             <p>{trendCategory}</p>
             <div className="content">
               <div className="content-center">

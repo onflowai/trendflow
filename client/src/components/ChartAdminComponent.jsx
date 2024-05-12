@@ -3,7 +3,11 @@ import Select from 'react-select'; // Import Select from react-select
 import BarChart from './BarChartComponent';
 import AreaChart from './AreaChartComponent';
 import Container from '../assets/wrappers/ChartsContainer';
-
+/**
+ * Component used for passing data needed for charts from Admin page
+ * @param {*} param0
+ * @returns
+ */
 function ChartAdminComponent({ data }) {
   const [chartType, setChartType] = useState('trends');
   const [chartOption, setChartOption] = useState({
