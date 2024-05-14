@@ -87,6 +87,7 @@ const Container = styled.main`
   flex: 1; /* Take up 1/4 of the space */
   background: var(--white);
   border-radius: var(--border-radius);
+  border-top-left-radius: calc(var(--border-radius) * 8);
   border: 1.5px solid var(--grey-50);
   padding: 1rem 1rem;
   margin: 1rem auto;

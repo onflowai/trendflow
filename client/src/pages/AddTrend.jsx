@@ -34,9 +34,15 @@ const AddTrend = () => {
   const isSubmitting = navigation.state === 'submitting';
   return (
     <Container>
-      <div className="user-info">
-        <UserImgLarge user_img={user.profile_img} />
-        <h5>{user.username}</h5>
+      <div className="user-container clearfix">
+        <div className="user-info">
+          <div className="user-profile">
+            <UserImgLarge user_img={user.profile_img} />
+          </div>
+          <div className="username">
+            <h5>{user.username}</h5>
+          </div>
+        </div>
       </div>
       <div className="submit-container">
         <div>

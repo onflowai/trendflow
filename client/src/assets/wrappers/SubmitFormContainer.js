@@ -5,11 +5,38 @@ const Container = styled.section`
   border: 1.5px solid var(--grey-50);
   width: 100%;
   background: var(--white);
-  padding: 3rem 2rem 4rem;
-  .user-info {
-    text-align: left; // Ensures the user info aligns to the left
-  }
+  padding: 2rem 2rem 4rem;
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.user-container {
+  float:left;
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align user-info to the left */
+  width: auto; /* Auto width to fit content */
+  margin-bottom: 1rem; /* Adds space below user-info */
+}
+
+.user-profile {
+  display: flex; /* Add flex display to center content inside */
+  justify-content: center; /* Center content horizontally */
+  width: 100%; /* Full width within its block */
+}
+
+.username {
+  text-align: center; /* Ensure the text is centered */
+  align-self: center; /* Center the username within its parent */
+  width: 100%; /* Full width to help center the text */
+  margin-top: 1rem; /* Optional: adds some space between the profile and username */
+}
    .submit-container {
+    clear: both;
     display: grid; // Use grid to manage layout
     grid-template-columns: 1fr; // Default to single column layout
     gap: 2rem; // Gap between rows or columns
@@ -44,9 +71,9 @@ const Container = styled.section`
   }
   
   .form-btn {
-    align-self: end;
     margin-top: 1rem;
     display: grid;
+    align-items: center;
     place-items: center;
   }
   

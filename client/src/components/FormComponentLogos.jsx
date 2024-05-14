@@ -22,6 +22,7 @@ const FormComponentLogos = ({ type, name, labelText, placeholder }) => {
 };
 
 const Container = styled.div`
+  margin-top: -15px;
   position: relative;
   display: inline-block;
   width: 100%;
