@@ -34,3 +34,4 @@ export { default as LogoCarousel } from './LogoCarousel';
 export { default as FormComponentLogos } from './FormComponentLogos';
 export { default as FallbackChart } from './FallbackChart';
 export { default as TrendFallFlashChart } from './TrendFallFlashChart';
+export { default as UserSettings } from './UserSettings';

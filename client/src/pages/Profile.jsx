@@ -3,6 +3,7 @@ import { Form, useLoaderData, useNavigation } from 'react-router-dom';
 import {
   CustomSuccessToast,
   CustomErrorToast,
+  UserSettings,
   StatComponent,
   FormComponent,
   ProfileHeader,
@@ -55,6 +56,7 @@ export const action = async ({ request }) => {
   return null;
 };
 const Profile = () => {
+  const isVerified = true; //TEMPORARY
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   console.log('trends in PROFILE: ', trends);
@@ -98,6 +100,20 @@ const Profile = () => {
       toast.error('An error occurred');
       console.error(error);
     }
+  };
+  const onUpdateEmail = async ({ request }) => {
+    const formData = request.formData;
+    try {
+      await customFetch.patch('users/update-user', formData);
+      toast.success(
+        <CustomSuccessToast message={'Profile Updated Successfully'} />
+      );
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //TEMPORARY
+  const onTogglePrivacy = () => {
+    setPrivacy(!privacy);
   };
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -162,19 +178,14 @@ const Profile = () => {
                 )}
               </div>
             </div>
-            <h5>{username}</h5>
             <div className="form-and-trends-container">
               <div>
                 <div className="form-user">
+                  <div>{username}</div>
                   <FormComponent
                     type="text"
                     name="name"
                     defaultValue={name}
-                  ></FormComponent>
-                  <FormComponent
-                    type="email"
-                    name="email"
-                    defaultValue={email}
                   ></FormComponent>
                   <FormComponent
                     type="text"
@@ -182,7 +193,7 @@ const Profile = () => {
                     defaultValue={lastName}
                   ></FormComponent>
                   <button
-                    className="btn btn-block from-btn"
+                    className="btn btn-block form-btn"
                     type="submit"
                     disabled={isSubmitting}
                   >
@@ -190,8 +201,12 @@ const Profile = () => {
                   </button>
                 </div>
                 <div className="form-user-settings">
-                  <h5>User Settings</h5>
-                  {/* Add your settings components here */}
+                  <UserSettings
+                    email={email}
+                    isVerified={isVerified}
+                    onUpdateEmail={onUpdateEmail}
+                    onTogglePrivacy={onTogglePrivacy}
+                  />
                 </div>
               </div>
               <div className="trends-container">

@@ -6,7 +6,7 @@ const Container = styled.main`
 .form-and-trends-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px; 
+  gap: 5px;
 }
   /* USER IMAGE STYLING */
   .user{
@@ -94,21 +94,26 @@ const Container = styled.main`
 }
 .form-user{
   flex: 2; /* Take up 1/4 of the space */
-  /* width: 100%; */
+  background: var(--white);
+  flex-basis: 400px;
+  min-width: 350px;
+  max-width: 500px;
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
   padding: 1rem 1rem;
-  margin: 1rem;
-  height: 350px;
+  margin-top: 1rem;
+  min-height: 300px;
+  max-height: 500px;
 }
 .form-user-settings {
   flex: 2; /* Takes up remaining space under form-user */
   /* max-width: 100%; */
-  background: var(--white);
+  background: var(--grey-50);
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
-  padding: 1rem;
+  padding: 1rem 1rem;
   margin-top: 1rem;
+  /* margin-top: 1rem; */
 }
 .form-label-user {
   display: block;
@@ -156,7 +161,8 @@ const Container = styled.main`
   background: var(--white);
   border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
-  padding: 1rem;
+  padding: 1rem 1rem;
+  margin: 1rem;
   /* overflow: auto; allows scrolling if content overflows */
 }
 
