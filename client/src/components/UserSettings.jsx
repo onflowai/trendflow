@@ -1,6 +1,6 @@
 import React from 'react';
-import Container from '../assets/wrappers/UserDropdownContainer';
-import { FormComponent } from '../components';
+import Container from '../assets/wrappers/UserSettingsContainer';
+import { FormComponentButton } from '../components';
 import { CiSettings } from 'react-icons/ci';
 /**
  *
@@ -21,30 +21,30 @@ const UserSettings = ({
   console.log('Email', email);
   return (
     <Container>
-      <h5 className="header">Settings:</h5>
+      <h6 className="header">Settings:</h6>
       <div className="email-section">
-        <div className="email-form">
-          <FormComponent type="email" name="email" defaultValue={email} />
-        </div>
-        <button className="update-button" onClick={handleUpdateEmail}>
-          Update
-        </button>
+        <FormComponentButton
+          type="email"
+          name="email"
+          defaultValue={email}
+          buttonText="Update"
+          onClick={handleUpdateEmail}
+        />
       </div>
       <div className="settings-section">
-        <div className="status">
+        <div className="settings-item status">
           <span className="status-text">Status:</span>
           <div>{isVerified ? 'Verified' : 'Not Verified'}</div>
         </div>
-        <div className="privacy-switch">
+        <div className="settings-item privacy-switch">
           <span className="privacy-text">Privacy:</span>
           <input type="checkbox" onChange={onTogglePrivacy} />
         </div>
-        <div className="actions">
+        <div className="settings-item actions">
           <span>Actions:</span>
           <div className="icon">
             <CiSettings />
-          </div>{' '}
-          {/* Use a settings icon here */}
+          </div>
         </div>
       </div>
     </Container>

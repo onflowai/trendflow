@@ -32,6 +32,7 @@ export { default as UserImgSmall } from './UserImgSmall';
 export { default as UserImgLarge } from './UserImgLarge';
 export { default as LogoCarousel } from './LogoCarousel';
 export { default as FormComponentLogos } from './FormComponentLogos';
+export { default as FormComponentButton } from './FormComponentButton';
 export { default as FallbackChart } from './FallbackChart';
 export { default as TrendFallFlashChart } from './TrendFallFlashChart';
 export { default as UserSettings } from './UserSettings';
