@@ -34,6 +34,37 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
   }
+  //STATUS:
+  .settings-item .status,
+  .settings-item .privacy-switch,
+  .settings-item .actions {
+    display: flex;
+    flex-direction: row; /* Arrange items in a row */
+    align-items: center; /* Center items vertically */
+    justify-content: center;
+  }
+
+.status-text {
+  
+}
+
+.status-box {
+  padding: 5px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.status-box.verified {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-box.not-verified {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
 
   .status,
   .privacy-switch,
@@ -44,15 +75,17 @@ const Container = styled.div`
   }
 
   .status-text,
-  .privacy-text {
+  .privacy-text,
+  .actions-text {
     font-size: var(--small-text);
     margin-bottom: 0.5rem;
   }
 
   .icon {
-    margin-top: 0.5rem;
     cursor: pointer;
     font-size: 1.5rem; /* Adjust the size as needed */
+    display: flex;
+    align-items: center;
   }
 `;
 

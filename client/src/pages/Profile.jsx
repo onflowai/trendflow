@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Form, useLoaderData, useNavigation } from 'react-router-dom';
 import {
   CustomSuccessToast,
+  FormComponentLock,
   CustomErrorToast,
   UserSettings,
   StatComponent,
@@ -181,7 +182,11 @@ const Profile = () => {
             <div className="form-and-trends-container">
               <div>
                 <div className="form-user">
-                  <div>{username}</div>
+                  <FormComponentLock
+                    type="text"
+                    name="username"
+                    defaultValue={username}
+                  ></FormComponentLock>
                   <FormComponent
                     type="text"
                     name="name"

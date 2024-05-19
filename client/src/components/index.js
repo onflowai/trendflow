@@ -36,3 +36,5 @@ export { default as FormComponentButton } from './FormComponentButton';
 export { default as FallbackChart } from './FallbackChart';
 export { default as TrendFallFlashChart } from './TrendFallFlashChart';
 export { default as UserSettings } from './UserSettings';
+export { default as ToggleSwitch } from './ToggleSwitch';
+export { default as FormComponentLock } from './FormComponentLock';

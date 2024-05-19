@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from '../assets/wrappers/UserSettingsContainer';
-import { FormComponentButton } from '../components';
+import { FormComponentButton, ToggleSwitch } from '../components';
 import { CiSettings } from 'react-icons/ci';
 /**
  *
@@ -34,14 +34,18 @@ const UserSettings = ({
       <div className="settings-section">
         <div className="settings-item status">
           <span className="status-text">Status:</span>
-          <div>{isVerified ? 'Verified' : 'Not Verified'}</div>
+          <div
+            className={`status-box ${isVerified ? 'verified' : 'not-verified'}`}
+          >
+            {isVerified ? 'Verified' : 'Not Verified'}
+          </div>
         </div>
         <div className="settings-item privacy-switch">
           <span className="privacy-text">Privacy:</span>
-          <input type="checkbox" onChange={onTogglePrivacy} />
+          <ToggleSwitch onToggle={onTogglePrivacy} />
         </div>
         <div className="settings-item actions">
-          <span>Actions:</span>
+          <span className="actions-text">Actions:</span>
           <div className="icon">
             <CiSettings />
           </div>

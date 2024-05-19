@@ -136,10 +136,10 @@ html {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
 }
-/* .mono-heading-bold {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-} */
+.mono-heading-bold {
+  font-family: 'Roboto', monospace;
+  font-weight: 700;
+}
 body {
   background: var(--background-color);
   color: var(--text-color);
