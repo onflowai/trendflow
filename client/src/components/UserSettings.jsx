@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Container from '../assets/wrappers/UserSettingsContainer';
-import { FormComponentButton, ToggleSwitch } from '../components';
+import { FormComponentButton, ToggleSwitch, Dropdown } from '../components';
 import { CiSettings } from 'react-icons/ci';
 /**
  *
@@ -12,13 +12,33 @@ const UserSettings = ({
   isVerified,
   onUpdateEmail,
   onTogglePrivacy,
+  onOptionClick,
 }) => {
   const handleUpdateEmail = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target.closest('form'));
     onUpdateEmail({ request: { formData } });
   };
-  console.log('Email', email);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+  const handleToggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  const dropdownOptions = [
+    { label: 'Verify Profile', action: 'verify' },
+    { label: 'Delete Profile', action: 'delete' },
+  ];
   return (
     <Container>
       <h6 className="header">Settings:</h6>
@@ -44,11 +64,21 @@ const UserSettings = ({
           <span className="privacy-text">Privacy:</span>
           <ToggleSwitch onToggle={onTogglePrivacy} />
         </div>
-        <div className="settings-item actions">
+        <div className="settings-item actions" ref={dropdownRef}>
           <span className="actions-text">Actions:</span>
-          <div className="icon">
+          <div className="icon" onClick={handleToggleDropdown}>
             <CiSettings />
           </div>
+          {isDropdownVisible && (
+            <Dropdown
+              className="settings-dropdown"
+              options={dropdownOptions}
+              onOptionClick={(action) => {
+                onOptionClick(action);
+                setIsDropdownVisible(false); // Close the dropdown after an option is clicked
+              }}
+            />
+          )}
         </div>
       </div>
     </Container>

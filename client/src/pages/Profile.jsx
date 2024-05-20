@@ -76,6 +76,23 @@ const Profile = () => {
       setIsDropdownVisible(false); // closing dropdown if clicked outside
     }
   };
+  // action to perform Dropdown.jsx actions
+  const handleOptionClick = (action) => {
+    switch (action) {
+      case 'verify':
+        // Perform verify profile action
+        console.log('Verify profile action triggered');
+        // Example: API call to verify profile
+        break;
+      case 'delete':
+        // Perform delete profile action
+        console.log('Delete profile action triggered');
+        // Example: API call to delete profile
+        break;
+      default:
+        break;
+    }
+  };
   // Function to refetch trends
   const refetchTrends = async () => {
     try {
@@ -102,6 +119,7 @@ const Profile = () => {
       console.error(error);
     }
   };
+  //async func for updating the email
   const onUpdateEmail = async ({ request }) => {
     const formData = request.formData;
     try {
@@ -207,6 +225,7 @@ const Profile = () => {
                 </div>
                 <div className="form-user-settings">
                   <UserSettings
+                    onOptionClick={handleOptionClick}
                     email={email}
                     isVerified={isVerified}
                     onUpdateEmail={onUpdateEmail}

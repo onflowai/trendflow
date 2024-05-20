@@ -3,7 +3,7 @@ import Container from '../assets/wrappers/UserDropdownContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import { UserImgSmall } from '../components';
 /**
- * Component responsible for the user dropdown fucntionality in the dashboard
+ * Component responsible for the user dropdown functionality in the dashboard (only used in navbar)
  * @returns
  */
 const UserDropdown = () => {

@@ -38,3 +38,4 @@ export { default as TrendFallFlashChart } from './TrendFallFlashChart';
 export { default as UserSettings } from './UserSettings';
 export { default as ToggleSwitch } from './ToggleSwitch';
 export { default as FormComponentLock } from './FormComponentLock';
+export { default as Dropdown } from './Dropdown';

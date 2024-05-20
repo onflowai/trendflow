@@ -87,6 +87,11 @@ const Container = styled.div`
     display: flex;
     align-items: center;
   }
+  //DROPDOWN
+  .dropdown {
+  transform: translate(-20%, -20%);
+  z-index: 10;
+  }
 `;
 
 export default Container;
