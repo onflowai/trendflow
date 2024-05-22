@@ -3,22 +3,22 @@ import Select from 'react-select'; // Import Select from react-select
 import BarChart from './BarChartComponent';
 import AreaChart from './AreaChartComponent';
 import Container from '../assets/wrappers/ChartsContainer';
+import { TiMediaRewind, TiMediaFastForward } from 'react-icons/ti';
+import { TbTimeline } from 'react-icons/tb';
 /**
  * Component used for passing data needed for charts from Trend page
  * @param {*} param0
  * @returns
  */
-function ChartTrendComponent({ data }) {
+function ChartTrendComponent({ data, forecast, trend }) {
   const { previousYear, currentYear } = data;
-  const combinedData = [...previousYear, ...currentYear];
-  const forecast = [
-    { date: 'Apr 2024', count: 84 },
-    { date: 'May 2024', count: 84 },
-    { date: 'Jun 2024', count: 86 },
-    { date: 'Jul 2024', count: 88 },
-  ];
+  const combinedData = [...previousYear, ...currentYear]; //combining trend data
+  const combinedForecast = [
+    ...(forecast.previousYear || []),
+    ...(forecast.currentYear || []),
+  ]; //combining forecast data
   console.log('CHART DATA', combinedData);
-  console.log('FORECAST IN COMPONENT ', forecast);
+  console.log('FORECAST IN COMPONENT ', combinedForecast);
   const [chartData, setChartData] = useState(combinedData);
   const [dataView, setDataView] = useState('combined'); //keeping track of current data displayed
   const [forecastData, setForecastData] = useState([]);
@@ -38,7 +38,13 @@ function ChartTrendComponent({ data }) {
     setChartOption(selectedOption);
   };
   const toggleForecast = () => {
-    setForecastData(forecastData.length ? [] : forecast);
+    if (forecastData.length) {
+      setForecastData([]);
+      setShowForecast(false);
+    } else {
+      setForecastData(combinedForecast);
+      setShowForecast(true);
+    }
   };
   const handleArrowClick = (type) => {
     if (dataView === type) {
@@ -58,21 +64,85 @@ function ChartTrendComponent({ data }) {
 
   return (
     <Container>
-      <div>
-        <div>
-          <button onClick={toggleForecast}>Forecast</button>
+      <div className="chart-header">
+        <div className="trend-title">{trend}</div>
+        <div className="chart-controls-container">
+          <div className="chart-controls">
+            <button
+              className={`text-button ${
+                dataView === 'previous' ? 'active' : ''
+              }`}
+              onClick={() => handleArrowClick('previous')}
+            >
+              <div
+                className={`circle ${dataView === 'previous' ? 'active' : ''}`}
+              ></div>
+              {new Date().getFullYear() - 1}
+            </button>
+            <button
+              className={`text-button ${
+                dataView === 'current' ? 'active' : ''
+              }`}
+              onClick={() => handleArrowClick('current')}
+            >
+              <div
+                className={`circle ${dataView === 'current' ? 'active' : ''}`}
+              ></div>
+              {new Date().getFullYear()}
+            </button>
+            {combinedForecast.length > 0 && (
+              <button
+                className={`text-button ${showForecast ? 'active' : ''}`}
+                onClick={toggleForecast}
+              >
+                <div className={`circle ${showForecast ? 'active' : ''}`}></div>
+                Forecast
+              </button>
+            )}
+          </div>
+          <div className="chart-selector-container">
+            <Select
+              className="chart-selector"
+              value={chartOption}
+              onChange={handleChartTypeChange}
+              options={chartOptions}
+            />
+          </div>
         </div>
-        <button onClick={() => handleArrowClick('previous')}>
-          ← Previous Year
-        </button>
-        <button onClick={() => handleArrowClick('current')}>
-          Current Year →
-        </button>
-        <Select
-          value={chartOption}
-          onChange={handleChartTypeChange}
-          options={chartOptions}
-        />
+        <div className="chart-controls-icons">
+          <button
+            className={`icon-button ${dataView === 'previous' ? 'active' : ''}`}
+            onClick={() => handleArrowClick('previous')}
+          >
+            <TiMediaRewind
+              className={`icon ${dataView === 'previous' ? 'active' : ''}`}
+            />
+          </button>
+          <button
+            className={`icon-button ${dataView === 'current' ? 'active' : ''}`}
+            onClick={() => handleArrowClick('current')}
+          >
+            <TiMediaFastForward
+              className={`icon ${dataView === 'current' ? 'active' : ''}`}
+            />
+          </button>
+          {combinedForecast.length > 0 && (
+            <button
+              className={`icon-button ${showForecast ? 'active' : ''}`}
+              onClick={toggleForecast}
+            >
+              <TbTimeline className={`icon ${showForecast ? 'active' : ''}`} />
+            </button>
+          )}
+          <div className="chart-selector-container-small">
+            <Select
+              className="chart-selector"
+              value={chartOption}
+              onChange={handleChartTypeChange}
+              options={chartOptions}
+            />
+          </div>
+        </div>
       </div>
       {chartOption.value === 'bar' ? (
         <AreaChart data={chartData} forecastData={forecastData} />

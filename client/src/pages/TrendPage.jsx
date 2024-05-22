@@ -68,6 +68,7 @@ const TrendPage = () => {
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   console.log('OBJECT: ', trendObject);
+  console.log('FORECAST IN TREND PAGE: ', forecast);
   const { setSidebarVisibility } = useDashboardContext();
   useEffect(() => {
     setSidebarVisibility(!isMobile); // opens sidebar on initial component mount
@@ -80,7 +81,11 @@ const TrendPage = () => {
       <div className="page-layout">
         <div id="section1" className="trend">
           <div>
-            <ChartTrendComponent data={interestOverTime} />
+            <ChartTrendComponent
+              data={interestOverTime}
+              forecast={forecast}
+              trend={trend}
+            />
           </div>
           <h4 className="trend-title" id="section2">
             {trend}
@@ -88,7 +93,9 @@ const TrendPage = () => {
           <div className="trend-center">
             <div className="trend-category">{trendCategory}</div>
             <div className="trend-tech">{trendTech}</div>
-            <div className="">{trendUse}</div>
+            <div className="">
+              <DangerousHTML html={trendUse} />
+            </div>
             <div className="" id="section3">
               {upDate}
             </div>

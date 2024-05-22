@@ -39,7 +39,7 @@ const Container = styled.section`
     color: blue; // Highlight the active section
   }
 
-  @media (max-width: 400px) {
+  @media (max-width: 300px) {
     .spy-scroll-section {
       flex-direction: column; // Stacks items vertically on very small screens
     }

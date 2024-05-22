@@ -13,10 +13,10 @@ const Container = styled.section`
   }
 
   .trend {
-    padding: 4rem; // add padding
+    padding: 1rem 4rem 4rem; // add padding
     width: 100%; // full width
-    max-width: 100%; // limit width to 100%
-    margin-bottom: 2rem; // margin below each trend
+    max-width: 900px; // Limit max width to 800px
+    margin: 0 auto 2rem auto; // Center the trend container
   }
 
   .scroll-spy-sidebar {
@@ -65,6 +65,11 @@ const Container = styled.section`
     .page-layout {
     display: flex;
     flex-direction: column; // Reiterate to ensure stacking
+
+    .trend {
+      padding: 7.5rem 0rem 0rem;
+      max-width: 100%; // padding to offset sidebar overlay
+    }
   }
 
   .scroll-spy-sidebar {
@@ -75,9 +80,6 @@ const Container = styled.section`
     right: 0; // align to right
     transform: translateY(0); // ensure visibility
     order: 1; // Ensures this content is placed at the top
-  }
-  .trend {
-    padding-top: 120px; // padding to offset sidebar overlay
   }
   .related-trend {
     order: 3; // Moves to the bottom under the .trend content

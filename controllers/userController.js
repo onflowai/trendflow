@@ -96,12 +96,16 @@ export const saveUserTrend = async (req, res) => {
       .json({ msg: 'Something went wrong' });
   }
 };
-//GET USER bookmarked TREND
+//GET USER bookmarked TREND: function retrieves the trends saved by a user from the database
 export const getUserSavedTrends = async (req, res) => {
   try {
-    const user = await userModel // fetching the user document with savedTrends populated
-      .findById(req.user.userID)
-      .populate('savedTrends');
+    const user = await userModel.findById(req.user.userID).populate({
+      path: 'savedTrends',
+      populate: {
+        path: 'createdBy',
+        select: 'username profile_img -_id',
+      }, //nested populate - populates createdBy within each Trend document with username and profile_img of the User model, excluding _id
+    }); //retrieves the user ID from the request object then savedTrends field contains an array of ObjectIds ref the Trend model
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
     }
