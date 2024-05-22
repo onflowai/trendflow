@@ -53,13 +53,16 @@ function BarChartComponent({ data, forecastData = [] }) {
             vertical={false}
           />
           <XAxis
-            axisLine={{ stroke: '#b3b3b3' }}
+            axisLine={false}
+            // axisLine={{ stroke: '#b3b3b3' }}
+            tickLine={{ stroke: '#b3b3b3' }}
             dataKey="date"
             height={60}
             tick={<CustomizedAxisTick />}
           />
           <YAxis
             axisLine={{ stroke: '#b3b3b3' }}
+            tickLine={{ stroke: '#b3b3b3' }}
             tick={{ fill: '#b3b3b3', fontSize: 13 }}
           />
           <Tooltip

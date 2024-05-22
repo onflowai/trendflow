@@ -5,6 +5,7 @@ import {
   CustomErrorToast,
   ScrollSpyComponent,
   ChartTrendComponent,
+  ContentBoxHighlighted,
   RelatedTrendsComponent,
 } from '../components';
 import Container from '../assets/wrappers/TrendPageContainer';
@@ -94,7 +95,7 @@ const TrendPage = () => {
             <div className="trend-category">{trendCategory}</div>
             <div className="trend-tech">{trendTech}</div>
             <div className="">
-              <DangerousHTML html={trendUse} />
+              <ContentBoxHighlighted trendUse={trendUse} />
             </div>
             <div className="" id="section3">
               {upDate}

@@ -101,7 +101,9 @@ const Admin = () => {
           },
         ]}
       />
-      {charts.monthTrends?.length > 1 && <ChartAdminComponent data={charts} />}
+      {charts.monthTrends?.length > 1 && (
+        <ChartAdminComponent data={charts} title="Stats:" />
+      )}
       <SearchTrends />
       <Trends
         trends={trends}
