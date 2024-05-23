@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FcElectricity, FcCalendar, FcApproval } from 'react-icons/fc';
 import {
   DangerousHTML,
   CustomErrorToast,
@@ -79,51 +78,53 @@ const TrendPage = () => {
   }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
   return (
     <Container>
-      <div className="page-layout">
-        <div id="section1" className="trend">
-          <div>
-            <ChartTrendComponent
-              data={interestOverTime}
-              forecast={forecast}
-              trend={trend}
-            />
-          </div>
-          <h4 className="trend-title" id="section2">
-            {trend}
-          </h4>
-          <div className="trend-center">
-            <div className="trend-category">{trendCategory}</div>
-            <div className="trend-tech">{trendTech}</div>
-            <div className="">
-              <ContentBoxHighlighted trendUse={trendUse} />
-            </div>
-            <div className="" id="section3">
-              {upDate}
-            </div>
+      <div className="trend-page-container">
+        <div className="page-layout">
+          <div id="section1" className="trend">
             <div>
-              <DangerousHTML html={generatedBlogPost} />
-              {generatedBlogPost}
+              <ChartTrendComponent
+                data={interestOverTime}
+                forecast={forecast}
+                trend={trend}
+              />
             </div>
-            {views}
-          </div>
-        </div>
-        <aside className="scroll-spy-sidebar-aside">
-          <div className="scroll-spy-sidebar">
-            <ScrollSpyComponent
-              sectionIds={['section1', 'section2', 'section3']}
-            />
-            {!isMobile && (
-              <div className="related-trend">
-                <RelatedTrendsComponent />
+            <h4 className="trend-title" id="section2">
+              {trend}
+            </h4>
+            <div className="trend-center">
+              <div className="trend-category">{trendCategory}</div>
+              <div className="trend-tech">{trendTech}</div>
+              <div className="trend-use-container">
+                <ContentBoxHighlighted trendUse={trendUse} />
               </div>
-            )}
+              <div className="" id="section3">
+                {upDate}
+              </div>
+              <div>
+                <DangerousHTML html={generatedBlogPost} />
+                {generatedBlogPost}
+              </div>
+              {views}
+            </div>
           </div>
-        </aside>
-        {isMobile && (
-          <div className="related-trend">
-            <RelatedTrendsComponent />
-          </div>
-        )}
+          <aside className="scroll-spy-sidebar-aside">
+            <div className="scroll-spy-sidebar">
+              <ScrollSpyComponent
+                sectionIds={['section1', 'section2', 'section3']}
+              />
+              {!isMobile && (
+                <div className="related-trend">
+                  <RelatedTrendsComponent />
+                </div>
+              )}
+            </div>
+          </aside>
+          {isMobile && (
+            <div className="related-trend">
+              <RelatedTrendsComponent />
+            </div>
+          )}
+        </div>
       </div>
     </Container>
   );

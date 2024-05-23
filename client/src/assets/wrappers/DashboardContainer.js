@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.section`
+  /* background: red;  */
   .dashboard {
     display: grid;
     grid-template-columns: 1fr;

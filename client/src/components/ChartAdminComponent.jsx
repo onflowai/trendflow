@@ -3,7 +3,7 @@ import Select from 'react-select'; // Import Select from react-select
 import BarChart from './BarChartComponent';
 import AreaChart from './AreaChartComponent';
 import Container from '../assets/wrappers/ChartsContainer';
-import { TiMediaRewind, TiMediaFastForward } from 'react-icons/ti';
+import { FaUserCheck, FaUserClock } from 'react-icons/fa6';
 import { TbTimeline } from 'react-icons/tb';
 /**
  * Component used for passing data needed for charts from Admin page which uses TrendPage styling
@@ -96,7 +96,7 @@ function ChartAdminComponent({ data, title }) {
             className={`icon-button ${chartType === 'users' ? 'active' : ''}`}
             onClick={() => setChartType('users')}
           >
-            <TiMediaRewind
+            <FaUserCheck
               className={`icon ${chartType === 'users' ? 'active' : ''}`}
             />
           </button>
@@ -106,7 +106,7 @@ function ChartAdminComponent({ data, title }) {
             }`}
             onClick={() => setChartType('guest users')}
           >
-            <TiMediaFastForward
+            <FaUserClock
               className={`icon ${chartType === 'guest users' ? 'active' : ''}`}
             />
           </button>
