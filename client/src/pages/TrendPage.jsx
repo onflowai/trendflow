@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import {
   DangerousHTML,
   CustomErrorToast,
+  FooterTrendDetails,
   ScrollSpyComponent,
+  ContentRowComponent,
   ChartTrendComponent,
   ContentBoxHighlighted,
   RelatedTrendsComponent,
 } from '../components';
+import { CiEdit } from 'react-icons/ci';
+import { LiaClock } from 'react-icons/lia';
+import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import {
@@ -76,6 +81,24 @@ const TrendPage = () => {
       setSidebarVisibility(false); // reset on component unmount if desired
     };
   }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
+  var boys = undefined;
+  //list of items used in the row under the chart takes on label, icon, and link and styling
+  const items = [
+    {
+      label: trendTech,
+      icon: <PiHashDuotone />,
+      link: '/dashboard',
+      styled: true,
+    },
+    {
+      label: trendCategory,
+      icon: <PiHashDuotone />,
+      link: '/dashboard',
+      styled: true,
+    },
+    { label: trendStatus, icon: <PiTrendUp />, styled: true },
+    { label: views, icon: <PiEyeLight />, styled: false },
+  ];
   return (
     <Container>
       <div className="trend-page-container">
@@ -88,23 +111,19 @@ const TrendPage = () => {
                 trend={trend}
               />
             </div>
-            <h4 className="trend-title" id="section2">
-              {trend}
-            </h4>
+            <h4 className="trend-title" id="section2"></h4>
             <div className="trend-center">
-              <div className="trend-category">{trendCategory}</div>
-              <div className="trend-tech">{trendTech}</div>
+              <div className="trend-items">
+                <ContentRowComponent items={items} />
+              </div>
               <div className="trend-use-container">
                 <ContentBoxHighlighted trendUse={trendUse} />
               </div>
-              <div className="" id="section3">
-                {upDate}
-              </div>
+              <div className="" id="section3"></div>
               <div>
                 <DangerousHTML html={generatedBlogPost} />
-                {generatedBlogPost}
               </div>
-              {views}
+              <FooterTrendDetails />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
@@ -114,7 +133,10 @@ const TrendPage = () => {
               />
               {!isMobile && (
                 <div className="related-trend">
-                  <RelatedTrendsComponent />
+                  <RelatedTrendsComponent
+                    lastUpDate={upDate}
+                    createdBy={createdBy}
+                  />
                 </div>
               )}
             </div>

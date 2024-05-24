@@ -40,3 +40,5 @@ export { default as ToggleSwitch } from './ToggleSwitch';
 export { default as FormComponentLock } from './FormComponentLock';
 export { default as Dropdown } from './Dropdown';
 export { default as ContentBoxHighlighted } from './ContentBoxHighlighted';
+export { default as ContentRowComponent } from './ContentRowComponent';
+export { default as FooterTrendDetails } from './FooterTrendDetails';

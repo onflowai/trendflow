@@ -1,15 +1,9 @@
 import { React, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { IoIosCheckmark, IoIosClose } from 'react-icons/io';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { CiEdit } from 'react-icons/ci';
 import { LiaClock } from 'react-icons/lia';
-import {
-  PiUserCircleThin,
-  PiHashLight,
-  PiEyeLight,
-  PiTrendUp,
-} from 'react-icons/pi'; //PiEyeThin
+import { PiHashLight, PiEyeLight, PiTrendUp } from 'react-icons/pi'; //PiEyeThin
 import { TrendChartComponent, Loading, UserImgSmall } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';

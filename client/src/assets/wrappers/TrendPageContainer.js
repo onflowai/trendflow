@@ -15,6 +15,9 @@ const Container = styled.section`
       width: 100%; // ensure the container takes full width
     }
   }
+  .trend-items{
+    padding: 0rem 2rem; 
+  }
     
   .trend {
     padding: 1rem 4rem 4rem; // add padding
@@ -24,7 +27,6 @@ const Container = styled.section`
   }
 
   .trend-use-container {
-  padding: 1rem; // outer padding outside of the border radius
   width: 100%; // ensure the container takes full width
   box-sizing: border-box; // ensure the padding is included in the width
 
@@ -87,6 +89,9 @@ const Container = styled.section`
       max-width: 100%; // padding to offset sidebar overlay
     }
 
+    .trend-items{
+      padding: 0rem 0rem; 
+    }
     .scroll-spy-sidebar {
       position: fixed; // fixed position for sidebar
       width: 100%; // sidebar takes full width
