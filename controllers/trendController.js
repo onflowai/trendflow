@@ -62,7 +62,9 @@ export const createTrend = async (req, res) => {
 //GET SINGLE TREND
 export const getSingleTrend = async (req, res) => {
   const { slug } = req.params; //retrieving the id
-  const trendObject = await trendModel.findOne({ slug: slug }); //retrieve the trend if it equals the id in the data
+  const trendObject = await trendModel
+    .findOne({ slug: slug })
+    .populate('createdBy', 'username profile_img -_id'); //retrieve the trend if it equals the id in the data
   if (!trendObject) {
     return res.status(404).json({ msg: 'Trend not found' });
   }

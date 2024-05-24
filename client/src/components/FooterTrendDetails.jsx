@@ -1,25 +1,76 @@
 import React from 'react';
 import styled from 'styled-components';
+import { UserImgSmall } from '../components';
 
 function FooterTrendDetails({ lastUpDate, createdBy }) {
-  return <Container></Container>;
+  return (
+    <Container>
+      <div className="left-section">
+        <div className="label">Submitted by:</div>
+        <UserImgSmall className="img" user_img={createdBy.profile_img} />
+        <div className="username">{createdBy.username}</div>
+      </div>
+      <div className="right-section">
+        <div className="label">Last updated:</div>
+        <div className="date">{lastUpDate}</div>
+      </div>
+    </Container>
+  );
 }
 
 const Container = styled.div`
- border: 1.5px solid var(--primary-400); 
-  background-color: var(--primary-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
-  border-radius: var(--border-radius);
-  margin: 1rem;
-  @media (max-width: 991px) {
-    /* padding: 0rem;
-    margin: 0.5rem; */
-    width: calc(100% - 0rem); // fill the width of the screen with padding
-    margin: 0; 
-    padding: 1rem; // maintain internal padding
-    box-sizing: border-box; // include padding and border in the element's total width
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; // Closer spacing between label and image
   }
 
+  .right-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+
+    .date {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem; // space between icon and text
+    padding: 0.6rem 1rem; // internal padding
+    border-radius: var(--round-radius); // rounded corners
+    background: var(--grey-50); // gray box background
+    color: var(--grey-900); // text color
+    }
+  }
+
+  .label {
+    color: #888; // Lighter gray color for labels
+  }
+
+  @media (max-width: 991px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .left-section,
+    .right-section {
+      width: 100%;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .right-section {
+      flex-direction: row;
+    }
+
+    .left-section .username {
+      margin-left: 0.5rem; // Adjust margin for small screens if needed
+    }
+  }
 `;
 
 export default FooterTrendDetails;

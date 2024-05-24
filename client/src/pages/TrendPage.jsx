@@ -72,6 +72,7 @@ const TrendPage = () => {
   } = trendObject;
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
+  console.log('USER: ', createdBy);
   console.log('OBJECT: ', trendObject);
   console.log('FORECAST IN TREND PAGE: ', forecast);
   const { setSidebarVisibility } = useDashboardContext();
@@ -123,7 +124,7 @@ const TrendPage = () => {
               <div>
                 <DangerousHTML html={generatedBlogPost} />
               </div>
-              <FooterTrendDetails />
+              <FooterTrendDetails lastUpDate={upDate} createdBy={createdBy} />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
@@ -135,7 +136,7 @@ const TrendPage = () => {
                 <div className="related-trend">
                   <RelatedTrendsComponent
                     lastUpDate={upDate}
-                    createdBy={createdBy}
+                    // createdBy={createdBy}
                   />
                 </div>
               )}
