@@ -171,24 +171,28 @@ export const getApprovedTrends = async (req, res) => {
     isApproved: true,
   }; //creating query parameters as an object
   if (search) {
-    // Matching against 'trend', 'trendTech', and 'trendDesc' fields using a 'i' case-insensitive '$regex' regex
     queryObject.$or = [
       { trend: { $regex: search, $options: 'i' } },
       { trendTech: { $regex: search, $options: 'i' } },
       { trendCategory: { $regex: search, $options: 'i' } },
     ];
-  }
+  } // Matching against 'trend', 'trendTech', and 'trendDesc' fields using a 'i' case-insensitive '$regex' regex
   if (trendTech && trendTech !== 'all') {
     queryObject.trendTech = trendTech;
   } //dropdown query for trendTech
   if (trendCategory && trendCategory !== 'all') {
     queryObject.trendCategory = trendCategory;
   } //dropdown query for trendCategory
-  const sortingOption = {
-    recentlyUpdated: '-updatedAt',
-    lastUpdated: 'updatedAt',
+  const sortingOptions = {
+    recentlyUpdated: { updatedAt: -1 },
+    lastUpdated: { updatedAt: 1 },
   };
-  const sortKey = sortingOption[sort] || sortingOption;
+  // const sortKey = sortingOptions[sort] || sortingOptions.recentlyUpdated;
+  const sortKey = sortingOptions[sort] || null;
+
+  const page = Number(req.query.page) || 1; //value page will be provided in the req
+  const limit = Number(req.query.limit) || 10; //limit will be provided, defaulting to 10 trends initially
+  const skip = (page - 1) * limit; //skipping 0 trends, displaying all 10 then skipping them to next 10
 
   console.log('Constructed Query Object:', queryObject);
   try {
@@ -196,9 +200,15 @@ export const getApprovedTrends = async (req, res) => {
     const trends = await trendModel
       .find(queryObject)
       .select('-generatedBlogPost -trendUse')
-      .populate('createdBy', 'username profile_img -_id');
-    // Directly respond with the list of approved trends (could be an empty array)
-    res.status(StatusCodes.OK).json({ trends });
+      .populate('createdBy', 'username profile_img -_id')
+      .sort(sortKey)
+      .skip(skip)
+      .limit(limit);
+    const totalTrends = await trendModel.countDocuments(queryObject); //getting total trends based on query
+    const pagesNumber = Math.ceil(totalTrends / limit); //calculating the pages
+    res
+      .status(StatusCodes.OK)
+      .json({ totalTrends, pagesNumber, currentPage: page, trends }); // Directly respond with the list of approved trends (could be an empty array)
   } catch (error) {
     // Handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
