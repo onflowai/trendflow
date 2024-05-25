@@ -164,10 +164,25 @@ export const approveTrend = async (req, res) => {
 
 //GET APPROVED TRENDS
 export const getApprovedTrends = async (req, res) => {
+  // console.log(req.query);
+  const { search } = req.query; //destructuring the value coming from query which sent from the users search
+  const queryObject = {
+    isApproved: true,
+  }; //creating query parameters as an object
+  if (search) {
+    // Matching against 'trend', 'trendTech', and 'trendDesc' fields using a 'i' case-insensitive '$regex' regex
+    queryObject.$or = [
+      { trend: { $regex: search, $options: 'i' } },
+      { trendTech: { $regex: search, $options: 'i' } },
+      { trendCategory: { $regex: search, $options: 'i' } },
+    ];
+  }
+  console.log('Constructed Query Object:', queryObject);
   try {
     // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     const trends = await trendModel
-      .find({ isApproved: true }, '-generatedBlogPost -trendUse')
+      .find(queryObject)
+      .select('-generatedBlogPost -trendUse')
       .populate('createdBy', 'username profile_img -_id');
     // Directly respond with the list of approved trends (could be an empty array)
     res.status(StatusCodes.OK).json({ trends });
