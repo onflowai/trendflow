@@ -165,7 +165,8 @@ export const approveTrend = async (req, res) => {
 //GET APPROVED TRENDS
 export const getApprovedTrends = async (req, res) => {
   // console.log(req.query);
-  const { search } = req.query; //destructuring the value coming from query which sent from the users search
+  let { search, trendTech, trendCategory, sort } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
+  search = sanitizeHTML(search); // validating and sanitizing the search parameter
   const queryObject = {
     isApproved: true,
   }; //creating query parameters as an object
@@ -177,6 +178,18 @@ export const getApprovedTrends = async (req, res) => {
       { trendCategory: { $regex: search, $options: 'i' } },
     ];
   }
+  if (trendTech && trendTech !== 'all') {
+    queryObject.trendTech = trendTech;
+  } //dropdown query for trendTech
+  if (trendCategory && trendCategory !== 'all') {
+    queryObject.trendCategory = trendCategory;
+  } //dropdown query for trendCategory
+  const sortingOption = {
+    recentlyUpdated: '-updatedAt',
+    lastUpdated: 'updatedAt',
+  };
+  const sortKey = sortingOption[sort] || sortingOption;
+
   console.log('Constructed Query Object:', queryObject);
   try {
     // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
