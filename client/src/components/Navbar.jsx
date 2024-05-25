@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Container from '../assets/wrappers/NavbarContainer';
 import UserDropdown from './UserDropdown';
 import DarkMode from './DarkMode';
+import FormComponentSearch from './FormComponentSearch';
 import { IoIosArrowForward, IoIosArrowBack, IoIosMenu } from 'react-icons/io';
 import { dashboardNavLinks } from '../assets/utils/data';
 import { NavLink } from 'react-router-dom';
@@ -42,17 +43,10 @@ function Navbar() {
         >
           <IoIosMenu />
         </button>
-        <div className="navbar-link">
-          {dashboardNavLinks.map((link) => {
-            const { text, path } = link;
-            return (
-              <NavLink to={path} key={text} className="nav-links">
-                {text}
-              </NavLink>
-            );
-          })}
+        <div className="search-input">
+          <FormComponentSearch />
         </div>
-        <DarkMode />
+        <DarkMode className="dark-mode" />
         <div className="btn-container">
           <UserDropdown />
         </div>
