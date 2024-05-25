@@ -2,10 +2,7 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   position: relative;
-  .user{
-    width: 29px;
-    height: 29px;
-  }
+
   .user-btn {
     display: flex;
     align-items: center;
@@ -13,17 +10,15 @@ const Container = styled.div`
     gap: 0 0.5rem;
     background: transparent;
     border: none;
+    cursor: pointer;
   }
-  .img {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+  .arrow-icon {
+    transition: transform 0.3s ease;
   }
   .dropdown {
     position: absolute;
     top: 45px;
     right: 1px;
-    /* width: 100%; */
     box-shadow: var(--shadow-2);
     text-align: center;
     visibility: hidden;
@@ -44,6 +39,17 @@ const Container = styled.div`
     cursor: pointer;
     width: 100%;
     height: 100%;
+  }
+
+  @media (max-width: 991px) {
+    .username,
+    .arrow-icon {
+      display: none; /* Hide username and arrow icon on small screens */
+    }
+
+    .user-btn {
+      justify-content: center; /* Center the image in the button */
+    }
   }
 `;
 

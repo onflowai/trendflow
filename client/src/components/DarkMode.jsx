@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDashboardContext } from '../pages/DashboardLayout';
-import { HiOutlineSun, HiSun } from 'react-icons/hi';
+import { PiMoonFill, PiMoonLight } from 'react-icons/pi';
 import Container from '../assets/wrappers/DarkModeContainer';
 
 const DarkMode = () => {
@@ -8,7 +8,11 @@ const DarkMode = () => {
 
   return (
     <Container onClick={toggleDarkTheme} className={isDarkTheme ? 'dark' : ''}>
-      <HiOutlineSun className="icon sun-icon" />
+      {isDarkTheme ? (
+        <PiMoonFill className="icon moon-icon" />
+      ) : (
+        <PiMoonLight className="icon moon-icon" />
+      )}
     </Container>
   );
 };

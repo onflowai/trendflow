@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5';
+import { LuSearch } from 'react-icons/lu';
 import styled from 'styled-components';
 
 const FormComponentSearch = ({ type = 'text', name, labelText, onSearch }) => {
@@ -41,7 +42,7 @@ const FormComponentSearch = ({ type = 'text', name, labelText, onSearch }) => {
   return (
     <Container>
       <div className={`input-container ${isExpanded ? 'expanded' : ''}`}>
-        <IoSearchOutline className="icon" onClick={handleFocus} />
+        <LuSearch className="icon" onClick={handleFocus} />
         <input
           type={type}
           id={name}
