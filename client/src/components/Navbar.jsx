@@ -46,7 +46,9 @@ function Navbar() {
         <div className="search-input">
           <FormComponentSearch />
         </div>
-        <DarkMode className="dark-mode" />
+        <div className="btn-container">
+          <DarkMode className="dark-mode" />
+        </div>
         <div className="btn-container">
           <UserDropdown />
         </div>

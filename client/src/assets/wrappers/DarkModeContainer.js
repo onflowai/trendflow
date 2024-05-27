@@ -8,8 +8,6 @@ background: none;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 40px;
-  height: 25px;
   transition: background-color 0.5s;
 
   .icon {

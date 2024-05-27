@@ -37,13 +37,6 @@ const Container = styled.nav`
     display: block;
   }
 
-  .search-input,
-  .dark-mode,
-  .btn-container {
-    display: flex;
-    align-items: center;
-  }
-
   .search-input {
     margin-left: auto; /* Pushes the search input to the right */
     position: relative;
@@ -52,12 +45,10 @@ const Container = styled.nav`
     transition: width 0.3s ease;
   }
 
-  .dark-mode {
-    margin-left: 1rem; /* Add space between search input and DarkMode */
-  }
-
   .btn-container {
-    margin-left: 1rem; /* Add space between DarkMode and UserDropdown */
+    display: flex;
+    align-items: center;
+    margin-left: 1rem; /* Add space between buttons */
   }
 
   @media (max-width: 991px) {
@@ -67,6 +58,11 @@ const Container = styled.nav`
 
     .search-input.expanded {
       width: 200px; /* Expanded width */
+    }
+    .btn-container {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem; /* Add space between buttons */
     }
   }
 

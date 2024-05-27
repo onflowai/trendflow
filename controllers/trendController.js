@@ -184,8 +184,8 @@ export const getApprovedTrends = async (req, res) => {
     queryObject.trendCategory = trendCategory;
   } //dropdown query for trendCategory
   const sortingOptions = {
-    recentlyUpdated: { updatedAt: -1 },
-    lastUpdated: { updatedAt: 1 },
+    newest: { updatedAt: -1 },
+    oldest: { updatedAt: 1 },
   };
   // const sortKey = sortingOptions[sort] || sortingOptions.recentlyUpdated;
   const sortKey = sortingOptions[sort] || null;

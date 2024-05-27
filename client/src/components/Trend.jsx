@@ -67,8 +67,8 @@ function Trend({
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
   const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   const isLargeScreen = window.matchMedia('(min-width: 812px)').matches; // using media query hook to determine the screen size
-  console.log('isLargeScreen: ', isLargeScreen);
-  console.log('Created by: ', createdBy);
+  // console.log('isLargeScreen: ', isLargeScreen);
+  // console.log('Created by: ', createdBy);
   // Props for TrendLarge
   const largeProps = {
     _id,

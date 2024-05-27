@@ -9,9 +9,15 @@ import { useContext, createContext } from 'react';
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
-export const loader = async () => {
+export const loader = async ({ request }) => {
+  console.log(request.url);
+  const params = Object.fromEntries([
+    ...new URL(request.url).searchParams.entries(),
+  ]);
+  console.log('params: ', params);
+
   try {
-    const { data: trendsData } = await customFetch.get('/trends');
+    const { data: trendsData } = await customFetch.get('/trends', { params });
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     );
@@ -20,6 +26,7 @@ export const loader = async () => {
     return {
       trends: trendsData,
       savedTrendIds,
+      searchValues: { ...params },
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -28,7 +35,7 @@ export const loader = async () => {
 };
 //function for bookmarking trends for each user
 const onSave = async (_id) => {
-  console.log('ID in onSave: ', _id);
+  // console.log('ID in onSave: ', _id);
   try {
     const response = await customFetch.patch('/users/save-trend', { _id });
     if (response.status === 200) {
@@ -55,14 +62,14 @@ const onRemove = async (_id) => {
     console.error(error);
   }
 };
-
+const AllTrendsContext = createContext();
 const AllTrends = () => {
-  const { trends, savedTrendIds, error } = useLoaderData();
+  const { trends, savedTrendIds, error, searchValues } = useLoaderData();
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
   return (
-    <>
+    <AllTrendsContext.Provider value={{ trends, searchValues }}>
       <SearchTrends />
       <Trends
         trends={trends.trends}
@@ -70,8 +77,9 @@ const AllTrends = () => {
         onSave={onSave}
         onRemove={onRemove}
       />
-    </>
+    </AllTrendsContext.Provider>
   );
 };
+export const useAllTrendsContext = () => useContext(AllTrendsContext);
 
 export default AllTrends;

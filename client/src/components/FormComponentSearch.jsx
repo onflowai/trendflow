@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5';
+import { IoCloseOutline } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import styled from 'styled-components';
 
-const FormComponentSearch = ({ type = 'text', name, labelText, onSearch }) => {
+const FormComponentSearch = ({ type = 'text', name, onSearch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);

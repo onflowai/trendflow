@@ -34,7 +34,7 @@ function TrendLarge({
   createdBy,
   isApproved,
 }) {
-  console.log('ID____: ', _id);
+  // console.log('ID____: ', _id);
   const [isHovered, setIsHovered] = useState(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);

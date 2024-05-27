@@ -12,9 +12,15 @@ const Container = styled.div`
     border: none;
     cursor: pointer;
   }
+
+  .username {
+    margin-right: 0.5rem;
+  }
+
   .arrow-icon {
     transition: transform 0.3s ease;
   }
+
   .dropdown {
     position: absolute;
     top: 45px;
@@ -25,9 +31,11 @@ const Container = styled.div`
     border-radius: 1rem;
     background: var(--primary-500);
   }
+
   .show-dropdown {
     visibility: visible;
   }
+
   .dropdown-btn {
     border-radius: var(--border-radius);
     padding: 0.5rem;

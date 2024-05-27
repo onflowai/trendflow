@@ -18,7 +18,7 @@ function Trends({
   onRemove,
   savedTrends,
 }) {
-  console.log('TRENDS:', trends);
+  // console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
       <Container>

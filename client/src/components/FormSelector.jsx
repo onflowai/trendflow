@@ -30,6 +30,7 @@ const FormSelector = ({ name, labelText, list, defaultValue = '' }) => {
           name={name}
           value={selectedOption}
           onChange={handleChange}
+          defaultValue={defaultValue}
           options={options}
           classNamePrefix="form-select"
           styles={customStyles}
