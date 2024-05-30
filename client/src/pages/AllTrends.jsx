@@ -10,7 +10,7 @@ import { useContext, createContext } from 'react';
  * @returns
  */
 export const loader = async ({ request }) => {
-  console.log(request.url);
+  console.log('REQUEST URL ', request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);

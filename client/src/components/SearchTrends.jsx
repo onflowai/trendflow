@@ -8,42 +8,47 @@ import {
 } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
-import { Form, useNavigation, redirect, Link } from 'react-router-dom';
+import {
+  Form,
+  useNavigation,
+  redirect,
+  Link,
+  useSubmit,
+} from 'react-router-dom';
 import { useAllTrendsContext } from '../pages/AllTrends';
-/**
- * Search Trends is a component used in AllTrends to search for trends using query params
- * @returns
- */
+
 function SearchTrends() {
   const { searchValues } = useAllTrendsContext();
-  console.log(searchValues);
-  // const navigation = useNavigation();
-  // const isSubmitting = navigation.state === 'submitting';
+  const submit = useSubmit();
+
+  const handleChange = (name, value) => {
+    const form = document.getElementById('searchForm');
+    const params = new URLSearchParams(new FormData(form));
+    params.set(name, value);
+    console.log('VALUE: ', value);
+    submit(form); // Submit the form after updating the parameter
+  };
+
   return (
     <Container>
       <div className="submit-container">
         <div>
-          <Form method="post" className="form">
-            <h4 className="form-title">Submit a Tech:</h4>
+          <Form id="searchForm" className="form">
+            <h4 className="form-title">Filter:</h4>
             <div className="form-center">
-              {/* <FormComponent type="text" name="Any tech on your mind?" /> */}
               <FormSelector
                 labelText="Choose Category:"
                 name="trendCategory"
-                defaultValue="all"
+                defaultValue={searchValues.trendCategory || 'all'}
                 list={['All', ...Object.values(TREND_CATEGORY)]}
-                onChange={(e) => {
-                  submit(e.currentTarget.form);
-                }}
+                onChange={handleChange}
               />
               <FormSelector
                 labelText="Choose Technology:"
                 name="trendTech"
-                defaultValue="all"
+                defaultValue={searchValues.trendTech || 'all'}
                 list={['All', ...Object.values(TECHNOLOGIES)]}
-                onChange={(e) => {
-                  submit(e.currentTarget.form);
-                }}
+                onChange={handleChange}
               />
               <Link to="/dashboard" className="btn btn-block form-btn">
                 Reset Search

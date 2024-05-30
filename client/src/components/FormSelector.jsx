@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
 /**
- * Component responsible for setting up selector programtialy
+ * Component responsible for setting up selector programmatically
+ * defaultValue = '' - defaultValue or a fallback of empty
  * Object.values = list
  * @param {*} param0
  * @returns
  */
-const FormSelector = ({ name, labelText, list, defaultValue = '' }) => {
-  // State to track the selected option
+const FormSelector = ({
+  name,
+  labelText,
+  list,
+  defaultValue = '',
+  onChange,
+}) => {
   const [selectedOption, setSelectedOption] = useState({
     value: defaultValue,
     label: defaultValue,
   });
+
+  useEffect(() => {
+    setSelectedOption({ value: defaultValue, label: defaultValue });
+  }, [defaultValue]);
+
   const options = list.map((item) => ({ value: item, label: item }));
-  // Handler for when an option is selected
+
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
+    if (onChange) onChange(name, selectedOption.value); // Call the onChange prop function with the name and value
   };
 
   return (
@@ -30,18 +42,14 @@ const FormSelector = ({ name, labelText, list, defaultValue = '' }) => {
           name={name}
           value={selectedOption}
           onChange={handleChange}
-          defaultValue={defaultValue}
           options={options}
           classNamePrefix="form-select"
           styles={customStyles}
         />
-        {/* Hidden input to store the selected value for form submission */}
-        <input type="hidden" name={name} value={selectedOption.value} />
       </div>
     </Container>
   );
 };
-
 const customStyles = {
   control: (styles) => ({
     ...styles,

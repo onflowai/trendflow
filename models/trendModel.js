@@ -114,6 +114,14 @@ const TrendSchema = new mongoose.Schema(
         required: true, // Ensures this field must be provided
       },
     },
+    t_score: {
+      type: Number,
+      default: 0,
+    },
+    f_score: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

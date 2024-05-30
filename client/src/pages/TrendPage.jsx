@@ -8,7 +8,6 @@ import {
   ChartTrendComponent,
   ContentBoxHighlighted,
   RelatedTrendsComponent,
-  FormComponentSearch,
 } from '../components';
 import { CiEdit } from 'react-icons/ci';
 import { LiaClock } from 'react-icons/lia';
@@ -148,9 +147,6 @@ const TrendPage = () => {
               <RelatedTrendsComponent />
             </div>
           )}
-        </div>
-        <div>
-          <FormComponentSearch />
         </div>
       </div>
     </Container>

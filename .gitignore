@@ -33,3 +33,4 @@ utils/constants.js
 utils/openaiPromptData.js
 utils/script_data_sample.json
 utils/trend_traning_data.txt
+utils/script_controller_test.js

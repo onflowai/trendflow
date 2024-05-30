@@ -1,36 +1,41 @@
-import { exec } from 'child_process';
-import { quote } from 'shell-quote';
+import axios from 'axios';
+
 /**
- * Script management. Triggers the python scripts
+ * Script management. Triggers the python scripts via Flask API
  * @param {*} keywords
  * @returns
  */
-export const executePythonScript = (keywords) => {
-  return new Promise((resolve, reject) => {
+export const executePythonScript = async (keywords) => {
+  try {
     console.log('trend keyword in script controller: ', keywords);
-    const safeKeywords = quote([keywords]); // Correct usage of quote to escape keywords
-    exec(
-      `python py_scripts/trend_controller.py "${safeKeywords}"`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return reject(error);
-        }
-        if (stderr) {
-          console.error(`stderr: ${stderr}`);
-          return reject(stderr);
-        }
-        console.log(`stdout: ${stdout}`);
 
-        resolve(stdout);
+    // Send POST request to Flask server with keywords
+    const response = await axios.post(
+      'http://127.0.0.1:5000/run-script',
+      {
+        keywords: keywords,
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
       }
     );
-  });
+
+    console.log(`Output from Python: ${response.data.output}`);
+    return response.data.output;
+  } catch (error) {
+    console.error(`Error executing Python script: ${error}`);
+    if (error.response) {
+      // Server responded with a status other than 2xx
+      console.error(`Status: ${error.response.status}`);
+      console.error(`Data: ${error.response.data}`);
+    }
+    throw error;
+  }
 };
-// executePythonScript('MongoDB')
-//   .then((output) => {
-//     console.log('Output from Python:', output);
-//   })
-//   .catch((err) => {
-//     console.error('Error executing Python script:', err);
-//   });
+executePythonScript('Vite')
+  .then((output) => {
+    console.log('Output from Python:', output);
+  })
+  .catch((err) => {
+    console.error('Error executing Python script:', err);
+  });

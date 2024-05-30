@@ -62,6 +62,7 @@ const AddTrend = () => {
                 defaultValue={TREND_CATEGORY.PROGRAMMING_LANGUAGES}
                 list={Object.values(TREND_CATEGORY)}
               />
+              {console.log(Object.values(TREND_CATEGORY))}
               <FormSelector
                 labelText="Choose Technology:"
                 name="trendTech"

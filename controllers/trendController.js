@@ -146,6 +146,8 @@ export const approveTrend = async (req, res) => {
           trendUse: trendUse,
           isApproved: true,
           forecast: data.forecast,
+          t_score: data.t_score,
+          f_score: data.f_scare,
         },
       },
       { new: true } //returns the updated document instead of the original
