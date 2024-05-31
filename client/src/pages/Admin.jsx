@@ -11,12 +11,20 @@ import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/AdminContainer';
 import { toast } from 'react-toastify';
+import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
-export const loader = async () => {
+export const loader = async ({ request }) => {
+  console.log(request.url);
+  const params = Object.fromEntries([
+    ...new URL(request.url).searchParams.entries(),
+  ]);
+  console.log('params: ', params);
   try {
     // Fetching all trends
-    const trendsResponse = await customFetch.get('trends/admin/all-trends');
+    const trendsResponse = await customFetch.get('trends/admin/all-trends', {
+      params,
+    });
     const trendsData = trendsResponse.data;
 
     // Fetching basic application stats
@@ -28,7 +36,12 @@ export const loader = async () => {
     const chartsData = chartsResponse.data;
 
     // Return both sets of data
-    return { trends: trendsData.trends, stats: statsData, charts: chartsData };
+    return {
+      trends: trendsData.trends,
+      stats: statsData,
+      charts: chartsData,
+      searchValues: { ...params },
+    };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return redirect('/dashboard');
@@ -64,14 +77,14 @@ const Admin = () => {
       setLoadingSlug(null); // stop loading regardless of success or failure
     }
   };
-  const { trends, stats, charts } = useLoaderData();
+  const { trends, stats, charts, searchValues } = useLoaderData();
   console.log('Trends in Admin: ', trends);
   console.log('Logging Charts: ', charts);
   const { user } = useOutletContext();
   const isAdminPage = user.role === 'admin';
   console.log(user);
   return (
-    <>
+    <Container>
       <StatComponent
         user={user.name}
         stats={[
@@ -104,15 +117,17 @@ const Admin = () => {
       {charts.monthTrends?.length > 1 && (
         <ChartAdminComponent data={charts} title="Stats:" />
       )}
-      <SearchTrends />
-      <Trends
-        trends={trends}
-        onDelete={removeTrend}
-        onApprove={approveTrend}
-        isAdminPage={isAdminPage}
-        loadingSlug={loadingSlug}
-      />
-    </>
+      <CombinedProvider value={{ trends, searchValues }}>
+        <SearchTrends />
+        <Trends
+          trends={trends}
+          onDelete={removeTrend}
+          onApprove={approveTrend}
+          isAdminPage={isAdminPage}
+          loadingSlug={loadingSlug}
+        />
+      </CombinedProvider>
+    </Container>
   );
 };
 

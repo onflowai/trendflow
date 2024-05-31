@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
 import { useLoaderData } from 'react-router-dom';
-import { useContext, createContext } from 'react';
+import { CombinedProvider } from '../context/CombinedContext.jsx';
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
@@ -62,14 +62,13 @@ const onRemove = async (_id) => {
     console.error(error);
   }
 };
-const AllTrendsContext = createContext();
 const AllTrends = () => {
   const { trends, savedTrendIds, error, searchValues } = useLoaderData();
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
   return (
-    <AllTrendsContext.Provider value={{ trends, searchValues }}>
+    <CombinedProvider value={{ trends, searchValues }}>
       <SearchTrends />
       <Trends
         trends={trends.trends}
@@ -77,9 +76,8 @@ const AllTrends = () => {
         onSave={onSave}
         onRemove={onRemove}
       />
-    </AllTrendsContext.Provider>
+    </CombinedProvider>
   );
 };
-export const useAllTrendsContext = () => useContext(AllTrendsContext);
 
 export default AllTrends;

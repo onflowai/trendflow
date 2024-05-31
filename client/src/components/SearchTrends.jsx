@@ -7,6 +7,7 @@ import {
   FormComponentLogos,
 } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer';
+import { useCombinedContext } from '../context/CombinedContext.jsx';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
 import {
   Form,
@@ -15,10 +16,9 @@ import {
   Link,
   useSubmit,
 } from 'react-router-dom';
-import { useAllTrendsContext } from '../pages/AllTrends';
 
 function SearchTrends() {
-  const { searchValues } = useAllTrendsContext();
+  const { searchValues } = useCombinedContext();
   const submit = useSubmit();
 
   const handleChange = (name, value) => {

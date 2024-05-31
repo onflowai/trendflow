@@ -3,6 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
+import {
+  constructQueryObject,
+  constructSortKey,
+  paginateAndSortTrends,
+} from '../utils/trendUtils.js';
 /**
  * This is where functionality of trends implemented
  * @param {*} req
@@ -32,12 +37,27 @@ export const submitTrend = async (req, res) => {
 //GET ALL TRENDS (only for ADMIN)
 export const getAllTrends = async (req, res) => {
   // console.log(req);
+  let { search, trendTech, trendCategory, sort, page, limit } = req.query;
+  const queryObject = constructQueryObject(search, trendTech, trendCategory);
+  const sortKey = constructSortKey(sort);
   console.log('user object: ', req.user);
-  const trends = await trendModel
-    .find()
-    .populate('createdBy', 'username profile_img -_id'); //getting the trends belonging to user that provided cookie and token
-  console.log(trends);
-  res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
+
+  page = Number(page) || 1;
+  limit = Number(limit) || 10;
+
+  try {
+    const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
+      queryObject,
+      sortKey,
+      page,
+      limit
+    );
+    res
+      .status(StatusCodes.OK)
+      .json({ totalTrends, pagesNumber, currentPage: page, trends });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  } //if there is anything but response 200 resource is not found response fot the client
 };
 
 //GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)

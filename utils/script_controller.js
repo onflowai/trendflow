@@ -32,10 +32,11 @@ export const executePythonScript = async (keywords) => {
     throw error;
   }
 };
-executePythonScript('Vite')
-  .then((output) => {
-    console.log('Output from Python:', output);
-  })
-  .catch((err) => {
-    console.error('Error executing Python script:', err);
-  });
+// TEST
+// executePythonScript('Vite')
+//   .then((output) => {
+//     console.log('Output from Python:', output);
+//   })
+//   .catch((err) => {
+//     console.error('Error executing Python script:', err);
+//   });
