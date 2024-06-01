@@ -14,7 +14,7 @@ const FormComponentLogos = ({ type, name, labelText, placeholder }) => {
       <input
         className="form-input"
         type={type}
-        name={name}
+        name={name} // Ensure this matches expected field names
         placeholder={placeholder}
       />
     </Container>

@@ -16,6 +16,7 @@ import customFetch from '../utils/customFetch';
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
+  console.log(data);
   try {
     await customFetch.post('/trends/submit', data);
     toast.success(
@@ -52,7 +53,7 @@ const AddTrend = () => {
               {/* <LogoCarousel /> */}
               <FormComponentLogos
                 type="text"
-                name="Trend"
+                name="trend"
                 placeholder="Any tech on your mind?"
               />
               {/* <FormComponent type="text" name="Any tech on your mind?" /> */}

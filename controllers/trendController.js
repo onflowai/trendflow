@@ -20,7 +20,7 @@ import {
 //   { id: nanoid(), trend: 'react', category: 'javascript framework' },
 // ];
 export const submitTrend = async (req, res) => {
-  const { trend } = req.body;
+  let { trend } = req.body; //using scoped variable
   trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
   const existingTrend = await trendModel.findOne({ trend });
   if (existingTrend) {
@@ -43,7 +43,7 @@ export const getAllTrends = async (req, res) => {
   console.log('user object: ', req.user);
 
   page = Number(page) || 1;
-  limit = Number(limit) || 10;
+  limit = Number(limit) || 36;
 
   try {
     const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
@@ -152,7 +152,11 @@ export const approveTrend = async (req, res) => {
       trend.trendCategory,
       trend.trendTech
     );
-    const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
+    // Log intermediate outputs for verification
+    console.log('Generated Blog Post:', trendPost);
+    console.log('Generated Description:', trendDesc);
+    console.log('Generated Use Cases:', trendUse);
+    // const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     //UPDATING MONGO
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
@@ -161,13 +165,13 @@ export const approveTrend = async (req, res) => {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
           flashChart: data.flashChart,
-          generatedBlogPost: safeTrendPost,
+          generatedBlogPost: trendPost,
           trendDesc: trendDesc,
           trendUse: trendUse,
           isApproved: true,
           forecast: data.forecast,
           t_score: data.t_score,
-          f_score: data.f_scare,
+          f_score: data.f_score,
         },
       },
       { new: true } //returns the updated document instead of the original
@@ -198,7 +202,7 @@ export const getApprovedTrends = async (req, res) => {
       { trendTech: { $regex: search, $options: 'i' } },
       { trendCategory: { $regex: search, $options: 'i' } },
     ];
-  } // Matching against 'trend', 'trendTech', and 'trendDesc' fields using a 'i' case-insensitive '$regex' regex
+  } // Matching against 'trend', 'trendTech', and 'trendCategory' fields using a 'i' case-insensitive '$regex' regex
   if (trendTech && trendTech !== 'all') {
     queryObject.trendTech = trendTech;
   } //dropdown query for trendTech
@@ -213,7 +217,7 @@ export const getApprovedTrends = async (req, res) => {
   const sortKey = sortingOptions[sort] || null;
 
   const page = Number(req.query.page) || 1; //value page will be provided in the req
-  const limit = Number(req.query.limit) || 10; //limit will be provided, defaulting to 10 trends initially
+  const limit = Number(req.query.limit) || 36; //limit will be provided, defaulting to 10 trends initially
   const skip = (page - 1) * limit; //skipping 0 trends, displaying all 10 then skipping them to next 10
 
   console.log('Constructed Query Object:', queryObject);

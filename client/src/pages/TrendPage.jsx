@@ -9,17 +9,10 @@ import {
   ContentBoxHighlighted,
   RelatedTrendsComponent,
 } from '../components';
-import { CiEdit } from 'react-icons/ci';
-import { LiaClock } from 'react-icons/lia';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
-import {
-  redirect,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import day from 'dayjs';
@@ -74,6 +67,8 @@ const TrendPage = () => {
   const upDate = day(updatedAt).format('MM YYYY');
   console.log('USER: ', createdBy);
   console.log('OBJECT: ', trendObject);
+  console.log('TREND USE: ', trendUse);
+  console.log('TREND BLOG: ', generatedBlogPost);
   console.log('FORECAST IN TREND PAGE: ', forecast);
   const { setSidebarVisibility } = useDashboardContext();
   useEffect(() => {
@@ -120,12 +115,12 @@ const TrendPage = () => {
               <div className="trend-use-container">
                 <ContentBoxHighlighted trendUse={trendUse} />
               </div>
-              <div className="" id="section3"></div>
-              <div>
-                <DangerousHTML html={generatedBlogPost} />
-              </div>
-              <FooterTrendDetails lastUpDate={upDate} createdBy={createdBy} />
             </div>
+            <div className="" id="section3"></div>
+            <div className="trend-blog-post">
+              <DangerousHTML html={generatedBlogPost} />
+            </div>
+            <FooterTrendDetails lastUpDate={upDate} createdBy={createdBy} />
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.section`
-    border-radius: var(--border-radius); // set border radius
+  border-radius: var(--border-radius); // set border radius
   background: var(--background-secondary-color); // set background color
   
   .page-layout {
@@ -111,6 +111,17 @@ const Container = styled.section`
       width: 100vw; // full width on small screens
       padding: 0; // remove padding on small screens
       margin: 0; // remove margin on small screens
+    }
+  }
+  .trend-blog-post {
+    width: 100%; // ensure the blog post container takes full width
+    overflow-wrap: break-word; // handle long words or URLs
+    word-wrap: break-word; // handle long words or URLs
+    overflow: hidden; // prevent content overflow
+    box-sizing: border-box; // include padding and border in element's total width
+
+    @media (max-width: 991px) {
+      padding: 0 1rem; // add padding for smaller screens
     }
   }
 `;

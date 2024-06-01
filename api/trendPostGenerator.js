@@ -5,7 +5,8 @@ import {
   MAX_TOKENS_USE,
   SYSTEM_ROLE_POST,
   USER_ROLE_POST,
-  RESPONSE_SYSTEM_ROLE,
+  DESC_SYSTEM_ROLE,
+  USE_SYSTEM_ROLE,
   RESPONSE_USER_DESC,
   RESPONSE_USER_USE,
   TREND_URL_BUTTON,
@@ -23,7 +24,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 // Async function to generate blog content using OpenAI
 export const generatePostContent = async (trend, trendCategory, trendTech) => {
-  console.log('TREND HERE ----------------------> ', trend);
+  // console.log('TREND HERE ----------------------> ', trend);
   const config = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -33,7 +34,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
   // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-4-1106-vision-preview
   try {
     const blogPostResponse = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-1106-vision-preview',
       temperature: 0.7,
       max_tokens: MAX_TOKENS_POST,
       messages: [
@@ -43,13 +44,12 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
         },
         {
           role: 'user',
-          content: `${USER_ROLE_POST} about the ${trend} in the technology category of ${trendCategory}, specifically focusing on ${trendTech} technology. ${TREND_URL_BUTTON}`,
+          content: `${USER_ROLE_POST} Write it about the ${trend} in the technology category of ${trendCategory}, specifically focusing on ${trendTech} technology. ${TREND_URL_BUTTON}`,
         },
       ],
     });
-    const blogPostContent = blogPostResponse.data.choices[0]?.message?.content;
-    // console.log('BLOG HERE ----------------------> ', blogPostContent);
-    trendPost = blogPostContent || '';
+    trendPost = blogPostResponse.data.choices[0]?.message?.content || '';
+    // console.log('BLOG HERE ----------------------> ', trendPost);
   } catch (error) {
     console.error('Error generating startup/how-to blog post:', error);
     throw new Error('Failed to generate startup/how-to blog post');
@@ -64,30 +64,30 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
         temperature: 0.7,
         max_tokens: MAX_TOKENS_DESC,
         messages: [
-          { role: 'system', content: RESPONSE_SYSTEM_ROLE },
+          { role: 'system', content: DESC_SYSTEM_ROLE },
           {
             role: 'user',
-            content: `${RESPONSE_USER_DESC} here is the blog post:= ${trendPost}`,
+            content: `${RESPONSE_USER_DESC} Here is the tutorial:= ${trendPost}`,
           },
         ],
       });
       //Using blogPost to generate a paragraph of best uses for the trend
-      const response = trendDescResponse.data.choices[0]?.message?.content;
-      trendDesc = response;
+      trendDesc = trendDescResponse.data.choices[0]?.message?.content || '';
+      console.log('DESC HERE ----------------------> ', trendDesc);
       const trendUseResponse = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
         max_tokens: MAX_TOKENS_USE,
         messages: [
-          { role: 'system', content: RESPONSE_SYSTEM_ROLE },
+          { role: 'system', content: USE_SYSTEM_ROLE },
           {
             role: 'user',
-            content: `${RESPONSE_USER_USE} (trendDesc) of the trend and list its best uses (trendUse): "${trendPost}"`,
+            content: `${RESPONSE_USER_USE} Here is the tutorial: "${trendPost}"`,
           },
         ],
       });
-      const response2 = trendUseResponse.data.choices[0]?.message?.content;
-      trendUse = response2;
+      trendUse = trendUseResponse.data.choices[0]?.message?.content || '';
+      // console.log('USE HERE ----------------------> ', trendUse);
     } catch (error) {
       console.error('Error generating trend details:', error);
       throw new Error('Failed to generate trend details');
@@ -100,4 +100,5 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
     trendUse,
   };
 };
+//TEST
 // generatePostContent('Reactjs', 'Frontend Framework', 'Javascript');
