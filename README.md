@@ -143,6 +143,11 @@ Batch Processing: Use background jobs (e.g., with Celery, Sidekiq, or AWS Lambda
 
 Real-time Adjustments: Apply small, quick adjustments to pre-computed scores based on real-time data. For example, adjust the rank of a trend slightly if it receives a high spike in views.
 
+```
+Real-time Adjustments in trendFlow: Update the trend's combined score whenever the trend's view count changes significantly.
+Caching in trendFlow: Cache the results of frequently accessed queries and invalidate the cache when underlying data changes.
+```
+
 #### Weights Assignment:
 
 The `weights` object assigns importance to each metric. Here, `t_score` has the highest weight (0.4), indicating it has the most influence on the combined score. This matches your indication that `t_score` is more important.
