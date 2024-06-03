@@ -122,6 +122,10 @@ const TrendSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    combinedScore: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

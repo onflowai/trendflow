@@ -4,9 +4,10 @@ import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
 import {
-  constructQueryObject,
   constructSortKey,
+  constructQueryObject,
   paginateAndSortTrends,
+  calculateCombinedScore,
 } from '../utils/trendUtils.js';
 /**
  * This is where functionality of trends implemented
@@ -157,6 +158,14 @@ export const approveTrend = async (req, res) => {
     console.log('Generated Description:', trendDesc);
     console.log('Generated Use Cases:', trendUse);
     // const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
+    const combinedScore = calculateCombinedScore(
+      data.t_score,
+      0,
+      data.status,
+      data.f_score
+    ); //updating the combined score on initial generation with Views passed as 0
+    console.log('Calculated Combined Score:', combinedScore);
+
     //UPDATING MONGO
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
@@ -172,6 +181,7 @@ export const approveTrend = async (req, res) => {
           forecast: data.forecast,
           t_score: data.t_score,
           f_score: data.f_score,
+          combinedScore: combinedScore, // Store the initial combined score
         },
       },
       { new: true } //returns the updated document instead of the original
@@ -189,49 +199,44 @@ export const approveTrend = async (req, res) => {
 }; //end APPROVE TREND
 
 //GET APPROVED TRENDS
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 export const getApprovedTrends = async (req, res) => {
   // console.log(req.query);
-  let { search, trendTech, trendCategory, sort } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
-  search = sanitizeHTML(search); // validating and sanitizing the search parameter
-  const queryObject = {
-    isApproved: true,
-  }; //creating query parameters as an object
-  if (search) {
-    queryObject.$or = [
-      { trend: { $regex: search, $options: 'i' } },
-      { trendTech: { $regex: search, $options: 'i' } },
-      { trendCategory: { $regex: search, $options: 'i' } },
-    ];
-  } // Matching against 'trend', 'trendTech', and 'trendCategory' fields using a 'i' case-insensitive '$regex' regex
-  if (trendTech && trendTech !== 'all') {
-    queryObject.trendTech = trendTech;
-  } //dropdown query for trendTech
-  if (trendCategory && trendCategory !== 'all') {
-    queryObject.trendCategory = trendCategory;
-  } //dropdown query for trendCategory
-  const sortingOptions = {
-    newest: { updatedAt: -1 },
-    oldest: { updatedAt: 1 },
-  };
-  // const sortKey = sortingOptions[sort] || sortingOptions.recentlyUpdated;
-  const sortKey = sortingOptions[sort] || null;
+  let {
+    search,
+    trendTech,
+    trendCategory,
+    sort,
+    page,
+    limit,
+    viewCount,
+    chartType,
+    timePeriod,
+  } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
+  const queryObject = constructQueryObject(
+    search,
+    trendTech,
+    trendCategory,
+    true
+  ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
+  const sortKey = constructSortKey(sort);
 
-  const page = Number(req.query.page) || 1; //value page will be provided in the req
-  const limit = Number(req.query.limit) || 36; //limit will be provided, defaulting to 10 trends initially
-  const skip = (page - 1) * limit; //skipping 0 trends, displaying all 10 then skipping them to next 10
+  page = Number(page) || 1; //value page will be provided in the req
+  limit = Number(limit) || 36; //limit will be provided, defaulting to 10 trends initially
 
   console.log('Constructed Query Object:', queryObject);
   try {
     // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
-    const trends = await trendModel
-      .find(queryObject)
-      .select('-generatedBlogPost -trendUse')
-      .populate('createdBy', 'username profile_img -_id')
-      .sort(sortKey)
-      .skip(skip)
-      .limit(limit);
-    const totalTrends = await trendModel.countDocuments(queryObject); //getting total trends based on query
-    const pagesNumber = Math.ceil(totalTrends / limit); //calculating the pages
+    const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
+      queryObject,
+      sortKey,
+      page,
+      limit
+    );
     res
       .status(StatusCodes.OK)
       .json({ totalTrends, pagesNumber, currentPage: page, trends }); // Directly respond with the list of approved trends (could be an empty array)

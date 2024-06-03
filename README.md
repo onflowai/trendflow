@@ -124,3 +124,63 @@ const App = () => {
 };
 export default App;
 ```
+
+# Sorting
+
+### Pre-computation and Caching
+
+Pre-computation: Calculate the scores periodically and store them in the database. This reduces the computational load during each request. Caching in real world frequently accessed data is stored in memory (e.g., Redis or Memcached) to speed up retrieval times.
+
+### Incremental Updates
+
+Incremental Updates: Instead of recalculating scores for all items, update scores incrementally when changes occur. For example, update the score of a trend when its view count increases or its status changes.
+
+### Batch Processing
+
+Batch Processing: Use background jobs (e.g., with Celery, Sidekiq, or AWS Lambda) to process large batches of trends and update their scores periodically.
+
+### Real-time Adjustments
+
+Real-time Adjustments: Apply small, quick adjustments to pre-computed scores based on real-time data. For example, adjust the rank of a trend slightly if it receives a high spike in views.
+
+#### Weights Assignment:
+
+The `weights` object assigns importance to each metric. Here, `t_score` has the highest weight (0.4), indicating it has the most influence on the combined score. This matches your indication that `t_score` is more important.
+
+```javascript
+const weights = {
+  t_score: 0.4,
+  views: 0.3,
+  trendStatus: 0.1,
+  f_score: 0.2,
+};
+```
+
+This converts the trendStatus string into a numeric value. For example:
+`breakout` trends get a higher value (1.2),
+`stable` trends get a neutral value (1.0),
+
+```javascript
+const statusValue = trendStatus === 'breakout' ? 1.2 : trendStatus === 'stable' ? 1.0 : 0.8;
+```
+
+```javascript
+return (t_score * weights.t_score) + (views * weights.views) + (statusValue * weights.trendStatus) + (f_score * weights.f_score);
+```
+
+# Scheduling
+
+Scheduler for Node.
+
+### Schedule the Task:
+
+The cron.schedule function schedules updateScores to run at midnight every day (0 0 \* \* _).
+You can change the cron expression to suit your scheduling needs. For example, to run every hour, use '0 _ \* \* \*'.
+
+```
+Cron Expression Examples
+Every day at midnight: '0 0 * * *'
+Every hour: '0 * * * *'
+Every 30 minutes: '*/30 * * * *'
+Every day at 1 AM: '0 1 * * *'
+```
