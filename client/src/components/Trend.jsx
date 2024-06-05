@@ -1,12 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  FcElectricity,
-  FcCalendar,
-  FcApproval,
-  FcCheckmark,
-  FcCancel,
-} from 'react-icons/fc';
 import { TrendLarge, TrendSmall } from '../components';
 import Container from '../assets/wrappers/TrendContainer'; //general layout, color and loading
 import day from 'dayjs';
@@ -63,6 +55,7 @@ function Trend({
   _id,
   updatedAt,
   loadingSlug,
+  isGridView,
 }) {
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
   const isLoading = loadingSlug === slug; // determining if this specific trend is loading
@@ -92,7 +85,6 @@ function Trend({
     createdBy,
     isApproved,
   };
-
   // Props for TrendSmall
   const smallProps = {
     _id,

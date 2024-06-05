@@ -5,7 +5,7 @@ import Container from '../assets/wrappers/FlashChartContainer';
 function AreaChartComponent({ data }) {
   return (
     <Container>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={240} debounce={500}>
         <AreaChart
           data={data}
           margin={{ top: 5, right: 0, left: -60, bottom: -40 }}

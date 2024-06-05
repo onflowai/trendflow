@@ -2,9 +2,7 @@ import trendModel from '../models/trendModel.js';
 import { sanitizeHTML } from '../utils/sanitization.js';
 /**
  * This file is used for query construction and execution
- * @param {*} search
- * @param {*} trendTech
- * @param {*} trendCategory
+ *
  * @returns
  */
 /**
@@ -43,7 +41,7 @@ export const constructQueryObject = (
 
 /**
  * CONSTRUCT SORT KEY
- *
+ * Provides sorting keys
  * @param {*} sort
  * @returns
  */
@@ -52,33 +50,25 @@ export const constructSortKey = (sort) => {
     newest: { updatedAt: -1 },
     oldest: { updatedAt: 1 },
     topRatedNow: { combinedScore: -1 },
-    topRatedYear: {
-      combinedScore: -1,
-      updatedAt: { $gte: new Date(new Date().getFullYear(), 0, 1) },
-    },
-    topRatedMonth: {
-      combinedScore: -1,
-      updatedAt: {
-        $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      },
-    },
+    topRatedYear: { combinedScore: -1 },
+    topRatedMonth: { combinedScore: -1 },
     topViewedNow: { viewCount: -1 },
-    topViewedYear: {
-      viewCount: -1,
-      updatedAt: { $gte: new Date(new Date().getFullYear(), 0, 1) },
-    },
-    topViewedMonth: {
-      viewCount: -1,
-      updatedAt: {
-        $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      },
-    },
+    topViewedYear: { viewCount: -1 },
+    topViewedMonth: { viewCount: -1 },
   }; // define sorting options, sort by newest (descending updatedAt) or sort by oldest (ascending updatedAt)
-  return sortingOptions[sort] || { updatedAt: -1 }; // default to sorting by newest
+  return sortingOptions[sort] || { updatedAt: -1 }; // efault to sorting by newest
   // return sortingOptions[sort] || null; // return the corresponding sort key or null if not found
 }; //END CONSTRUCT SORT KEY
 
-//PAGINATE AND SORT TRENDS
+/**
+ * PAGINATE AND SORT TRENDS
+ * Handles the sorting
+ * @param {*} queryObject
+ * @param {*} sortKey
+ * @param {*} page
+ * @param {*} limit
+ * @returns
+ */
 export const paginateAndSortTrends = async (
   queryObject,
   sortKey,
@@ -92,9 +82,9 @@ export const paginateAndSortTrends = async (
       .find(queryObject)
       .select('-generatedBlogPost -trendUse')
       .populate('createdBy', 'username profile_img -_id')
-      .sort(sortKey)
+      .sort(sortKey) // sort the trends based on the sortKey
       .skip(skip)
-      .limit(limit),
+      .limit(limit), // query trends with pagination and sorting
     trendModel.countDocuments(queryObject), //getting total trends based on query
   ]);
   const pagesNumber = Math.ceil(totalTrends / limit); //calculating the page
@@ -121,14 +111,27 @@ export const calculateCombinedScore = (
     trendStatus: 0.1,
     f_score: 0.2,
   };
-
-  const statusValue =
-    trendStatus === 'breakout' ? 1.2 : trendStatus === 'stable' ? 1.0 : 0.8;
-
-  return (
+  const statusValue = (() => {
+    switch (trendStatus) {
+      case 'breakout':
+        return 1.2;
+      case 'trending':
+        return 1.1;
+      case 'cool-off':
+        return 0.9;
+      case 'static':
+        return 0.8;
+      case 'undefined':
+      default:
+        return null; // If status is undefined, do not use statusValue
+    }
+  })();
+  const combinedScore =
     t_score * weights.t_score +
     views * weights.views +
-    statusValue * weights.trendStatus +
-    f_score * weights.f_score
-  );
+    f_score * weights.f_score;
+  if (statusValue !== null) {
+    return combinedScore + statusValue * weights.trendStatus;
+  }
+  return combinedScore;
 };

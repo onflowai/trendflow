@@ -17,7 +17,7 @@ const UserDropdown = () => {
         className="user-btn"
         onClick={() => setDropdown(!showDropdown)}
       >
-        <UserImgSmall user_img={user.profile_img} />
+        <UserImgSmall user_img={user?.profile_img} />
         <div className="username">{user?.name}</div>
         {showDropdown ? (
           <IoIosArrowUp className="arrow-icon" />

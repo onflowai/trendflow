@@ -11,7 +11,7 @@ import {
 } from '../components';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
-import { useDashboardContext } from '../pages/DashboardLayout';
+import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import { redirect, useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';

@@ -141,23 +141,21 @@ export const approveTrend = async (req, res) => {
     if (!trend) {
       return res.status(404).json({ msg: 'Trend not found' });
     }
-    //CALLING THE PYTHON SCRIPT
 
-    const scriptOutput = await executePythonScript(trend.trend);
+    //CALLING THE SCRIPT and OPENAI (executing both asynchronous functions concurrently)
+    const [scriptOutput, openAIResult] = await Promise.all([
+      executePythonScript(trend.trend), // Execute Python script
+      generatePostContent(trend.trend, trend.trendCategory, trend.trendTech), // Generate content with OpenAI
+    ]);
     console.log('Script output: ', scriptOutput);
-
     const data = JSON.parse(scriptOutput); //parsing the JSON output from scripts
-    //CALLING THE OPENAI
-    const { trendPost, trendDesc, trendUse } = await generatePostContent(
-      trend.trend,
-      trend.trendCategory,
-      trend.trendTech
-    );
+    const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
+
     // Log intermediate outputs for verification
     console.log('Generated Blog Post:', trendPost);
     console.log('Generated Description:', trendDesc);
     console.log('Generated Use Cases:', trendUse);
-    // const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
+    const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const combinedScore = calculateCombinedScore(
       data.t_score,
       0,
@@ -174,7 +172,7 @@ export const approveTrend = async (req, res) => {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
           flashChart: data.flashChart,
-          generatedBlogPost: trendPost,
+          generatedBlogPost: safeTrendPost,
           trendDesc: trendDesc,
           trendUse: trendUse,
           isApproved: true,
@@ -224,11 +222,22 @@ export const getApprovedTrends = async (req, res) => {
     true
   ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
   const sortKey = constructSortKey(sort);
-
   page = Number(page) || 1; //value page will be provided in the req
   limit = Number(limit) || 36; //limit will be provided, defaulting to 10 trends initially
 
+  const currentYear = new Date().getFullYear(); //this is the full year of the current date '2024'
+  const currentMonth = new Date().getMonth(); //month of the current date, represented as an index from 0 (January) to 11 (December)
+  const now = new Date(); // current date
+
+  if (sort === 'topRatedYear' || sort === 'topViewedYear') {
+    queryObject.updatedAt = { $gte: new Date(currentYear, 0, 1) }; // filtering trends updated from the start of the current year
+  } else if (sort === 'topRatedMonth' || sort === 'topViewedMonth') {
+    queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) }; // filter trends updated from the start of the current month
+  }
+
   console.log('Constructed Query Object:', queryObject);
+  console.log('Sort Key:', sortKey);
+
   try {
     // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(

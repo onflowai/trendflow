@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Trend from './Trend';
 import Container from '../assets/wrappers/TrendsContainer';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { MdViewStream } from 'react-icons/md';
+import { BsGrid3X2GapFill } from 'react-icons/bs';
 
 /**
  * Trends Component displays all of the Trends in the AllTrends page. Here styling is created for the layout of the trend cards
@@ -18,6 +21,10 @@ function Trends({
   onRemove,
   savedTrends,
 }) {
+  const [isGridView, setIsGridView] = useLocalStorage('isGridView', false); // Use custom hook
+  const toggleGridView = () => {
+    setIsGridView(!isGridView);
+  };
   // console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
@@ -27,7 +34,12 @@ function Trends({
     );
   }
   return (
-    <Container>
+    <Container isGridView={isGridView}>
+      <div className="toggle-container">
+        <button className="grid-view-btn" onClick={toggleGridView}>
+          {isGridView ? <MdViewStream /> : <BsGrid3X2GapFill />}
+        </button>
+      </div>
       <div className="trends">
         {trends.map((trend) => {
           return (
@@ -41,6 +53,7 @@ function Trends({
               onSave={onSave}
               onRemove={onRemove}
               savedTrends={savedTrends}
+              isGridView={isGridView}
             ></Trend>
           );
         })}
