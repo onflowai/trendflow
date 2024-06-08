@@ -1,80 +1,114 @@
 import styled from 'styled-components';
 
 const Container = styled.article`
+  position: relative;
+  cursor: pointer;
   
-  header {
-    padding: 0rem;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+  transition: background-color 0.3s ease; // Smooth transition for background color
+
+  &:hover {
+    background-color: var(--grey-50); // Change background on hover
   }
-  .info {
-    h5 {
-      margin-bottom: 0rem;
-    }
-    p {
-      margin: 0;
-      text-transform: capitalize;
-      letter-spacing: var(--letter-spacing);
-      color: var(--text-secondary-color);
-    }
-  }
-  .content {
-    padding: 1rem 1.5rem;
-  }
-  .content-center {
+
+  .trend-small-card {
     display: flex;
     flex-direction: column;
-    margin-top: 0.1;
-    margin-bottom: 1.5rem;
-    row-gap: 1rem; // Adjusted to manage space between rows
+    justify-content: space-between;
+    height: 100%;
   }
-  .info-section {
+
+  .overlay {
+    position: relative;
     display: flex;
-    align-items: center;
-    .icon {
-      font-size: 1rem;
-      margin-right: 1rem;
-      display: flex;
-      align-items: center;
+    flex-direction: column;
+    justify-content: flex-end; // Align children to the bottom
+    height: 100%; // Ensure it takes full height
+  }
+
+  .info {
+    position: relative;
+    text-align: left;
+    width: 100%;
+    
+    h4, h6, p {
+      position: absolute;
+      width: 100%;
+      margin: 0;
+      color: var(--text-color);
+      padding: 2rem;
+      border-radius: 0.25rem;
     }
-    .text {
-      text-transform: capitalize;
-      letter-spacing: var(--letter-spacing);
-      margin-bottom: 0;
+    
+    h4 {
+      top: 130px;
+      /* font-size: 1.2rem; */
+      z-index: 2;
+    }
+
+    h6 {
+      top: 150px;
+      /* font-size: 1.2rem; */
+      z-index: 2;
+    }
+    
+    p {
+      top: 165px;
+      /* font-size: 1rem; */
+      z-index: 1;
     }
   }
-  .actions {
-    margin-top: 1rem;
+
+  .bottom-row {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem; // Provides spacing between buttons when wrapped
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--white);
+    border-top: 1px solid var(--grey-200);
   }
-  .info-btn,
-  .delete-btn {
-    height: 30px;
-    font-size: 0.85rem;
+
+  .user-icon {
     display: flex;
     align-items: center;
   }
-  .info-btn {
-    margin-right: 0.5rem;
-  }
-  .loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--white-overlay); /* white with low opacity */
-  display: flex;
-  justify-content: center;
-  align-items: center;
- /* Make sure it covers all other content inside the container */
-  }
-  .overlay{
 
+  .bottom-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--grey-400);
+    font-size: 0.9rem;
+  }
+
+  .bookmark-btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+  }
+  
+  @media (max-width: 500px) {
+    .info {
+      h3 {
+        font-size: 1rem;
+      }
+      p {
+        font-size: 0.8rem;
+      }
+    }
+    .bottom-info {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
   }
 `;
 

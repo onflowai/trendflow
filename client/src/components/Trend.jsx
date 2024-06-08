@@ -25,9 +25,9 @@ day.extend(advancedFormat);
  * @param {string} trendUse - string with more HTML structured data
  * @returns {JSX.Element} The TrendCard component populated with the trend data and chart.
  * @param {string[]} savedTrends is array which is extracted from user object and saved with onSave to db
- * @param {string[]} onSave
- * @param {string[]}
- * @param {string[]}
+ * @param {func} onSave - use to track when user clicks bookmark button and does a PATCH
+ * @param {boolean} isGridView - this is used to determine if grid-view is used in smaller screens
+ * @param {string[]} onRemove - PATCH Delete (only for admin)
  * @param {string[]}
  * @param {string[]}
  * @param {string[]}
@@ -89,6 +89,7 @@ function Trend({
   const smallProps = {
     _id,
     trend,
+    views,
     trendTech,
     trendCategory,
     slug,
@@ -101,7 +102,10 @@ function Trend({
     isLoading,
     isApproved,
     isAdminPage,
+    createdBy,
     onApprove,
+    isGridView,
+    trendDesc,
   };
 
   return (
