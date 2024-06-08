@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Container = styled.article`
 /* background: var(--primary-50); */
 cursor: pointer; // Make the entire container behave like a clickable element
-transition: background-color 0.3s ease; // Smooth transition for background color
+transition: background-color 0.2s ease; // Smooth transition for background color
 &:hover {
     background-color: var(--grey-50); // Change background on hover
   }

@@ -77,7 +77,7 @@ function TrendSmall({
               <h6 className="mono-heading">{trendCategory}</h6>
               {!isGridView && (
                 <div className="trend-desc">
-                  <p>
+                  <p className="mono-heading-thin">
                     {trendDesc.length > 60
                       ? trendDesc.substring(0, 60) + '...'
                       : trendDesc}
@@ -93,13 +93,16 @@ function TrendSmall({
               </div>
               <span className="info-item">
                 <PiHashLight />
-                <span>{trendTech}</span>
+                <span>{trendTech.split(' ').slice(0, 2).join(' ')}</span>
               </span>
               <span className="info-item">
                 <PiEyeLight />
                 <span>{views}</span>
               </span>
-              <span className="bookmark-btn" onClick={handleBookmarkClick}>
+              <span
+                className={`bookmark-btn ${isGridView ? 'grid-view' : ''}`}
+                onClick={handleBookmarkClick}
+              >
                 {isSaved || isHovered ? (
                   <BsFillBookmarkFill size="20px" />
                 ) : (

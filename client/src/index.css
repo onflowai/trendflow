@@ -136,6 +136,10 @@ html {
   --background-third-color: var(--dark-mode-bg-third-color);
 }
 /* FONTS */
+.mono-heading-thin {
+  font-family: 'Roboto', monospace;
+  font-weight: 400;
+}
 .mono-font {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
