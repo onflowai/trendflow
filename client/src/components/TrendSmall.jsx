@@ -87,29 +87,31 @@ function TrendSmall({
             </div>
           </div>
           <footer className="bottom-row">
+            <div className="user-icon">
+              <UserImgSmall user_img={createdBy.profile_img} />
+            </div>
             <div className="bottom-info">
-              <div className="user-icon">
-                <UserImgSmall user_img={createdBy.profile_img} />
-              </div>
               <span className="info-item">
                 <PiHashLight />
                 <span>{trendTech.split(' ').slice(0, 2).join(' ')}</span>
               </span>
-              <span className="info-item">
-                <PiEyeLight />
-                <span>{views}</span>
-              </span>
-              <span
-                className={`bookmark-btn ${isGridView ? 'grid-view' : ''}`}
-                onClick={handleBookmarkClick}
-              >
-                {isSaved || isHovered ? (
-                  <BsFillBookmarkFill size="20px" />
-                ) : (
-                  <BsBookmark size="20px" />
-                )}
-              </span>
             </div>
+            <div className="views">
+              <PiEyeLight />
+              <span>{views}</span>
+            </div>
+            <span
+              className="bookmark-btn"
+              onClick={handleBookmarkClick}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              {isSaved || isHovered ? (
+                <BsFillBookmarkFill size="20px" />
+              ) : (
+                <BsBookmark size="20px" />
+              )}
+            </span>
           </footer>
         </div>
       </header>

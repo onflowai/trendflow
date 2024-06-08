@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const Container = styled.article`
   position: relative;
   cursor: pointer;
-  
   transition: background-color 0.2s ease; // Smooth transition for background color
 
   &:hover {
@@ -41,31 +40,29 @@ const Container = styled.article`
     
     h4 {
       top: 120px;
-      /* font-size: 1.2rem; */
       z-index: 2;
     }
 
     h6 {
       top: 140px;
-      /* font-size: 1.2rem; */
       z-index: 2;
     }
     
     p {
       color: var(--grey-600);
       top: 155px;
-      /* font-size: 1rem; */
       z-index: 1;
     }
   }
 
   .bottom-row {
     display: grid; // Use grid layout
-    grid-template-columns: auto 1fr auto auto; // Define the columns
+    grid-template-columns: auto 1fr auto; // Define the columns
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     background: var(--white);
     border-top: 1.5px solid var(--grey-50);
+    gap: 0.5rem; // Add some space between the items
   }
 
   .user-icon {
@@ -88,29 +85,29 @@ const Container = styled.article`
     align-items: center;
     gap: 0.2rem;
     color: var(--grey-400);
-    /* font-size: 0.9rem; */
     white-space: nowrap;
+    font-size: 0.8rem;
+  }
+
+  .views {
+    grid-column: 3; // Place the views in the third column
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
   }
 
   .bookmark-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-    outline: none;
-  }
-  .bookmark-btn.grid-view{
     position: absolute; // Position absolutely within bottom-row
-    right: 1rem; // Move to the right with some padding
-    top: 0.5rem; // Move it down a bit from the top
-    background-color: var(--white); // Add white background
-    border-radius: 50%; // Make it round
-    padding: 0.25rem; // Add some padding for spacing
+      right: 1rem; // Move to the right with some padding
+      top: 0.5rem; // Move it down a bit from the top
+      background-color: var(--white); // Add white background
+      border-radius: 40%; // Make it round
+      padding: 0.4rem; // Add some padding for spacing
   }
-  
+  .bookmark-btn svg {
+  transform: translateY(2px); // Move the SVG icon 2 pixels down
+  }
+
   @media (max-width: 500px) {
     .info {
       h3 {
@@ -120,13 +117,16 @@ const Container = styled.article`
         font-size: 0.8rem;
       }
     }
+    .info-item {
+    font-size: 0.5rem;
+    }
     
     .bottom-row {
-      flex-direction: row; // Ensure it stays in row direction
+      grid-template-columns: auto 1fr auto; // Ensure grid layout stays in row direction
+      gap: 0.2rem; // Reduce gap for better spacing in mobile
     }
 
     .bottom-info {
-      flex-direction: row; // Ensure it stays in row direction
       gap: 0.2rem; // Reduce gap for better spacing in mobile
       flex-wrap: nowrap; // Prevent wrapping in mobile view
     }

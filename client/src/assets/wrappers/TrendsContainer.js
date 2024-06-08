@@ -9,15 +9,23 @@ const Container = styled.section`
     font-weight: 700;
     margin-bottom: 1.5rem;
   }
-  .toggle-container {
+  .toggle-container, .toggle-container-large {
     display: none;
     margin-bottom: 1rem;
   }
-  .grid-view-btn{
+
+  .view-btn, .grid-view-btn {
+    color: var(--grey-400);
     border: none;
     outline: none;
-    font-size: 2rem;
+    font-size: 1.8rem;
     background: none;
+    margin: 0.1rem; // Add space between buttons
+    cursor: pointer;
+  }
+
+  .view-btn.active, .grid-view-btn.active {
+    color: var(--grey-100); // Highlight the active button
   }
 
   .trends {
@@ -26,9 +34,10 @@ const Container = styled.section`
     row-gap: 2rem;
   }
 
-  @media (max-width: 850px) { // Show button for screens 850px and smaller
+  @media (max-width: 850px) {
     .toggle-container {
-      display: block; // Show button
+      display: flex; // Show toggle container for small screens
+      justify-content: left; // Center the buttons horizontally
     }
     .trends {
       grid-template-columns: ${({ isGridView }) =>
@@ -37,21 +46,24 @@ const Container = styled.section`
     }
   }
 
-  @media (min-width: 851px) { // Larger screens
+  @media (min-width: 851px) {
+    .toggle-container-large {
+      display: block; // Show toggle button for large screens
+    }
     .trends {
-      grid-template-columns: repeat(2, 1fr); // Default to 2 cards per row for larger screens
+      grid-template-columns: repeat(2, 1fr); // 2 cards per row
       gap: 2rem;
     }
   }
 
-  @media (min-width: 1300px) { // Large screens
+  @media (min-width: 1300px) {
     .trends {
       grid-template-columns: repeat(3, 1fr); // 3 cards in a row
       gap: 2rem;
     }
   }
 
-  @media (min-width: 1740px) { // Extra large screens
+  @media (min-width: 1740px) {
     .trends {
       grid-template-columns: repeat(4, 1fr); // 4 cards in a row
       gap: 2rem;
