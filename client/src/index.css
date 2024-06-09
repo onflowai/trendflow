@@ -67,7 +67,7 @@ html {
   --white: #fff;
   --off-white: #fdfdfd;
   --red-light: #f8d7da;
-  --red-dark: #842029;
+  --red-dark: #a54f57;
   --green-light: #d1e7dd;
   --green: #00a04d;
   --green-dark: #0f5132;
@@ -80,7 +80,7 @@ html {
   --round-radius: 2rem;
   --border-radius: 0.5rem;
   --input-radius: 3rem;
-  --button-radius: 3rem;
+  --button-round-radius: 3rem;
   --button-square-radius: 0.8rem;
   --letter-spacing: 1px;
   --transition: 0.1s ease-in-out all;
@@ -305,6 +305,58 @@ button:disabled {
 .danger-btn:hover {
   color: var(--white);
   background: var(--red-dark);
+}
+/* Base styling for icon button */
+.btn-icon {
+  cursor: pointer;
+  color: var(--grey-500); /* Default icon color */
+  background: transparent; /* No background */
+  border: none; /* No border */
+  padding: 0; /* Remove any padding */
+  transition: color var(--transition); /* Smooth color transition */
+  display: inline-flex; /* Flex to align the icon itself */
+  align-items: center; /* Center the icon */
+  justify-content: center; /* Center the icon */
+}
+
+/* Hover state for icon button */
+.btn-icon:hover {
+  color: var(--primary-500); /* Highlight color on hover */
+}
+
+/* Active (click) state for icon button */
+.btn-icon:active {
+  color: var(--primary-700); /* Change color on click */
+}
+
+/* Disabled state for icon button */
+.btn-icon:disabled {
+  cursor: wait;
+  color: var(--grey-300); /* Disabled color */
+}
+
+/* Variants */
+
+/* Hipster variant for icon button */
+.btn-icon-hipster {
+  color: var(--primary-500);
+}
+
+.btn-icon-hipster:hover {
+  color: var(--primary-700);
+}
+
+/* Danger variant for icon button */
+.btn-icon-danger {
+  color: var(--red-dark);
+}
+
+.btn-icon-danger:hover {
+  color: var(--gray-100); /* Keep the same color on hover */
+}
+
+.btn-icon-danger:active {
+  color: var(--red-light); /* Lighten color on click */
 }
 /*Toast Styling CustomToast.css */
 .Toastify__toast--error {

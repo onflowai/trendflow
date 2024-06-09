@@ -62,7 +62,7 @@ function Trends({
   const toggleLargeScreenView = () => {
     const newView = !isLargeTrendView;
     setIsLargeTrendView(newView); // Toggle large view
-    setActiveButton(newView ? 'large' : 'grid'); // Update active button based on the new view
+    setActiveButton(newView ? 'large' : 'stream'); // Update active button based on the new view
   };
 
   // Check if there are no trends to display

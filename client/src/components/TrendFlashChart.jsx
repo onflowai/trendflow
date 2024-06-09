@@ -24,10 +24,13 @@ function AreaChartComponent({ data }) {
             tick={false} // Keeps Y-axis ticks hidden
           />
           <Area
+            style={{ cursor: 'pointer' }}
             type="monotone"
             dataKey="count"
             stroke="#4541de"
             fill="url(#colorCountTwo)"
+            animationDuration={400}
+            animationEasing="ease-out"
           />
         </AreaChart>
       </ResponsiveContainer>

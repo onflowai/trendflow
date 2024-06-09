@@ -28,10 +28,13 @@ function TrendFallFlashChart() {
             tick={false} // Keeps Y-axis ticks hidden
           />
           <Area
+            style={{ cursor: 'pointer' }}
             type="monotone"
             dataKey="count"
             stroke="#838383"
             fill="url(#fallback)"
+            animationDuration={400}
+            animationEasing="ease-out"
           />
         </AreaChart>
       </ResponsiveContainer>

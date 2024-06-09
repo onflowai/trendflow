@@ -43,3 +43,4 @@ export { default as ContentBoxHighlighted } from './ContentBoxHighlighted';
 export { default as ContentRowComponent } from './ContentRowComponent';
 export { default as FooterTrendDetails } from './FooterTrendDetails';
 export { default as FormComponentSearch } from './FormComponentSearch';
+export { default as Tooltip } from './Tooltip';

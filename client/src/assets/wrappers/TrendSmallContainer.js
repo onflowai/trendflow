@@ -44,13 +44,13 @@ const Container = styled.article`
     }
 
     h6 {
-      top: 140px;
+      top: 145px;
       z-index: 2;
     }
     
     p {
       color: var(--grey-600);
-      top: 155px;
+      top: 160px;
       z-index: 1;
     }
   }
