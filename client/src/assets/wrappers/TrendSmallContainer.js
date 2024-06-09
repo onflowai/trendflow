@@ -88,14 +88,22 @@ const Container = styled.article`
     white-space: nowrap;
     font-size: 0.8rem;
   }
-
-  .views {
+  .icon-tech{
+    align-items: center;
+    display: flex;
+    gap: 0.1rem;
+  }
+  .icon-views{
+    align-items: center;
+    display: flex;
+    gap: 0.2rem;
+  }
+  .actions {
     grid-column: 3; // Place the views in the third column
     display: flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 1.2rem;
   }
-
   .bookmark-btn {
     position: absolute; // Position absolutely within bottom-row
       right: 1rem; // Move to the right with some padding

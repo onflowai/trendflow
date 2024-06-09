@@ -5,10 +5,8 @@ import { LiaClock } from 'react-icons/lia';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { FaSquareCheck } from 'react-icons/fa6';
 import { PiHashLight, PiEyeLight, PiTrendUp } from 'react-icons/pi'; //PiEyeThin
-import { RiDeleteBin2Fill } from 'react-icons/ri';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
-import { CgClose } from 'react-icons/cg';
 import {
   TrendChartComponent,
   Loading,
@@ -89,8 +87,8 @@ function TrendLarge({
             </div>
             <div className="description-container">
               <h5 className="description">
-                {trendDesc.length > 80
-                  ? trendDesc.substring(0, 80) + '...'
+                {trendDesc.length > 70
+                  ? trendDesc.substring(0, 70) + '...'
                   : trendDesc}
               </h5>
             </div>
