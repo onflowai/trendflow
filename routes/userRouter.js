@@ -7,6 +7,7 @@ import {
   saveUserTrend,
   removeUserTrend,
   getUserSavedTrends,
+  updateUserImage,
 } from '../controllers/userController.js';
 import {
   authenticateUser,
@@ -32,6 +33,14 @@ router.patch(
   processImage,
   validateUserUpdate,
   updateUser
+);
+router.patch(
+  '/upload-user-image',
+  authenticateUser,
+  authorizedPermissions('write'),
+  uploadMulter.single('profile_img'), // Handle file upload
+  processImage, // Middleware to process image
+  updateUserImage // A new controller function to handle image upload
 );
 router.post('/visits', logVisit);
 router.patch('/save-trend', authenticateUser, saveUserTrend);

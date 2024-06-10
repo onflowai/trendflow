@@ -52,8 +52,8 @@ export const updateUser = async (req, res) => {
   }
   const updatedUser = await userModel.findByIdAndUpdate(
     req.user.userID,
-    newUser //new data to update the user with
-    // { new: true }
+    newUser, //new data to update the user with
+    { new: true }
   ); //updating user by ID when user updates some value like last name (role not updatable)
   res.status(StatusCodes.OK).json({ msg: 'user updated' });
   //checking to see if there is already an image in cloud for the user
@@ -61,6 +61,47 @@ export const updateUser = async (req, res) => {
     await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id); //then delete the old image from Cloudinary using its public_id
   }
 }; //end updateUser
+// UPDATE USER IMG function to handle profile image upload
+export const updateUserImage = async (req, res) => {
+  if (!req.file) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'No file uploaded' });
+  }
+  try {
+    const response = await cloudinary.v2.uploader.upload(req.file.path, {
+      folder: 'user_profiles', // Optional: specify folder in Cloudinary
+    }); // upload new image to Cloudinary
+    await fs.unlink(req.file.path); // deleting the temporary local file after upload
+    const newUser = {
+      profile_img: response.secure_url, //updating newUser object with the URL and ID of the uploaded image
+      profile_img_id: response.public_id, //public_id used for future reference or deletion.
+    }; // preparing newUser object with updated profile image details
+    const currentUser = await userModel.findById(req.user.userID); // find the current user to get the existing profile image ID
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.user.userID,
+      newUser, // update with the new profile image details
+      { new: true } // return the updated document
+    ); // update the user profile with the new image details
+    if (!updatedUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Profile image updated', user: updatedUser }); // res with the updated user details
+    if (
+      currentUser.profile_img_id &&
+      currentUser.profile_img_id !== response.public_id
+    ) {
+      await cloudinary.v2.uploader.destroy(currentUser.profile_img_id);
+    } // delete old image from Cloudinary if it exists and is different from the new one
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: 'Image upload failed' });
+  }
+};
 
 //STATS route which will display simple statistics
 export const getApplicationStats = async (req, res) => {

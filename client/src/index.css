@@ -268,7 +268,7 @@ ul {
   color: var(--grey-500);
   background: var(--white);
   border: 1px solid var(--grey-200);
-  border-radius: var(--button-radius);
+  border-radius: var(--button-round-radius);
   letter-spacing: var(--letter-spacing);
   padding: 0.6rem 0.75rem;
   box-shadow: var(--shadow-1);

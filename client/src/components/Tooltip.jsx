@@ -30,7 +30,7 @@ const TooltipText = styled.div`
   padding: 0.5rem;
   position: absolute;
   z-index: 1;
-  bottom: 115%; /* Position above the icon */
+  bottom: 130%; /* Position above the icon */
   left: 50%;
   margin-left: -110px; /* Center the tooltip */
   opacity: ${({ visible }) => (visible ? 1 : 0)};

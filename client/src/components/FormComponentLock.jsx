@@ -1,6 +1,7 @@
 import React from 'react';
 import { IoLockClosed } from 'react-icons/io5';
 import styled from 'styled-components';
+
 /**
  * This component is responsible for all the inputs in the register form which is displayed in the Register.jsx
  * @param {*} param0
@@ -15,14 +16,9 @@ const FormComponentLock = ({ type, name, labelText, defaultValue }) => {
         </label>
         <div className="locked-input-container">
           <IoLockClosed className="lock-icon" />
-          <input
-            type={type}
-            id={name}
-            name={name}
-            className="locked-input"
-            value={defaultValue || ''}
-            readOnly
-          />
+          <div id={name} name={name} className="locked-input">
+            <p>{defaultValue || ''}</p>
+          </div>
         </div>
       </div>
     </Container>
@@ -30,7 +26,6 @@ const FormComponentLock = ({ type, name, labelText, defaultValue }) => {
 };
 
 const Container = styled.div`
-
 .locked-input-container {
   position: relative;
   display: flex;
@@ -52,11 +47,12 @@ const Container = styled.div`
   border-radius: var(--input-radius);
   width: 100%;
   height: 35px;
+  line-height: 32px; /* Center the text vertically */
+  box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
-  .form-input {
-    padding-left: 50px;
-  
+.form-input {
+  padding-left: 50px;
 }
 `;
 

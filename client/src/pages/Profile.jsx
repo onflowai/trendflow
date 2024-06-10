@@ -41,6 +41,7 @@ export const loader = async () => {
 };
 export const action = async ({ request }) => {
   const formData = await request.formData(); //getting the form data out of the request where it is loaded with react
+  console.log('FormaData ', formData);
   const file = formData.get('profile_img'); //pointing to the image upload by user
   if (file && file.size > 50000000) {
     toast.error('image size too large'); //changed to automatic compression on backend and user can upload whatever image with npm sharp
@@ -56,6 +57,7 @@ export const action = async ({ request }) => {
   }
   return null;
 };
+
 const Profile = () => {
   const isVerified = true; //TEMPORARY
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
@@ -74,6 +76,43 @@ const Profile = () => {
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownVisible(false); // closing dropdown if clicked outside
+    }
+  };
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]; // Get the selected file
+
+    if (file && file.size > 50000000) {
+      toast.error('Image size too large.');
+      return; // Prevent further action if the file is too large
+    }
+
+    if (file) {
+      const uploadFormData = new FormData(); // Create a new FormData object
+      uploadFormData.append('profile_img', file); // Append the file to FormData
+
+      try {
+        const response = await customFetch.patch(
+          'users/upload-user-image',
+          uploadFormData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' }, // Ensure correct headers are set
+          }
+        );
+
+        if (response.ok) {
+          // Check if the response is okay
+          toast.success(
+            <CustomSuccessToast
+              message={'Profile image updated successfully'}
+            />
+          );
+          // Optionally update the UI or refetch user data here //HERE
+        } else {
+          toast.error('Failed to update profile image');
+        }
+      } catch (error) {
+        toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+      }
     }
   };
   // action to perform Dropdown.jsx actions
@@ -191,6 +230,7 @@ const Profile = () => {
                       id="profile_img"
                       className="form-input"
                       accept="image/*"
+                      onChange={(e) => handleFileChange(e)}
                     />
                     <label className="dropdown-option">Remove</label>
                   </div>
@@ -220,7 +260,7 @@ const Profile = () => {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'submitting...' : 'submit'}
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
                   </button>
                 </div>
                 <div className="form-user-settings">
