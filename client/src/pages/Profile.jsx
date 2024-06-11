@@ -13,6 +13,7 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
+import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
@@ -63,7 +64,8 @@ const Profile = () => {
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   console.log('trends in PROFILE: ', trends);
-  const { user, stats } = useOutletContext();
+  const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
+  const { updateUserImage } = useDashboardContext();
   console.log('PROFILE: ', user.savedTrends);
   const { username, name, lastName, email } = user;
   const navigation = useNavigation();
@@ -73,45 +75,51 @@ const Profile = () => {
   const handleEditClick = () => {
     setIsDropdownVisible(!isDropdownVisible); // toggles dropdown visibility
   };
+  //HANDLE CLICK OUTSIDE
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownVisible(false); // closing dropdown if clicked outside
     }
   };
+  //HANDLE FILE CHANGE
   const handleFileChange = async (e) => {
-    const file = e.target.files[0]; // Get the selected file
+    const file = e.target.files[0];
 
     if (file && file.size > 50000000) {
       toast.error('Image size too large.');
-      return; // Prevent further action if the file is too large
+      return;
     }
 
     if (file) {
-      const uploadFormData = new FormData(); // Create a new FormData object
-      uploadFormData.append('profile_img', file); // Append the file to FormData
+      const uploadFormData = new FormData();
+      uploadFormData.append('profile_img', file);
 
       try {
         const response = await customFetch.patch(
           'users/upload-user-image',
           uploadFormData,
           {
-            headers: { 'Content-Type': 'multipart/form-data' }, // Ensure correct headers are set
+            headers: { 'Content-Type': 'multipart/form-data' },
           }
         );
 
-        if (response.ok) {
-          // Check if the response is okay
+        if (response.status === 200) {
+          const updatedUser = response.data.user;
           toast.success(
             <CustomSuccessToast
-              message={'Profile image updated successfully'}
+              message={'Profile Image Updated Successfully'}
             />
           );
-          // Optionally update the UI or refetch user data here //HERE
+          updateUserImage(updatedUser.profile_img, updatedUser.profile_img_id); // Update context
         } else {
           toast.error('Failed to update profile image');
         }
       } catch (error) {
-        toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+        toast.error(
+          <CustomErrorToast
+            message={error?.response?.data?.msg || error.message}
+          />
+        );
       }
     }
   };

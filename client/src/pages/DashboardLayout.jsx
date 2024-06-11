@@ -25,10 +25,11 @@ export const loader = async () => {
 const DashboardContext = createContext(); // setting up context for SidebarSmall and Sidebar
 
 const DashboardLayout = () => {
-  const { user, stats } = useLoaderData(); //passing the user data from loader
+  const { user: initialUser, stats } = useLoaderData(); //passing the user data from loader
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
   const [userToggled, setUserToggled] = useState(false);
+  const [user, setUser] = useState(initialUser); //state to manage user
   const setSidebarVisibility = (visible) => {
     if (!userToggled) {
       setShowSidebar(visible); // only auto-adjusts if the user hasn't manually toggled
@@ -66,6 +67,13 @@ const DashboardLayout = () => {
     await customFetch.get('/auth/logout');
     toast.success(<CustomErrorToast message={'Logging Out'} />);
   };
+  const updateUserImage = (profile_img, profile_img_id) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      profile_img,
+      profile_img_id,
+    }));
+  };
 
   //RETURN -------------------------- RETURN
   return (
@@ -78,6 +86,7 @@ const DashboardLayout = () => {
         toggleDarkTheme,
         logoutUser,
         setSidebarVisibility,
+        updateUserImage,
       }}
     >
       <Container>
