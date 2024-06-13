@@ -13,6 +13,7 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
+import { useUser } from '../context/UserContext'; // importing UserContext
 import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
@@ -65,7 +66,8 @@ const Profile = () => {
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   console.log('trends in PROFILE: ', trends);
   const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
-  const { updateUserImage } = useDashboardContext();
+  const { updateUserImage } = useDashboardContext(); //DashboardContext (the reason why both used is for farther consistency when more features will be added)
+  const { updateUserImage: updateUserImageGlobal } = useUser(); // UserContext (the reason why both used is for farther consistency when more features will be added)
   console.log('PROFILE: ', user.savedTrends);
   const { username, name, lastName, email } = user;
   const navigation = useNavigation();
@@ -81,7 +83,7 @@ const Profile = () => {
       setIsDropdownVisible(false); // closing dropdown if clicked outside
     }
   };
-  //HANDLE FILE CHANGE
+  //HANDLE PROFILE IMG CHANGE
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
 
@@ -110,7 +112,11 @@ const Profile = () => {
               message={'Profile Image Updated Successfully'}
             />
           );
-          updateUserImage(updatedUser.profile_img, updatedUser.profile_img_id); // Update context
+          updateUserImage(updatedUser.profile_img, updatedUser.profile_img_id); // update DashboardContext
+          updateUserImageGlobal(
+            updatedUser.profile_img,
+            updatedUser.profile_img_id
+          ); // update UserContext
         } else {
           toast.error('Failed to update profile image');
         }

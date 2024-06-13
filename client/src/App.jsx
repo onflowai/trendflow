@@ -15,7 +15,7 @@ import {
   Admin,
   Stats,
 } from './pages';
-// import { UserProvider } from './context/UserContext.jsx';
+import { UserProvider } from './context/UserContext.jsx';
 /**
  * using React Router v6 from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
  * 'loader' property allows you to specify a loader function that fetches data asynchronously before rendering the corresponding component
@@ -113,18 +113,17 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => {
-  //using RouterProvided and creating instance of router from above
-  return <RouterProvider router={router} />;
-};
-//TESTING User Context
 // const App = () => {
 //   //using RouterProvided and creating instance of router from above
-//   return (
-//     <UserProvider>
-//       <RouterProvider router={router} />
-//     </UserProvider>
-//   );
+//   return <RouterProvider router={router} />;
 // };
+const App = () => {
+  //using RouterProvided and creating instance of router from above
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
+};
 
 export default App;
