@@ -235,17 +235,29 @@ export const getApprovedTrends = async (req, res) => {
     queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) }; // filter trends updated from the start of the current month
   }
 
+  // if (chartType && chartType !== 'all') {
+  //   queryObject.trendStatus = chartType;
+  // } // if chartType is provided, add it to the query object
+
   console.log('Constructed Query Object:', queryObject);
   console.log('Sort Key:', sortKey);
 
   try {
     // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
-    const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
+    let { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
       queryObject,
       sortKey,
       page,
       limit
     );
+
+    if (chartType && chartType !== 'all') {
+      trends = trends.filter((trend) => trend.trendStatus === chartType);
+      // Adjust the total trends count and pagination after filtering
+      totalTrends = trends.length;
+      pagesNumber = Math.ceil(totalTrends / limit);
+    }
+
     res
       .status(StatusCodes.OK)
       .json({ totalTrends, pagesNumber, currentPage: page, trends }); // Directly respond with the list of approved trends (could be an empty array)

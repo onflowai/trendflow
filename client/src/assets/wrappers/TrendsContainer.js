@@ -13,7 +13,7 @@ const Container = styled.section`
     display: none;
     margin-bottom: 1rem;
   }
-
+  
   .view-btn, .grid-view-btn {
     color: var(--grey-400);
     border: none;

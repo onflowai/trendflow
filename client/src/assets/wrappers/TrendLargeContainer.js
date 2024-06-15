@@ -7,6 +7,12 @@ transition: background-color 0.2s ease; // Smooth transition for background colo
 &:hover {
     background-color: var(--grey-50); // Change background on hover
   }
+.loading-overlay {
+  position: absolute;
+  background-color: white;
+  
+}
+
 
 .trend-large-link {
   display: block;

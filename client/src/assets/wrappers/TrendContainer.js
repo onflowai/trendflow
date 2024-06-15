@@ -20,14 +20,14 @@ const Container = styled.article`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--white-overlay); /* white with low opacity */
+  background-color: rgba(255, 255, 255, 0.7); /* white with low opacity */
   display: flex;
   justify-content: center;
   align-items: center;
  /* Make sure it covers all other content inside the container */
   }
   .overlay{
-
+    
   }
 `;
 

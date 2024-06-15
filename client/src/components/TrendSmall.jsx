@@ -61,7 +61,6 @@ function TrendSmall({
       setIsSaved(true); // Update state immediately
     }
   };
-
   return (
     <Container onClick={handleCardClick}>
       <header className="trend-small-card">
