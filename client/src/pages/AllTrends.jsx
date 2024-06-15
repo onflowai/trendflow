@@ -9,12 +9,27 @@ import { CombinedProvider } from '../context/CombinedContext.jsx';
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
+
+/**
+ * Loader function to fetch trends and saved trends based on query parameters
+ * @param {Object} request - request object with URL information
+ * @returns {Object} data for trends, saved trends, and search values
+ */
 export const loader = async ({ request }) => {
   console.log('REQUEST URL ', request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
   console.log('params: ', params);
+
+  // Parse the combined sort parameter into individual components
+  if (params.sort) {
+    const [topRated, topViewed, status, updated] = params.sort.split('|');
+    params.topRated = topRated;
+    params.topViewed = topViewed;
+    params.chartType = status; // Assign status to chartType
+    params.updated = updated;
+  }
 
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });

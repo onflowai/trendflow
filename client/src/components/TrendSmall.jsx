@@ -77,7 +77,9 @@ function TrendSmall({
               <TrendFallFlashChart />
             )}
             <div className="trend-title">
-              <h4 className="mono-heading-bold">{trend}</h4>
+              <h4 className="mono-heading-bold">
+                {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
+              </h4>
               <h6 className="mono-heading">{trendCategory}</h6>
               {!isGridView && (
                 <div className="trend-desc">
