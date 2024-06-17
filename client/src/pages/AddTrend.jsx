@@ -8,7 +8,7 @@ import {
 } from '../components';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
+import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';

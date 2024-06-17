@@ -52,9 +52,9 @@ export const constructSortKey = (sort) => {
     topRatedNow: { combinedScore: -1 },
     topRatedYear: { combinedScore: -1 },
     topRatedMonth: { combinedScore: -1 },
-    topViewedNow: { viewCount: -1 },
-    topViewedYear: { viewCount: -1 },
-    topViewedMonth: { viewCount: -1 },
+    topViewedNow: { views: -1 },
+    topViewedYear: { views: -1 },
+    topViewedMonth: { views: -1 },
   }; // define sorting options, sort by newest (descending updatedAt) or sort by oldest (ascending updatedAt)
   return sortingOptions[sort] || { updatedAt: -1 }; // efault to sorting by newest
   // return sortingOptions[sort] || null; // return the corresponding sort key or null if not found

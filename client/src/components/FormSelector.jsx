@@ -8,43 +8,35 @@ import Container from '../assets/wrappers/FormSelectorContainer';
  * @param {*} param0
  * @returns
  */
-const FormSelector = ({
-  name,
-  labelText,
-  list,
-  defaultValue = '',
-  onChange,
-}) => {
-  const [selectedOption, setSelectedOption] = useState({
-    value: defaultValue,
-    label: defaultValue,
-  });
+const FormSelector = ({ name, labelText, list, defaultValue, onChange }) => {
+  // Convert defaultValue to object if it's a string
+  const initialOption =
+    typeof defaultValue === 'string'
+      ? list.find((option) => option.value === defaultValue)
+      : defaultValue;
+  const [selectedOption, setSelectedOption] = useState(initialOption); // state to keep track of the selected option
 
   useEffect(() => {
-    setSelectedOption({ value: defaultValue, label: defaultValue });
-  }, [defaultValue]);
+    setSelectedOption(initialOption); // update selected
+  }, [defaultValue]); // dependency array to re-run effect when defaultValue changes
 
-  const options = list.map((item) => ({ value: item, label: item }));
-
-  const handleChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-    if (onChange) onChange(name, selectedOption.value); // Call the onChange prop function with the name and value
-  };
+  const handleChange = (option) => {
+    setSelectedOption(option); // update local state with the selected option
+    if (onChange) onChange(name, option.value); // Call the onChange prop with name and value
+  }; // Function to handle changes in selection
 
   return (
     <Container>
       <div className="form-row">
-        <label className="form-label" htmlFor={name}>
-          {labelText || name}
-        </label>
+        <label htmlFor={name}>{labelText}</label>
         <Select
           id={name}
           name={name}
-          value={selectedOption}
-          onChange={handleChange}
-          options={options}
-          classNamePrefix="form-select"
+          value={selectedOption} // Set the selected option value
+          onChange={handleChange} // Handles change with the new selected option
+          options={list} // Options need to be an array of { value, label } objects
           styles={customStyles}
+          isClearable={true}
         />
       </div>
     </Container>
