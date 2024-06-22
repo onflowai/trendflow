@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
+import {
+  FaFire,
+  FaBolt,
+  FaSnowflake,
+  FaEquals,
+  FaArrowDown,
+} from 'react-icons/fa';
 /**
  * Component responsible for setting up selector programmatically
  * defaultValue = '' - defaultValue or a fallback of empty
@@ -8,9 +15,78 @@ import Container from '../assets/wrappers/FormSelectorContainer';
  * @param {*} param0
  * @returns
  */
-//Custom option displays the icons and images for status and trendTech
 
-const FormSelector = ({
+export const STATUS = {
+  TRENDING: {
+    value: 'trending',
+    label: 'Trending',
+    icon: <FaFire />,
+  },
+  BREAKOUT: {
+    value: 'breakout',
+    label: 'Breakout',
+    icon: <FaBolt />,
+  },
+  COOLOFF: {
+    value: 'coolOff',
+    label: 'Cool Off',
+    icon: <FaSnowflake />,
+  },
+  STATIC: {
+    value: 'static',
+    label: 'Static',
+    icon: <FaEquals />,
+  },
+  SUBLEVEL: {
+    value: 'sublevel',
+    label: 'Sublevel',
+    icon: <FaArrowDown />,
+  },
+};
+
+// CustomOption component for handling both images and icons
+const CustomOption = (props) => {
+  return (
+    <components.Option {...props}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {props.data.image && (
+          <img
+            src={props.data.image}
+            alt={props.data.label}
+            style={{ width: '20px', marginRight: '10px' }}
+          />
+        )}
+        {props.data.icon && (
+          <span style={{ marginRight: '10px' }}>{props.data.icon}</span>
+        )}
+        {props.data.label}
+      </div>
+    </components.Option>
+  );
+};
+
+// CustomSingleValue component to handle display of selected value with image or icon
+const CustomSingleValue = (props) => {
+  return (
+    <components.SingleValue {...props}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {props.data.image && (
+          <img
+            src={props.data.image}
+            alt={props.data.label}
+            style={{ width: '20px', marginRight: '10px' }}
+          />
+        )}
+        {props.data.icon && (
+          <span style={{ marginRight: '10px' }}>{props.data.icon}</span>
+        )}
+        {props.data.label}
+      </div>
+    </components.SingleValue>
+  );
+};
+
+const FormSelectorIcon = ({
   name,
   labelText,
   list,
@@ -54,6 +130,7 @@ const FormSelector = ({
           options={list} // Provide the list of options to the select input
           styles={customStyles} // Apply custom styles to the select component
           isClearable={isClearable} // Allow the option to clear the selection
+          components={{ Option: CustomOption, SingleValue: CustomSingleValue }} // Include CustomSingleValue
         />
       </div>
     </Container>
@@ -92,4 +169,4 @@ const customStyles = {
   }),
 };
 
-export default FormSelector;
+export default FormSelectorIcon;

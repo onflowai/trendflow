@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { FormSelector, SubmitButton, Checkbox } from './index.js';
+import {
+  FormSelector,
+  SubmitButton,
+  Checkbox,
+  FormSelectorIcon,
+} from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
 import {
@@ -10,6 +15,7 @@ import {
   TIME,
 } from '../utils/constants.js';
 import { Form, Link, useSubmit } from 'react-router-dom';
+import { FaInfinity } from 'react-icons/fa6';
 
 function SearchTrendsLarge() {
   const { searchValues } = useCombinedContext(); // accessing context values related to search parameters
@@ -55,7 +61,7 @@ function SearchTrendsLarge() {
                 ]}
                 onChange={(name, value) => handleChange('trendCategory', value)}
               />
-              <FormSelector
+              <FormSelectorIcon
                 labelText="Choose Technology:"
                 name="trendTech"
                 defaultValue={searchValues.trendTech || 'all'}
@@ -65,12 +71,12 @@ function SearchTrendsLarge() {
                 ]}
                 onChange={(name, value) => handleChange('trendTech', value)}
               />
-              <FormSelector
+              <FormSelectorIcon
                 labelText="Status:"
                 name="status"
                 defaultValue={sortValues.status}
                 list={[
-                  { value: 'all', label: 'All' },
+                  { value: 'all', label: 'All', icon: <FaInfinity /> },
                   ...Object.values(STATUS),
                 ]}
                 onChange={(name, value) => handleChange('status', value)}
