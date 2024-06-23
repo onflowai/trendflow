@@ -13,7 +13,7 @@ import {
   AllTrends,
   Profile,
   Admin,
-  Stats,
+  Blog,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
 /**
@@ -77,8 +77,8 @@ const router = createBrowserRouter([
             loader: allTrendsLoader,
           },
           {
-            path: 'stats',
-            element: <Stats />,
+            path: 'blog',
+            element: <Blog />,
           },
           {
             path: 'submit',

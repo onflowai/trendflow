@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  FormSelector,
-  SubmitButton,
-  Checkbox,
-  FormSelectorIcon,
-} from '../components';
+import { SubmitButton, Checkbox, FormSelectorIcon } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
 import {
@@ -43,6 +38,22 @@ function SearchTrendsLarge() {
     submit(form); // Submit the form after updating the parameter
   }; //end handle change
 
+  // Function to handle checkbox changes
+  const handleCheckboxChange = (name, value) => {
+    setSortValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    const form = document.getElementById('searchForm');
+    const params = new URLSearchParams(new FormData(form));
+    const combinedSort = `${sortValues.topRated}|${sortValues.topViewed}|${sortValues.status}|${sortValues.updated}`;
+    params.set('sort', combinedSort);
+    submit(form);
+  };
+
+  // Utility function to determine if a checkbox is checked
+  const isChecked = (name, value) => sortValues[name] === value;
+
   return (
     <Container>
       <div className="submit-container">
@@ -51,12 +62,12 @@ function SearchTrendsLarge() {
           <Form id="searchForm" className="form">
             <h4 className="form-title">Filter and Sort Trends:</h4>
             <div className="form-center">
-              <FormSelector
+              <FormSelectorIcon
                 labelText="Choose Category:"
                 name="trendCategory"
                 defaultValue={searchValues.trendCategory || 'all'}
                 list={[
-                  { value: 'all', label: 'All' },
+                  { value: 'all', label: 'All', icon: FaInfinity },
                   ...Object.values(TREND_CATEGORY),
                 ]}
                 onChange={(name, value) => handleChange('trendCategory', value)}
@@ -66,7 +77,7 @@ function SearchTrendsLarge() {
                 name="trendTech"
                 defaultValue={searchValues.trendTech || 'all'}
                 list={[
-                  { value: 'all', label: 'All' },
+                  { value: 'all', label: 'All', icon: FaInfinity },
                   ...Object.values(TECHNOLOGIES),
                 ]}
                 onChange={(name, value) => handleChange('trendTech', value)}
@@ -76,33 +87,48 @@ function SearchTrendsLarge() {
                 name="status"
                 defaultValue={sortValues.status}
                 list={[
-                  { value: 'all', label: 'All', icon: <FaInfinity /> },
+                  { value: 'all', label: 'All', icon: FaInfinity },
                   ...Object.values(STATUS),
                 ]}
                 onChange={(name, value) => handleChange('status', value)}
               />
-              <FormSelector
-                labelText="Top Rated:"
-                name="topRated"
-                defaultValue={sortValues.topRated}
-                list={[
+              {/* Replace dropdown with checkboxes for Top Rated */}
+              <div className="checkbox-group">
+                <h5>Top Rated:</h5>
+                {[
                   SORT_OPTIONS.TOP_RATED_NOW,
                   SORT_OPTIONS.TOP_RATED_YEAR,
                   SORT_OPTIONS.TOP_RATED_MONTH,
-                ]}
-                onChange={(name, value) => handleChange('topRated', value)}
-              />
-              <FormSelector
-                labelText="Top Viewed:"
-                name="topViewed"
-                defaultValue={sortValues.topViewed}
-                list={[
+                ].map((option) => (
+                  <Checkbox
+                    key={option.value}
+                    checked={isChecked('topRated', option.value)}
+                    onChange={() =>
+                      handleCheckboxChange('topRated', option.value)
+                    }
+                    label={option.label}
+                  />
+                ))}
+              </div>
+
+              {/* Replace dropdown with checkboxes for Top Viewed */}
+              <div className="checkbox-group">
+                <h5>Top Viewed:</h5>
+                {[
                   SORT_OPTIONS.TOP_VIEWED_NOW,
                   SORT_OPTIONS.TOP_VIEWED_YEAR,
                   SORT_OPTIONS.TOP_VIEWED_MONTH,
-                ]}
-                onChange={(name, value) => handleChange('topViewed', value)}
-              />
+                ].map((option) => (
+                  <Checkbox
+                    key={option.value}
+                    checked={isChecked('topViewed', option.value)}
+                    onChange={() =>
+                      handleCheckboxChange('topViewed', option.value)
+                    }
+                    label={option.label}
+                  />
+                ))}
+              </div>
               <FormSelector
                 labelText="Updated:"
                 name="updated"

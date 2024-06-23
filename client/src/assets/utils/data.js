@@ -16,8 +16,8 @@ export const dashboardLinks = [
     path: 'submit',
   },
   {
-    text: 'stats',
-    path: 'stats',
+    text: 'blog',
+    path: 'blog',
   },
   {
     text: 'profile',
@@ -50,8 +50,8 @@ export const dashboardAllLinks = [
     path: 'submit',
   },
   {
-    text: 'stats',
-    path: 'stats',
+    text: 'blog',
+    path: 'blog',
   },
   {
     text: 'profile',

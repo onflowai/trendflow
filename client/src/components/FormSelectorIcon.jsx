@@ -46,6 +46,7 @@ export const STATUS = {
 
 // CustomOption component for handling both images and icons
 const CustomOption = (props) => {
+  const IconComponent = props.data.icon; // Retrieve the component type
   return (
     <components.Option {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -56,8 +57,10 @@ const CustomOption = (props) => {
             style={{ width: '20px', marginRight: '10px' }}
           />
         )}
-        {props.data.icon && (
-          <span style={{ marginRight: '10px' }}>{props.data.icon}</span>
+        {IconComponent && (
+          <span style={{ marginRight: '10px' }}>
+            <IconComponent /> {/* Render as component */}
+          </span>
         )}
         {props.data.label}
       </div>
@@ -67,6 +70,7 @@ const CustomOption = (props) => {
 
 // CustomSingleValue component to handle display of selected value with image or icon
 const CustomSingleValue = (props) => {
+  const IconComponent = props.data.icon; // Retrieve the component type
   return (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -77,8 +81,10 @@ const CustomSingleValue = (props) => {
             style={{ width: '20px', marginRight: '10px' }}
           />
         )}
-        {props.data.icon && (
-          <span style={{ marginRight: '10px' }}>{props.data.icon}</span>
+        {IconComponent && (
+          <span style={{ marginRight: '10px' }}>
+            <IconComponent /> {/* Render as component */}
+          </span>
         )}
         {props.data.label}
       </div>

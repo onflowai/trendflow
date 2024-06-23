@@ -1,5 +1,5 @@
 import {
-  FormSelector,
+  FormSelectorIcon,
   UserImgLarge,
   FallbackChart,
   CustomErrorToast,
@@ -57,14 +57,14 @@ const AddTrend = () => {
                 placeholder="Any tech on your mind?"
               />
               {/* <FormComponent type="text" name="Any tech on your mind?" /> */}
-              <FormSelector
+              <FormSelectorIcon
                 labelText="Choose Category:"
                 name="trendCategory"
                 defaultValue={TREND_CATEGORY.PROGRAMMING_LANGUAGES}
                 list={Object.values(TREND_CATEGORY)}
               />
               {console.log(Object.values(TREND_CATEGORY))}
-              <FormSelector
+              <FormSelectorIcon
                 labelText="Choose Technology:"
                 name="trendTech"
                 defaultValue={TECHNOLOGIES.ADA}
