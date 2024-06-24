@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Checkbox, FormSelectorIcon, FormSelector } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
+import { FaInfinity } from 'react-icons/fa6';
+import {
+  AiFillCloseSquare,
+  AiFillMinusCircle,
+  AiFillDownCircle,
+  AiFillUpCircle,
+} from 'react-icons/ai';
 import {
   TREND_CATEGORY,
   TECHNOLOGIES,
@@ -10,7 +17,6 @@ import {
   TIME,
 } from '../utils/constants.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom'; // Use useNavigate instead of useSubmit
-import { FaInfinity } from 'react-icons/fa6';
 
 function SearchTrendsLarge() {
   const { searchValues } = useCombinedContext(); // Context for search parameters
@@ -60,95 +66,105 @@ function SearchTrendsLarge() {
   return (
     <Container>
       <div className="submit-container">
-        <div className="checkbox-group">
-          <div className="checkbox">
-            <h5>Top Rated:</h5>
-            {[
-              SORT_OPTIONS.TOP_RATED_NOW,
-              SORT_OPTIONS.TOP_RATED_YEAR,
-              SORT_OPTIONS.TOP_RATED_MONTH,
-            ].map((option) => (
-              <Checkbox
-                key={option.value}
-                checked={isChecked('topRated', option.value)}
-                onChange={() => handleChange('topRated', option.value)}
-                label={option.label}
+        <div className="filter-app">
+          <div className="filter-header">
+            <h4>Filter Options</h4>
+            <div className="filter-icons">
+              <AiFillMinusCircle className="icon" />
+              <AiFillDownCircle className="icon" />
+              <AiFillCloseSquare className="icon" />
+            </div>
+          </div>
+          <div className="checkbox-group">
+            <div className="checkbox">
+              <h5>Top Rated:</h5>
+              {[
+                SORT_OPTIONS.TOP_RATED_NOW,
+                SORT_OPTIONS.TOP_RATED_YEAR,
+                SORT_OPTIONS.TOP_RATED_MONTH,
+              ].map((option) => (
+                <Checkbox
+                  key={option.value}
+                  checked={isChecked('topRated', option.value)}
+                  onChange={() => handleChange('topRated', option.value)}
+                  label={option.label}
+                />
+              ))}
+            </div>
+            <div className="checkbox">
+              <h5>Top Viewed:</h5>
+              {[
+                SORT_OPTIONS.TOP_VIEWED_NOW,
+                SORT_OPTIONS.TOP_VIEWED_YEAR,
+                SORT_OPTIONS.TOP_VIEWED_MONTH,
+              ].map((option) => (
+                <Checkbox
+                  key={option.value}
+                  checked={isChecked('topViewed', option.value)}
+                  onChange={() => handleChange('topViewed', option.value)}
+                  label={option.label}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="select-group-one">
+            <div className="select">
+              <FormSelectorIcon
+                labelText="Choose Category:"
+                name="trendCategory"
+                defaultValue={filterValues.trendCategory}
+                list={[
+                  { value: 'all', label: 'All', icon: FaInfinity },
+                  ...Object.values(TREND_CATEGORY),
+                ]}
+                onChange={(name, value) => handleChange('trendCategory', value)}
               />
-            ))}
-          </div>
-          <div className="checkbox">
-            <h5>Top Viewed:</h5>
-            {[
-              SORT_OPTIONS.TOP_VIEWED_NOW,
-              SORT_OPTIONS.TOP_VIEWED_YEAR,
-              SORT_OPTIONS.TOP_VIEWED_MONTH,
-            ].map((option) => (
-              <Checkbox
-                key={option.value}
-                checked={isChecked('topViewed', option.value)}
-                onChange={() => handleChange('topViewed', option.value)}
-                label={option.label}
+            </div>
+            <div className="select">
+              <FormSelectorIcon
+                labelText="Choose Technology:"
+                name="trendTech"
+                defaultValue={filterValues.trendTech}
+                list={[
+                  { value: 'all', label: 'All', icon: FaInfinity },
+                  ...Object.values(TECHNOLOGIES),
+                ]}
+                onChange={(name, value) => handleChange('trendTech', value)}
               />
-            ))}
+            </div>
           </div>
+          <div className="select-group-two">
+            <div className="select">
+              <FormSelectorIcon
+                labelText="Status:"
+                name="status"
+                defaultValue={filterValues.status}
+                list={[
+                  { value: 'all', label: 'All', icon: FaInfinity },
+                  ...Object.values(STATUS),
+                ]}
+                onChange={(name, value) => handleChange('status', value)}
+              />
+            </div>
+            <div className="select">
+              <FormSelector
+                labelText="Updated:"
+                name="updated"
+                defaultValue={filterValues.updated}
+                list={[
+                  TIME.NEWEST,
+                  TIME.OLDEST,
+                  TIME.NEWEST_MONTH,
+                  TIME.NEWEST_YEAR,
+                ]}
+                onChange={(name, value) => handleChange('updated', value)}
+              />
+            </div>
+          </div>
+          <Link to="/dashboard" className="btn btn-block form-btn">
+            Reset Search
+          </Link>
         </div>
-        <div className="select-group-one">
-          <div className="select">
-            <FormSelectorIcon
-              labelText="Choose Category:"
-              name="trendCategory"
-              defaultValue={filterValues.trendCategory}
-              list={[
-                { value: 'all', label: 'All', icon: FaInfinity },
-                ...Object.values(TREND_CATEGORY),
-              ]}
-              onChange={(name, value) => handleChange('trendCategory', value)}
-            />
-          </div>
-          <div className="select">
-            <FormSelectorIcon
-              labelText="Choose Technology:"
-              name="trendTech"
-              defaultValue={filterValues.trendTech}
-              list={[
-                { value: 'all', label: 'All', icon: FaInfinity },
-                ...Object.values(TECHNOLOGIES),
-              ]}
-              onChange={(name, value) => handleChange('trendTech', value)}
-            />
-          </div>
-        </div>
-        <div className="select-group-two">
-          <div className="select">
-            <FormSelectorIcon
-              labelText="Status:"
-              name="status"
-              defaultValue={filterValues.status}
-              list={[
-                { value: 'all', label: 'All', icon: FaInfinity },
-                ...Object.values(STATUS),
-              ]}
-              onChange={(name, value) => handleChange('status', value)}
-            />
-          </div>
-          <div className="select">
-            <FormSelector
-              labelText="Updated:"
-              name="updated"
-              defaultValue={filterValues.updated}
-              list={[
-                TIME.NEWEST,
-                TIME.OLDEST,
-                TIME.NEWEST_MONTH,
-                TIME.NEWEST_YEAR,
-              ]}
-              onChange={(name, value) => handleChange('updated', value)}
-            />
-          </div>
-        </div>
-        <Link to="/dashboard" className="btn btn-block form-btn">
-          Reset Search
-        </Link>
       </div>
     </Container>
   );

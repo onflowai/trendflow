@@ -1,55 +1,96 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
-border-radius: var(--border-radius);
+  border-radius: var(--border-radius);
   border: 1.5px solid var(--grey-50);
-  width: 100%;
   background: var(--white);
   padding: 2rem 2rem 4rem;
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 
-.submit-container {
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 20px;
-    max-width: 600px;
+  .submit-container {
     width: 100%;
+    max-width: 1200px; /* Max width for large screens */
   }
 
-  .form {
+  .filter-app {
+    display: grid;
+    gap: 20px; /* Space between grid items */
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(7, 1fr); /* 7 equal columns for large screens */
+    }
+
+    @media (min-width: 812px) and (max-width: 1023px) {
+      grid-template-columns: repeat(10, 1fr); /* 10 equal columns for medium screens */
+    }
+
+    @media (max-width: 811px) {
+      grid-template-columns: 1fr; /* Single column for small screens */
+    }
+  }
+
+  .filter-header {
+    grid-column: span 7; /* Header spans across all columns on large screens */
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
   }
 
-  .form-title {
-    margin-bottom: 10px;
-    font-size: 1.2em;
-    font-weight: bold;
-  }
-
-  .form-center {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  .filter-icons .icon {
+    margin-left: 10px;
+    cursor: pointer; /* Pointer cursor for clickable icons */
   }
 
   .checkbox-group {
-    margin-bottom: 15px;
+    display: contents; /* Grid children will be directly in the grid */
+
+    .checkbox {
+      grid-column: span 1; /* Each checkbox takes 1 column on large screens */
+      
+      @media (min-width: 812px) and (max-width: 1023px) {
+        grid-column: span 1; /* Each checkbox takes 1 column on medium screens */
+      }
+      
+      @media (max-width: 811px) {
+        grid-column: span 1; /* Each checkbox takes full width on small screens */
+      }
+    }
   }
 
-  .checkbox-group h5 {
-    margin-bottom: 10px;
-    font-size: 1em;
+  .select-group-one, .select-group-two {
+    display: contents; /* Grid children will be directly in the grid */
+
+    .select {
+      grid-column: span 2; /* Each select takes 2 columns on large screens */
+
+      @media (min-width: 812px) and (max-width: 1023px) {
+        grid-column: span 1; /* Each select takes 1 column on medium screens */
+      }
+      
+      @media (max-width: 811px) {
+        grid-column: span 1; /* Each select takes full width on small screens */
+      }
+    }
   }
 
-  .btn-block {
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 10px;
+  .btn {
+    grid-column: span 7; /* Button spans across all columns on large screens */
+    margin-top: 20px;
+    align-self: center;
+    
+    @media (min-width: 812px) and (max-width: 1023px) {
+      grid-column: span 10; /* Button spans across all columns on medium screens */
+    }
+
+    @media (max-width: 811px) {
+      grid-column: span 1; /* Button takes full width on small screens */
+    }
   }
 
 `;
