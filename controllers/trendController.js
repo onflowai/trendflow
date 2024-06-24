@@ -212,7 +212,7 @@ export const getApprovedTrends = async (req, res) => {
     page,
     limit,
     viewCount,
-    chartType,
+    status,
     timePeriod,
   } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
   const queryObject = constructQueryObject(
@@ -251,8 +251,8 @@ export const getApprovedTrends = async (req, res) => {
       limit
     );
 
-    if (chartType && chartType !== 'all') {
-      trends = trends.filter((trend) => trend.trendStatus === chartType);
+    if (status && status !== 'all') {
+      trends = trends.filter((trend) => trend.trendStatus === status);
       // Adjust the total trends count and pagination after filtering
       totalTrends = trends.length;
       pagesNumber = Math.ceil(totalTrends / limit);

@@ -7,12 +7,12 @@ const Checkbox = ({ checked, onChange, label }) => {
       <div className="checkbox-container">
         <input
           type="checkbox"
-          id="custom-checkbox"
+          id={`custom-checkbox-${label}`}
           checked={checked}
           onChange={onChange}
           className="custom-checkbox"
         />
-        <label htmlFor="custom-checkbox">{label}</label>
+        <label htmlFor={`custom-checkbox-${label}`}>{label}</label>
       </div>
     </Container>
   );
