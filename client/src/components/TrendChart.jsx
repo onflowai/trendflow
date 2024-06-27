@@ -61,8 +61,8 @@ function AreaChartComponent({ data }) {
         >
           <defs>
             <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#1e16fb" stopOpacity={1} />
-              <stop offset="95%" stopColor="#f55ec8" stopOpacity={0.2} />
+              <stop offset="5%" stopColor="#662fdc" stopOpacity={1} />
+              <stop offset="95%" stopColor="#f55ec8" stopOpacity={0.05} />
             </linearGradient>
           </defs>
 

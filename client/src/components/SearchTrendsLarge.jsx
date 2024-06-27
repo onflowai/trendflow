@@ -106,58 +106,62 @@ function SearchTrendsLarge() {
               ))}
             </div>
           </div>
-          <div className="select-group-one">
-            <div className="select">
-              <FormSelectorIcon
-                labelText="Choose Category:"
-                name="trendCategory"
-                defaultValue={filterValues.trendCategory}
-                list={[
-                  { value: 'all', label: 'All', icon: FaInfinity },
-                  ...Object.values(TREND_CATEGORY),
-                ]}
-                onChange={(name, value) => handleChange('trendCategory', value)}
-              />
+          <div className="select-group">
+            <div className="select-group-one">
+              <div className="select">
+                <FormSelectorIcon
+                  labelText="Choose Category:"
+                  name="trendCategory"
+                  defaultValue={filterValues.trendCategory}
+                  list={[
+                    { value: 'all', label: 'All', icon: FaInfinity },
+                    ...Object.values(TREND_CATEGORY),
+                  ]}
+                  onChange={(name, value) =>
+                    handleChange('trendCategory', value)
+                  }
+                />
+              </div>
+              <div className="select">
+                <FormSelectorIcon
+                  labelText="Choose Technology:"
+                  name="trendTech"
+                  defaultValue={filterValues.trendTech}
+                  list={[
+                    { value: 'all', label: 'All', icon: FaInfinity },
+                    ...Object.values(TECHNOLOGIES),
+                  ]}
+                  onChange={(name, value) => handleChange('trendTech', value)}
+                />
+              </div>
             </div>
-            <div className="select">
-              <FormSelectorIcon
-                labelText="Choose Technology:"
-                name="trendTech"
-                defaultValue={filterValues.trendTech}
-                list={[
-                  { value: 'all', label: 'All', icon: FaInfinity },
-                  ...Object.values(TECHNOLOGIES),
-                ]}
-                onChange={(name, value) => handleChange('trendTech', value)}
-              />
-            </div>
-          </div>
-          <div className="select-group-two">
-            <div className="select">
-              <FormSelectorIcon
-                labelText="Status:"
-                name="status"
-                defaultValue={filterValues.status}
-                list={[
-                  { value: 'all', label: 'All', icon: FaInfinity },
-                  ...Object.values(STATUS),
-                ]}
-                onChange={(name, value) => handleChange('status', value)}
-              />
-            </div>
-            <div className="select">
-              <FormSelector
-                labelText="Updated:"
-                name="updated"
-                defaultValue={filterValues.updated}
-                list={[
-                  TIME.NEWEST,
-                  TIME.OLDEST,
-                  TIME.NEWEST_MONTH,
-                  TIME.NEWEST_YEAR,
-                ]}
-                onChange={(name, value) => handleChange('updated', value)}
-              />
+            <div className="select-group-two">
+              <div className="select">
+                <FormSelectorIcon
+                  labelText="Status:"
+                  name="status"
+                  defaultValue={filterValues.status}
+                  list={[
+                    { value: 'all', label: 'All', icon: FaInfinity },
+                    ...Object.values(STATUS),
+                  ]}
+                  onChange={(name, value) => handleChange('status', value)}
+                />
+              </div>
+              <div className="select">
+                <FormSelector
+                  labelText="Updated:"
+                  name="updated"
+                  defaultValue={filterValues.updated}
+                  list={[
+                    TIME.NEWEST,
+                    TIME.OLDEST,
+                    TIME.NEWEST_MONTH,
+                    TIME.NEWEST_YEAR,
+                  ]}
+                  onChange={(name, value) => handleChange('updated', value)}
+                />
+              </div>
             </div>
           </div>
           <Link to="/dashboard" className="btn btn-block form-btn">
