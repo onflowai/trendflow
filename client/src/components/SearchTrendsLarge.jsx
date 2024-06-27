@@ -67,11 +67,10 @@ function SearchTrendsLarge() {
     <Container>
       <div className="submit-container">
         <div className="filter-app">
-          <div className="filter-header">
-            <h4>Filter Options</h4>
-            <div className="filter-icons">
-              <AiFillMinusCircle className="icon" />
+          <div className="action-buttons">
+            <div className="buttons">
               <AiFillDownCircle className="icon" />
+              <AiFillMinusCircle className="icon" />
               <AiFillCloseSquare className="icon" />
             </div>
           </div>

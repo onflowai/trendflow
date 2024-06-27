@@ -1,4 +1,4 @@
-import logo from '../assets/images/test-logo.svg';
+import logo from '../assets/images/logo-02.svg';
 import styled from 'styled-components';
 
 const Logo = () => {

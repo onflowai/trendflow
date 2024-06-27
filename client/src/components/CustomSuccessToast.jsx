@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/images/test-logo.svg';
+import logo from '../assets/images/logo-02.svg';
 import Container from '../assets/wrappers/CustomErrorToastContainer';
 /**
  * Custom Success Toast, styling is in index.css
