@@ -18,7 +18,10 @@ import {
   TIME,
 } from '../utils/constants.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom'; // Use useNavigate instead of useSubmit
-
+/**
+ * Search Trends Large is used in AllTrends & Admin Page. it is used to
+ * @returns
+ */
 function SearchTrendsLarge() {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
@@ -26,6 +29,8 @@ function SearchTrendsLarge() {
 
   // State to track if the filter is collapsed
   const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false);
+  // State to track hover
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   // State to track filter values
   const [filterValues, setFilterValues] = useState({
@@ -90,12 +95,27 @@ function SearchTrendsLarge() {
         <div className="filter-app">
           <div className="action-buttons">
             <div className="buttons">
-              <AiFillDownCircle
-                className="icon"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-              />
-              <AiFillMinusCircle className="icon" />
-              <AiFillCloseSquare className="icon" />
+              {isCollapsed ? (
+                <AiFillUpCircle
+                  className={`icon icon-collapse ${
+                    isHighlighted ? 'highlighted' : ''
+                  }`}
+                  onClick={() => setIsCollapsed(!isCollapsed)}
+                  onMouseEnter={() => setIsHighlighted(true)}
+                  onMouseLeave={() => setIsHighlighted(false)}
+                />
+              ) : (
+                <AiFillDownCircle
+                  className={`icon icon-collapse ${
+                    isHighlighted ? 'highlighted' : ''
+                  }`}
+                  onClick={() => setIsCollapsed(!isCollapsed)}
+                  onMouseEnter={() => setIsHighlighted(true)}
+                  onMouseLeave={() => setIsHighlighted(false)}
+                />
+              )}
+              <AiFillMinusCircle className="icon icon-stick" />
+              <AiFillCloseSquare className="icon icon-close" />
             </div>
           </div>
           {!isCollapsed ? (
@@ -280,6 +300,29 @@ function SearchTrendsLarge() {
                       }
                       label={SORT_OPTIONS.TOP_VIEWED_NOW.label}
                     />
+                  </div>
+                </div>
+                <div className="select-group-one">
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.trendCategory ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelectorIcon
+                        labelText="Choose Category:"
+                        name="trendCategory"
+                        defaultValue={filterValues.trendCategory}
+                        list={[
+                          { value: 'all', label: 'All', icon: FaInfinity },
+                          ...Object.values(TREND_CATEGORY),
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('trendCategory', value)
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="select-group-one">

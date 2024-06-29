@@ -40,7 +40,7 @@ const Container = styled.div`
     grid-template-columns: 1fr;
   }
 }
-
+/* ACTION BUTTONS */
 .action-buttons {
   position: absolute;
   top: 0;
@@ -56,6 +56,21 @@ const Container = styled.div`
 .buttons {
   display: flex;
   gap: 10px;
+}
+.icon {
+  cursor: pointer;
+}
+.icon-collapse{
+  color: var(--primary2-600);
+}
+.icon-collapse.highlighted {
+  color: var(--primary-600); /* Highlight color on hover */
+}
+.icon-stick{
+  color: var(--primary-600);
+}
+.icon-close{
+color: var(--grey-700);
 }
 .checkbox-label{
   margin-bottom: 0.6rem;
@@ -180,29 +195,40 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     .select {
-    padding-right: 3rem;
-    padding-left: 3rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
     display: grid;
-    min-width: 30rem;
+    min-width: 20rem;
     }
 
     @media (min-width: 1470px) { /* Ensure it overrides the .filter-app styles */
       grid-column: 1 / -1; /* span all columns in the parent grid */
       .select {
-        min-width: 40rem;
+        min-width: 30rem;
+      }
+      .checkbox{
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
       }
     }
 
     @media (max-width: 1469px) {
       flex-wrap: wrap; /* Allow wrapping on smaller screens */
       .select {
-        min-width: 30rem;
+        min-width: 20rem;
+      }
+      .checkbox{
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
       }
     }
 
     @media (max-width: 811px) {
       /* flex-direction: column; Stack items vertically on small screens */
       grid-template-columns: 1fr;
+      .select {
+        display: none;
+      }
     }
   }
 
