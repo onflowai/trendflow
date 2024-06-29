@@ -76,33 +76,37 @@ function SearchTrendsLarge() {
           </div>
           <div className="checkbox-group">
             <div className="checkbox">
-              <h5>Top Rated:</h5>
+              <h5 className="checkbox-label">Top Rated:</h5>
               {[
                 SORT_OPTIONS.TOP_RATED_NOW,
                 SORT_OPTIONS.TOP_RATED_YEAR,
                 SORT_OPTIONS.TOP_RATED_MONTH,
               ].map((option) => (
-                <Checkbox
-                  key={option.value}
-                  checked={isChecked('topRated', option.value)}
-                  onChange={() => handleChange('topRated', option.value)}
-                  label={option.label}
-                />
+                <div key={option.value}>
+                  <Checkbox
+                    checked={isChecked('topRated', option.value)}
+                    onChange={() => handleChange('topRated', option.value)}
+                    label={option.label}
+                  />
+                  <p className="checkbox-description">{option.description}</p>
+                </div>
               ))}
             </div>
             <div className="checkbox">
-              <h5>Top Viewed:</h5>
+              <h5 className="checkbox-label">Top Viewed:</h5>
               {[
                 SORT_OPTIONS.TOP_VIEWED_NOW,
                 SORT_OPTIONS.TOP_VIEWED_YEAR,
                 SORT_OPTIONS.TOP_VIEWED_MONTH,
               ].map((option) => (
-                <Checkbox
-                  key={option.value}
-                  checked={isChecked('topViewed', option.value)}
-                  onChange={() => handleChange('topViewed', option.value)}
-                  label={option.label}
-                />
+                <div key={option.value}>
+                  <Checkbox
+                    checked={isChecked('topViewed', option.value)}
+                    onChange={() => handleChange('topViewed', option.value)}
+                    label={option.label}
+                  />
+                  <p className="checkbox-description">{option.description}</p>
+                </div>
               ))}
             </div>
           </div>
@@ -162,11 +166,18 @@ function SearchTrendsLarge() {
                   onChange={(name, value) => handleChange('updated', value)}
                 />
               </div>
+              <div className="button-row">
+                <div className="save-button">
+                  <button className="btn btn-block form-btn">Save</button>
+                </div>
+                <div className="reset-button">
+                  <button className="btn btn-block form-btn">
+                    Reset Filter
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <Link to="/dashboard" className="btn btn-block form-btn">
-            Reset Search
-          </Link>
         </div>
       </div>
     </Container>
