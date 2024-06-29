@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FaCheck } from 'react-icons/fa';
 
 const Checkbox = ({ checked, onChange, label }) => {
   return (
@@ -38,8 +39,8 @@ const Container = styled.div`
 }
 
 .custom-checkbox:checked {
-  background-color: #4caf50;
-  border-color: #4caf50;
+  background-color: white;
+  border-color: var(--green);
 }
 
 .custom-checkbox:checked::after {
@@ -50,7 +51,7 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background-color: white;
+  background-color: black;
   border-radius: 2px;
 }
 

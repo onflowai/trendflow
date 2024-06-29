@@ -28,7 +28,7 @@ const Container = styled.div`
   @media (min-width: 1470px) {
     grid-template-columns: minmax(35rem, 1fr) 2fr;
     gap: 20px;
-     grid-template-rows: auto auto; /* Two rows: one for checkboxes, one for selectors */ //HERE
+     grid-template-rows: auto auto; /* two rows: one for checkboxes, one for selectors */ //HERE
   }
 
   @media (min-width: 812px) and (max-width: 1469px) {
@@ -67,9 +67,9 @@ const Container = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 
-  @media (max-width: 1470px) { /* Two columns for checkboxes at 1470px and wider screens */ //HERE
-      grid-column: 1 / -1; /* Span all columns in the parent grid */ //HERE
-      grid-template-columns: repeat(2, 1fr); /* Two columns for checkboxes */ //HERE
+  @media (max-width: 1470px) { /* two columns for checkboxes at 1470px and wider screens */
+      grid-column: 1 / -1; /* span all columns in the parent grid */
+      grid-template-columns: repeat(2, 1fr); /* two columns for checkboxes */
     }
 
     @media (min-width: 1469px) {
@@ -125,23 +125,23 @@ const Container = styled.div`
     height: 10px;
     border-radius: 50%;
     margin-right: 5px;
-    background-color: var(--grey-400); /* Default color */
+    background-color: var(--grey-400);
   }
 
   .indicator.active {
-    background-color: var(--green); /* Active color */
+    background-color: var(--green);
   }
 
   .indicator-container {
-    display: grid; /* Use grid layout */
-    grid-template-columns: auto 1fr; /* Indicator and selector */
-    align-items: center; /* Align items vertically */
+    display: grid; /* use grid layout */
+    grid-template-columns: auto 1fr; /* indicator and selector */
+    align-items: center; /* align items vertically */
   }
 
 .button-row {
   margin-top: 0.5rem;
-  display: flex; /* use flexbox for layout */ //HERE
-  justify-content: flex-end; /* align items to the right within the row */ //HERE
+  display: flex; /* use flex-box for layout */
+  justify-content: flex-end; /* align items to the right within the row */
   align-items: center; /* center items vertically */
   @media (max-width: 1470px) {
     margin-bottom: 1rem;
@@ -172,6 +172,38 @@ const Container = styled.div`
   .save-button .btn {
   border-top-right-radius: 0; 
   border-bottom-right-radius: 0;
+  }
+  /* COLLAPSED GROUP */
+  .collapsed-group {
+    display: flex; /* Use flexbox for layout */
+    flex-wrap: wrap; /* Prevent wrapping initially */
+    justify-content: space-between;
+    align-items: center;
+    .select {
+    padding-right: 3rem;
+    padding-left: 3rem;
+    display: grid;
+    min-width: 30rem;
+    }
+
+    @media (min-width: 1470px) { /* Ensure it overrides the .filter-app styles */
+      grid-column: 1 / -1; /* span all columns in the parent grid */
+      .select {
+        min-width: 40rem;
+      }
+    }
+
+    @media (max-width: 1469px) {
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
+      .select {
+        min-width: 30rem;
+      }
+    }
+
+    @media (max-width: 811px) {
+      /* flex-direction: column; Stack items vertically on small screens */
+      grid-template-columns: 1fr;
+    }
   }
 
 `;

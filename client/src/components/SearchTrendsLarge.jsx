@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Checkbox, FormSelectorIcon, FormSelector } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
+import useLocalStorage from '../hooks/useLocalStorage';
 import { FaInfinity } from 'react-icons/fa6';
 import {
   AiFillCloseSquare,
@@ -22,6 +23,9 @@ function SearchTrendsLarge() {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
+
+  // State to track if the filter is collapsed
+  const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false);
 
   // State to track filter values
   const [filterValues, setFilterValues] = useState({
@@ -86,141 +90,234 @@ function SearchTrendsLarge() {
         <div className="filter-app">
           <div className="action-buttons">
             <div className="buttons">
-              <AiFillDownCircle className="icon" />
+              <AiFillDownCircle
+                className="icon"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+              />
               <AiFillMinusCircle className="icon" />
               <AiFillCloseSquare className="icon" />
             </div>
           </div>
-          <div className="checkbox-group">
-            <div className="checkbox">
-              <h5 className="checkbox-label">Top Rated:</h5>
-              {[
-                SORT_OPTIONS.TOP_RATED_NOW,
-                SORT_OPTIONS.TOP_RATED_YEAR,
-                SORT_OPTIONS.TOP_RATED_MONTH,
-              ].map((option) => (
-                <div key={option.value}>
-                  <Checkbox
-                    checked={isChecked('topRated', option.value)}
-                    onChange={() => handleChange('topRated', option.value)}
-                    label={option.label}
-                  />
-                  <p className="checkbox-description">{option.description}</p>
+          {!isCollapsed ? (
+            <>
+              <div className="checkbox-group">
+                <div className="checkbox">
+                  <h5 className="checkbox-label">Top Rated:</h5>
+                  {[
+                    SORT_OPTIONS.TOP_RATED_NOW,
+                    SORT_OPTIONS.TOP_RATED_YEAR,
+                    SORT_OPTIONS.TOP_RATED_MONTH,
+                  ].map((option) => (
+                    <div key={option.value}>
+                      <Checkbox
+                        checked={isChecked('topRated', option.value)}
+                        onChange={() => handleChange('topRated', option.value)}
+                        label={option.label}
+                      />
+                      <p className="checkbox-description">
+                        {option.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="checkbox">
-              <h5 className="checkbox-label">Top Viewed:</h5>
-              {[
-                SORT_OPTIONS.TOP_VIEWED_NOW,
-                SORT_OPTIONS.TOP_VIEWED_YEAR,
-                SORT_OPTIONS.TOP_VIEWED_MONTH,
-              ].map((option) => (
-                <div key={option.value}>
-                  <Checkbox
-                    checked={isChecked('topViewed', option.value)}
-                    onChange={() => handleChange('topViewed', option.value)}
-                    label={option.label}
-                  />
-                  <p className="checkbox-description">{option.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="select-group">
-            <div className="select-group-one">
-              <div className="select">
-                <div className="indicator-container">
-                  <div
-                    className={`indicator ${
-                      indicatorState.trendCategory ? 'active' : ''
-                    }`}
-                  ></div>
-                  <FormSelectorIcon
-                    labelText="Choose Category:"
-                    name="trendCategory"
-                    defaultValue={filterValues.trendCategory}
-                    list={[
-                      { value: 'all', label: 'All', icon: FaInfinity },
-                      ...Object.values(TREND_CATEGORY),
-                    ]}
-                    onChange={(name, value) =>
-                      handleChange('trendCategory', value)
-                    }
-                  />
+                <div className="checkbox">
+                  <h5 className="checkbox-label">Top Viewed:</h5>
+                  {[
+                    SORT_OPTIONS.TOP_VIEWED_NOW,
+                    SORT_OPTIONS.TOP_VIEWED_YEAR,
+                    SORT_OPTIONS.TOP_VIEWED_MONTH,
+                  ].map((option) => (
+                    <div key={option.value}>
+                      <Checkbox
+                        checked={isChecked('topViewed', option.value)}
+                        onChange={() => handleChange('topViewed', option.value)}
+                        label={option.label}
+                      />
+                      <p className="checkbox-description">
+                        {option.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="select">
-                <div className="indicator-container">
-                  <div
-                    className={`indicator ${
-                      indicatorState.trendTech ? 'active' : ''
-                    }`}
-                  ></div>
-                  <FormSelectorIcon
-                    labelText="Choose Technology:"
-                    name="trendTech"
-                    defaultValue={filterValues.trendTech}
-                    list={[
-                      { value: 'all', label: 'All', icon: FaInfinity },
-                      ...Object.values(TECHNOLOGIES),
-                    ]}
-                    onChange={(name, value) => handleChange('trendTech', value)}
-                  />
+              <div className="select-group">
+                <div className="select-group-one">
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.trendCategory ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelectorIcon
+                        labelText="Choose Category:"
+                        name="trendCategory"
+                        defaultValue={filterValues.trendCategory}
+                        list={[
+                          { value: 'all', label: 'All', icon: FaInfinity },
+                          ...Object.values(TREND_CATEGORY),
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('trendCategory', value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.trendTech ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelectorIcon
+                        labelText="Choose Technology:"
+                        name="trendTech"
+                        defaultValue={filterValues.trendTech}
+                        list={[
+                          { value: 'all', label: 'All', icon: FaInfinity },
+                          ...Object.values(TECHNOLOGIES),
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('trendTech', value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="select-group-two">
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.status ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelectorIcon
+                        labelText="Status:"
+                        name="status"
+                        defaultValue={filterValues.status}
+                        list={[
+                          { value: 'all', label: 'All', icon: FaInfinity },
+                          ...Object.values(STATUS),
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('status', value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.updated ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelector
+                        labelText="Updated:"
+                        name="updated"
+                        defaultValue={filterValues.updated}
+                        list={[
+                          TIME.NEWEST,
+                          TIME.OLDEST,
+                          TIME.NEWEST_MONTH,
+                          TIME.NEWEST_YEAR,
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('updated', value)
+                        }
+                      />
+                    </div>
+                    <div className="button-row">
+                      <div className="save-button">
+                        <button className="btn btn-block form-btn">Save</button>
+                      </div>
+                      <div className="reset-button">
+                        <button className="btn btn-block form-btn">
+                          Reset Filter
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="select-group-two">
-              <div className="select">
-                <div className="indicator-container">
-                  <div
-                    className={`indicator ${
-                      indicatorState.status ? 'active' : ''
-                    }`}
-                  ></div>
-                  <FormSelectorIcon
-                    labelText="Status:"
-                    name="status"
-                    defaultValue={filterValues.status}
-                    list={[
-                      { value: 'all', label: 'All', icon: FaInfinity },
-                      ...Object.values(STATUS),
-                    ]}
-                    onChange={(name, value) => handleChange('status', value)}
-                  />
+            </>
+          ) : (
+            <>
+              <div className="collapsed-group">
+                <div className="checkbox">
+                  <h5 className="checkbox-label">Top Rated:</h5>
+                  <div>
+                    <Checkbox
+                      checked={isChecked(
+                        'topRated',
+                        SORT_OPTIONS.TOP_RATED_NOW.value
+                      )}
+                      onChange={() =>
+                        handleChange(
+                          'topRated',
+                          SORT_OPTIONS.TOP_RATED_NOW.value
+                        )
+                      }
+                      label={SORT_OPTIONS.TOP_RATED_NOW.label}
+                    />
+                  </div>
+                </div>
+                <div className="checkbox">
+                  <h5 className="checkbox-label">Top Viewed:</h5>
+                  <div>
+                    <Checkbox
+                      checked={isChecked(
+                        'topRated',
+                        SORT_OPTIONS.TOP_VIEWED_NOW.value
+                      )}
+                      onChange={() =>
+                        handleChange(
+                          'topRated',
+                          SORT_OPTIONS.TOP_VIEWED_NOW.value
+                        )
+                      }
+                      label={SORT_OPTIONS.TOP_VIEWED_NOW.label}
+                    />
+                  </div>
+                </div>
+                <div className="select-group-one">
+                  <div className="select">
+                    <div className="indicator-container">
+                      <div
+                        className={`indicator ${
+                          indicatorState.trendCategory ? 'active' : ''
+                        }`}
+                      ></div>
+                      <FormSelectorIcon
+                        labelText="Choose Category:"
+                        name="trendCategory"
+                        defaultValue={filterValues.trendCategory}
+                        list={[
+                          { value: 'all', label: 'All', icon: FaInfinity },
+                          ...Object.values(TREND_CATEGORY),
+                        ]}
+                        onChange={(name, value) =>
+                          handleChange('trendCategory', value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="button-row">
+                  <div className="save-button">
+                    <button className="btn btn-block form-btn">Save</button>
+                  </div>
+                  <div className="reset-button">
+                    <button className="btn btn-block form-btn">
+                      Reset Filter
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="select">
-                <div className="indicator-container">
-                  <div
-                    className={`indicator ${
-                      indicatorState.updated ? 'active' : ''
-                    }`}
-                  ></div>
-                  <FormSelector
-                    labelText="Updated:"
-                    name="updated"
-                    defaultValue={filterValues.updated}
-                    list={[
-                      { value: 'all', label: 'All' },
-                      ...Object.values(TIME),
-                    ]}
-                    onChange={(name, value) => handleChange('updated', value)}
-                  />
-                </div>
-              </div>
-              <div className="button-row">
-                <div className="save-button">
-                  <button className="btn btn-block form-btn">Save</button>
-                </div>
-                <div className="reset-button">
-                  <button className="btn btn-block form-btn">
-                    Reset Filter
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
     </Container>
