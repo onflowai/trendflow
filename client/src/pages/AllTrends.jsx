@@ -27,7 +27,7 @@ export const loader = async ({ request }) => {
     const [topRated, topViewed, status, updated] = params.sort.split('|');
     params.topRated = topRated;
     params.topViewed = topViewed;
-    params.chartType = status; // Assign status to chartType
+    params.status = status; // Assign status to chartType
     params.updated = updated;
   }
 

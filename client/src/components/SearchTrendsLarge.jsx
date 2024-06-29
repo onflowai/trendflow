@@ -27,11 +27,23 @@ function SearchTrendsLarge() {
   const [filterValues, setFilterValues] = useState({
     trendCategory: searchValues.trendCategory || 'all',
     trendTech: searchValues.trendTech || 'all',
-    status: searchValues.chartType || 'all',
+    status: searchValues.status || 'all',
     topRated: searchValues.topRated || '', // initializing as empty or from context
     topViewed: searchValues.topViewed || '', // initializing as empty or from context
-    updated: searchValues.updated || TIME.NEWEST.value,
+    updated: searchValues.updated || 'all',
   });
+
+  const [indicatorState, setIndicatorState] = useState({
+    trendCategory: searchValues.trendCategory
+      ? searchValues.trendCategory !== 'all'
+      : false,
+    trendTech: searchValues.trendTech
+      ? searchValues.trendTech !== 'all'
+      : false,
+    status: searchValues.status ? searchValues.status !== 'all' : false,
+    updated: searchValues.updated ? searchValues.updated !== 'all' : false,
+  });
+  console.log('searchValues.trendCategory : ', searchValues.trendCategory);
 
   // Effect to update URL params whenever filterValues change
   useEffect(() => {
@@ -42,9 +54,14 @@ function SearchTrendsLarge() {
   const handleChange = (name, value) => {
     setFilterValues((prev) => ({
       ...prev,
-      [name]: prev[name] === value ? '' : value, // Toggle or set the value
+      [name]: prev[name] === value ? 'all' : value, // Toggle or set the value
+    }));
+    setIndicatorState((prev) => ({
+      ...prev,
+      [name]: value !== 'all', // Update indicator state
     }));
   };
+  console.log('filterValues : ', filterValues);
 
   // Function to update query parameters and navigate
   const updateQueryParams = () => {
@@ -113,58 +130,84 @@ function SearchTrendsLarge() {
           <div className="select-group">
             <div className="select-group-one">
               <div className="select">
-                <FormSelectorIcon
-                  labelText="Choose Category:"
-                  name="trendCategory"
-                  defaultValue={filterValues.trendCategory}
-                  list={[
-                    { value: 'all', label: 'All', icon: FaInfinity },
-                    ...Object.values(TREND_CATEGORY),
-                  ]}
-                  onChange={(name, value) =>
-                    handleChange('trendCategory', value)
-                  }
-                />
+                <div className="indicator-container">
+                  <div
+                    className={`indicator ${
+                      indicatorState.trendCategory ? 'active' : ''
+                    }`}
+                  ></div>
+                  <FormSelectorIcon
+                    labelText="Choose Category:"
+                    name="trendCategory"
+                    defaultValue={filterValues.trendCategory}
+                    list={[
+                      { value: 'all', label: 'All', icon: FaInfinity },
+                      ...Object.values(TREND_CATEGORY),
+                    ]}
+                    onChange={(name, value) =>
+                      handleChange('trendCategory', value)
+                    }
+                  />
+                </div>
               </div>
               <div className="select">
-                <FormSelectorIcon
-                  labelText="Choose Technology:"
-                  name="trendTech"
-                  defaultValue={filterValues.trendTech}
-                  list={[
-                    { value: 'all', label: 'All', icon: FaInfinity },
-                    ...Object.values(TECHNOLOGIES),
-                  ]}
-                  onChange={(name, value) => handleChange('trendTech', value)}
-                />
+                <div className="indicator-container">
+                  <div
+                    className={`indicator ${
+                      indicatorState.trendTech ? 'active' : ''
+                    }`}
+                  ></div>
+                  <FormSelectorIcon
+                    labelText="Choose Technology:"
+                    name="trendTech"
+                    defaultValue={filterValues.trendTech}
+                    list={[
+                      { value: 'all', label: 'All', icon: FaInfinity },
+                      ...Object.values(TECHNOLOGIES),
+                    ]}
+                    onChange={(name, value) => handleChange('trendTech', value)}
+                  />
+                </div>
               </div>
             </div>
             <div className="select-group-two">
               <div className="select">
-                <FormSelectorIcon
-                  labelText="Status:"
-                  name="status"
-                  defaultValue={filterValues.status}
-                  list={[
-                    { value: 'all', label: 'All', icon: FaInfinity },
-                    ...Object.values(STATUS),
-                  ]}
-                  onChange={(name, value) => handleChange('status', value)}
-                />
+                <div className="indicator-container">
+                  <div
+                    className={`indicator ${
+                      indicatorState.status ? 'active' : ''
+                    }`}
+                  ></div>
+                  <FormSelectorIcon
+                    labelText="Status:"
+                    name="status"
+                    defaultValue={filterValues.status}
+                    list={[
+                      { value: 'all', label: 'All', icon: FaInfinity },
+                      ...Object.values(STATUS),
+                    ]}
+                    onChange={(name, value) => handleChange('status', value)}
+                  />
+                </div>
               </div>
               <div className="select">
-                <FormSelector
-                  labelText="Updated:"
-                  name="updated"
-                  defaultValue={filterValues.updated}
-                  list={[
-                    TIME.NEWEST,
-                    TIME.OLDEST,
-                    TIME.NEWEST_MONTH,
-                    TIME.NEWEST_YEAR,
-                  ]}
-                  onChange={(name, value) => handleChange('updated', value)}
-                />
+                <div className="indicator-container">
+                  <div
+                    className={`indicator ${
+                      indicatorState.updated ? 'active' : ''
+                    }`}
+                  ></div>
+                  <FormSelector
+                    labelText="Updated:"
+                    name="updated"
+                    defaultValue={filterValues.updated}
+                    list={[
+                      { value: 'all', label: 'All' },
+                      ...Object.values(TIME),
+                    ]}
+                    onChange={(name, value) => handleChange('updated', value)}
+                  />
+                </div>
               </div>
               <div className="button-row">
                 <div className="save-button">

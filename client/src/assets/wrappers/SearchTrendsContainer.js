@@ -120,12 +120,32 @@ const Container = styled.div`
   gap: 2px;
   grid-template-columns: minmax(200px, 1fr);
 }
+.indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+    background-color: var(--grey-400); /* Default color */
+  }
+
+  .indicator.active {
+    background-color: var(--green); /* Active color */
+  }
+
+  .indicator-container {
+    display: grid; /* Use grid layout */
+    grid-template-columns: auto 1fr; /* Indicator and selector */
+    align-items: center; /* Align items vertically */
+  }
 
 .button-row {
-  display: flex; /* Use flexbox for layout */ //HERE
-  margin-bottom: 1rem; /* Space above the buttons */
-  justify-content: flex-end; /* Align items to the right within the row */ //HERE
-  align-items: center; /* Center items vertically */
+  margin-top: 0.5rem;
+  display: flex; /* use flexbox for layout */ //HERE
+  justify-content: flex-end; /* align items to the right within the row */ //HERE
+  align-items: center; /* center items vertically */
+  @media (max-width: 1470px) {
+    margin-bottom: 1rem;
+  }
 }
 
 /* .button-row {
