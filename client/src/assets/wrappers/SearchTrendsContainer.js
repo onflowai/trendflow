@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
-  border-radius: var(--border-radius);
-  border: 1.5px solid var(--grey-50);
-  background: var(--white);
-
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  box-sizing: border-box;
-  width: 100%;
 
   .submit-container {
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--grey-50);
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    box-sizing: border-box;
+    width: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -42,21 +41,21 @@ const Container = styled.div`
 }
 /* STYLING FOR THE FILTER ICON WHEN CLOSED */
 .filter-toggle {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
+  border-radius: none;
+  border: none;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .filter-icon {
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, var(--primary-600), var(--primary-400));
-  border-radius: 50%;
+  background: linear-gradient(45deg, var(--primary-600), var(--primary2-400));
+  border-radius: var(--border-radius);
   padding: 10px;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
@@ -72,14 +71,15 @@ const Container = styled.div`
 
 .line {
   flex-grow: 1;
-  height: 2px;
-  background: var(--grey-500);
+  height: 1.5px;
+  background: var(--grey-50);
+  border: none;
 }
 
 .current-date {
   margin-left: 10px;
   font-size: 0.875rem;
-  color: var(--grey-700);
+  color: var(--grey-300);
 }
 
 /* STYLING FOR FILTER IN STICKY MODE */
