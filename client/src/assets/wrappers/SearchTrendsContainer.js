@@ -7,7 +7,7 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   box-sizing: border-box;
   width: 100%;
 
@@ -40,6 +40,68 @@ const Container = styled.div`
     grid-template-columns: 1fr;
   }
 }
+/* STYLING FOR THE FILTER ICON WHEN CLOSED */
+.filter-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, var(--primary-600), var(--primary-400));
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.filter-icon:hover {
+  background: linear-gradient(45deg, var(--primary-700), var(--primary-500));
+}
+
+.icon {
+  color: var(--white);
+}
+
+.line {
+  flex-grow: 1;
+  height: 2px;
+  background: var(--grey-500);
+}
+
+.current-date {
+  margin-left: 10px;
+  font-size: 0.875rem;
+  color: var(--grey-700);
+}
+
+/* STYLING FOR FILTER IN STICKY MODE */
+.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--white);
+    z-index: 1000;
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.1);
+    transition: margin-left 0.3s ease-in-out;
+  }
+  .shrink {
+    /* adjusting for the large sidebar */
+    @media (min-width: 992px) {
+    margin-left: 250px; 
+    width: calc(100% - 250px); /* adjust the width to be 100% minus the width of the sidebar */
+    /* transform: translateX(-250px);  */
+    }
+  }
+
 /* ACTION BUTTONS */
 .action-buttons {
   position: absolute;
@@ -53,24 +115,45 @@ const Container = styled.div`
   justify-content: flex-start;
 }
 
+.icon {
+  cursor: pointer;
+}
 .buttons {
   display: flex;
   gap: 10px;
 }
-.icon {
-  cursor: pointer;
-}
-.icon-collapse{
+
+/* ACTION BUTTONS HIGHLIGHTS */
+.icon-collapse {
   color: var(--primary2-600);
 }
-.icon-collapse.highlighted {
+
+.icon-collapse:hover {
   color: var(--primary-600); /* Highlight color on hover */
 }
-.icon-stick{
+
+.icon-sticky {
   color: var(--primary-600);
 }
-.icon-close{
-color: var(--grey-700);
+
+.icon-sticky:hover {
+  color: var(--primary-800); /* Highlight color on hover */
+}
+
+.icon-close {
+  color: var(--grey-700);
+}
+
+.icon-close:hover {
+  color: var(--red-dark); /* Highlight color on hover */
+}
+
+.icon-sidebar-toggle {
+  color: var(--primary-600);
+}
+
+.icon-sidebar-toggle:hover {
+  color: var(--primary-800); /* Highlight color on hover */
 }
 .checkbox-label{
   margin-bottom: 0.6rem;
@@ -231,6 +314,16 @@ color: var(--grey-700);
       }
     }
   }
+  /* .collapsed-group.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  z-index: 1000;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+} */
 
 `;
 
