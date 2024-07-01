@@ -84,12 +84,12 @@ function SearchTrendsLarge() {
       ...prev,
       [name]: prev[name] === value ? 'all' : value, // Toggle or set the value
     }));
+
     setIndicatorState((prev) => ({
       ...prev,
       [name]: value !== 'all', // Update indicator state
     }));
   };
-  console.log('filterValues : ', filterValues);
 
   // Function to update query parameters and navigate
   const updateQueryParams = () => {
@@ -98,9 +98,9 @@ function SearchTrendsLarge() {
     // Add all filter values to params if they are not empty and not 'all'
     Object.keys(filterValues).forEach((key) => {
       if (filterValues[key] && filterValues[key] !== 'all') {
-        params.set(key, filterValues[key]);
+        params.set(key === 'sort' ? 'sort' : key, filterValues[key]);
       } else {
-        params.delete(key); // remove the param if it's empty or 'all'
+        params.delete(key); // Remove the param if it's empty or 'all'
       }
     });
     // navigate to the new URL with updated query params
@@ -186,10 +186,8 @@ function SearchTrendsLarge() {
                     ].map((option) => (
                       <div key={option.value}>
                         <Checkbox
-                          checked={isChecked('topRated', option.value)}
-                          onChange={() =>
-                            handleChange('topRated', option.value)
-                          }
+                          checked={isChecked('sort', option.value)}
+                          onChange={() => handleChange('sort', option.value)}
                           label={option.label}
                         />
                         <p className="checkbox-description">
@@ -207,10 +205,8 @@ function SearchTrendsLarge() {
                     ].map((option) => (
                       <div key={option.value}>
                         <Checkbox
-                          checked={isChecked('topViewed', option.value)}
-                          onChange={() =>
-                            handleChange('topViewed', option.value)
-                          }
+                          checked={isChecked('sort', option.value)}
+                          onChange={() => handleChange('sort', option.value)}
                           label={option.label}
                         />
                         <p className="checkbox-description">
@@ -351,12 +347,12 @@ function SearchTrendsLarge() {
                     <div>
                       <Checkbox
                         checked={isChecked(
-                          'topRated',
+                          'topViewed',
                           SORT_OPTIONS.TOP_VIEWED_NOW.value
                         )}
                         onChange={() =>
                           handleChange(
-                            'topRated',
+                            'topViewed',
                             SORT_OPTIONS.TOP_VIEWED_NOW.value
                           )
                         }
@@ -392,19 +388,19 @@ function SearchTrendsLarge() {
                       <div className="indicator-container">
                         <div
                           className={`indicator ${
-                            indicatorState.trendCategory ? 'active' : ''
+                            indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
                         <FormSelectorIcon
-                          labelText="Choose Category:"
-                          name="trendCategory"
-                          defaultValue={filterValues.trendCategory}
+                          labelText="Choose Technology:"
+                          name="trendTech"
+                          defaultValue={filterValues.trendTech}
                           list={[
                             { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(TREND_CATEGORY),
+                            ...Object.values(TECHNOLOGIES),
                           ]}
                           onChange={(name, value) =>
-                            handleChange('trendCategory', value)
+                            handleChange('trendTech', value)
                           }
                         />
                       </div>

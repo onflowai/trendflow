@@ -1,11 +1,19 @@
 import { React, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
-import { LiaClock } from 'react-icons/lia';
-import { RiEdit2Fill } from 'react-icons/ri';
-import { FaSquareCheck } from 'react-icons/fa6';
-import { PiHashLight, PiEyeLight, PiTrendUp } from 'react-icons/pi'; //PiEyeThin
-import { IoIosCloseCircle } from 'react-icons/io';
+import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs'; //bookmark
+import { LiaClock } from 'react-icons/lia'; //updatedAt icon
+import { PiHashLight, PiEyeLight } from 'react-icons/pi'; //views icon
+//Status icons
+import { PiTrendUp, PiTrendDown } from 'react-icons/pi'; //trending icons, cool-off icons
+import {
+  HiOutlineArrowLongUp,
+  HiOutlineArrowLongRight,
+  HiOutlineArrowLongDown,
+} from 'react-icons/hi2'; //breakout icon, static icon, arrow down sublevel
+//Admin icons
+import { RiEdit2Fill } from 'react-icons/ri'; //edit button
+import { FaSquareCheck } from 'react-icons/fa6'; //approve trend button
+import { IoIosCloseCircle } from 'react-icons/io'; //delete
 import { MdDelete } from 'react-icons/md';
 import {
   TrendChartComponent,
@@ -65,6 +73,23 @@ function TrendLarge({
       setIsSaved(true); // Update isSaved state on successful save
     }
   };
+  //STATUS Icons
+  const getTrendIcon = (trendStatus) => {
+    switch (trendStatus) {
+      case 'breakout':
+        return <HiOutlineArrowLongUp />;
+      case 'trending':
+        return <PiTrendUp />;
+      case 'cool-off':
+        return <PiTrendDown />;
+      case 'static':
+        return <HiOutlineArrowLongRight />;
+      case 'sublevel':
+        return <HiOutlineArrowLongDown />;
+      default:
+        return null; // No icon for undefined and other cases
+    }
+  };
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
@@ -107,9 +132,7 @@ function TrendLarge({
                   </span>
                 </div>
                 <div className="info-section">
-                  <span className="icon">
-                    <PiTrendUp />
-                  </span>
+                  <span className="icon">{getTrendIcon(trendStatus)}</span>
                   <span className="trend-item">{trendStatus}</span>
                 </div>
                 <div className="info-section">

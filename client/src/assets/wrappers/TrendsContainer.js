@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.section`
-  margin-top: 2rem;
+  margin-top: 1rem;
   h2 {
     text-transform: none;
   }
@@ -11,7 +11,7 @@ const Container = styled.section`
   }
   .toggle-container, .toggle-container-large {
     display: none;
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
   }
   
   .view-btn, .grid-view-btn {
