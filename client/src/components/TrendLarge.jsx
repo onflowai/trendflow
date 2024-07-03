@@ -48,6 +48,7 @@ function TrendLarge({
   onSave,
   onRemove,
   savedTrends,
+  techIconUrl,
   createdBy,
   isApproved,
 }) {
@@ -125,6 +126,7 @@ function TrendLarge({
                 {/* Inline the icon and text presentation */}
                 <div className="info-section">
                   <span className="icon">
+                    {techIconUrl}
                     <PiHashLight />
                   </span>
                   <span className="trend-item">

@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
+import {
+  TREND_CATEGORY,
+  TECHNOLOGIES,
+  trendCategoryValues,
+  technologiesValues,
+} from '../utils/constants.js';
 import { generateSlug } from '../utils/slugUtils.js';
 //building the database schema
 /**
@@ -23,13 +28,13 @@ const TrendSchema = new mongoose.Schema(
     trend: String,
     trendCategory: {
       type: String,
-      enum: Object.values(TREND_CATEGORY),
-      default: TREND_CATEGORY.PROGRAMMING_LANGUAGES,
+      enum: trendCategoryValues,
+      default: TREND_CATEGORY.API_DEVELOPMENT_TOOLS.value,
     },
     trendTech: {
       type: String,
-      enum: Object.values(TECHNOLOGIES),
-      default: TECHNOLOGIES.JAVASCRIPT,
+      enum: technologiesValues,
+      default: TECHNOLOGIES.ADA.value,
     },
     createdBy: {
       type: mongoose.Types.ObjectId,
@@ -38,6 +43,10 @@ const TrendSchema = new mongoose.Schema(
     slug: {
       type: String,
       unique: true,
+      required: true,
+    },
+    techIconUrl: {
+      type: String,
       required: true,
     },
     views: {

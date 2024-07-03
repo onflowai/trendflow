@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   FormSelectorIcon,
   UserImgLarge,
@@ -8,15 +9,19 @@ import {
 } from '../components';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants';
+// import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
-
+/**
+ *
+ * @param {*} param0
+ * @returns
+ */
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  console.log(data);
+  console.log('Data which is being sent: ', data);
   try {
     await customFetch.post('/trends/submit', data);
     toast.success(
@@ -28,11 +33,29 @@ export const action = async ({ request }) => {
     return error;
   }
 };
-
 const AddTrend = () => {
   const { user } = useOutletContext(); //getting the user from DashboardLayout
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+
+  const [trendCategory, setTrendCategory] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
+  //fetching the icon data from the node server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await customFetch.get('trends/icon-data');
+        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+        setTrendCategory(Object.values(TREND_CATEGORY));
+        setTechnologies(Object.values(TECHNOLOGIES));
+      } catch (error) {
+        console.error('Error fetching trend data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(trendCategory);
   return (
     <Container>
       <div className="user-container clearfix">
@@ -60,16 +83,36 @@ const AddTrend = () => {
               <FormSelectorIcon
                 labelText="Choose Category:"
                 name="trendCategory"
-                defaultValue={TREND_CATEGORY.PROGRAMMING_LANGUAGES}
-                list={Object.values(TREND_CATEGORY)}
+                defaultValue={trendCategory}
+                list={trendCategory.map((cate) => ({
+                  ...cate,
+                  value: cate.value,
+                  label: cate.label,
+                  image: cate.image,
+                }))}
+                onChange={(name, value) => {
+                  document.getElementById('cateIconUrl').value = value
+                    ? value.image
+                    : '';
+                }}
               />
-              {console.log(Object.values(TREND_CATEGORY))}
               <FormSelectorIcon
                 labelText="Choose Technology:"
                 name="trendTech"
-                defaultValue={TECHNOLOGIES.ADA}
-                list={Object.values(TECHNOLOGIES)}
+                defaultValue={technologies} // Use the value key
+                list={technologies.map((tech) => ({
+                  ...tech,
+                  value: tech.value,
+                  label: tech.label,
+                  image: tech.image,
+                }))}
+                onChange={(name, value) => {
+                  document.getElementById('techIconUrl').value = value
+                    ? value.image
+                    : '';
+                }}
               />
+              <input type="hidden" id="techIconUrl" name="techIconUrl" />
               <button
                 type="submit"
                 className="btn btn-block form-btn"

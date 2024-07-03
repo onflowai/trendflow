@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
-import {
-  FaFire,
-  FaBolt,
-  FaSnowflake,
-  FaEquals,
-  FaArrowDown,
-} from 'react-icons/fa';
 /**
  * Component responsible for setting up selector programmatically
  * defaultValue = '' - defaultValue or a fallback of empty
@@ -15,34 +8,6 @@ import {
  * @param {*} param0
  * @returns
  */
-
-export const STATUS = {
-  TRENDING: {
-    value: 'trending',
-    label: 'Trending',
-    icon: <FaFire />,
-  },
-  BREAKOUT: {
-    value: 'breakout',
-    label: 'Breakout',
-    icon: <FaBolt />,
-  },
-  COOLOFF: {
-    value: 'coolOff',
-    label: 'Cool Off',
-    icon: <FaSnowflake />,
-  },
-  STATIC: {
-    value: 'static',
-    label: 'Static',
-    icon: <FaEquals />,
-  },
-  SUBLEVEL: {
-    value: 'sublevel',
-    label: 'Sublevel',
-    icon: <FaArrowDown />,
-  },
-};
 
 // CustomOption component for handling both images and icons
 const CustomOption = (props) => {
@@ -116,6 +81,7 @@ const FormSelectorIcon = ({
   // Function to handle changes in selection
   const handleChange = (option) => {
     setSelectedOption(option); // Update local state with the selected option
+    if (onChange) onChange(name, option);
     if (onChange) onChange(name, option ? option.value : ''); // Call the onChange prop with name and value or empty if cleared
   };
 

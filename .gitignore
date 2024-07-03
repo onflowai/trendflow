@@ -25,6 +25,9 @@ dist-ssr
 *.sw?
 .env
 
+#assests
+assets/
+
 #py_scripts
 py_scripts/
 

@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cloudinary from 'cloudinary';
+//
+import cors from 'cors';
 
 //routers
 import trendRouter from './routes/trendRouter.js';
@@ -39,6 +41,9 @@ if (process.env.NODE_ENV === 'development') {
   //HTTP request LOGGER middleware for Node calling dev
   app.use(morgan('dev'));
 }
+// Serve static files from the assets folder
+app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving static assets
+
 app.use(express.static(path.resolve(__dirname, './public'))); //
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
@@ -57,6 +62,12 @@ app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
 app.use('/api/v1/users', userRouter); //user routers
 
+// Set up CORS to allow requests from localhost:5173
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  })
+);
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given
 app.use('*', (req, res) => {

@@ -1,4 +1,5 @@
 import trendModel from '../models/trendModel.js';
+import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
@@ -263,6 +264,21 @@ export const getApprovedTrends = async (req, res) => {
       .json({ totalTrends, pagesNumber, currentPage: page, trends }); // Directly respond with the list of approved trends (could be an empty array)
   } catch (error) {
     // Handle any potential errors during the database query
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};
+
+export const getSelectIconData = (req, res) => {
+  try {
+    console.log('Request user:', req.user); // Log the user object
+    if (!req.user) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: 'User not authenticated' });
+    }
+    res.status(StatusCodes.OK).json({ TREND_CATEGORY, TECHNOLOGIES });
+  } catch (error) {
+    console.error('Error fetching icon data:', error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };

@@ -4,7 +4,12 @@ import {
   NotFoundError,
   UnauthenticatedError,
 } from '../errors/customErrors.js';
-import { TECHNOLOGIES, TREND_CATEGORY } from '../utils/constants.js';
+import {
+  TREND_CATEGORY,
+  TECHNOLOGIES,
+  trendCategoryValues,
+  technologiesValues,
+} from '../utils/constants.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
 import mongoose from 'mongoose';
@@ -52,11 +57,9 @@ const withValidationErrors = (validateValues) => {
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),
   body('trendCategory')
-    .isIn(Object.values(TREND_CATEGORY))
+    .isIn(trendCategoryValues)
     .withMessage('invalid trend category'),
-  body('trendTech')
-    .isIn(Object.values(TECHNOLOGIES))
-    .withMessage('invalid trend stack'),
+  body('trendTech').isIn(technologiesValues).withMessage('invalid trend stack'),
   body('role').not().exists().withMessage('Cannot change role'),
 ]);
 //Async trend ID validation set up as true and false with mongoose

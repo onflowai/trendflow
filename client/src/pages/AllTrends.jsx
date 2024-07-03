@@ -2,6 +2,7 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
+import { getFullIconUrl } from '../utils/urlHelper';
 import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
 /**
@@ -38,8 +39,13 @@ export const loader = async ({ request }) => {
     );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
     const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    const trendsTechIconUrl = trendsData.trends.map((trend) => ({
+      ...trend,
+      techIconUrl: getFullIconUrl(trend.techIconUrl),
+    })); // using utility function to prepend base URL to iconUrl with trends tech url for icon
+
     return {
-      trends: trendsData,
+      trends: { trends: trendsTechIconUrl },
       savedTrendIds,
       searchValues: { ...params },
     };
@@ -82,6 +88,10 @@ const AllTrends = () => {
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
+  // const techIconUrl = trends.trends.map((trend) => ({
+  //   ...trend,
+  //   iconUrl: `${API_BASE_URL}${trend.techIconUrl}`,
+  // })); // prepending base URL to iconUrl with trends tech url for icon
   return (
     <CombinedProvider value={{ trends, searchValues }}>
       <SearchTrends />

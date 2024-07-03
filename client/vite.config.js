@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
 /**
  * This is where configurations can be made like a proxy
  * Further Implementations:
@@ -18,6 +19,9 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
       },
     },
+  },
+  define: {
+    'process.env': {},
   },
   // build: {
   //   rollupOptions: {

@@ -11,6 +11,7 @@ import {
   createTrend,
   deleteTrend,
   editTrend,
+  getSelectIconData,
 } from '../controllers/trendController.js';
 import { adminStats } from '../controllers/visitController.js';
 import {
@@ -25,6 +26,7 @@ import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 /**
  *First, authenticate the user to determine their role
  */
+router.get('/icon-data', authenticateUser, getSelectIconData);
 router
   .route('/submit')
   .post(
