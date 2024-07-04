@@ -64,17 +64,12 @@ const AddTrend = () => {
           setDefaultTrendTech(technologiesList[0].value);
         }
       } catch (error) {
-        console.error('Error fetching trend data:', error);
+        console.error('Error fetching trend icon-data:', error);
       }
     };
 
     fetchData();
   }, []);
-  useEffect(() => {
-    console.log('Category Icon URL: ', cateIconUrl); // Debug statement
-    console.log('Technology Icon URL: ', techIconUrl); // Debug statement
-  }, [cateIconUrl, techIconUrl]);
-  console.log();
   return (
     <Container>
       <div className="user-container clearfix">

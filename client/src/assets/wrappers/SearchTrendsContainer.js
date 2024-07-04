@@ -89,7 +89,7 @@ const Container = styled.div`
     left: 0;
     width: 100%;
     background: var(--white);
-    z-index: 1000;
+    z-index: 100;
     box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.1);
     transition: margin-left 0.3s ease-in-out;
   }
@@ -111,6 +111,7 @@ const Container = styled.div`
   align-items: center;
   padding: 10px;
   background: var(--grey-50);
+  /* background: var(--primary2-50); */
   width: 100%;
   justify-content: flex-start;
 }
@@ -125,15 +126,15 @@ const Container = styled.div`
 
 /* ACTION BUTTONS HIGHLIGHTS */
 .icon-collapse {
-  color: var(--primary2-600);
+  color: var(--primary2-500);
 }
 
 .icon-collapse:hover {
-  color: var(--primary-600); /* Highlight color on hover */
+  color: var(--primary2-800); /* Highlight color on hover */
 }
 
 .icon-sticky {
-  color: var(--primary-600);
+  color: var(--primary-500);
 }
 
 .icon-sticky:hover {
@@ -141,7 +142,7 @@ const Container = styled.div`
 }
 
 .icon-close {
-  color: var(--grey-700);
+  color: var(--red);
 }
 
 .icon-close:hover {

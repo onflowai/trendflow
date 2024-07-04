@@ -26,16 +26,16 @@ html {
   --primary-800: #4a45da;
   --primary-900: #352fdc;
 
-  --primary2-50: #f9d3ee;
-  --primary2-100: #f7c3e7;
-  --primary2-200: #f8b4e3;
-  --primary2-300: #f1a5db;
-  --primary2-400: #ec8fd0;
-  --primary2-500: #e976c7;
-  --primary2-600: #e976b7;
-  --primary2-700: #e659bc;
-  --primary2-800: #e54db7;
-  --primary2-900: #ea41b7;
+  --primary2-50: #f6d1b8;
+  --primary2-100: #ffcead;
+  --primary2-200: #f8c5a2;
+  --primary2-300: #fab98e;
+  --primary2-400: #f5b285;
+  --primary2-500: #efab7d;
+  --primary2-600: #e8a374;
+  --primary2-700: #da9669;
+  --primary2-800: #d18f63;
+  --primary2-900: #cf7d47;
 
   --primary3-50: #fffae6;
   --primary3-100: #fdf5d4;
@@ -66,6 +66,7 @@ html {
   --black: #222;
   --white: #fff;
   --off-white: #fdfdfd;
+  --red: #f7606f;
   --red-light: #f8d7da;
   --red-dark: #a54f57;
   --green-light: #d1e7dd;

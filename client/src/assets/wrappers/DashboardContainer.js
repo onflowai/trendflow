@@ -9,7 +9,7 @@ const Container = styled.section`
   .dashboard-page {
     width: 90vw;
     margin: 0 auto;
-    padding: 1rem 0;
+    padding: 0rem 0;
   }
   @media (min-width: 992px) {
     .dashboard {

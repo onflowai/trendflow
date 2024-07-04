@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData, redirect } from 'react-router-dom';
 import {
   Trends,
@@ -50,7 +50,23 @@ export const loader = async ({ request }) => {
 //Approved Trends,  Total Trend Views, Submitted Trends, Total Site Trends
 const Admin = () => {
   const [loadingSlug, setLoadingSlug] = useState(null);
-
+  const [trendCategory, setTrendCategory] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
+  //fetching the icon data from the node server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await customFetch.get('trends/icon-data');
+        console.log('response here: ', response.data);
+        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+        setTrendCategory(Object.values(TREND_CATEGORY));
+        setTechnologies(Object.values(TECHNOLOGIES));
+      } catch (error) {
+        console.error('Error fetching trend icon-data:', error);
+      }
+    };
+    fetchData();
+  }, []);
   const approveTrend = async (slug) => {
     try {
       setLoadingSlug(slug); // start loading
@@ -118,7 +134,10 @@ const Admin = () => {
         <ChartAdminComponent data={charts} title="Stats:" />
       )}
       <CombinedProvider value={{ trends, searchValues }}>
-        <SearchTrends />
+        <SearchTrends
+          trendCategory={trendCategory}
+          technologies={technologies}
+        />
         <Trends
           trends={trends}
           onDelete={removeTrend}

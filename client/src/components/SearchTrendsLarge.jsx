@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, FormSelectorIconLocal, FormSelector } from '../components';
+import {
+  Checkbox,
+  FormSelectorIconLocal,
+  FormSelectorIcon,
+  FormSelector,
+} from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
 import { useDashboardContext } from '../pages/DashboardLayout';
@@ -24,16 +29,15 @@ import {
 } from '../utils/constants.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom'; // Use useNavigate instead of useSubmit
 /**
- * Search Trends Large is used in AllTrends & Admin Page. it is used to
+ * Search Trends Large is used in AllTrends & Admin Page. it is used to filter trends using query params which are fetched from
+ * frontend as well as backend
  * @returns
  */
-function SearchTrendsLarge() {
+function SearchTrendsLarge({ trendCategory, technologies }) {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
   const { showSidebar, toggleSidebar } = useDashboardContext();
-  console.log('showSidebar: ', showSidebar);
-  console.log('toggleSidebar: ', toggleSidebar);
   // state to track if the filter is collapsed
   const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false);
   // state to track if the collapsed group is sticky
@@ -79,10 +83,11 @@ function SearchTrendsLarge() {
   }, [filterValues]); // dependency array ensures the effect runs on filterValues change
 
   // Function to handle changes in dropdown and checkbox values
-  const handleChange = (name, value) => {
+  const handleChange = (name, option) => {
+    const value = option ? option.value : 'all';
     setFilterValues((prev) => ({
       ...prev,
-      [name]: prev[name] === value ? 'all' : value, // Toggle or set the value
+      [name]: value,
     }));
 
     setIndicatorState((prev) => ({
@@ -225,17 +230,15 @@ function SearchTrendsLarge() {
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIconLocal
+                        <FormSelectorIcon
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
                           list={[
                             { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(TREND_CATEGORY),
+                            ...trendCategory,
                           ]}
-                          onChange={(name, value) =>
-                            handleChange('trendCategory', value)
-                          }
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -246,17 +249,15 @@ function SearchTrendsLarge() {
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIconLocal
+                        <FormSelectorIcon
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
                           list={[
                             { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(TECHNOLOGIES),
+                            ...technologies,
                           ]}
-                          onChange={(name, value) =>
-                            handleChange('trendTech', value)
-                          }
+                          onChange={handleChange}
                         />
                       </div>
                     </div>

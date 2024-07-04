@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
@@ -17,11 +17,11 @@ import { CombinedProvider } from '../context/CombinedContext.jsx';
  * @returns {Object} data for trends, saved trends, and search values
  */
 export const loader = async ({ request }) => {
-  console.log('REQUEST URL ', request.url);
+  // console.log('REQUEST URL ', request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
-  console.log('params: ', params);
+  // console.log('params: ', params);
 
   // Parse the combined sort parameter into individual components
   if (params.sort) {
@@ -85,6 +85,22 @@ const onRemove = async (_id) => {
 };
 const AllTrends = () => {
   const { trends, savedTrendIds, error, searchValues } = useLoaderData();
+  const [trendCategory, setTrendCategory] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
+  //fetching the icon data from the node server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await customFetch.get('trends/icon-data');
+        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+        setTrendCategory(Object.values(TREND_CATEGORY));
+        setTechnologies(Object.values(TECHNOLOGIES));
+      } catch (error) {
+        console.error('Error fetching trend icon-data:', error);
+      }
+    };
+    fetchData();
+  }, []);
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
@@ -94,7 +110,7 @@ const AllTrends = () => {
   // })); // prepending base URL to iconUrl with trends tech url for icon
   return (
     <CombinedProvider value={{ trends, searchValues }}>
-      <SearchTrends />
+      <SearchTrends trendCategory={trendCategory} technologies={technologies} />
       <Trends
         trends={trends.trends}
         savedTrends={savedTrendIds}

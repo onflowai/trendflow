@@ -17,7 +17,7 @@ const Container = styled.aside`
     visibility: hidden;
   }
   .show-sidebar {
-    z-index: 99;
+    z-index: 101;
     opacity: 1;
     visibility: visible;
   }
