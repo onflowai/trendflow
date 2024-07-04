@@ -40,6 +40,11 @@ const AddTrend = () => {
 
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
+  const [defaultTrendCategory, setDefaultTrendCategory] = useState(null);
+  const [defaultTrendTech, setDefaultTrendTech] = useState(null);
+  const [techIconUrl, setTechIconUrl] = useState('');
+  const [cateIconUrl, setCateIconUrl] = useState('');
+
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +53,16 @@ const AddTrend = () => {
         const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
         setTrendCategory(Object.values(TREND_CATEGORY));
         setTechnologies(Object.values(TECHNOLOGIES));
+        const trendCategoryList = Object.values(TREND_CATEGORY);
+        const technologiesList = Object.values(TECHNOLOGIES);
+
+        if (trendCategoryList.length > 0) {
+          setDefaultTrendCategory(trendCategoryList[0].value);
+        }
+
+        if (technologiesList.length > 0) {
+          setDefaultTrendTech(technologiesList[0].value);
+        }
       } catch (error) {
         console.error('Error fetching trend data:', error);
       }
@@ -55,7 +70,11 @@ const AddTrend = () => {
 
     fetchData();
   }, []);
-  console.log(trendCategory);
+  useEffect(() => {
+    console.log('Category Icon URL: ', cateIconUrl); // Debug statement
+    console.log('Technology Icon URL: ', techIconUrl); // Debug statement
+  }, [cateIconUrl, techIconUrl]);
+  console.log();
   return (
     <Container>
       <div className="user-container clearfix">
@@ -83,7 +102,7 @@ const AddTrend = () => {
               <FormSelectorIcon
                 labelText="Choose Category:"
                 name="trendCategory"
-                defaultValue={trendCategory}
+                defaultValue={defaultTrendCategory}
                 list={trendCategory.map((cate) => ({
                   ...cate,
                   value: cate.value,
@@ -91,15 +110,19 @@ const AddTrend = () => {
                   image: cate.image,
                 }))}
                 onChange={(name, value) => {
-                  document.getElementById('cateIconUrl').value = value
-                    ? value.image
-                    : '';
+                  setCateIconUrl(value ? value.image : '');
                 }}
+              />
+              <input
+                type="hidden"
+                id="cateIconUrl"
+                name="cateIconUrl"
+                value={cateIconUrl || ''}
               />
               <FormSelectorIcon
                 labelText="Choose Technology:"
                 name="trendTech"
-                defaultValue={technologies} // Use the value key
+                defaultValue={defaultTrendTech}
                 list={technologies.map((tech) => ({
                   ...tech,
                   value: tech.value,
@@ -107,12 +130,15 @@ const AddTrend = () => {
                   image: tech.image,
                 }))}
                 onChange={(name, value) => {
-                  document.getElementById('techIconUrl').value = value
-                    ? value.image
-                    : '';
+                  setTechIconUrl(value ? value.image : '');
                 }}
               />
-              <input type="hidden" id="techIconUrl" name="techIconUrl" />
+              <input
+                type="hidden"
+                id="techIconUrl"
+                name="techIconUrl"
+                value={techIconUrl || ''}
+              />
               <button
                 type="submit"
                 className="btn btn-block form-btn"

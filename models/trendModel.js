@@ -49,6 +49,10 @@ const TrendSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    cateIconUrl: {
+      type: String,
+      required: true,
+    },
     views: {
       type: Number,
       default: 0,

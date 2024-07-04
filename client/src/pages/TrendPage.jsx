@@ -61,6 +61,8 @@ const TrendPage = () => {
     views,
     forecast,
     trendStatus,
+    techIconUrl,
+    cateIconUrl,
     createdBy,
   } = trendObject;
   const isMobile = useWindowSize();
@@ -82,13 +84,25 @@ const TrendPage = () => {
   const items = [
     {
       label: trendTech,
-      icon: <PiHashDuotone />,
+      icon: techIconUrl ? (
+        <img
+          src={techIconUrl}
+          alt="Technology Icon"
+          style={{ width: '20px' }}
+        />
+      ) : (
+        <PiHashDuotone />
+      ),
       link: '/dashboard',
       styled: true,
     },
     {
       label: trendCategory,
-      icon: <PiHashDuotone />,
+      icon: cateIconUrl ? (
+        <img src={cateIconUrl} alt="Category Icon" style={{ width: '20px' }} />
+      ) : (
+        <PiHashDuotone />
+      ),
       link: '/dashboard',
       styled: true,
     },

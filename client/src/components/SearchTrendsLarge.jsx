@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, FormSelectorIcon, FormSelector } from '../components';
+import { Checkbox, FormSelectorIconLocal, FormSelector } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
 import { useDashboardContext } from '../pages/DashboardLayout';
@@ -225,7 +225,7 @@ function SearchTrendsLarge() {
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconLocal
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
@@ -246,7 +246,7 @@ function SearchTrendsLarge() {
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconLocal
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
@@ -269,7 +269,7 @@ function SearchTrendsLarge() {
                             indicatorState.status ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconLocal
                           labelText="Status:"
                           name="status"
                           defaultValue={filterValues.status}
@@ -368,7 +368,7 @@ function SearchTrendsLarge() {
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconLocal
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
@@ -391,7 +391,7 @@ function SearchTrendsLarge() {
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconLocal
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
