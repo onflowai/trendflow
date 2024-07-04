@@ -89,6 +89,7 @@ const Container = styled.article`
     font-size: 0.8rem;
   }
   .icon-tech{
+    margin-left: 0.2rem;
     align-items: center;
     display: flex;
     gap: 0.1rem;

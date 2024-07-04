@@ -33,6 +33,7 @@ function TrendSmall({
   onSave,
   onRemove,
   savedTrends,
+  techIconUrl,
   flashChart,
   updatedAt,
   isLoading,
@@ -100,8 +101,16 @@ function TrendSmall({
               <span className="info-item">
                 {!isAdminPage ? (
                   <span className="icon-tech">
-                    <PiHashLight />
-                    {trendTech.split(' ').slice(0, 2).join(' ')}
+                    {techIconUrl === 'undefined' ? (
+                      <PiHashLight />
+                    ) : (
+                      <img
+                        src={techIconUrl}
+                        alt="Technology Icon"
+                        style={{ width: '20px', marginRight: '10px' }}
+                      />
+                    )}
+                    <h5>{trendTech.split(' ').slice(0, 2).join(' ')}</h5>
                   </span>
                 ) : (
                   <span></span>

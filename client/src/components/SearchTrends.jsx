@@ -6,7 +6,7 @@ import styled from 'styled-components';
  * @param {*} param0
  * @returns
  */
-function Trend({ trendCategory, technologies }) {
+function Trend({ trendCategory, technologies, isClosed, setIsClosed }) {
   const isLargeScreen = window.matchMedia('(min-width: 499px)').matches; // using media query hook to determine the screen size
   return (
     <Container>
@@ -14,6 +14,8 @@ function Trend({ trendCategory, technologies }) {
         <SearchTrendsLarge
           trendCategory={trendCategory}
           technologies={technologies}
+          isClosed={isClosed}
+          setIsClosed={setIsClosed}
         />
       ) : (
         <SearchTrendsSmall />

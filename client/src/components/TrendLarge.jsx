@@ -2,7 +2,8 @@ import { React, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs'; //bookmark
 import { LiaClock } from 'react-icons/lia'; //updatedAt icon
-import { PiHashLight, PiEyeLight } from 'react-icons/pi'; //views icon
+import { MdCategory } from 'react-icons/md';
+import { PiHashLight, PiEyeLight } from 'react-icons/pi'; //views icon & fallback icon
 //Status icons
 import { PiTrendUp, PiTrendDown } from 'react-icons/pi'; //trending icons, cool-off icons
 import {
@@ -49,6 +50,7 @@ function TrendLarge({
   onRemove,
   savedTrends,
   techIconUrl,
+  cateIconUrl,
   createdBy,
   isApproved,
 }) {
@@ -111,7 +113,31 @@ function TrendLarge({
               <h3 className="mono-heading-bold">
                 {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
               </h3>
-              <h6 className="mono-heading">{trendCategory}</h6>
+              <div
+                className="category-container"
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                {cateIconUrl === 'undefined' || !cateIconUrl ? (
+                  <MdCategory
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      marginRight: '5px',
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={cateIconUrl}
+                    alt="Category Icon"
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      marginRight: '5px',
+                    }}
+                  />
+                )}
+                <h6 className="mono-heading">{trendCategory}</h6>
+              </div>
             </div>
             <div className="description-container">
               <h5 className="description">

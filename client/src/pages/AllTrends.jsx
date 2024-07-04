@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Trends, SearchTrends, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
+import useLocalStorage from '../hooks/useLocalStorage';
 import { getFullIconUrl } from '../utils/urlHelper';
 import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
@@ -86,21 +87,26 @@ const onRemove = async (_id) => {
 const AllTrends = () => {
   const { trends, savedTrendIds, error, searchValues } = useLoaderData();
   const [trendCategory, setTrendCategory] = useState([]);
+  console.log('trendCategory :', trendCategory);
   const [technologies, setTechnologies] = useState([]);
+  const [isClosed, setIsClosed] = useLocalStorage('isClosed', false); // State to track if the filter is closed in SearchTrends
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await customFetch.get('trends/icon-data');
-        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
-        setTrendCategory(Object.values(TREND_CATEGORY));
-        setTechnologies(Object.values(TECHNOLOGIES));
-      } catch (error) {
-        console.error('Error fetching trend icon-data:', error);
+      if (!isClosed) {
+        try {
+          const response = await customFetch.get('trends/icon-data');
+          const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+          setTrendCategory(Object.values(TREND_CATEGORY));
+          setTechnologies(Object.values(TECHNOLOGIES));
+        } catch (error) {
+          console.error('Error fetching trend icon-data:', error);
+        }
       }
     };
+
     fetchData();
-  }, []);
+  }, [isClosed]);
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
@@ -110,7 +116,12 @@ const AllTrends = () => {
   // })); // prepending base URL to iconUrl with trends tech url for icon
   return (
     <CombinedProvider value={{ trends, searchValues }}>
-      <SearchTrends trendCategory={trendCategory} technologies={technologies} />
+      <SearchTrends
+        trendCategory={trendCategory}
+        technologies={technologies}
+        isClosed={isClosed}
+        setIsClosed={setIsClosed}
+      />
       <Trends
         trends={trends.trends}
         savedTrends={savedTrendIds}

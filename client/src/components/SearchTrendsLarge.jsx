@@ -33,7 +33,12 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'; // Use useNav
  * frontend as well as backend
  * @returns
  */
-function SearchTrendsLarge({ trendCategory, technologies }) {
+function SearchTrendsLarge({
+  trendCategory,
+  technologies,
+  isClosed,
+  setIsClosed,
+}) {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
@@ -45,7 +50,7 @@ function SearchTrendsLarge({ trendCategory, technologies }) {
   //change for side bar button
   const [isArrowBack, setIsArrowBack] = useLocalStorage('isArrowBack', true);
   //state to track if the filter is closed
-  const [isClosed, setIsClosed] = useLocalStorage('isClosed', false);
+  // const [isClosed, setIsClosed] = useLocalStorage('isClosed', false);
   const handleToggleSidebar = () => {
     toggleSidebar(); // Existing toggle function
     setIsArrowBack(!isArrowBack); // Toggle the arrow state

@@ -44,6 +44,7 @@ function Trend({
   onRemove,
   savedTrends,
   techIconUrl,
+  cateIconUrl,
   onDelete,
   createdAt,
   createdBy,
@@ -84,6 +85,7 @@ function Trend({
     onRemove,
     savedTrends,
     techIconUrl,
+    cateIconUrl,
     createdAt,
     createdBy,
     isApproved,
@@ -100,6 +102,7 @@ function Trend({
     onSave,
     onRemove,
     savedTrends,
+    techIconUrl,
     flashChart,
     updatedAt,
     isLoading,
@@ -110,7 +113,6 @@ function Trend({
     isGridView,
     trendDesc,
   };
-  console.log('ICON URL HERE: ', techIconUrl);
 
   return (
     <Container>

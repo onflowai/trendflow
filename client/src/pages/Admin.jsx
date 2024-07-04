@@ -7,6 +7,7 @@ import {
   StatComponent,
   ChartAdminComponent,
 } from '../components';
+import useLocalStorage from '../hooks/useLocalStorage';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/AdminContainer';
@@ -52,21 +53,23 @@ const Admin = () => {
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
+  const [isClosed, setIsClosed] = useLocalStorage('isClosed', false); // State to track if the filter is closed in SearchTrends
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await customFetch.get('trends/icon-data');
-        console.log('response here: ', response.data);
-        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
-        setTrendCategory(Object.values(TREND_CATEGORY));
-        setTechnologies(Object.values(TECHNOLOGIES));
-      } catch (error) {
-        console.error('Error fetching trend icon-data:', error);
+      if (!isClosed) {
+        try {
+          const response = await customFetch.get('trends/icon-data');
+          const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+          setTrendCategory(Object.values(TREND_CATEGORY));
+          setTechnologies(Object.values(TECHNOLOGIES));
+        } catch (error) {
+          console.error('Error fetching trend icon-data:', error);
+        }
       }
     };
     fetchData();
-  }, []);
+  }, [isClosed]);
   const approveTrend = async (slug) => {
     try {
       setLoadingSlug(slug); // start loading
@@ -137,6 +140,8 @@ const Admin = () => {
         <SearchTrends
           trendCategory={trendCategory}
           technologies={technologies}
+          isClosed={isClosed}
+          setIsClosed={setIsClosed}
         />
         <Trends
           trends={trends}
