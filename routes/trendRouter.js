@@ -21,6 +21,7 @@ import {
 import {
   authenticateUser,
   authorizedPermissions,
+  authorizedAdmin,
 } from '../middleware/authMiddleware.js';
 import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 /**
@@ -54,13 +55,15 @@ router
   .get(validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
-    authorizedPermissions('write'),
+    authorizedAdmin,
+    authorizedPermissions('delete'),
     validateTrendInput,
     validateSlugParam,
     editTrend
   )
   .delete(
     authenticateUser,
+    authorizedAdmin,
     authorizedPermissions('delete'),
     validateSlugParam,
     deleteTrend

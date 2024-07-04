@@ -50,6 +50,14 @@ export const authorizedPermissions = (requiredPermission) => {
     next();
   };
 };
+export const authorizedAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    throw new UnauthorizedError(
+      'Unauthorized to access this resource, admin only!'
+    );
+  }
+  next();
+};
 
 // export const authenticateUser = (req, res, next) => {
 //   // console.log('token: ', req.cookies);

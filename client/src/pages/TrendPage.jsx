@@ -72,12 +72,16 @@ const TrendPage = () => {
   console.log('TREND USE: ', trendUse);
   console.log('TREND BLOG: ', generatedBlogPost);
   console.log('FORECAST IN TREND PAGE: ', forecast);
-  const { setSidebarVisibility } = useDashboardContext();
+  const dashboardContext = useDashboardContext();
+  const setSidebarVisibility = dashboardContext?.setSidebarVisibility; // Fallback
+
   useEffect(() => {
-    setSidebarVisibility(!isMobile); // opens sidebar on initial component mount
-    return () => {
-      setSidebarVisibility(false); // reset on component unmount if desired
-    };
+    if (setSidebarVisibility) {
+      setSidebarVisibility(!isMobile); // opens sidebar on initial component mount
+      return () => {
+        setSidebarVisibility(false); // reset on component unmount if desired
+      };
+    }
   }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
   var boys = undefined;
   //list of items used in the row under the chart takes on label, icon, and link and styling

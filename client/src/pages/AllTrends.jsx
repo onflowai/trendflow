@@ -89,7 +89,7 @@ const AllTrends = () => {
   const [trendCategory, setTrendCategory] = useState([]);
   console.log('trendCategory :', trendCategory);
   const [technologies, setTechnologies] = useState([]);
-  const [isClosed, setIsClosed] = useLocalStorage('isClosed', false); // State to track if the filter is closed in SearchTrends
+  const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {

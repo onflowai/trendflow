@@ -53,7 +53,7 @@ const Admin = () => {
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
-  const [isClosed, setIsClosed] = useLocalStorage('isClosed', false); // State to track if the filter is closed in SearchTrends
+  const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
@@ -138,6 +138,7 @@ const Admin = () => {
       )}
       <CombinedProvider value={{ trends, searchValues }}>
         <SearchTrends
+          isAdminPage={isAdminPage}
           trendCategory={trendCategory}
           technologies={technologies}
           isClosed={isClosed}

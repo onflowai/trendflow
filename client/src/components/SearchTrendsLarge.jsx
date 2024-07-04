@@ -24,6 +24,7 @@ import {
   TREND_CATEGORY,
   TECHNOLOGIES,
   STATUS,
+  ADMIN_STATUS,
   SORT_OPTIONS,
   TIME,
 } from '../utils/constants.js';
@@ -38,6 +39,7 @@ function SearchTrendsLarge({
   technologies,
   isClosed,
   setIsClosed,
+  isAdminPage,
 }) {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
@@ -275,18 +277,33 @@ function SearchTrendsLarge({
                             indicatorState.status ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIconLocal
-                          labelText="Status:"
-                          name="status"
-                          defaultValue={filterValues.status}
-                          list={[
-                            { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(STATUS),
-                          ]}
-                          onChange={(name, value) =>
-                            handleChange('status', value)
-                          }
-                        />
+                        {isAdminPage ? (
+                          <FormSelectorIconLocal
+                            labelText="Status:"
+                            name="status"
+                            defaultValue={filterValues.status}
+                            list={[
+                              { value: 'all', label: 'All', icon: FaInfinity },
+                              ...Object.values(ADMIN_STATUS),
+                            ]}
+                            onChange={(name, value) =>
+                              handleChange('status', value)
+                            }
+                          />
+                        ) : (
+                          <FormSelectorIconLocal
+                            labelText="Status:"
+                            name="status"
+                            defaultValue={filterValues.status}
+                            list={[
+                              { value: 'all', label: 'All', icon: FaInfinity },
+                              ...Object.values(STATUS),
+                            ]}
+                            onChange={(name, value) =>
+                              handleChange('status', value)
+                            }
+                          />
+                        )}
                       </div>
                     </div>
                     <div className="select">

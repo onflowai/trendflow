@@ -18,6 +18,11 @@ import customFetch from '../utils/customFetch';
 //Fetching the trend data
 export const loader = async ({ params }) => {
   try {
+    const user = JSON.parse(localStorage.getItem('user')); // user info is stored in local storage
+    if (!user || user.role !== 'admin') {
+      toast.error('Unauthorized access!');
+      return redirect('/dashboard');
+    }
     const { data } = await customFetch.get(`/trends/edit/${params.slug}`);
     return data;
   } catch (error) {

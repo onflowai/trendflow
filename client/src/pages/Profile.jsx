@@ -66,7 +66,8 @@ const Profile = () => {
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   console.log('trends in PROFILE: ', trends);
   const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
-  const { updateUserImage } = useDashboardContext(); //DashboardContext (the reason why both used is for farther consistency when more features will be added)
+  const dashboardContext = useDashboardContext();
+  const updateUserImage = dashboardContext?.updateUserImage; //DashboardContext (the reason why both used is for farther consistency when more features will be added)
   const { updateUserImage: updateUserImageGlobal } = useUser(); // UserContext (the reason why both used is for farther consistency when more features will be added)
   console.log('PROFILE: ', user.savedTrends);
   const { username, name, lastName, email } = user;

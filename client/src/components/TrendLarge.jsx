@@ -152,13 +152,21 @@ function TrendLarge({
                 {/* Inline the icon and text presentation */}
                 <div className="info-section">
                   <span className="icon">
-                    {techIconUrl === 'undefined' ? (
-                      <PiHashLight />
+                    {techIconUrl === 'undefined' || !techIconUrl ? (
+                      <PiHashLight
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                        }}
+                      />
                     ) : (
                       <img
                         src={techIconUrl}
-                        alt="Technology Icon"
-                        style={{ width: '20px', marginRight: '10px' }}
+                        alt="Category Icon"
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                        }}
                       />
                     )}
                   </span>
