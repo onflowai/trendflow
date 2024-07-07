@@ -26,7 +26,7 @@ dist-ssr
 .env
 
 #assests
-assets/
+/assets
 
 #py_scripts
 py_scripts/

@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
   FormSelector,
+  DangerousHTML,
   FallbackChart,
   FormComponent,
   CustomErrorToast,
   CustomSuccessToast,
+  ScrollSpyComponent,
+  ContentBoxHighlighted,
 } from '../components';
-import { RiEdit2Fill } from 'react-icons/ri';
+import { MdEdit } from 'react-icons/md';
 import { useUser } from '../context/UserContext'; // importing UserContext
 import { useOutletContext } from 'react-router-dom';
 import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/EditTrendContainer';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 // import Container from '../assets/wrappers/TrendPageContainer';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants';
+import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants'; //this is a problem, need to fetch this instead of importing
+import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
 import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
@@ -75,13 +79,14 @@ const EditTrend = () => {
   return (
     <Container>
       <div className="trend-page-container">
+        <div id="section1"></div>
         <div className="page-layout">
-          <div id="section1" className="trend">
+          <div className="trend">
             <Form method="post" className="">
               <div className="form-center">
                 <div className="edit-trend-content">
                   <div className="edit-trend">
-                    <RiEdit2Fill className="trend-edit-icon" />
+                    <MdEdit className="trend-edit-icon" />
                     <FormComponent
                       type="text"
                       defaultValue={trendObject.trend}
@@ -95,7 +100,7 @@ const EditTrend = () => {
                       {new Date().getFullYear()}
                       <div className="circle"></div>
                       <div>
-                        <h5>Forecast</h5>
+                        <p>Forecast</p>
                       </div>
                       <FormSelector
                         name="timePeriod"
@@ -109,22 +114,28 @@ const EditTrend = () => {
                 <div className="content">
                   <div className="content-selectors">
                     <div className="selector">
-                      <RiEdit2Fill className="edit-icon" />
-                      <FormSelector
-                        name="trendCategory"
-                        defaultValue={trendObject.trendCategory}
-                        list={Object.values(TREND_CATEGORY)}
-                      />
+                      <MdEdit className="edit-icon" />
+                      <div className="form-selector">
+                        <FormSelector
+                          className="form-selector"
+                          name="trendCategory"
+                          defaultValue={trendObject.trendCategory}
+                          list={Object.values(TREND_CATEGORY)}
+                        />
+                      </div>
                     </div>
                     <div className="selector">
-                      <RiEdit2Fill className="edit-icon" />
-                      <FormSelector
-                        name="trendTech"
-                        defaultValue={trendObject.trendTech}
-                        list={Object.values(TECHNOLOGIES)}
-                      />
+                      <MdEdit className="edit-icon" />
+                      <div className="form-selector">
+                        <FormSelector
+                          name="trendTech"
+                          defaultValue={trendObject.trendTech}
+                          list={Object.values(TECHNOLOGIES)}
+                        />
+                      </div>
                     </div>
                   </div>
+                  <div id="section2"></div>
                   <div className="form-actions">
                     <div className="submit-btn">
                       <button
@@ -137,6 +148,13 @@ const EditTrend = () => {
                       </button>
                     </div>
                   </div>
+                  <div className="trend-use-container">
+                    <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
+                  </div>
+                  <div className="trend-blog-post">
+                    <DangerousHTML html={EDIT_PAGE_POST} />
+                  </div>
+                  <div id="section3"></div>
                 </div>
                 <div className="form-actions">
                   <div className="delete-btn">
@@ -151,8 +169,15 @@ const EditTrend = () => {
                 </div>
               </div>
             </Form>
-            <div id="section2"></div>
           </div>
+          <aside className="scroll-spy-sidebar-aside">
+            <div className="scroll-spy-sidebar">
+              <ScrollSpyComponent
+                sectionIds={['section1', 'section2', 'section3']}
+              />
+              <div></div>
+            </div>
+          </aside>
         </div>
       </div>
     </Container>

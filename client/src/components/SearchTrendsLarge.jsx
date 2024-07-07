@@ -21,8 +21,6 @@ import {
   AiFillUpCircle,
 } from 'react-icons/ai';
 import {
-  TREND_CATEGORY,
-  TECHNOLOGIES,
   STATUS,
   ADMIN_STATUS,
   SORT_OPTIONS,
@@ -391,17 +389,15 @@ function SearchTrendsLarge({
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIconLocal
+                        <FormSelectorIcon
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
                           list={[
                             { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(TREND_CATEGORY),
+                            ...trendCategory,
                           ]}
-                          onChange={(name, value) =>
-                            handleChange('trendCategory', value)
-                          }
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -414,17 +410,15 @@ function SearchTrendsLarge({
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIconLocal
+                        <FormSelectorIcon
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
                           list={[
                             { value: 'all', label: 'All', icon: FaInfinity },
-                            ...Object.values(TECHNOLOGIES),
+                            ...technologies,
                           ]}
-                          onChange={(name, value) =>
-                            handleChange('trendTech', value)
-                          }
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
