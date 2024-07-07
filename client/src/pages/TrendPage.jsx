@@ -67,11 +67,6 @@ const TrendPage = () => {
   } = trendObject;
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
-  console.log('USER: ', createdBy);
-  console.log('OBJECT: ', trendObject);
-  console.log('TREND USE: ', trendUse);
-  console.log('TREND BLOG: ', generatedBlogPost);
-  console.log('FORECAST IN TREND PAGE: ', forecast);
   const dashboardContext = useDashboardContext();
   const setSidebarVisibility = dashboardContext?.setSidebarVisibility; // Fallback
 
