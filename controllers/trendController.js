@@ -4,6 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
+import { cloudinary2 } from '../config/cloudinary.js'; //using dif set of credentials
+import fs from 'fs/promises'; //allows to remove the image
 import {
   constructSortKey,
   constructQueryObject,
@@ -288,5 +290,35 @@ export const uploadTrendSVG = async (req, res) => {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: 'No file uploaded' });
+  }
+  try {
+    const response = await cloudinary2.uploader.upload(req.file.path, {
+      folder: 'trend_svgs',
+    });
+    await fs.unlink(req.file.path);
+    const sanitizedSlug = sanitizeHTML(req.params.slug);
+    const currentTrend = await trendModel.findOne({ slug: sanitizedSlug });
+    if (!currentTrend) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+    }
+    const updatedTrend = await trendModel.findByIdAndUpdate(
+      currentTrend._id,
+      { svg_url: response.secure_url, svg_public_id: response.public_id },
+      { new: true }
+    );
+    if (
+      currentTrend.svg_public_id &&
+      currentTrend.svg_public_id !== response.public_id
+    ) {
+      await cloudinary2.uploader.destroy(currentTrend.svg_public_id);
+    }
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'SVG uploaded successfully', trend: updatedTrend });
+  } catch (error) {
+    console.error('Error uploading SVG:', error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: 'SVG upload failed' });
   }
 };

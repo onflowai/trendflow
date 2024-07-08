@@ -4,7 +4,8 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import cloudinary from 'cloudinary';
+// import { cloudinary, cloudinary2 } from './config/cloudinary.js';
+// import cloudinary from 'cloudinary';
 //
 import cors from 'cors';
 
@@ -21,18 +22,18 @@ import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 //setting up access to .env
 dotenv.config();
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
-const cloudinary2 = cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME_2,
-  api_key: process.env.CLOUD_API_KEY_2,
-  api_secret: process.env.CLOUD_API_SECRET_2,
-});
+// cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME,
+//   api_key: process.env.CLOUD_API_KEY,
+//   api_secret: process.env.CLOUD_API_SECRET,
+// });
+// const cloudinary2 = cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME_2,
+//   api_key: process.env.CLOUD_API_KEY_2,
+//   api_secret: process.env.CLOUD_API_SECRET_2,
+// });
 
-export { cloudinary, cloudinary2 };
+// export { cloudinary, cloudinary2 };
 
 //public (for public assets and complete frontend build folder developed in client ES6 modules using ESM syntax)
 import { dirname } from 'path'; //__dirname and __filename, which are readily available in CommonJS modules
