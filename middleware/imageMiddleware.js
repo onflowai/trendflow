@@ -34,4 +34,24 @@ const processImage = async (req, res, next) => {
   next(); // Proceed to the next middleware
 };
 
-export { uploadMulter, processImage };
+const processSVG = async (req, res, next) => {
+  if (req.file) {
+    try {
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const targetDir = path.join(__dirname, '..', 'public', 'uploads');
+      const targetPath = path.join(targetDir, filename);
+
+      // Save the file to the target path
+      await fs.writeFile(targetPath, req.file.buffer);
+
+      // Update req.file to reflect the path of the processed SVG
+      req.file.path = targetPath;
+      req.file.filename = filename;
+    } catch (error) {
+      return next(error); // Pass errors to Express
+    }
+  }
+  next(); // Proceed to the next middleware
+};
+
+export { uploadMulter, processImage, processSVG };

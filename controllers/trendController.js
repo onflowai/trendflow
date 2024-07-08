@@ -282,3 +282,11 @@ export const getSelectIconData = (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
+
+export const uploadTrendSVG = async (req, res) => {
+  if (!req.file) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'No file uploaded' });
+  }
+};

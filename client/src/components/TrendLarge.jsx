@@ -61,7 +61,11 @@ function TrendLarge({
   const navigate = useNavigate(); // Use navigate for navigation
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id)); // checking if the current trend is saved
   const navigateToTrend = () => {
-    navigate(`/dashboard/trend/${slug}`);
+    if (isAdminPage && !isApproved) {
+      navigate(`/dashboard/edit-trend/${slug}`);
+    } else {
+      navigate(`/dashboard/trend/${slug}`);
+    }
   };
   const handleInnerClick = (event) => {
     event.stopPropagation(); // stops the click from reaching the container

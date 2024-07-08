@@ -26,6 +26,13 @@ cloudinary.config({
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
 });
+const cloudinary2 = cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME_2,
+  api_key: process.env.CLOUD_API_KEY_2,
+  api_secret: process.env.CLOUD_API_SECRET_2,
+});
+
+export { cloudinary, cloudinary2 };
 
 //public (for public assets and complete frontend build folder developed in client ES6 modules using ESM syntax)
 import { dirname } from 'path'; //__dirname and __filename, which are readily available in CommonJS modules

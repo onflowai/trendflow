@@ -2,16 +2,17 @@ import { Router } from 'express';
 //Instantiating the Router
 const router = Router();
 import {
-  getApprovedTrends,
-  approveTrend,
+  editTrend,
   submitTrend,
-  getAllTrends,
-  getUserTrends,
-  getSingleTrend,
   createTrend,
   deleteTrend,
-  editTrend,
+  getAllTrends,
+  approveTrend,
+  getUserTrends,
+  getSingleTrend,
+  uploadTrendSVG,
   getSelectIconData,
+  getApprovedTrends,
 } from '../controllers/trendController.js';
 import { adminStats } from '../controllers/visitController.js';
 import {
@@ -24,9 +25,18 @@ import {
   authorizedAdmin,
 } from '../middleware/authMiddleware.js';
 import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
+import { uploadMulter, processSVG } from '../middleware/imageMiddleware.js';
 /**
  *First, authenticate the user to determine their role
  */
+router.patch(
+  '/upload-trend-svg/:slug',
+  authenticateUser,
+  authorizedPermissions('write'),
+  uploadMulter.single('file'), // Handle file upload
+  processSVG, // Middleware to handle SVG file
+  uploadTrendSVG // Controller function to handle SVG upload
+);
 router.get('/icon-data', authenticateUser, getSelectIconData);
 router
   .route('/submit')
