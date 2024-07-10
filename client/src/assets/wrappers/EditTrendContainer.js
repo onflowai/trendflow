@@ -24,6 +24,33 @@ border-radius: var(--border-radius); // set border radius
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
   }
+  .svg-upload-label {
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+}
+
+.svg-upload-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.svg-upload-input {
+  display: none;
+}
+
+.svg-upload-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.svg-upload-button:hover {
+  background-color: #0056b3;
+}
 
   .edit-icon {
     margin-bottom: 1rem;

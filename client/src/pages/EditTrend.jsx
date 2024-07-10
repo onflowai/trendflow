@@ -15,6 +15,7 @@ import { useOutletContext } from 'react-router-dom';
 import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/EditTrendContainer';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
+import { PiFileSvgFill } from 'react-icons/pi';
 // import Container from '../assets/wrappers/TrendPageContainer';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants'; //this is a problem, need to fetch this instead of importing
 import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
@@ -65,6 +66,35 @@ const EditTrend = () => {
   const navigate = useNavigate();
   const navigation = useLoaderData();
   const isSubmitting = navigation.state === 'submitting';
+  const [svgFile, setSvgFile] = useState(null);
+
+  const handleSVGUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await customFetch.patch(
+        `/trends/upload-trend-svg/${trendObject.slug}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      toast.success('SVG uploaded successfully');
+    } catch (error) {
+      toast.error('SVG upload failed');
+    }
+  };
+
+  const handleSVGChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSvgFile(file);
+      handleSVGUpload(file);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -86,6 +116,19 @@ const EditTrend = () => {
               <div className="form-center">
                 <div className="edit-trend-content">
                   <div className="edit-trend">
+                    <MdEdit className="trend-edit-icon" />
+                    <div className="add-svg">
+                      <label htmlFor="svgFile" className="svg-upload-label">
+                        <PiFileSvgFill className="svg-upload-icon" />
+                        <input
+                          type="file"
+                          id="svgFile"
+                          accept=".svg"
+                          onChange={handleSVGChange}
+                          className="svg-upload-input"
+                        />
+                      </label>
+                    </div>
                     <MdEdit className="trend-edit-icon" />
                     <FormComponent
                       type="text"

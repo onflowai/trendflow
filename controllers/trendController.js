@@ -199,9 +199,8 @@ export const approveTrend = async (req, res) => {
   }
 }; //end APPROVE TREND
 
-//GET APPROVED TRENDS
 /**
- *
+ * GET APPROVED TRENDS returns trends & sorts them according to the filter 'sort'
  * @param {*} req
  * @param {*} res
  */
@@ -269,7 +268,12 @@ export const getApprovedTrends = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
-
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const getSelectIconData = (req, res) => {
   try {
     console.log('Request user:', req.user); // Log the user object
@@ -284,7 +288,12 @@ export const getSelectIconData = (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
-
+/**
+ * UPLOAD TREND SVG is responsible for allow admin to upload/modify svg belonging to a trend before and after approval
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const uploadTrendSVG = async (req, res) => {
   if (!req.file) {
     return res
@@ -294,27 +303,34 @@ export const uploadTrendSVG = async (req, res) => {
   try {
     const response = await cloudinary2.uploader.upload(req.file.path, {
       folder: 'trend_svgs',
-    });
-    await fs.unlink(req.file.path);
+    }); // upload new SVG to Cloudinary
+    await fs.unlink(req.file.path); // deleting the temporary local file after upload
     const sanitizedSlug = sanitizeHTML(req.params.slug);
     const currentTrend = await trendModel.findOne({ slug: sanitizedSlug });
     if (!currentTrend) {
       return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
     }
-    const updatedTrend = await trendModel.findByIdAndUpdate(
+    const updatedTrend = {
+      svg_url: response.secure_url, // updating trend object with the URL and ID of the uploaded SVG
+      svg_public_id: response.public_id, // public_id used for future reference or deletion
+    };
+    const trend = await trendModel.findByIdAndUpdate(
       currentTrend._id,
-      { svg_url: response.secure_url, svg_public_id: response.public_id },
+      updatedTrend,
       { new: true }
     );
+    if (!trend) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+    }
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'SVG uploaded successfully', trend });
     if (
       currentTrend.svg_public_id &&
       currentTrend.svg_public_id !== response.public_id
     ) {
       await cloudinary2.uploader.destroy(currentTrend.svg_public_id);
-    }
-    res
-      .status(StatusCodes.OK)
-      .json({ msg: 'SVG uploaded successfully', trend: updatedTrend });
+    } // delete old SVG from Cloudinary if it exists and is different from the new one
   } catch (error) {
     console.error('Error uploading SVG:', error);
     res
