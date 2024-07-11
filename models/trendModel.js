@@ -45,6 +45,8 @@ const TrendSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    svg_url: String,
+    svg_public_id: String,
     techIconUrl: {
       type: String,
       required: true,

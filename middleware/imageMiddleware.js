@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { sanitizeHTML } from '../utils/sanitization.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -34,4 +35,24 @@ const processImage = async (req, res, next) => {
   next(); // Proceed to the next middleware
 };
 
-export { uploadMulter, processImage };
+const processSVG = async (req, res, next) => {
+  if (req.file) {
+    try {
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const targetDir = path.join(__dirname, '..', 'public', 'uploads');
+      const targetPath = path.join(targetDir, filename);
+
+      const sanitizedSVG = sanitizeHTML(req.file.buffer.toString()); // Sanitize the SVG content
+      await fs.writeFile(targetPath, sanitizedSVG); // Save the file to the target path
+
+      // Update req.file to reflect the path of the processed SVG
+      req.file.path = targetPath;
+      req.file.filename = filename;
+    } catch (error) {
+      return next(error); // Pass errors to Express
+    }
+  }
+  next(); // Proceed to the next middleware
+};
+
+export { uploadMulter, processImage, processSVG };
