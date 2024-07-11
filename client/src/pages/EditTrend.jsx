@@ -5,11 +5,13 @@ import {
   FallbackChart,
   FormComponent,
   CustomErrorToast,
+  FormComponentLock,
   CustomSuccessToast,
   ScrollSpyComponent,
   ContentBoxHighlighted,
 } from '../components';
 import { MdEdit } from 'react-icons/md';
+import { IoLockClosed } from 'react-icons/io5';
 import { useUser } from '../context/UserContext'; // importing UserContext
 import { useOutletContext } from 'react-router-dom';
 import { useDashboardContext } from './DashboardLayout';
@@ -67,11 +69,26 @@ const EditTrend = () => {
   const navigation = useLoaderData();
   const isSubmitting = navigation.state === 'submitting';
   const [svgFile, setSvgFile] = useState(null);
+  const [svgUrl, setSvgUrl] = useState(trendObject.svg_url || '');
+
+  useEffect(() => {
+    const fetchSVG = async () => {
+      try {
+        const response = await customFetch.get(
+          `/trends/get-trend-svg/${trendObject.slug}`
+        );
+        setSvgUrl(response.data.svg_url);
+      } catch (error) {
+        console.error('Error fetching SVG:', error);
+      }
+    };
+
+    fetchSVG();
+  }, [trendObject.slug]);
 
   const handleSVGUpload = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-
     try {
       const response = await customFetch.patch(
         `/trends/upload-trend-svg/${trendObject.slug}`,
@@ -108,8 +125,8 @@ const EditTrend = () => {
 
   return (
     <Container>
+      <div id="Edit"></div>
       <div className="trend-page-container">
-        <div id="section1"></div>
         <div className="page-layout">
           <div className="trend">
             <Form method="post" className="">
@@ -119,7 +136,18 @@ const EditTrend = () => {
                     <MdEdit className="trend-edit-icon" />
                     <div className="add-svg">
                       <label htmlFor="svgFile" className="svg-upload-label">
-                        <PiFileSvgFill className="svg-upload-icon" />
+                        {svgUrl ? (
+                          <div className="svg-display">
+                            <img
+                              src={svgUrl}
+                              alt="Uploaded SVG"
+                              className="uploaded-svg"
+                            />
+                            <PiFileSvgFill className="svg-upload-icon overlay-icon" />
+                          </div>
+                        ) : (
+                          <PiFileSvgFill className="svg-upload-icon" />
+                        )}
                         <input
                           type="file"
                           id="svgFile"
@@ -129,11 +157,22 @@ const EditTrend = () => {
                         />
                       </label>
                     </div>
-                    <MdEdit className="trend-edit-icon" />
-                    <FormComponent
-                      type="text"
-                      defaultValue={trendObject.trend}
-                    />
+                    {trendObject.isApproved ? (
+                      <>
+                        <FormComponentLock
+                          type="text"
+                          defaultValue={trendObject.trend}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <MdEdit className="trend-edit-icon" />
+                        <FormComponent
+                          type="text"
+                          defaultValue={trendObject.trend}
+                        />
+                      </>
+                    )}
                   </div>
                   <div className="dummy-chart-controls">
                     <div className="date-selector">
@@ -157,28 +196,47 @@ const EditTrend = () => {
                 <div className="content">
                   <div className="content-selectors">
                     <div className="selector">
-                      <MdEdit className="edit-icon" />
-                      <div className="form-selector">
-                        <FormSelector
-                          className="form-selector"
-                          name="trendCategory"
-                          defaultValue={trendObject.trendCategory}
-                          list={Object.values(TREND_CATEGORY)}
-                        />
-                      </div>
+                      {trendObject.isApproved ? (
+                        <div className="select-locked-input-container">
+                          <IoLockClosed className="select-lock-icon" />
+                          <div className="locked-input">
+                            <p>{trendObject.trendCategory}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <MdEdit className="edit-icon" />
+                          <FormSelector
+                            className="form-selector"
+                            name="trendCategory"
+                            defaultValue={trendObject.trendCategory}
+                            list={Object.values(TREND_CATEGORY)}
+                          />
+                        </>
+                      )}
                     </div>
                     <div className="selector">
-                      <MdEdit className="edit-icon" />
-                      <div className="form-selector">
-                        <FormSelector
-                          name="trendTech"
-                          defaultValue={trendObject.trendTech}
-                          list={Object.values(TECHNOLOGIES)}
-                        />
-                      </div>
+                      {trendObject.isApproved ? (
+                        <div className="select-locked-input-container">
+                          <IoLockClosed className="select-lock-icon" />
+                          <div className="locked-input">
+                            <p>{trendObject.trendTech}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <MdEdit className="edit-icon" />
+                          <FormSelector
+                            className="form-selector"
+                            name="trendTech"
+                            defaultValue={trendObject.trendTech}
+                            list={Object.values(TECHNOLOGIES)}
+                          />
+                        </>
+                      )}
                     </div>
                   </div>
-                  <div id="section2"></div>
+                  <div id="Submit"></div>
                   <div className="form-actions">
                     <div className="submit-btn">
                       <button
@@ -197,7 +255,7 @@ const EditTrend = () => {
                   <div className="trend-blog-post">
                     <DangerousHTML html={EDIT_PAGE_POST} />
                   </div>
-                  <div id="section3"></div>
+                  <div id="Delete"></div>
                 </div>
                 <div className="form-actions">
                   <div className="delete-btn">
@@ -215,9 +273,7 @@ const EditTrend = () => {
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent
-                sectionIds={['section1', 'section2', 'section3']}
-              />
+              <ScrollSpyComponent sectionIds={['Edit', 'Submit', 'Delete']} />
               <div></div>
             </div>
           </aside>

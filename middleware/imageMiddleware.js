@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { sanitizeHTML } from '../utils/sanitization.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -41,8 +42,8 @@ const processSVG = async (req, res, next) => {
       const targetDir = path.join(__dirname, '..', 'public', 'uploads');
       const targetPath = path.join(targetDir, filename);
 
-      // Save the file to the target path
-      await fs.writeFile(targetPath, req.file.buffer);
+      const sanitizedSVG = sanitizeHTML(req.file.buffer.toString()); // Sanitize the SVG content
+      await fs.writeFile(targetPath, sanitizedSVG); // Save the file to the target path
 
       // Update req.file to reflect the path of the processed SVG
       req.file.path = targetPath;

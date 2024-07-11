@@ -6,6 +6,7 @@ import {
   submitTrend,
   createTrend,
   deleteTrend,
+  getTrendSVG,
   getAllTrends,
   approveTrend,
   getUserTrends,
@@ -29,6 +30,12 @@ import { uploadMulter, processSVG } from '../middleware/imageMiddleware.js';
 /**
  *First, authenticate the user to determine their role
  */
+router.get(
+  '/get-trend-svg/:slug',
+  authenticateUser,
+  authorizedPermissions('read'),
+  getTrendSVG
+);
 router.patch(
   '/upload-trend-svg/:slug',
   authenticateUser,

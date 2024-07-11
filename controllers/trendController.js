@@ -23,6 +23,12 @@ import {
 //   { id: nanoid(), trend: 'chatgpt', category: 'language model' },
 //   { id: nanoid(), trend: 'react', category: 'javascript framework' },
 // ];
+/**
+ * SUBMIT TREND
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const submitTrend = async (req, res) => {
   let { trend } = req.body; //using scoped variable
   trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
@@ -38,7 +44,11 @@ export const submitTrend = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ trendObject });
 }; //end SUBMIT
 
-//GET ALL TRENDS (only for ADMIN)
+/**
+ * GET ALL TRENDS (only for ADMIN)
+ * @param {*} req
+ * @param {*} res
+ */
 export const getAllTrends = async (req, res) => {
   // console.log(req);
   let { search, trendTech, trendCategory, sort, page, limit } = req.query;
@@ -64,14 +74,22 @@ export const getAllTrends = async (req, res) => {
   } //if there is anything but response 200 resource is not found response fot the client
 };
 
-//GET A TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)
+/**
+ * GET USER TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)
+ * @param {*} req
+ * @param {*} res
+ */
 export const getUserTrends = async (req, res) => {
   // console.log(req.user);
   const trends = await trendModel.find({ createdBy: req.user.userID }); //getting the trends belonging to user that provided cookie and token
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
 
-//CREATE TREND
+/**
+ * CREATE TREND created in AddTrend.jsx
+ * @param {*} req
+ * @param {*} res
+ */
 export const createTrend = async (req, res) => {
   // if (req.user.role !== 'admin') {
   //   return res
@@ -83,7 +101,12 @@ export const createTrend = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ trendObject }); //response fot the client with created trend is 201
 };
 
-//GET SINGLE TREND
+/**
+ * GET SINGLE TREND fetches trend based on the slug
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const getSingleTrend = async (req, res) => {
   const { slug } = req.params; //retrieving the id
   const trendObject = await trendModel
@@ -96,7 +119,12 @@ export const getSingleTrend = async (req, res) => {
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 };
 
-//UPDATE TREND
+/**
+ * UPDATE TREND only accessible before the Trend has been approved, after this controller is not reachable
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const editTrend = async (req, res) => {
   const { slug } = req.params;
   // use Mongoose's findOneAndUpdate method to find a trend by its slug and update it with the new data provided in req.body.
@@ -136,7 +164,12 @@ export const deleteTrend = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Trend deleted', trend: removeTrend });
 };
 
-//APPROVE TREND
+/**
+ * APPROVE TREND
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const approveTrend = async (req, res) => {
   const { slug } = req.params; // Use slug from the request parameters
   try {
@@ -336,5 +369,27 @@ export const uploadTrendSVG = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: 'SVG upload failed' });
+  }
+};
+/**
+ * Get Trend SVG
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const getTrendSVG = async (req, res) => {
+  const { slug } = req.params;
+
+  try {
+    const trend = await trendModel.findOne({ slug });
+    if (!trend) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+    }
+    res.status(StatusCodes.OK).json({ svg_url: trend.svg_url });
+  } catch (error) {
+    console.error('Error fetching SVG:', error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: 'Error fetching SVG' });
   }
 };
