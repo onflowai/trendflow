@@ -302,7 +302,7 @@ export const getApprovedTrends = async (req, res) => {
   }
 };
 /**
- *
+ * GET TREND_CATEGORY & TECHNOLOGIES
  * @param {*} req
  * @param {*} res
  * @returns
@@ -372,7 +372,7 @@ export const uploadTrendSVG = async (req, res) => {
   }
 };
 /**
- * Get Trend SVG
+ * GET TREND SVG
  * @param {*} req
  * @param {*} res
  * @returns
