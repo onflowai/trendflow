@@ -13,6 +13,7 @@ import cors from 'cors';
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
+import blogRouter from './routes/blogRouter.js';
 
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
@@ -64,6 +65,7 @@ app.use('/api/v1/test', (req, res) => {
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
 app.use('/api/v1/users', userRouter); //user routers
+app.use('/api/v1/blog', blogRouter); //blog routers
 
 // Set up CORS to allow requests from localhost:5173
 app.use(

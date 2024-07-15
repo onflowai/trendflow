@@ -46,6 +46,7 @@ export const submitTrend = async (req, res) => {
 
 /**
  * GET ALL TRENDS (only for ADMIN)
+ * returns all trends with filtering, sorting, and pagination
  * @param {*} req
  * @param {*} res
  */

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
+import { generateSlug } from '../utils/slugUtils.js';
 /**
+ * Collection Name: trendblogs
  * Example
  * title:
  * content:
@@ -19,9 +21,8 @@ const TrendBlogSchema = new mongoose.Schema(
       required: true,
     },
     author: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     createdAt: {
       type: Date,
@@ -31,16 +32,35 @@ const TrendBlogSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    Trends: [
+    trends: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trend', // reference to the Trend models which will be referenced in Blog
       },
     ],
+    slug: {
+      type: String,
+      unique: true,
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+TrendBlogSchema.pre('validate', async function (next) {
+  if (this.isNew || this.isModified('title')) {
+    this.slug = generateSlug(this.title);
+    const exists = await mongoose.models.TrendBlog.findOne({
+      slug: this.slug,
+    }).exec();
+    if (exists) {
+      throw new Error(
+        'Blog with this Title already exists. Duplicate Blogs are not allowed.'
+      );
+    }
+  }
+  next();
+});
 
 export default mongoose.model('TrendBlog', TrendBlogSchema);

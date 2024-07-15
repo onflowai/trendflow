@@ -86,6 +86,7 @@ const onRemove = async (_id) => {
 };
 const AllTrends = () => {
   const { trends, savedTrendIds, error, searchValues } = useLoaderData();
+  console.log('TRENDS: ', trends);
   const [trendCategory, setTrendCategory] = useState([]);
   console.log('trendCategory :', trendCategory);
   const [technologies, setTechnologies] = useState([]);
