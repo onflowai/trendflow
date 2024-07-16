@@ -13,6 +13,8 @@ import cors from 'cors';
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
+import blogRouter from './routes/blogRouter.js';
+import infoHubRouter from './routes/infoHubRouter.js';
 
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
@@ -50,6 +52,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving st
 app.use(express.static(path.resolve(__dirname, './public'))); //
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
+app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
 
 //app responding to get requests home rout with controller that handles the requests
 app.get('/', (req, res) => {
@@ -64,6 +67,8 @@ app.use('/api/v1/test', (req, res) => {
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
 app.use('/api/v1/users', userRouter); //user routers
+app.use('/api/v1/blog', blogRouter); //blog routers
+app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
 // Set up CORS to allow requests from localhost:5173
 app.use(

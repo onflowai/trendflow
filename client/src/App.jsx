@@ -14,6 +14,7 @@ import {
   Profile,
   Admin,
   Blog,
+  AddBlog,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
 /**
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
           {
             path: 'blog',
             element: <Blog />,
+          },
+          {
+            path: 'create-blog',
+            element: <AddBlog />,
           },
           {
             path: 'submit',

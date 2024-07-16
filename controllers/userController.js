@@ -9,7 +9,12 @@ import mongoose from 'mongoose';
  * This is where this data is passed to the frontend
  */
 
-//GET CURRENT USER retrieved every time user is in the dashboard
+/**
+ * GET CURRENT USER
+ * retrieved every time user is in the dashboard
+ * @param {*} req
+ * @param {*} res
+ */
 export const getCurrentUser = async (req, res) => {
   const userID = req.user.userID;
   const user = await userModel.findOne({ _id: userID }); //NOTE user data is stored and managed server-side with JWT
@@ -39,7 +44,12 @@ export const getCurrentUser = async (req, res) => {
   });
 }; //end getCurrentUser
 
-//UPDATE USER is not set back current user will get updates, this only updates changes + image compression
+/**
+ * UPDATE USER
+ * is not set back current user will get updates, this only updates changes + image compression
+ * @param {*} req
+ * @param {*} res
+ */
 export const updateUser = async (req, res) => {
   const newUser = { ...req.body }; //using spread operator to copy properties from req.body into newUser object
   delete newUser.password; //if password somehow exists deleting it once again
@@ -61,7 +71,13 @@ export const updateUser = async (req, res) => {
     await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id); //then delete the old image from Cloudinary using its public_id
   }
 }; //end updateUser
-// UPDATE USER IMG function to handle profile image upload
+/**
+ * UPDATE USER IMG
+ * function to handle profile image upload
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const updateUserImage = async (req, res) => {
   if (!req.file) {
     return res
@@ -102,8 +118,12 @@ export const updateUserImage = async (req, res) => {
       .json({ msg: 'Image upload failed' });
   }
 };
-
-//STATS route which will display simple statistics
+/**
+ * STATS
+ * route which will display simple statistics
+ * @param {*} req
+ * @param {*} res
+ */
 export const getApplicationStats = async (req, res) => {
   const users = await userModel.countDocuments();
   const trends = await trendModel.countDocuments();
@@ -112,7 +132,12 @@ export const getApplicationStats = async (req, res) => {
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
 }; //end getApplicationStats
 
-//SAVE USER bookmarked TREND:
+/**
+ * SAVE USER BOOKMARKED TREND
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const saveUserTrend = async (req, res) => {
   try {
     const { _id } = req.body;
@@ -137,7 +162,13 @@ export const saveUserTrend = async (req, res) => {
       .json({ msg: 'Something went wrong' });
   }
 };
-//GET USER bookmarked TREND: function retrieves the trends saved by a user from the database
+/**
+ * GET USER BOOKMARKED TREND
+ * retrieves the trends saved by a user from the database
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const getUserSavedTrends = async (req, res) => {
   try {
     const user = await userModel.findById(req.user.userID).populate({
@@ -156,6 +187,12 @@ export const getUserSavedTrends = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // handle errors
   }
 };
+/**
+ * REMOVE USER TREND
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const removeUserTrend = async (req, res) => {
   try {
     const { _id } = req.body;
