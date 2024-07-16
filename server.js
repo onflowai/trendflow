@@ -51,6 +51,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving st
 app.use(express.static(path.resolve(__dirname, './public'))); //
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
+app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
 
 //app responding to get requests home rout with controller that handles the requests
 app.get('/', (req, res) => {

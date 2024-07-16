@@ -87,17 +87,37 @@ export const getSinglePost = async (req, res) => {
  */
 export const updatePost = async (req, res) => {
   const { slug } = req.params;
+  const { content, trends } = req.body;
+
+  console.log('Updating post with content:', content);
+  console.log('Updating post with trends:', trends);
+
   try {
+    if (trends) {
+      const validTrends = await trendModel.find({ _id: { $in: trends } });
+      if (validTrends.length !== trends.length) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'One or more trends are invalid',
+        });
+      }
+    } //validating the trends
+    const updateFields = {};
+    if (content) updateFields.content = content;
+    if (trends) updateFields.trends = trends;
+
     const updatedPost = await trendBlogModel
-      .findOneAndUpdate({ slug }, req.body, {
-        new: true,
-      })
-      .populate('author trends');
-    if (!updatedPost) {
+      .findOneAndUpdate({ slug }, updateFields, { new: true })
+      .populate(
+        'author trends',
+        'trend slug trendTech techIcon svg_url trendCategory'
+      );
+
+    if (!updateFields) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: 'Post not found' });
+        .json({ message: 'Post not found' }); //if post not in the model return not found
     }
+
     res.status(StatusCodes.OK).json(updatedPost);
   } catch (error) {
     res
