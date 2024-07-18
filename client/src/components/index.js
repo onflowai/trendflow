@@ -49,5 +49,5 @@ export { default as FooterTrendDetails } from './FooterTrendDetails';
 export { default as FormComponentSearch } from './FormComponentSearch';
 export { default as Tooltip } from './Tooltip';
 export { default as Checkbox } from './Checkbox';
-export { default as CarouselCard } from './CarouselCard';
+export { default as CarouselCards } from './CarouselCards';
 export { default as BlogPostList } from './BlogPostList';

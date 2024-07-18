@@ -2,7 +2,7 @@ import React from 'react'; // Import necessary hooks
 import Card from './Card';
 import Container from '../assets/wrappers/CarouselCardContainer';
 
-function CarouselCard() {
+function CarouselCards() {
   return (
     <Container>
       <Card />
@@ -10,4 +10,4 @@ function CarouselCard() {
   );
 }
 
-export default CarouselCard;
+export default CarouselCards;

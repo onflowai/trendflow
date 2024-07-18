@@ -6,7 +6,7 @@ import Container from '../assets/wrappers/BlogPostListContainer';
  * @returns
  */
 function BlogPostList() {
-  return <Container></Container>;
+  return <Container>Blog Post</Container>;
 }
 
 export default BlogPostList;
