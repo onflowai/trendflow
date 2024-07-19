@@ -67,7 +67,7 @@ app.use('/api/v1/test', (req, res) => {
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', authRouter); //authentication
 app.use('/api/v1/users', userRouter); //user routers
-app.use('/api/v1/blog', blogRouter); //blog routers
+app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
 // Set up CORS to allow requests from localhost:5173

@@ -7,23 +7,56 @@ import fs from 'fs/promises';
  * @param {*} res
  * @returns
  */
+// export const createInfoHub = async (req, res) => {
+//   const { title, description, link } = req.body;
+//   if (!req.file) {
+//     return res
+//       .status(StatusCodes.BAD_REQUEST)
+//       .json({ message: 'No file uploaded' });
+//   } // checking if file is uploaded
+//   try {
+//     const svgData = await fs.readFile(req.file.path, 'utf8'); // reading the uploaded SVG file
+//     const infoHubItem = new infoHubModel({
+//       title,
+//       description,
+//       link,
+//       svg_data: svgData,
+//     });
+//     await infoHubItem.save(); // creating new InfoHub entry
+//     await fs.unlink(req.file.path); // remove file after upload
+//     res.status(StatusCodes.CREATED).json(infoHubItem);
+//   } catch (error) {
+//     res
+//       .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//       .json({ message: error.message });
+//   }
+// };
 export const createInfoHub = async (req, res) => {
   const { title, description, link } = req.body;
-  if (!req.file) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: 'No file uploaded' });
-  } // checking if file is uploaded
+
+  // Commenting out the file upload check and processing
+  // if (!req.file) {
+  //   return res
+  //     .status(StatusCodes.BAD_REQUEST)
+  //     .json({ message: 'No file uploaded' });
+  // }
+
   try {
-    const svgData = await fs.readFile(req.file.path, 'utf8'); // reading the uploaded SVG file
+    // Commenting out the SVG file reading
+    // const svgData = await fs.readFile(req.file.path, 'utf8');
+
     const infoHubItem = new infoHubModel({
       title,
       description,
       link,
-      svg_data: svgData,
+      // svg_data: svgData, // Commenting out since we are not using svg_data now
     });
-    await infoHubItem.save(); // creating new InfoHub entry
-    await fs.unlink(req.file.path); // remove file after upload
+
+    await infoHubItem.save();
+
+    // Commenting out the file removal after upload
+    // await fs.unlink(req.file.path);
+
     res.status(StatusCodes.CREATED).json(infoHubItem);
   } catch (error) {
     res
