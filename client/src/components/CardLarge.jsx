@@ -6,7 +6,7 @@ function CardLarge({ title, description, link, updatedAt }) {
     <div>
       <h2>{title}</h2>
       {console.log('title ', title)}
-      <p>{description}</p>
+      <p>{description.slice(0, 100)}</p>
       <a href={link}>Learn More</a>
       <p>{new Date(updatedAt).toLocaleDateString()}</p>
     </div>

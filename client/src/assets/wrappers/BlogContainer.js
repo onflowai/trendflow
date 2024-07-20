@@ -37,7 +37,7 @@ const Container = styled.main`
     align-items: center;
     padding: 20px 0;
   }
-  /* ADMIN / CONTRIBUTORS SECTION */
+  /* ADMIN + CONTRIBUTORS SECTION */
   .admin-section {
     display: flex;
     justify-content: space-between;
@@ -67,7 +67,7 @@ const Container = styled.main`
   .line {
     flex: 1;
     height: 1px;
-    background-color: var(--grey-70);
+    background-color: var(--grey-50);
     margin: 0 10px;
   }
 
@@ -87,7 +87,7 @@ const Container = styled.main`
 
   /* BLOG ITEM STYLING */
   .blog-item {
-    border-bottom: 1.5px solid var(--grey-70); /* line between posts */
+    border-bottom: 1.5px solid var(--grey-50); /* line between posts */
     margin-bottom: 3rem; /* margin under each post (same in BlogPost)*/
   }
   .blog-container {

@@ -17,10 +17,10 @@ const InfoHubSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // svg_img: {
-    //   type: String,
-    //   required: true,
-    // },
+    svg_img: {
+      type: String,
+      required: true,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
