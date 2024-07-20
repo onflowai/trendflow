@@ -204,7 +204,7 @@ function TrendLarge({
               </div>
               <div className="admin-buttons">
                 {isAdminPage ? (
-                  <Tooltip description="Edit Trend">
+                  <Tooltip description="Edit Trend" xOffset={-90} yOffset={-65}>
                     <Link
                       to={`/dashboard/edit-trend/${slug}`}
                       className="btn-icon edit-btn"
@@ -232,7 +232,11 @@ function TrendLarge({
                     {isApproved ? (
                       // When approved, show the delete button and the unapprove button
                       <>
-                        <Tooltip description="Remove Trend">
+                        <Tooltip
+                          description="Remove Trend"
+                          xOffset={-90}
+                          yOffset={-65}
+                        >
                           <button
                             className="btn-icon action-btn"
                             onClick={(e) => {
@@ -243,7 +247,11 @@ function TrendLarge({
                             <IoIosCloseCircle size={25} />
                           </button>
                         </Tooltip>
-                        <Tooltip description="Delete Trend">
+                        <Tooltip
+                          description="Delete Trend"
+                          xOffset={-90}
+                          yOffset={-65}
+                        >
                           <button
                             className="btn-icon btn-icon-danger"
                             onClick={(e) => {
@@ -258,7 +266,11 @@ function TrendLarge({
                     ) : (
                       // When not approved, show the delete button and the approve button
                       <>
-                        <Tooltip description="Approve Trend">
+                        <Tooltip
+                          description="Approve Trend"
+                          xOffset={-90}
+                          yOffset={-65}
+                        >
                           <button
                             className="btn-icon action-btn"
                             onClick={(e) => {
@@ -269,7 +281,11 @@ function TrendLarge({
                             <FaSquareCheck size={23} />
                           </button>
                         </Tooltip>
-                        <Tooltip description="Delete Trend">
+                        <Tooltip
+                          description="Delete Trend"
+                          xOffset={-90}
+                          yOffset={-65}
+                        >
                           <button
                             className="btn-icon btn-icon-danger"
                             onClick={(e) => {

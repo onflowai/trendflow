@@ -3,6 +3,7 @@ import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
+import { Tooltip } from '../components';
 /**
  * CarouselSlider takes on Trend object takes the url_svg which is in the object puts it into
  * slider with slider controls and adds the slug as a link to the respective trend page
@@ -21,18 +22,24 @@ const CarouselSlider = ({ trends }) => {
       prevIndex === 0 ? trends.length - 1 : prevIndex - 1
     );
   };
-
+  console.log(trends);
   return (
     <SliderContainer>
       <IoIosArrowBack onClick={prevSlide} className="arrow arrow-left" />
       <div className="slider">
-        <Link to={getFullTrendUrl(trends[currentIndex].slug)}>
-          <img
-            src={getFullIconUrl(trends[currentIndex].svg_url)}
-            alt={trends[currentIndex].trend}
-            className="trend-icon"
-          />
-        </Link>
+        <Tooltip
+          description={trends[currentIndex].trend}
+          xOffset={-35}
+          yOffset={-90}
+        >
+          <Link to={getFullTrendUrl(trends[currentIndex].slug)}>
+            <img
+              src={getFullIconUrl(trends[currentIndex].svg_url)}
+              alt={trends[currentIndex].trend}
+              className="trend-icon"
+            />
+          </Link>
+        </Tooltip>
       </div>
       <IoIosArrowForward onClick={nextSlide} className="arrow arrow-right" />
     </SliderContainer>
@@ -47,7 +54,7 @@ const SliderContainer = styled.div`
   .slider {
     width: 50px;
     height: 50px;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .trend-icon {
