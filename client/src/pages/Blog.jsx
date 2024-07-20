@@ -42,15 +42,15 @@ const Blog = () => {
   return (
     <Container>
       <div className="carousel-section">
-        <ProfileHeader
-          user={user}
-          message="Here is useful information about tech"
-        />
+        <div className="profile-header">
+          <ProfileHeader user={user} message="Explore useful news and blogs" />
+        </div>
         <div className="carousel-container">
           <CarouselCards infoHubItems={infoHubItems} />
         </div>
       </div>
       <div className="blog-container">
+        <div className="admin-section">{/* HERE */}</div>
         <div className="blog-content">
           <BlogPostList posts={posts} />
         </div>

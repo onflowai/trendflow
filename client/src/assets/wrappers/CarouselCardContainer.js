@@ -7,6 +7,7 @@ const Container = styled.div`
     overflow-x: auto;
     gap: 20px;
     padding: 20px 0;
+    height: 100%; /* Maintain consistent height */
   }
 
   .cards::-webkit-scrollbar {
