@@ -2,16 +2,16 @@ import styled from 'styled-components';
 
 const Container = styled.main`
  background-color:  var(--white);
- 
+
 
   .carousel-section {
-    background-color: var(--grey-50); /* Gray underlay color */
-    height: 50vh; /* Fill the top half of the screen */
+    background-color: var(--white); /* gray underlay color */
+    height: 40vh; /* fill the top half of the screen */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 0rem;
   }
 
   .carousel-container {
@@ -37,6 +37,53 @@ const Container = styled.main`
     align-items: center;
     padding: 20px 0;
   }
+  /* ADMIN / CONTRIBUTORS SECTION */
+  .admin-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .add-blog {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--primary);
+  }
+
+  .add-icon {
+    font-size: 2rem;
+    margin-right: 10px;
+  }
+
+  .admin-img, .author-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--grey-70);
+    margin: 0 10px;
+  }
+
+  .current-date {
+    color: var(--grey-100);
+  }
+
+  .contributors {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .author-list {
+    display: flex;
+    align-items: center;
+  }
 
   /* BLOG ITEM STYLING */
   .blog-item {
@@ -60,5 +107,6 @@ const Container = styled.main`
     align-items: center;
     padding: 20px 0;
   }
+
 `;
 export default Container;
