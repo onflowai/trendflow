@@ -14,3 +14,4 @@ export { default as Profile } from './Profile';
 export { default as Register } from './Register';
 export { default as Blog } from './Blog';
 export { default as AddBlog } from './AddBlog';
+export { default as BlogPage } from './BlogPage';

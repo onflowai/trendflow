@@ -196,7 +196,10 @@ const Profile = () => {
   }, []);
   return (
     <Container>
-      <ProfileHeader user={user} />
+      <ProfileHeader
+        user={user}
+        message="Here is the information about your trends"
+      />
       <StatComponent
         stats={[
           {

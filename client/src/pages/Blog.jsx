@@ -1,8 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Form, useLoaderData, useNavigation } from 'react-router-dom';
+import { ProfileHeader, CarouselCards, BlogPostList } from '../components';
+import customFetch from '../utils/customFetch';
+import { useOutletContext } from 'react-router-dom';
+import { useUser } from '../context/UserContext'; // importing UserContext
+import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/BlogContainer';
+import { toast } from 'react-toastify';
 
-const Stats = () => {
-  return <h1>Blog Page</h1>;
+/**
+ * Blog.jsx displays the infoHub cards (lets user create and delete them) and displays the blog posts
+ * @returns
+ */
+export const loader = async () => {
+  try {
+    const [postsResponse, infoHubResponse] = await Promise.all([
+      customFetch.get('/blogs'),
+      customFetch.get('/infohub'),
+    ]); // Fetch blog posts and infoHub cards concurrently
+
+    const posts = postsResponse.data;
+    const infoHubItems = infoHubResponse.data;
+
+    return { posts, infoHubItems };
+  } catch (error) {
+    toast.error('Failed to load blog posts or infoHub items');
+    return { error: error.message };
+  }
+};
+export const action = async ({ request }) => {};
+
+const Blog = () => {
+  const { user } = useOutletContext();
+  const { posts, infoHubItems, error } = useLoaderData();
+  console.log('posts ', posts);
+  console.log('infoHubItems ', infoHubItems);
+  if (error) {
+    return <div>Error loading blogs: {error}</div>;
+  }
+
+  return (
+    <Container>
+      <div className="carousel-section">
+        <div className="profile-header">
+          <ProfileHeader user={user} message="Explore useful news and blogs" />
+        </div>
+        <div className="carousel-container">
+          <CarouselCards infoHubItems={infoHubItems} />
+        </div>
+      </div>
+      <div className="blog-container">
+        <div className="admin-section">{/* HERE */}</div>
+        <div className="blog-content">
+          <BlogPostList posts={posts} />
+        </div>
+      </div>
+    </Container>
+  );
 };
 
-export default Stats;
+export default Blog;
