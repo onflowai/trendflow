@@ -1,16 +1,41 @@
-import React from 'react'; // Import necessary hooks
+import React, { useState } from 'react'; // Import necessary hooks
 import Card from './Card';
+import { AddInfoHubModal } from '../components';
 import Container from '../assets/wrappers/CarouselCardContainer';
 import PropTypes from 'prop-types';
+import { GoPlus } from 'react-icons/go';
 
-function CarouselCards({ infoHubItems }) {
+function CarouselCards({ infoHubItems, isAdmin }) {
+  const [showModal, setShowModal] = useState(false);
+  const [items, setItems] = useState(infoHubItems);
+
+  const handleAddClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleAddItem = (newItem) => {
+    setItems([...items, newItem]);
+  };
+
   return (
     <Container>
       <div className="cards">
-        {infoHubItems.map((item) => (
+        {isAdmin && (
+          <div className="card add-card" onClick={handleAddClick}>
+            <GoPlus className="plus-icon" />
+          </div>
+        )}
+        {items.map((item) => (
           <Card key={item._id} {...item} />
         ))}
       </div>
+      {showModal && (
+        <AddInfoHubModal onClose={handleCloseModal} onAdd={handleAddItem} />
+      )}
     </Container>
   );
 }

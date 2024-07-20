@@ -18,5 +18,26 @@ const Container = styled.div`
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+   .card {
+    flex: 0 0 auto;
+    width: 210px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--grey-50);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .add-card {
+    justify-content: center;
+    align-items: center;
+  }
+  .plus-icon {
+    font-size: 2rem;
+    color: var(--primary);
+  }
 `;
 export default Container;

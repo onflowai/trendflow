@@ -61,7 +61,7 @@ const Blog = () => {
           <ProfileHeader user={user} message="Explore useful news and blogs" />
         </div>
         <div className="carousel-container">
-          <CarouselCards infoHubItems={infoHubItems} />
+          <CarouselCards infoHubItems={infoHubItems} isAdmin={isAdmin} />
         </div>
       </div>
       <div className="blog-container">

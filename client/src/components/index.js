@@ -52,3 +52,4 @@ export { default as Checkbox } from './Checkbox';
 export { default as CarouselCards } from './CarouselCards';
 export { default as BlogPostList } from './BlogPostList';
 export { default as CardLarge } from './CardLarge';
+export { default as AddInfoHubModal } from './AddInfoHubModal';

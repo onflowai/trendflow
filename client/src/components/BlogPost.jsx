@@ -41,7 +41,7 @@ const Container = styled.div`
   .blog-item {
     padding: 20px;
     background-color: var(--white);
-    border-bottom: 1px solid var(--gray-100); /* Thin line between posts */
+    border-bottom: 1.5px solid var(--gray-50); /* Thin line between posts */
     text-align: left;
     margin-bottom: 20px; /* Add space between each blog post */
   }
