@@ -1,15 +1,25 @@
 import React from 'react';
+import { FcAddressBook } from 'react-icons/fc';
 import PropTypes from 'prop-types';
 
-function CardLarge({ title, description, link, updatedAt }) {
+function CardLarge({ title, description, link, updatedAt, svg_img }) {
   return (
-    <div>
-      <h2>{title}</h2>
-      {console.log('title ', title)}
-      <p>{description.slice(0, 100)}</p>
-      <a href={link}>Learn More</a>
-      <p>{new Date(updatedAt).toLocaleDateString()}</p>
-    </div>
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="card-content"
+    >
+      <div
+        className="card-background"
+        style={{ backgroundImage: `url(${svg_img || FcAddressBook})` }}
+      ></div>
+      <div className="card-date">
+        {new Date(updatedAt).toLocaleDateString()}
+      </div>
+      <div className="card-title">{title}</div>
+      <div className="card-description">{description.slice(0, 100)}</div>
+    </a>
   );
 }
 
