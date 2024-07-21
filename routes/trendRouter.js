@@ -39,6 +39,7 @@ router.get(
 router.patch(
   '/upload-trend-svg/:slug',
   authenticateUser,
+  authorizedAdmin,
   authorizedPermissions('write'),
   uploadMulter.single('file'), // Handle file upload
   processSVG, // Middleware to handle SVG file
