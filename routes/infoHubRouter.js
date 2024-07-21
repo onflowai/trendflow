@@ -7,15 +7,18 @@ import {
 import {
   authenticateUser,
   authorizedAdmin,
+  authorizedPermissions,
 } from '../middleware/authMiddleware.js';
-import { uploadMulter } from '../middleware/imageMiddleware.js';
+import { uploadMulter, processSVG } from '../middleware/imageMiddleware.js';
 
 const router = Router();
 router.post(
   '/',
   authenticateUser,
   authorizedAdmin,
+  authorizedPermissions('delete'),
   uploadMulter.single('file'),
+  processSVG,
   createInfoHub
 ); //same route can be used as long as it is a different fetch
 router.get('/', getAllInfoHub);

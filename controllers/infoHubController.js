@@ -1,6 +1,7 @@
 import infoHubModel from '../models/infoHubModel.js';
 import { StatusCodes } from 'http-status-codes';
 import fs from 'fs/promises';
+import cloudinary2 from 'cloudinary';
 /**
  * CREATE HUB CARD
  * @param {*} req
@@ -8,24 +9,39 @@ import fs from 'fs/promises';
  * @returns
  */
 export const createInfoHub = async (req, res) => {
+  console.log('Received data:', req.body);
+  console.log('Received file:', req.file);
+
   const { title, description, link } = req.body;
+
   if (!req.file) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: 'No file uploaded' });
-  } // checking if file is uploaded
+  }
+
   try {
-    const svgData = await fs.readFile(req.file.path, 'utf8'); // reading the uploaded SVG file
+    // Upload the SVG to Cloudinary
+    const response = await cloudinary2.v2.uploader.upload(req.file.path, {
+      folder: 'infohub_svgs',
+    });
+
+    // Remove the local file after upload
+    await fs.unlink(req.file.path);
+
+    // Create a new InfoHub item with the URL of the uploaded SVG
     const infoHubItem = new infoHubModel({
       title,
       description,
       link,
-      svg_data: svgData,
+      svg_img: response.secure_url, // Store the URL of the SVG
     });
-    await infoHubItem.save(); // creating new InfoHub entry
-    await fs.unlink(req.file.path); // remove file after upload
+
+    await infoHubItem.save(); // Create new InfoHub entry
+
     res.status(StatusCodes.CREATED).json(infoHubItem);
   } catch (error) {
+    console.error('Error creating info hub item:', error.stack); // Log full error stack
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });

@@ -19,6 +19,7 @@ const Container = styled.div`
     scrollbar-width: none;
   }
    .card {
+    cursor: pointer;
     flex: 0 0 auto;
     width: 210px;
     background-color: var(--white);
@@ -30,6 +31,9 @@ const Container = styled.div`
     align-items: center;
     padding: 20px;
   }
+  .card:hover {
+  background-color: var(--grey-50);
+}
 
   .add-card {
     justify-content: center;
