@@ -112,7 +112,7 @@ const Container = styled.div`
   }
 
   .modal-container {
-    background: white;
+    background: var(--white);
     padding: 2rem;
     border-radius: var(--border-radius);
     position: relative;

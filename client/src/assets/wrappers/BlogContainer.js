@@ -53,13 +53,17 @@ const Container = styled.main`
   }
 
   .add-icon {
-    font-size: 2rem;
+    font-size: 44px;
     margin-right: 10px;
+    color: var(--grey-100)
+  }
+  .add-icon:hover {
+    color: var(--grey-600)
   }
 
   .admin-img, .author-img {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     margin-right: 10px;
   }

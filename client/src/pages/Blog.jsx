@@ -12,7 +12,7 @@ import { useUser } from '../context/UserContext'; // importing UserContext
 import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/BlogContainer';
 import { toast } from 'react-toastify';
-import { BsPlusCircle, BsPlusCircleFill } from 'react-icons/bs';
+import { CiCirclePlus } from 'react-icons/ci';
 
 /**
  * Blog.jsx displays the infoHub cards (lets user create and delete them) and displays the blog posts
@@ -70,7 +70,7 @@ const Blog = () => {
             <>
               <Tooltip description="Create Blog" xOffset={-15} yOffset={-80}>
                 <Link to="/dashboard/create-blog" className="add-blog">
-                  <BsPlusCircle className="add-icon" />
+                  <CiCirclePlus className="add-icon" />
                 </Link>
               </Tooltip>
               <img src={user.profile_img} alt="Admin" className="admin-img" />

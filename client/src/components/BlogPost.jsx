@@ -13,7 +13,7 @@ function BlogPost({ title, content, slug, trends, updatedAt }) {
     <Container className="blog-item">
       <div className="content-wrapper">
         <div className="blog-details">
-          <Link to={`/blog/${slug}`} className="blog-link">
+          <Link to={`/dashboard/blog/${slug}`} className="blog-link">
             <div className="blog-title">{title}</div>
             <div className="blog-date">
               {new Date(updatedAt).toLocaleDateString()}
