@@ -25,7 +25,7 @@ function CarouselCards({ infoHubItems, isAdmin }) {
     <Container>
       <div className="cards">
         {isAdmin && (
-          <div className="card add-card" onClick={handleAddClick}>
+          <div className="card-all add-card" onClick={handleAddClick}>
             <GoPlus className="plus-icon" />
           </div>
         )}

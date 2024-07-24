@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const Container = styled.main`
  background-color:  var(--white);
 
-
   .carousel-section {
     background-color: var(--white); /* gray underlay color */
     height: 40vh; /* fill the top half of the screen */
@@ -14,10 +13,71 @@ const Container = styled.main`
     margin-bottom: 0rem;
   }
 
+  /* CAROUSEL SECTION */
   .carousel-container {
     width: 100%;
     max-width: 1200px; /* Limit the width of the carousel */
     overflow: hidden; /* Ensure the carousel doesn't expand outside the container */
+  }
+
+  .cards {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 0;
+    height: 100%; /* Maintain consistent height */
+  }
+
+  .cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cards {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .card-all {
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 210px;
+    height: 280px; /* Ensure consistent height with other cards */
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--grey-50);
+    display: flex;
+    justify-content: center; /* Center the plus icon horizontally */
+    align-items: center; /* Center the plus icon vertically */
+    transition: background-color 0.3s ease;
+  }
+
+  .card-all:hover {
+    background-color: var(--grey-50); /* Change color on hover */
+  }
+
+  .plus-icon {
+    font-size: 2rem;
+    color: var(--primary);
+  }
+
+  @media (max-width: 1200px) {
+    max-width: 1100px;
+    .cards {
+      gap: 15px;
+    }
+    .card-all {
+      width: 180px; /* Adjust card width for smaller screens */
+    }
+  }
+
+  @media (max-width: 800px) {
+    .cards {
+      gap: 10px;
+    }
+    .card-all {
+      width: 150px; /* Adjust card width for smaller screens */
+    }
   }
 
   .blog-container {
@@ -55,10 +115,11 @@ const Container = styled.main`
   .add-icon {
     font-size: 44px;
     margin-right: 10px;
-    color: var(--grey-100)
+    color: var(--grey-100);
   }
+  
   .add-icon:hover {
-    color: var(--grey-600)
+    color: var(--grey-600);
   }
 
   .admin-img, .author-img {
@@ -92,10 +153,11 @@ const Container = styled.main`
   /* BLOG ITEM STYLING */
   .blog-item {
     border-bottom: 1.5px solid var(--grey-50); /* line between posts */
-    margin-bottom: 3rem; /* margin under each post (same in BlogPost)*/
+    margin-bottom: 3rem; /* margin under each post (same in BlogPost) */
   }
+
   .blog-container {
-    background-color:  var(--white);
+    background-color: var(--white);
     padding: 20px;
   }
 
@@ -111,6 +173,6 @@ const Container = styled.main`
     align-items: center;
     padding: 20px 0;
   }
-
 `;
+
 export default Container;
