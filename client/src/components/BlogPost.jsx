@@ -1,14 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import day from 'dayjs';
 import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
 import CarouselSlider from './CarouselSlider';
+import DangerousMarkdown from './DangerousMarkdown';
+import { truncateMarkdown } from '../utils/helpers';
 
 /**
  * BlogPost returns each individual blog post
  * @returns
  */
 function BlogPost({ title, content, slug, trends, updatedAt }) {
+  const upDate = day(updatedAt).format('MM YYYY');
+  const truncatedContent = truncateMarkdown(content, 300);
   return (
     <Container className="blog-item">
       <div className="content-wrapper">
@@ -16,7 +21,7 @@ function BlogPost({ title, content, slug, trends, updatedAt }) {
           <Link to={`/dashboard/blog/${slug}`} className="blog-link">
             <div className="blog-title">{title}</div>
             <div className="blog-date">
-              {new Date(updatedAt).toLocaleDateString()}
+              {upDate}
               {trends.map((trend, index) => (
                 <img
                   key={index}
@@ -26,7 +31,10 @@ function BlogPost({ title, content, slug, trends, updatedAt }) {
                 />
               ))}
             </div>
-            <div className="blog-content-short">{content.slice(0, 200)}...</div>
+            <div className="blog-content-short">
+              {/* small - tag for display  */}
+              <DangerousMarkdown content={truncatedContent} small />
+            </div>
           </Link>
         </div>
         <div className="carousel">

@@ -103,6 +103,10 @@ const Container = styled.main`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    width: 100%; /* Take full width */
+    max-width: 1200px; /* Match the width of the carousel */
+    margin: 0 auto; /* Center the section */
+    box-sizing: border-box;
   }
 
   .add-blog {

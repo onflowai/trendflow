@@ -45,6 +45,7 @@ import { loader as allTrendAdminLoader } from './pages/Admin';
 import { action as profileAction } from './pages/Profile';
 import { loader as getUserSavedTrends } from './pages/Profile';
 import { loader as blogLoader } from './pages/Blog';
+import { loader as singleBlogLoader } from './pages/BlogPage';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -91,6 +92,7 @@ const router = createBrowserRouter([
           {
             path: 'blog/:slug',
             element: <BlogPage />,
+            loader: singleBlogLoader,
           },
           {
             path: 'submit',
