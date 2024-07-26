@@ -18,49 +18,7 @@ const Container = styled.div`
     max-width: 900px;
     margin: 0 auto 2rem auto;
   }
-
-  .title-content-box {
-    position: relative;
-  }
-
-  .blog-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    display: inline-block;
-  }
-
-  .content-box {
-    border-radius: 15px;
-    height: 40px;
-    margin-bottom: 1rem;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    width: 100%;
-    padding: 10px;
-  }
-
-  .content-box:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 15px;
-    background-color: inherit;
-    z-index: -1;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%, 0% 0);
-  }
-
-  .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-  }
-
+  
   .author-info {
     display: flex;
     align-items: center;
@@ -70,19 +28,6 @@ const Container = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-right: 0.5rem;
-  }
-
-  .trend-icons {
-    display: flex;
-    align-items: center;
-  }
-
-  .tech-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #fff;
     margin-right: 0.5rem;
   }
 
