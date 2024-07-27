@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
   UserImgLarge,
+  EditMarkdown,
   CustomErrorToast,
-  FormComponentLogos,
+  FormComponent,
   CustomSuccessToast,
 } from '../components';
-import Container from '../assets/wrappers/SubmitFormContainer';
+import Container from '../assets/wrappers/AddBlogContainer';
 import { useOutletContext } from 'react-router-dom';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
+// import '@uiw/react-markdown-editor/dist/markdown-editor.css'; //HERE
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
@@ -94,20 +96,12 @@ const AddBlog = () => {
           <Form method="post" className="form" onSubmit={handleSubmit}>
             <h4 className="form-title">Create a Blog Post:</h4>
             <div className="form-center">
-              <FormComponentLogos
+              <FormComponent
                 type="text"
                 name="title"
                 placeholder="Blog Post Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-              <FormComponentLogos
-                type="textarea"
-                name="content"
-                placeholder="Content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
                 required
               />
               <div>
@@ -152,6 +146,12 @@ const AddBlog = () => {
                   ))}
                 </ul>
               </div>
+              <div className="edit-markdown">
+                <EditMarkdown
+                  initialContent={content}
+                  onContentChange={setContent}
+                />
+              </div>
               <button
                 type="submit"
                 className="btn btn-block form-btn"
@@ -161,9 +161,6 @@ const AddBlog = () => {
               </button>
             </div>
           </Form>
-        </div>
-        <div className="chart-container">
-          {/* Add any additional components like FallbackChart if needed */}
         </div>
       </div>
     </Container>

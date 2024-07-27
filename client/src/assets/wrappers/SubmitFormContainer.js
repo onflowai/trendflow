@@ -35,7 +35,7 @@ const Container = styled.section`
   width: 100%; /* Full width to help center the text */
   margin-top: 1rem; /* Optional: adds some space between the profile and username */
 }
-   .submit-container {
+  .submit-container {
     clear: both;
     display: grid; // Use grid to manage layout
     grid-template-columns: 1fr; // Default to single column layout
