@@ -380,7 +380,6 @@ export const uploadTrendSVG = async (req, res) => {
  */
 export const getTrendSVG = async (req, res) => {
   const { slug } = req.params;
-
   try {
     const trend = await trendModel.findOne({ slug });
     if (!trend) {
@@ -392,5 +391,33 @@ export const getTrendSVG = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: 'Error fetching SVG' });
+  }
+};
+/**
+ * SEARCH TRENDS
+ * Search for trends based on a search query
+ * @param {*} req
+ * @param {*} res
+ */
+export const searchTrends = async (req, res) => {
+  const { search } = req.query;
+
+  if (!search) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'Search query is required' });
+  }
+
+  try {
+    const trends = await trendModel
+      .find({
+        trend: { $regex: search, $options: 'i' }, // Case-insensitive search
+        isApproved: true, // Optional: Add any other filters you need, like only approved trends
+      })
+      .select('trend svg_url');
+
+    res.status(StatusCodes.OK).json({ trends });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };

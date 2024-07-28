@@ -6,7 +6,9 @@ import styled from 'styled-components';
 const SelectTrends = ({ selectedTrends, setSelectedTrends }) => {
   const loadOptions = async (inputValue, callback) => {
     try {
-      const response = await customFetch.get(`/trends?search=${inputValue}`);
+      const response = await customFetch.get(
+        `/trends/search?search=${inputValue}`
+      );
       const trendOptions = response.data.trends.map((trend) => ({
         value: trend._id,
         label: trend.trend,
