@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
+  SelectTrends,
   UserImgLarge,
   EditMarkdown,
-  CustomErrorToast,
   FormComponent,
+  CustomErrorToast,
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
@@ -37,28 +38,7 @@ const AddBlog = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [selectedTrends, setSelectedTrends] = useState([]);
-
-  const handleSearch = async () => {
-    try {
-      const response = await customFetch.get(`/trends?search=${searchTerm}`);
-      setSearchResults(response.data.trends);
-    } catch (error) {
-      console.error('Error searching trends:', error);
-    }
-  };
-
-  const handleAddTrend = (trend) => {
-    if (!selectedTrends.find((t) => t._id === trend._id)) {
-      setSelectedTrends([...selectedTrends, trend]);
-    }
-  };
-
-  const handleRemoveTrend = (trendId) => {
-    setSelectedTrends(selectedTrends.filter((trend) => trend._id !== trendId));
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -104,48 +84,10 @@ const AddBlog = () => {
                 onChange={(e) => setTitle(e.target.value)}
                 required
               />
-              <div>
-                <label>Search Trends</label>
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button type="button" onClick={handleSearch}>
-                  Search
-                </button>
-              </div>
-              <div>
-                <ul>
-                  {searchResults.map((trend) => (
-                    <li key={trend._id}>
-                      {trend.trend}
-                      <button
-                        type="button"
-                        onClick={() => handleAddTrend(trend)}
-                      >
-                        +
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4>Selected Trends</h4>
-                <ul>
-                  {selectedTrends.map((trend) => (
-                    <li key={trend._id}>
-                      {trend.trend}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTrend(trend._id)}
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <SelectTrends
+                selectedTrends={selectedTrends}
+                setSelectedTrends={setSelectedTrends}
+              />
               <div className="edit-markdown">
                 <EditMarkdown
                   initialContent={content}

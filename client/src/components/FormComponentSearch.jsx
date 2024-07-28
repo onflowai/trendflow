@@ -68,6 +68,7 @@ const Container = styled.div`
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
     width: 35px;
     transition: width 0.3s ease, transform 0.3s ease;
 

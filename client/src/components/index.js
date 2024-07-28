@@ -56,3 +56,4 @@ export { default as AddInfoHubModal } from './AddInfoHubModal';
 export { default as DangerousMarkdown } from './DangerousMarkdown';
 export { default as TrendIconList } from './TrendIconList';
 export { default as EditMarkdown } from './EditMarkdown';
+export { default as SelectTrends } from './SelectTrends';
