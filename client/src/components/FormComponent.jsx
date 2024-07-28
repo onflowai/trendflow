@@ -15,7 +15,7 @@ const FormComponent = ({ type, name, labelText, defaultValue }) => {
         id={name}
         name={name}
         className="form-input"
-        defaultValue={defaultValue || ''}
+        placeholder={defaultValue || ''}
         required
       />
     </div>

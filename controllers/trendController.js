@@ -411,10 +411,10 @@ export const searchTrends = async (req, res) => {
   try {
     const trends = await trendModel
       .find({
-        trend: { $regex: search, $options: 'i' }, // Case-insensitive search
-        isApproved: true, // Optional: Add any other filters you need, like only approved trends
+        trend: { $regex: search, $options: 'i' }, // case-insensitive search
+        isApproved: true, // optional: Add any other filters you need, like only approved trends
       })
-      .select('trend svg_url');
+      .select('trend svg_url slug');
 
     res.status(StatusCodes.OK).json({ trends });
   } catch (error) {

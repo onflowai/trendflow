@@ -77,6 +77,7 @@ const AddBlog = () => {
             <h4 className="form-title">Create a Blog Post:</h4>
             <div className="form-center">
               <FormComponent
+                defaultValue="Max 50 Characters"
                 type="text"
                 name="title"
                 placeholder="Blog Post Title"
@@ -85,8 +86,10 @@ const AddBlog = () => {
                 required
               />
               <SelectTrends
+                labelText="Select Trend(s)"
                 selectedTrends={selectedTrends}
                 setSelectedTrends={setSelectedTrends}
+                placeholder="Search"
               />
               <div className="edit-markdown">
                 <EditMarkdown

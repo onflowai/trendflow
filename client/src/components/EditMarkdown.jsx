@@ -63,7 +63,7 @@ const Container = styled.div`
     }
     .wmde-markdown-var{
       background-color: var(--grey-50);//tool bar with preview button
-      border-radius: var(--border-radius-inner);
+      /* border-radius: var(--border-radius-inner); */
     }
     .md-editor-toolbar-warp:not(.md-editor-toolbar-bottom) {
       border-bottom: none;//simple line under the tool bar
