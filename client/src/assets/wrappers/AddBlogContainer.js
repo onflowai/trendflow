@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
+  /* margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column; */
 .form-center {
     display: grid;
     grid-template-columns: 1fr; /* default to single column layout */
@@ -14,7 +17,6 @@ const Container = styled.div`
       column-gap: 1rem;
     }
   }
-
   .edit-markdown {
     grid-column: span 2; /* making the markdown editor take up two columns */
     width: 100%; /* take up all the available width */

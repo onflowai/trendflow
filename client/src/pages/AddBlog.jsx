@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SelectTrends,
   UserImgLarge,
@@ -8,12 +8,17 @@ import {
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
+import { IoCloseCircle } from 'react-icons/io5';
 import { useOutletContext } from 'react-router-dom';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 // import '@uiw/react-markdown-editor/dist/markdown-editor.css'; //HERE
-
+/**
+ * AddBlog lets Admin create a blog, if there is
+ * @param {*} param0
+ * @returns
+ */
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -31,6 +36,11 @@ export const action = async ({ request }) => {
   }
 };
 
+const getRandomColor = () => {
+  const colors = ['#fdf8e4', '#ecc3e0', '#b7b6e9'];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 const AddBlog = () => {
   const { user } = useOutletContext(); // Getting the user from DashboardLayout
   const navigation = useNavigation();
@@ -39,6 +49,11 @@ const AddBlog = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedTrends, setSelectedTrends] = useState([]);
+  const [bgColor, setBgColor] = useState(getRandomColor());
+
+  useEffect(() => {
+    setBgColor(getRandomColor());
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -74,6 +89,22 @@ const AddBlog = () => {
       <div className="submit-container">
         <div>
           <Form method="post" className="form" onSubmit={handleSubmit}>
+            {/* HEADER */}
+            <div className="header" style={{ backgroundColor: bgColor }}>
+              <h4 className="header-title">Create a Blog Post:</h4>
+              <div className="delete-container">
+                <IoCloseCircle className="delete-icon" />
+              </div>
+              <div className="submit-container">
+                <button
+                  type="submit"
+                  className="btn btn-block form-btn"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'submitting' : 'submit'}
+                </button>
+              </div>
+            </div>
             <h4 className="form-title">Create a Blog Post:</h4>
             <div className="form-center">
               <FormComponent
@@ -97,13 +128,6 @@ const AddBlog = () => {
                   onContentChange={setContent}
                 />
               </div>
-              <button
-                type="submit"
-                className="btn btn-block form-btn"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'submitting' : 'submit'}
-              </button>
             </div>
           </Form>
         </div>

@@ -57,3 +57,4 @@ export { default as DangerousMarkdown } from './DangerousMarkdown';
 export { default as TrendIconList } from './TrendIconList';
 export { default as EditMarkdown } from './EditMarkdown';
 export { default as SelectTrends } from './SelectTrends';
+export { default as TitleHighlighter } from './TitleHighlighter';

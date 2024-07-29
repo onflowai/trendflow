@@ -41,7 +41,7 @@ function useWindowSize() {
   return isMobile;
 }
 const getRandomColor = () => {
-  const colors = ['#fbeebc', '#e976c7', '#4541de'];
+  const colors = ['#f8f2dc', '#e4b5d6', '#a8a6e2'];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const BlogPage = () => {

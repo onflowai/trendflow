@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getFullIconUrl } from '../utils/urlHelper';
 import { IoTime } from 'react-icons/io5'; // Import the IoTime icon
+import { TitleHighlighter } from '../components';
 
 const BlogTitle = ({ title, username, profileImg, icons, date, bgColor }) => {
-  const titleRef = useRef(null);
-
   return (
     <Container bgColor={bgColor}>
       <div className="title-container">
-        <div className="white-div" ref={titleRef}>
-          <div className="blog-title">{title}</div>
+        <div className="blog-title">
+          <TitleHighlighter title={title} size="3em" />
         </div>
       </div>
       <div className="content-box">
@@ -54,22 +53,11 @@ const Container = styled.div`
   padding: 0.5rem;
 }
 
-  .white-div {
-  background-color: var(--white);
-  border-radius: 10px;
-  display: inline-block;
-  white-space: normal; /* Allows text wrapping */
-  width: fit-content; /* Forces the div to shrink to fit the content */
-  padding: 5px;
-}
-
   .blog-title {
+  margin-left: 0.7rem;
   font-size: 2rem;
   font-weight: bold;
-  line-height: 1.2;
-  white-space: normal; /* Allows natural wrapping */
-  word-wrap: break-word; /* Ensures long words do not overflow */
-}
+  }
 
   .content-box {
     height: 15rem;
