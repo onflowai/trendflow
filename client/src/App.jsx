@@ -46,6 +46,9 @@ import { action as profileAction } from './pages/Profile';
 import { loader as getUserSavedTrends } from './pages/Profile';
 import { loader as blogLoader } from './pages/Blog';
 import { loader as singleBlogLoader } from './pages/BlogPage';
+import { loader as singleEditBlogLoader } from './pages/AddBlog';
+import { action as createBlogAction } from './pages/AddBlog';
+import { action as editBlogAction } from './pages/AddBlog';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -88,6 +91,13 @@ const router = createBrowserRouter([
           {
             path: 'create-blog',
             element: <AddBlog />,
+            action: createBlogAction,
+          },
+          {
+            path: 'edit-blog/:slug',
+            element: <AddBlog />,
+            loader: singleEditBlogLoader,
+            action: editBlogAction,
           },
           {
             path: 'blog/:slug',

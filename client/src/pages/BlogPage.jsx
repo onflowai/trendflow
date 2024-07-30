@@ -41,7 +41,7 @@ function useWindowSize() {
   return isMobile;
 }
 const getRandomColor = () => {
-  const colors = ['#f8f2dc', '#e4b5d6', '#a8a6e2'];
+  const colors = ['#f6f3e7', '#f9dbf0', '#dfdefc'];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const BlogPage = () => {
@@ -87,10 +87,19 @@ const BlogPage = () => {
               title={title}
               username={author.username}
               profileImg={author.profile_img}
-              icons={trends.map((trend) => trend.techIconUrl)}
               date={upDate}
               bgColor={bgColor}
             />
+            <div className="trend-icons">
+              {trends.map((trend, index) => (
+                <img
+                  key={index}
+                  src={getFullIconUrl(trend.techIconUrl)}
+                  alt={trend.trend}
+                  className="tech-icon"
+                />
+              ))}
+            </div>
             <div id="section2" className="blog-content">
               <DangerousMarkdown content={content} />
             </div>

@@ -96,7 +96,7 @@ const Blog = () => {
           )}
         </div>
         <div className="blog-content">
-          <BlogPostList posts={posts} />
+          <BlogPostList posts={posts} user={user} />
         </div>
       </div>
     </Container>

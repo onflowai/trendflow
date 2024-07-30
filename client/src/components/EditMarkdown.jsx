@@ -85,7 +85,7 @@ const Container = styled.div`
       background-color: var(--grey-30);//active line
     }
     .cm-activeLine {
-     background-color: var(--grey-30);//active line
+      background-color: var(--grey-30);//active line
     }
     .md-editor-toolbar button {
       color: var(--grey-100);

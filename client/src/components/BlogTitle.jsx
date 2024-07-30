@@ -4,7 +4,7 @@ import { getFullIconUrl } from '../utils/urlHelper';
 import { IoTime } from 'react-icons/io5'; // Import the IoTime icon
 import { TitleHighlighter } from '../components';
 
-const BlogTitle = ({ title, username, profileImg, icons, date, bgColor }) => {
+const BlogTitle = ({ title, username, profileImg, date, bgColor }) => {
   return (
     <Container bgColor={bgColor}>
       <div className="title-container">
@@ -18,16 +18,6 @@ const BlogTitle = ({ title, username, profileImg, icons, date, bgColor }) => {
             <div className="author-info">
               <img src={profileImg} alt={username} className="author-img" />
               <span>{username}</span>
-            </div>
-            <div className="trend-icons">
-              {icons.map((icon, index) => (
-                <img
-                  key={index}
-                  src={getFullIconUrl(icon)}
-                  alt={`trend-${index}`}
-                  className="tech-icon"
-                />
-              ))}
             </div>
           </div>
           <div className="right-content">
@@ -108,19 +98,6 @@ const Container = styled.div`
     font-size: 0.875rem;
     color: var(--white);
     margin-left: 1rem; /* Add some space between icons and date */
-  }
-
-  .trend-icons {
-    display: flex;
-    align-items: center;
-  }
-
-  .tech-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--white);
-    margin-right: 0.5rem;
   }
 `;
 

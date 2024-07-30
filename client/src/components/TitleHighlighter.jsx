@@ -23,24 +23,24 @@ const HighlightText = styled.div`
   margin-left: -10px;
   border-radius: 8px;
   display: inline-block;
-  margin-bottom: -12px;
+  margin-bottom: -10px;
   white-space: pre-wrap;
-  font-size: 0.8em;
+  font-size: 1em;
 
   @media (max-width: 1200px) {
-    font-size: 0.7em;
+    font-size: 1em;
   }
 
   @media (max-width: 992px) {
-    font-size: 0.7em;
+    font-size: 0.9em;
   }
 
   @media (max-width: 768px) {
-    font-size: 0.6em;
+    font-size: 0.8em;
   }
 
   @media (max-width: 576px) {
-    font-size: 0.5em;
+    font-size: 0.7em;
   }
 `;
 

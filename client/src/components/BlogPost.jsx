@@ -6,12 +6,13 @@ import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
 import CarouselSlider from './CarouselSlider';
 import DangerousMarkdown from './DangerousMarkdown';
 import { truncateMarkdown } from '../utils/helpers';
+import { RiEdit2Fill } from 'react-icons/ri';
 
 /**
  * BlogPost returns each individual blog post
  * @returns
  */
-function BlogPost({ title, content, slug, trends, updatedAt }) {
+function BlogPost({ title, content, slug, trends, author, user, updatedAt }) {
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 300);
   return (
@@ -19,7 +20,16 @@ function BlogPost({ title, content, slug, trends, updatedAt }) {
       <div className="content-wrapper">
         <div className="blog-details">
           <Link to={`/dashboard/blog/${slug}`} className="blog-link">
-            <div className="blog-title">{title}</div>
+            <div className="title-container">
+              <div className="edit-link">
+                {user?.role === 'admin' && user._id === author._id && (
+                  <Link to={`/dashboard/edit-blog/${slug}`} className="edit">
+                    <RiEdit2Fill />
+                  </Link>
+                )}
+              </div>
+              <div className="blog-title">{title}</div>
+            </div>
             <div className="blog-date">
               {upDate}
               {trends.map((trend, index) => (
@@ -67,6 +77,24 @@ const Container = styled.div`
   .carousel {
     margin-left: 20px;
     margin-top: 20px; /* top margin to align with blog content */
+  }
+  .title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .edit-link {
+    color: var(--grey-700);
+    font-size: 1.25rem;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .edit{
+    color: var(--primary2-600);
+  }
+  .edit:hover {
+    color: var(--primary-600);
   }
 
   .blog-link {

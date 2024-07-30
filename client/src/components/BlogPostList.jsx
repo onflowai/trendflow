@@ -6,12 +6,12 @@ import Container from '../assets/wrappers/BlogPostListContainer';
  * @param {*} param0
  * @returns
  */
-function BlogPostList({ posts }) {
+function BlogPostList({ posts, user }) {
   return (
     <Container>
       <div className="posts">
         {posts.map((post) => (
-          <BlogPost key={post._id} {...post} />
+          <BlogPost key={post._id} {...post} user={user} />
         ))}
       </div>
     </Container>

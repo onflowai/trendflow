@@ -50,6 +50,17 @@ const Container = styled.div`
     overflow: hidden;
     box-sizing: border-box;
   }
+  .trend-icons {
+    display: flex;
+    align-items: center;
+  }
+  .tech-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--white);
+    margin-right: 0.5rem;
+  }
 
   @media (max-width: 991px) {
     .blog {

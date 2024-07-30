@@ -32,7 +32,6 @@ const SelectTrends = ({
       callback([]);
     }
   };
-
   const handleChange = (selectedOptions) => {
     setSelectedTrends(selectedOptions || []);
   };
@@ -156,6 +155,7 @@ const SelectTrends = ({
         }}
         styles={customStyles}
         placeholder={placeholder || 'Select...'}
+        key={selectedTrends.map((trend) => trend._id).join('-')}
       />
     </Container>
   );

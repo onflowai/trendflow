@@ -4,12 +4,13 @@ import {
   UserImgLarge,
   EditMarkdown,
   FormComponent,
+  TitleHighlighter,
   CustomErrorToast,
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
 import { IoCloseCircle } from 'react-icons/io5';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useLoaderData, useParams } from 'react-router-dom';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
@@ -19,16 +20,38 @@ import customFetch from '../utils/customFetch';
  * @param {*} param0
  * @returns
  */
-export const action = async ({ request }) => {
+//loader for admin to edit existing blog if the slug is present in params
+export const loader = async ({ params }) => {
+  if (params.slug) {
+    try {
+      const { data } = await customFetch.get(`/blogs/${params.slug}`);
+      return { blog: data };
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+      return redirect('/dashboard');
+    }
+  }
+  return { blog: null };
+};
+//action for admin to create a blog
+export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  data.trends = JSON.parse(data.trends); // Parse trends back to array
-  console.log('Data which is being sent: ', data);
+  data.trends = JSON.parse(data.trends);
   try {
-    await customFetch.post('/blog/create-post', data);
-    toast.success(
-      <CustomSuccessToast message={'Thank You, Blog Post Was Submitted'} />
-    );
+    if (params.slug) {
+      // Update existing blog
+      await customFetch.patch(`/blogs/${params.slug}`, data);
+      toast.success(
+        <CustomSuccessToast message={'Blog post updated successfully!'} />
+      );
+    } else {
+      // Create new blog
+      await customFetch.post('/blog/create-post', data);
+      toast.success(
+        <CustomSuccessToast message={'Blog post created successfully!'} />
+      );
+    }
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -37,23 +60,30 @@ export const action = async ({ request }) => {
 };
 
 const getRandomColor = () => {
-  const colors = ['#fdf8e4', '#ecc3e0', '#b7b6e9'];
+  const colors = ['#fcf9ed', '#fcedf8', '#f1f1ff'];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
 const AddBlog = () => {
   const { user } = useOutletContext(); // Getting the user from DashboardLayout
+  const { blog } = useLoaderData();
+  const { slug } = useParams();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [selectedTrends, setSelectedTrends] = useState([]);
+  const [title, setTitle] = useState(blog ? blog.title : '');
+  const [content, setContent] = useState(blog ? blog.content : '');
+  const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
 
   useEffect(() => {
+    if (blog) {
+      setTitle(blog.title);
+      setContent(blog.content);
+      setSelectedTrends(blog.trends);
+    }
     setBgColor(getRandomColor());
-  }, []);
+  }, [blog]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -91,7 +121,9 @@ const AddBlog = () => {
           <Form method="post" className="form" onSubmit={handleSubmit}>
             {/* HEADER */}
             <div className="header" style={{ backgroundColor: bgColor }}>
-              <h4 className="header-title">Create a Blog Post:</h4>
+              <TitleHighlighter
+                title={slug ? 'Edit Blog Post:' : 'Create a Blog Post:'}
+              />
               <div className="delete-container">
                 <IoCloseCircle className="delete-icon" />
               </div>
@@ -105,7 +137,6 @@ const AddBlog = () => {
                 </button>
               </div>
             </div>
-            <h4 className="form-title">Create a Blog Post:</h4>
             <div className="form-center">
               <FormComponent
                 defaultValue="Max 50 Characters"
