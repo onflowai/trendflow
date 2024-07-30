@@ -4,7 +4,14 @@ import React from 'react';
  * @param {*} param0
  * @returns
  */
-const FormComponent = ({ type, name, labelText, defaultValue }) => {
+const FormComponent = ({
+  type,
+  name,
+  labelText,
+  defaultValue,
+  value,
+  onChange,
+}) => {
   return (
     <div className="form-row">
       <label htmlFor={name} className="form-label">
@@ -16,6 +23,8 @@ const FormComponent = ({ type, name, labelText, defaultValue }) => {
         name={name}
         className="form-input"
         placeholder={defaultValue || ''}
+        value={value} // Controlled input
+        onChange={onChange} // Handle changes
         required
       />
     </div>

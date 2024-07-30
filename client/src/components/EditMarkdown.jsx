@@ -25,7 +25,7 @@ const EditMarkdown = ({ initialContent, onContentChange }) => {
             visible={true} /* Automatically show preview */
             toolbars={false} /* Remove toolbar */
             enableScroll={true} /* Enable scrolling */
-            height="500px"
+            height="700px"
           />
           <div className="bottom-bar"></div>
         </div>
@@ -75,7 +75,7 @@ const Container = styled.div`
       background-color: var(--white);
     }
     .md-editor-preview {
-      background-color: var(--white);
+      /* background-color: var(--white); *///the editor goes into dark mode on its own..
       height: 100%;
     }
     .md-editor-preview{
@@ -100,7 +100,7 @@ const Container = styled.div`
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 25px; /* Adjust the height as needed */
+      height: 25px;
       background-color: var(--grey-50);
       border-bottom-left-radius: var(--border-radius-inner);
       border-bottom-right-radius: var(--border-radius-inner);

@@ -25,7 +25,13 @@ export const loader = async ({ params }) => {
   if (params.slug) {
     try {
       const { data } = await customFetch.get(`/blogs/${params.slug}`);
-      return { blog: data };
+      const formattedTrends = data.trends.map((trend) => ({
+        value: trend._id,
+        label: trend.trend,
+        svg_url: trend.svg_url,
+        slug: trend.slug,
+      }));
+      return { blog: { ...data, trends: formattedTrends } };
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
       return redirect('/dashboard');
@@ -66,8 +72,9 @@ const getRandomColor = () => {
 
 const AddBlog = () => {
   const { user } = useOutletContext(); // Getting the user from DashboardLayout
-  const { blog } = useLoaderData();
   const { slug } = useParams();
+  const loaderData = slug ? useLoaderData() : { blog: null };
+  const blog = loaderData?.blog;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
 
@@ -84,7 +91,6 @@ const AddBlog = () => {
     }
     setBgColor(getRandomColor());
   }, [blog]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const trendIds = selectedTrends.map((trend) => trend._id);
