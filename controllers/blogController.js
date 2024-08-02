@@ -15,6 +15,7 @@ export const createPost = async (req, res) => {
     title = sanitizeHTML(title);
     content = sanitizeHTML(content);
     const author = req.user.userID; // populating author with userID from the authenticated user
+    console.log('Sanitized data:', { title, content, author, trends });
     const validTrends = await trendModel.find({ _id: { $in: trends } });
     if (validTrends.length !== trends.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({

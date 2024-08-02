@@ -4,27 +4,28 @@ import MarkdownEditor from '@uiw/react-markdown-editor';
 // import '@uiw/react-markdown-editor/dist/markdown-editor.css';
 
 const EditMarkdown = ({ initialContent, onContentChange }) => {
-  const [content, setContent] = useState(initialContent || '');
+  const [content, setContent] = useState(initialContent || ''); // initializing state for content with initialContent or an empty string if not provided
 
   useEffect(() => {
     setContent(initialContent);
   }, [initialContent]);
 
   const handleChange = (editor, data, value) => {
-    setContent(value);
-    onContentChange(value);
-  };
+    const newValue = editor; // using the first argument as the content
+    setContent(newValue);
+    onContentChange(newValue);
+  }; // useEffect hook to update content state whenever initialContent changes
 
   return (
     <Outline>
       <Container>
         <div className="edit-markdown">
           <MarkdownEditor
-            value={content}
+            value={content} // set the value of the editor to the content state
             onChange={handleChange}
-            visible={true} /* Automatically show preview */
-            toolbars={false} /* Remove toolbar */
-            enableScroll={true} /* Enable scrolling */
+            visible={true} /* automatically show preview */
+            toolbars={false} /* remove toolbar */
+            enableScroll={true} /* enable scrolling */
             height="700px"
           />
           <div className="bottom-bar"></div>
@@ -75,8 +76,11 @@ const Container = styled.div`
       background-color: var(--white);
     }
     .md-editor-preview {
-      /* background-color: var(--white); *///the editor goes into dark mode on its own..
+      background-color: var(--white); //the editor goes into dark mode on its own..
       height: 100%;
+    }
+    .wmde-markdown-color{
+      background-color: var(--white); 
     }
     .md-editor-preview{
       border-left: 1.5px solid var(--grey-50) !important;

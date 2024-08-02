@@ -39,21 +39,37 @@ export const loader = async ({ params }) => {
   }
   return { blog: null };
 };
-//action for admin to create a blog
+//action for admin to create / update blog
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   data.trends = JSON.parse(data.trends);
+
+  // // Ensure trends is not undefined before parsing
+  // if (data.trends) {
+  //   try {
+  //     data.trends = JSON.parse(data.trends);
+  //   } catch (error) {
+  //     console.error('Error parsing trends:', error); // Debugging line
+  //     return {
+  //       error: 'Invalid trends data',
+  //     };
+  //   }
+  // } else {
+  //   data.trends = [];
+  // }
+
   try {
     if (params.slug) {
       // Update existing blog
       await customFetch.patch(`/blogs/${params.slug}`, data);
+      console.log('data: ', data);
       toast.success(
         <CustomSuccessToast message={'Blog post updated successfully!'} />
       );
     } else {
       // Create new blog
-      await customFetch.post('/blog/create-post', data);
+      await customFetch.post('/blogs/create-post', data);
       toast.success(
         <CustomSuccessToast message={'Blog post created successfully!'} />
       );
@@ -80,6 +96,7 @@ const AddBlog = () => {
 
   const [title, setTitle] = useState(blog ? blog.title : '');
   const [content, setContent] = useState(blog ? blog.content : '');
+  console.log('content ', content);
   const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
 
@@ -91,24 +108,24 @@ const AddBlog = () => {
     }
     setBgColor(getRandomColor());
   }, [blog]);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const trendIds = selectedTrends.map((trend) => trend._id);
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const trendIds = selectedTrends.map((trend) => trend._id);
 
-    try {
-      await customFetch.post('/blog/create-post', {
-        title,
-        content,
-        author: user._id,
-        trends: trendIds,
-      });
-      toast.success(
-        <CustomSuccessToast message={'Blog post created successfully!'} />
-      );
-    } catch (error) {
-      toast.error(<CustomErrorToast message={'Failed to create blog post.'} />);
-    }
-  };
+  //   try {
+  //     await customFetch.post('/blog/create-post', {
+  //       title,
+  //       content,
+  //       author: user._id,
+  //       trends: trendIds,
+  //     });
+  //     toast.success(
+  //       <CustomSuccessToast message={'Blog post created successfully!'} />
+  //     );
+  //   } catch (error) {
+  //     toast.error(<CustomErrorToast message={'Failed to create blog post.'} />);
+  //   }
+  // };
 
   return (
     <Container>
@@ -124,7 +141,7 @@ const AddBlog = () => {
       </div>
       <div className="submit-container">
         <div>
-          <Form method="post" className="form" onSubmit={handleSubmit}>
+          <Form method="post" className="form">
             {/* HEADER */}
             <div className="header" style={{ backgroundColor: bgColor }}>
               <TitleHighlighter
@@ -156,13 +173,29 @@ const AddBlog = () => {
               <SelectTrends
                 labelText="Select Trend(s)"
                 selectedTrends={selectedTrends}
-                setSelectedTrends={setSelectedTrends}
+                setSelectedTrends={(trends) => {
+                  setSelectedTrends(trends);
+                  const trendsField = document.querySelector(
+                    'input[name="trends"]'
+                  );
+                  const trendIds = trends.map((trend) => trend.value); // Extracting only the IDs
+                  trendsField.value = JSON.stringify(trendIds);
+                }}
                 placeholder="Search"
+              />
+              <input
+                type="hidden"
+                name="trends"
+                value={JSON.stringify(
+                  selectedTrends.map((trend) => trend.value)
+                )}
               />
               <div className="edit-markdown">
                 <EditMarkdown
                   initialContent={content}
-                  onContentChange={setContent}
+                  onContentChange={(value) => {
+                    setContent(value);
+                  }}
                 />
               </div>
             </div>
