@@ -74,7 +74,7 @@ export const action = async ({ request, params }) => {
         <CustomSuccessToast message={'Blog post created successfully!'} />
       );
     }
-    return redirect('/dashboard');
+    return redirect('/dashboard/blog');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return error;
@@ -198,6 +198,7 @@ const AddBlog = () => {
                   }}
                 />
               </div>
+              <input type="hidden" name="content" value={content} />
             </div>
           </Form>
         </div>
