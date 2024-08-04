@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '../assets/wrappers/SidebarContainer';
 import { useDashboardContext } from '../pages/DashboardLayout';
+import { SidebarSetting } from '../components';
 import { dashboardLinks } from '../assets/utils/data';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
@@ -22,7 +23,12 @@ const Sidebar = () => {
           <header>
             <Logo />
           </header>
-          <NavLinks isSidebar />
+          <div>
+            <NavLinks isSidebar />
+          </div>
+          <div className="sidebar-settings-container">
+            <SidebarSetting />
+          </div>
         </div>
       </div>
     </Container>
