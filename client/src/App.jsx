@@ -16,6 +16,7 @@ import {
   Blog,
   AddBlog,
   BlogPage,
+  Settings,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
 /**
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
             path: 'trend/:slug',
             element: <TrendPage />,
             loader: singleTrendLoader,
+          },
+          {
+            path: 'settings',
+            element: <Settings />,
           },
         ],
       },
