@@ -79,7 +79,7 @@ const Container = styled.div`
     color: var(--grey-500); // Change color on hover
   }
   .settings-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-primary-color);
     transition: color 0.3s ease;

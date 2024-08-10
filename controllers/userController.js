@@ -124,13 +124,13 @@ export const updateUserImage = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-export const getApplicationStats = async (req, res) => {
+export const getAdminApplicationStats = async (req, res) => {
   const users = await userModel.countDocuments();
   const trends = await trendModel.countDocuments();
   const approved = await trendModel.countDocuments({ isApproved: true });
   const unapproved = await trendModel.countDocuments({ isApproved: false });
   res.status(StatusCodes.OK).json({ users, trends, approved, unapproved });
-}; //end getApplicationStats
+}; //end getAdminApplicationStats
 
 /**
  * SAVE USER BOOKMARKED TREND

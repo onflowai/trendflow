@@ -59,3 +59,4 @@ export { default as EditMarkdown } from './EditMarkdown';
 export { default as SelectTrends } from './SelectTrends';
 export { default as TitleHighlighter } from './TitleHighlighter';
 export { default as SidebarSetting } from './SidebarSetting';
+export { default as ChartSettingsComponent } from './ChartSettingsComponent';

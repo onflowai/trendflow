@@ -50,6 +50,7 @@ import { loader as singleBlogLoader } from './pages/BlogPage';
 import { loader as singleEditBlogLoader } from './pages/AddBlog';
 import { action as createBlogAction } from './pages/AddBlog';
 import { action as editBlogAction } from './pages/AddBlog';
+import { loader as allStatsLoader } from './pages/Settings';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -135,6 +136,7 @@ const router = createBrowserRouter([
           {
             path: 'settings',
             element: <Settings />,
+            loader: allStatsLoader,
           },
         ],
       },

@@ -102,4 +102,49 @@ export const adminStats = async (req, res) => {
   ]);
 
   res.status(StatusCodes.OK).json({ monthUsers, monthTrends, guestUserVisit });
+}; //end adminStats
+//APP STATS: returns count of monthly approved-trend
+export const appTrendStats = async (req, res) => {
+  try {
+    // Aggregating the approved trends
+    let monthTrends = await trendModel.aggregate([
+      { $match: { isApproved: true } }, // Match only approved trends
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' }, // Group by year
+            month: { $month: '$createdAt' }, // Group by month
+          },
+          count: { $sum: 1 }, // Count the number of trends
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the _id field
+          year: '$_id.year', // Include year in the output
+          month: '$_id.month', // Include month in the output
+          count: 1, // Include the count of trends
+        },
+      },
+      {
+        $sort: { year: 1, month: 1 }, // Sort the results by year and month
+      },
+    ]);
+
+    // Formatting the date
+    monthTrends = monthTrends.map((trend) => {
+      const { count, year, month } = trend;
+      const date = day()
+        .month(month - 1)
+        .year(year)
+        .format('MMM YYYY')
+        .toUpperCase();
+      return { date, count };
+    });
+
+    res.status(200).json({ monthTrends });
+  } catch (error) {
+    // Handling any errors
+    res.status(500).json({ message: 'Server error' });
+  }
 };

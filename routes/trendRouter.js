@@ -16,7 +16,7 @@ import {
   getSelectIconData,
   getApprovedTrends,
 } from '../controllers/trendController.js';
-import { adminStats } from '../controllers/visitController.js';
+import { adminStats, appTrendStats } from '../controllers/visitController.js';
 import {
   validateSlugParam,
   validateTrendInput,
@@ -58,6 +58,7 @@ router
   );
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router.route('/admin/stats').get(adminStats);
+router.route('/app/stats').get(authenticateUser, appTrendStats);
 router
   .route('/admin/all-trends')
   .get(authenticateUser, authorizedPermissions('delete'), getAllTrends);

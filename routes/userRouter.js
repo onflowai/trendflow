@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { logVisit } from '../controllers/visitController.js';
 import {
-  getApplicationStats,
-  getCurrentUser,
   updateUser,
   saveUserTrend,
+  getCurrentUser,
   removeUserTrend,
-  getUserSavedTrends,
   updateUserImage,
+  getUserSavedTrends,
+  getAdminApplicationStats,
 } from '../controllers/userController.js';
 import {
   authenticateUser,
@@ -23,7 +23,7 @@ router.get(
   '/admin/app-stats',
   authenticateUser,
   authorizedPermissions('delete'),
-  getApplicationStats
+  getAdminApplicationStats
 );
 router.patch(
   '/update-user',
