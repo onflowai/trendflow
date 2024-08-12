@@ -18,8 +18,9 @@ const Container = styled.div`
   .btn-container:not(:last-child)::after {
     content: '';
     display: block;
-    width: 1px;
+    width: 1.5px;
     height: 24px;
+    background-color: var(--grey-70);
     margin-left: 10px;
   }
 

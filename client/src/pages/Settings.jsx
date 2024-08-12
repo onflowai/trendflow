@@ -92,6 +92,7 @@ const Settings = () => {
           <button className="quick-tool">Placeholder Tool 2</button>
         </div>
       </div>
+      {/* TABS START HERE */}
     </Container>
   );
 };

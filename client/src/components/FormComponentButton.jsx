@@ -51,19 +51,20 @@ const Container = styled.div`
     align-items: center;
   }
   .form-input {
+    border-radius: var(--round-radius);
     /* flex: 2; */
     height: 35px;
     padding-right: 4.5em; /* Adjust padding to prevent text overlap with button */
   }
   .action-button {
+    border-radius: var(--round-radius);
     position: absolute;
-    right: 0.2em;
+    right: 0.4em;
     top: 45%; /* Center vertically */
     transform: translateY(-45%);
     height: calc(90% - 9em); /* Adjust height to match input height */
     background-color: var(--grey-70);
     border: none;
-    border-radius: var(--input-radius);
     border: 1px solid var(--grey-200);
     cursor: pointer;
     padding: 0 1em;
