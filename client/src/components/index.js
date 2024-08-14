@@ -60,3 +60,4 @@ export { default as SelectTrends } from './SelectTrends';
 export { default as TitleHighlighter } from './TitleHighlighter';
 export { default as SidebarSetting } from './SidebarSetting';
 export { default as ChartSettingsComponent } from './ChartSettingsComponent';
+export { default as FormComponentLogoBtn } from './FormComponentLogoBtn';

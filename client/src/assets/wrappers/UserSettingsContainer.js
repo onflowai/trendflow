@@ -55,15 +55,15 @@ const Container = styled.div`
 }
 
 .status-box.verified {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background-color: var(--green-light);
+  color: var(--green);
+  border: 1px solid var( --green-light);
 }
 
 .status-box.not-verified {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background-color: var(--red-light);
+  color: var(--red-dark);
+  border: 1px solid var(--red);
 }
 
   .status,

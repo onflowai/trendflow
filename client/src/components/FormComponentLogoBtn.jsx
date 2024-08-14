@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { getFullIconUrl } from '../utils/urlHelper';
+
 /**
  * This component is responsible for all the inputs in the register form which is displayed in the Register.jsx
  * @param {*} param0
  * @returns
  */
-const FormComponentButton = ({
+const FormComponentLogoBtn = ({
   type,
   name,
   labelText,
@@ -19,6 +21,11 @@ const FormComponentButton = ({
         <label htmlFor={name} className="form-label">
           {labelText || name}
         </label>
+        <img
+          src={getFullIconUrl('/assets/github-actions.svg')}
+          alt="icon"
+          className="button-icon"
+        />
         <input
           id={name}
           name={name}
@@ -27,7 +34,7 @@ const FormComponentButton = ({
           defaultValue={defaultValue || ''}
           required
         />
-        <button type="button" className="action-button" onClick={onClick}>
+        <button type="button" className="action-button-logo" onClick={onClick}>
           {buttonText}
         </button>
       </div>
@@ -36,7 +43,7 @@ const FormComponentButton = ({
 };
 
 const Container = styled.div`
-.input-button-container {
+  .input-button-container {
     display: flex;
     flex-direction: column;
   }
@@ -50,23 +57,25 @@ const Container = styled.div`
     display: flex;
     align-items: center;
   }
+
   .form-input-btn {
     border-radius: var(--round-radius);
     width: 100%;
     padding: 0.375rem 0.75rem;
     background: var(--background-color);
-    border: 1.5px solid var(--grey-50); /* Changed to match better styling */
+    border: 1.5px solid var(--grey-50); 
     color: var(--text-color);
     height: 35px;
-    padding-right: 4.5em; /* Adjust padding to prevent text overlap with button */
+    padding-right: 4.5em; 
   }
-  .action-button {
+
+  .action-button-logo {
     border-radius: var(--round-radius);
     position: absolute;
     right: 0.4em;
-    top: 45%; /* Center vertically */
+    top: 45%; 
     transform: translateY(-45%);
-    height: calc(90% - 9em); /* Adjust height to match input height */
+    height: calc(90% - 9em); 
     background-color: var(--grey-70);
     border: none;
     border: 1px solid var(--grey-200);
@@ -76,13 +85,22 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-  &:hover {
-      background-color: var(--grey-50); /* Color on hover */
+
+    &:hover {
+      background-color: var(--grey-50); 
     }
+
     &:active {
-      background-color: var(--grey-100); /* Color on click */
+      background-color: var(--grey-100); 
     }
+  }
+
+  .button-icon {
+    width: 16px; /* Adjust size as needed */
+    height: 16px; 
+    margin-right: 0.5em; /* Spacing between icon and text */
+    border-radius: 50%; /* Makes the icon round */
   }
 `;
 
-export default FormComponentButton;
+export default FormComponentLogoBtn;

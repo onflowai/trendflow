@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Container from '../assets/wrappers/UserSettingsContainer';
-import { FormComponentButton, ToggleSwitch, Dropdown } from '../components';
+import {
+  FormComponentButton,
+  ToggleSwitch,
+  Dropdown,
+  FormComponentLogoBtn,
+} from '../components';
 import { CiSettings } from 'react-icons/ci';
 /**
  *
@@ -9,15 +14,33 @@ import { CiSettings } from 'react-icons/ci';
  */
 const UserSettings = ({
   email,
+  githubUsername,
   isVerified,
   onUpdateEmail,
   onTogglePrivacy,
   onOptionClick,
 }) => {
+  //EMAIL UPDATE
   const handleUpdateEmail = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target.closest('form'));
     onUpdateEmail({ request: { formData } });
+  };
+  //GITHUB USERNAME UPDATE
+  const handleUpdateGithub = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target.closest('form'));
+    const username = formData.get('githubUsername').trim();
+
+    if (!username) {
+      return toast.error(
+        <CustomErrorToast
+          message={`Please append your username to "https://github.com/<username>"`}
+        />
+      );
+    }
+
+    onUpdateGithubUsername({ request: { formData } });
   };
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
@@ -49,6 +72,13 @@ const UserSettings = ({
           defaultValue={email}
           buttonText="Update"
           onClick={handleUpdateEmail}
+        />
+        <FormComponentLogoBtn
+          type="email"
+          name="email"
+          defaultValue={githubUsername}
+          buttonText="Link Github Account"
+          onClick={handleUpdateGithub}
         />
       </div>
       <div className="settings-section">
