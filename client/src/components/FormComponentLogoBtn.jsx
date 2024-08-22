@@ -17,10 +17,10 @@ const FormComponentLogoBtn = ({
 }) => {
   return (
     <Container>
-      <div className="input-button-container">
-        <label htmlFor={name} className="form-label">
-          {labelText || name}
-        </label>
+      <label htmlFor={name} className="form-label">
+        {labelText || name}
+      </label>
+      <div className="input-wrapper">
         <img
           src={getFullIconUrl('/assets/github-actions.svg')}
           alt="icon"
@@ -43,63 +43,59 @@ const FormComponentLogoBtn = ({
 };
 
 const Container = styled.div`
-  .input-button-container {
-    display: flex;
-    flex-direction: column;
-  }
-
   .form-label {
     margin-bottom: 0.5rem;
+    display: block;
   }
 
   .input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%; /* Ensure the input wrapper takes full width */
+  }
+
+  .button-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.5em;
+    border-radius: 50%;
   }
 
   .form-input-btn {
+    flex: 1;
+    width: 100%; /* Ensure the input takes full width */
     border-radius: var(--round-radius);
-    width: 100%;
-    padding: 0.375rem 0.75rem;
+    padding: 0rem 0.75rem;
     background: var(--background-color);
-    border: 1.5px solid var(--grey-50); 
+    border: 1.5px solid var(--grey-50);
     color: var(--text-color);
     height: 35px;
-    padding-right: 4.5em; 
+    padding-right: 0em;
   }
 
   .action-button-logo {
     border-radius: var(--round-radius);
-    position: absolute;
-    right: 0.4em;
-    top: 45%; 
-    transform: translateY(-45%);
-    height: calc(90% - 9em); 
     background-color: var(--grey-70);
     border: none;
     border: 1px solid var(--grey-200);
     cursor: pointer;
     padding: 0 1em;
     color: white;
+    margin-left: -1.5em;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
     &:hover {
-      background-color: var(--grey-50); 
+      background-color: var(--grey-50);
     }
 
     &:active {
-      background-color: var(--grey-100); 
+      background-color: var(--grey-100);
     }
-  }
-
-  .button-icon {
-    width: 16px; /* Adjust size as needed */
-    height: 16px; 
-    margin-right: 0.5em; /* Spacing between icon and text */
-    border-radius: 50%; /* Makes the icon round */
   }
 `;
 

@@ -13,10 +13,10 @@ const Container = styled.div`
   }
 
   .email-section {
-    /* display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem; */
+    display: grid;
+    grid-template-columns: 1fr; /* Ensure single column layout */
+    gap: 1rem; /* Add space between the components */
+    margin-bottom: 1rem;
   }
   .email-form {
   }

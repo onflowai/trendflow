@@ -15,10 +15,10 @@ const FormComponentButton = ({
 }) => {
   return (
     <Container>
-      <div className="input-button-container">
-        <label htmlFor={name} className="form-label">
-          {labelText || name}
-        </label>
+      <label htmlFor={name} className="form-label">
+        {labelText || name}
+      </label>
+      <div className="input-wrapper">
         <input
           id={name}
           name={name}
@@ -36,51 +36,51 @@ const FormComponentButton = ({
 };
 
 const Container = styled.div`
-.input-button-container {
-    display: flex;
-    flex-direction: column;
-  }
-
   .form-label {
     margin-bottom: 0.5rem;
+    display: block;
   }
 
   .input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%; /* Ensure the input wrapper takes full width */
   }
+
   .form-input-btn {
+    flex: 1;
+    width: 100%; /* Ensure the input takes full width */
     border-radius: var(--round-radius);
-    width: 100%;
     padding: 0.375rem 0.75rem;
     background: var(--background-color);
-    border: 1.5px solid var(--grey-50); /* Changed to match better styling */
+    border: 1.5px solid var(--grey-50);
     color: var(--text-color);
     height: 35px;
-    padding-right: 4.5em; /* Adjust padding to prevent text overlap with button */
+    padding-right: 4.5em;
   }
+
   .action-button {
     border-radius: var(--round-radius);
-    position: absolute;
-    right: 0.4em;
-    top: 45%; /* Center vertically */
-    transform: translateY(-45%);
-    height: calc(90% - 9em); /* Adjust height to match input height */
     background-color: var(--grey-70);
     border: none;
     border: 1px solid var(--grey-200);
     cursor: pointer;
     padding: 0 1em;
     color: white;
+    margin-left: -4.5em;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-  &:hover {
-      background-color: var(--grey-50); /* Color on hover */
+    z-index: 1;
+
+    &:hover {
+      background-color: var(--grey-50);
     }
+
     &:active {
-      background-color: var(--grey-100); /* Color on click */
+      background-color: var(--grey-100);
     }
   }
 `;
