@@ -1,40 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getFullIconUrl } from '../utils/urlHelper';
 
-/**
- * This component is responsible for all the inputs in the register form which is displayed in the Register.jsx
- * @param {*} param0
- * @returns
- */
 const FormComponentLogoBtn = ({
   type,
   name,
   labelText,
-  defaultValue,
+  defaultValue = '',
   buttonText,
   onClick,
+  baseUrl,
+  iconUrl,
 }) => {
+  const [inputValue, setInputValue] = useState(`${baseUrl}${defaultValue}`); //if defaultValue is empty, inputValue will just be github.com/
+  console.log('defaultValue', defaultValue);
+
+  const handleInputChange = (e) => {
+    const inputText = e.target.value;
+    console.log('inputText', inputText);
+    if (inputText.startsWith(baseUrl)) {
+      setInputValue(inputText);
+    } else {
+      setInputValue(baseUrl);
+    }
+  }; //ensuring that the baseUrl part https://github.com/ remains intact at the beginning of the input field
+
+  const handleFocus = (e) => {
+    const inputElement = e.target;
+    if (inputElement.value === baseUrl) {
+      inputElement.setSelectionRange(baseUrl.length, baseUrl.length);
+    }
+  }; // user focuses on the input this function makes sure that the cursor is placed after the baseUrl portion
+
+  const handleClickInput = (e) => {
+    const inputElement = e.target;
+    if (inputElement.selectionStart < baseUrl.length) {
+      inputElement.setSelectionRange(baseUrl.length, baseUrl.length);
+    }
+  }; //ensuring that when the user clicks within the input field they can't place the cursor before the baseUrl
+
+  //onclick username (part after baseUrl passed as an argument)
   return (
     <Container>
       <label htmlFor={name} className="form-label">
         {labelText || name}
       </label>
       <div className="input-wrapper">
-        <img
-          src={getFullIconUrl('/assets/github-actions.svg')}
-          alt="icon"
-          className="button-icon"
-        />
+        <img src={getFullIconUrl(iconUrl)} alt="icon" className="button-icon" />
         <input
           id={name}
           name={name}
           type={type}
           className="form-input-btn"
-          defaultValue={defaultValue || ''}
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onClick={handleClickInput}
           required
         />
-        <button type="button" className="action-button-logo" onClick={onClick}>
+        <button
+          type="button"
+          className="action-button-logo"
+          onClick={() => onClick(inputValue.replace(baseUrl, ''))}
+        >
           {buttonText}
         </button>
       </div>
@@ -52,42 +80,48 @@ const Container = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%; /* Ensure the input wrapper takes full width */
+    width: 100%;
   }
 
   .button-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    margin-right: 0.5em;
     border-radius: 50%;
+    z-index: 1;
   }
 
   .form-input-btn {
     flex: 1;
-    width: 100%; /* Ensure the input takes full width */
+    padding-left: 30px; /* Add padding to make space for the icon */
     border-radius: var(--round-radius);
-    padding: 0rem 0.75rem;
     background: var(--background-color);
     border: 1.5px solid var(--grey-50);
     color: var(--text-color);
     height: 35px;
-    padding-right: 0em;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .action-button-logo {
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
     border-radius: var(--round-radius);
     background-color: var(--grey-70);
-    border: none;
-    border: 1px solid var(--grey-200);
+    border: 1px solid var(--grey-100);
     cursor: pointer;
     padding: 0 1em;
     color: white;
-    margin-left: -1.5em;
-    height: 100%;
+    height: calc(100% - 10px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 2;
 
     &:hover {
       background-color: var(--grey-50);

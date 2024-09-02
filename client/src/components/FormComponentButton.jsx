@@ -36,7 +36,7 @@ const FormComponentButton = ({
 };
 
 const Container = styled.div`
-  .form-label {
+.form-label {
     margin-bottom: 0.5rem;
     display: block;
   }
@@ -52,28 +52,30 @@ const Container = styled.div`
     flex: 1;
     width: 100%; /* Ensure the input takes full width */
     border-radius: var(--round-radius);
-    padding: 0.375rem 0.75rem;
+    padding: 0.375rem 1em; /* Add padding to the right for the button */
     background: var(--background-color);
     border: 1.5px solid var(--grey-50);
     color: var(--text-color);
     height: 35px;
-    padding-right: 4.5em;
+    box-sizing: border-box; /* Ensure padding is included in width calculation */
   }
 
   .action-button {
+    position: absolute; /* Position the button inside the input */
+    right: 0.5em; /* Adjust to position inside the input */
+    top: 50%;
+    transform: translateY(-50%);
     border-radius: var(--round-radius);
     background-color: var(--grey-70);
-    border: none;
     border: 1px solid var(--grey-200);
     cursor: pointer;
     padding: 0 1em;
     color: white;
-    margin-left: -4.5em;
-    height: 100%;
+    height: calc(100% - 10px); /* Match input height, accounting for border */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 1; /* Ensure button is above the input */
 
     &:hover {
       background-color: var(--grey-50);

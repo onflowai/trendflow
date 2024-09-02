@@ -119,6 +119,17 @@ const Container = styled.main`
     border: 1.5px solid var(--grey-50);
     padding: 1rem 1rem;
     margin-top: 1rem;
+    width: 100%; 
+  }
+  .input-wrapper {
+  width: 100%; /* Ensure the input wrapper spans the full width */
+  display: flex;
+  align-items: center;
+  }
+
+  .form-input-btn {
+    flex: 1;
+    width: 100%; /* Ensure the input spans the full width */
   }
 
   .form-label-user {

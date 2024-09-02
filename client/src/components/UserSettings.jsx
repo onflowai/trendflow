@@ -27,11 +27,7 @@ const UserSettings = ({
     onUpdateEmail({ request: { formData } });
   };
   //GITHUB USERNAME UPDATE
-  const handleUpdateGithub = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target.closest('form'));
-    const username = formData.get('githubUsername').trim();
-
+  const handleUpdateGithub = (username) => {
     if (!username) {
       return toast.error(
         <CustomErrorToast
@@ -39,6 +35,9 @@ const UserSettings = ({
         />
       );
     }
+
+    const formData = new FormData();
+    formData.append('githubUsername', username);
 
     onUpdateGithubUsername({ request: { formData } });
   };
@@ -74,11 +73,13 @@ const UserSettings = ({
           onClick={handleUpdateEmail}
         />
         <FormComponentLogoBtn
-          type="email"
-          name="email"
+          type="text"
+          name="link github account"
           defaultValue={githubUsername}
-          buttonText="Link Github Account"
+          buttonText="Link Github"
           onClick={handleUpdateGithub}
+          baseUrl="github.com/"
+          iconUrl="/assets/github-actions.svg"
         />
       </div>
       <div className="settings-section">
