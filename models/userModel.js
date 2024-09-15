@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema(
       enum: ['user', 'admin', 'guestUser'],
       default: 'user',
     },
+    githubUsername: {
+      type: String,
+      default: '',
+    },
     profile_img: String,
     profile_img_id: String,
     savedTrends: [

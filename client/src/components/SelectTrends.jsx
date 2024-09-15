@@ -3,7 +3,11 @@ import AsyncSelect from 'react-select/async';
 import customFetch from '../utils/customFetch';
 import styled from 'styled-components';
 import { getFullTrendUrl } from '../utils/urlHelper';
-
+/**
+ * Used In AddBlog to select trends which will be part of the blog that admin is creating
+ * @param {*} param0
+ * @returns
+ */
 const SelectTrends = ({
   selectedTrends,
   setSelectedTrends,

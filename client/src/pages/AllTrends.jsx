@@ -40,13 +40,14 @@ export const loader = async ({ request }) => {
     );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
     const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
-    const trendsTechIconUrl = trendsData.trends.map((trend) => ({
+    const trendsWithIcons = trendsData.trends.map((trend) => ({
       ...trend,
       techIconUrl: getFullIconUrl(trend.techIconUrl),
+      cateIconUrl: getFullIconUrl(trend.cateIconUrl),
     })); // using utility function to prepend base URL to iconUrl with trends tech url for icon
 
     return {
-      trends: { trends: trendsTechIconUrl },
+      trends: { trends: trendsWithIcons },
       savedTrendIds,
       searchValues: { ...params },
     };
@@ -85,7 +86,8 @@ const onRemove = async (_id) => {
   }
 };
 const AllTrends = () => {
-  const { trends, savedTrendIds, error, searchValues } = useLoaderData();
+  const { trends, savedTrendIds, error, searchValues, trendCategories } =
+    useLoaderData();
   console.log('TRENDS: ', trends);
   const [trendCategory, setTrendCategory] = useState([]);
   console.log('trendCategory :', trendCategory);

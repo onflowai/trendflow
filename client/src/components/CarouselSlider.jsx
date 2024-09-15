@@ -34,7 +34,7 @@ const CarouselSlider = ({ trends }) => {
         >
           <Link to={getFullTrendUrl(trends[currentIndex].slug)}>
             <img
-              src={getFullIconUrl(trends[currentIndex].svg_url)}
+              src={trends[currentIndex].svg_url}
               alt={trends[currentIndex].trend}
               className="trend-icon"
             />

@@ -214,3 +214,38 @@ export const removeUserTrend = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // Handle errors
   }
 }; // End removeUserTrend
+/**
+ * ADD GITHUB ACCOUNT
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const addGithubUsername = async (req, res) => {
+  const { githubUsername } = req.body;
+
+  if (!githubUsername) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'GitHub username is required' });
+  }
+
+  const user = await userModel.findById(req.user.userID);
+
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+  }
+
+  if (user.githubUsername) {
+    return res
+      .status(StatusCodes.CONFLICT)
+      .json({ msg: 'GitHub username already linked' });
+  }
+
+  user.githubUsername = githubUsername;
+  await user.save();
+
+  res.status(StatusCodes.OK).json({
+    msg: 'GitHub username added',
+    user: user.toJSON(), // Returning user without password
+  });
+}; //end addGithubUsername
