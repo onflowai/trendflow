@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import userModel from '../models/userModel.js';
 import trendModel from '../models/trendModel.js';
+import { sanitizeHTML } from '../utils/sanitization.js';
 import fs from 'fs/promises'; //allows to remove the image
 import cloudinary from 'cloudinary';
 import mongoose from 'mongoose';
@@ -221,31 +222,29 @@ export const removeUserTrend = async (req, res) => {
  * @returns
  */
 export const addGithubUsername = async (req, res) => {
+  console.log('Request Body: ', req.body);
   const { githubUsername } = req.body;
-
-  if (!githubUsername) {
+  const sanitizedGithubUsername = sanitizeHTML(githubUsername); //sanitize username
+  if (!sanitizedGithubUsername) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'GitHub username is required' });
+      .json({ msg: 'GitHub username is required or invalid' });
   }
-
   const user = await userModel.findById(req.user.userID);
-
   if (!user) {
     return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
   }
-
-  if (user.githubUsername) {
+  // If the new username is the same as the current one, return conflict
+  if (user.githubUsername === sanitizedGithubUsername) {
     return res
       .status(StatusCodes.CONFLICT)
       .json({ msg: 'GitHub username already linked' });
   }
-
-  user.githubUsername = githubUsername;
+  // Update the username if it's different
+  user.githubUsername = sanitizedGithubUsername;
   await user.save();
-
   res.status(StatusCodes.OK).json({
-    msg: 'GitHub username added',
-    user: user.toJSON(), // Returning user without password
+    msg: 'GitHub username updated', // Updated message
+    githubUsername: user.githubUsername, // Only returning the username
   });
 }; //end addGithubUsername

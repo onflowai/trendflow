@@ -6,6 +6,7 @@ import {
   getCurrentUser,
   removeUserTrend,
   updateUserImage,
+  addGithubUsername,
   getUserSavedTrends,
   getAdminApplicationStats,
 } from '../controllers/userController.js';
@@ -46,5 +47,6 @@ router.post('/visits', logVisit);
 router.patch('/save-trend', authenticateUser, saveUserTrend);
 router.patch('/remove-trend', authenticateUser, removeUserTrend);
 router.get('/saved-trends', authenticateUser, getUserSavedTrends);
+router.patch('/add-github-username', authenticateUser, addGithubUsername);
 
 export default router;

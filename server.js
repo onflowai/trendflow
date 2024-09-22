@@ -53,7 +53,12 @@ app.use(express.static(path.resolve(__dirname, './public'))); //
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
 app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
-
+// Set up CORS to allow requests from localhost:5173
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  })
+);
 //app responding to get requests home rout with controller that handles the requests
 app.get('/', (req, res) => {
   res.send('hello world');
@@ -70,12 +75,6 @@ app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
-// Set up CORS to allow requests from localhost:5173
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-  })
-);
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given
 app.use('*', (req, res) => {

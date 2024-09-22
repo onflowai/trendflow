@@ -70,10 +70,11 @@ const Profile = () => {
   const updateUserImage = dashboardContext?.updateUserImage; //DashboardContext (the reason why both used is for farther consistency when more features will be added)
   const { updateUserImage: updateUserImageGlobal } = useUser(); // UserContext (the reason why both used is for farther consistency when more features will be added)
   console.log('PROFILE: ', user.savedTrends);
-  const { username, name, lastName, email } = user;
+  const { username, name, lastName, email, githubUsername: gitUsername } = user;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [githubUsername, setGithubUsername] = useState(gitUsername || '');
   const dropdownRef = useRef(null);
   const handleEditClick = () => {
     setIsDropdownVisible(!isDropdownVisible); // toggles dropdown visibility
@@ -128,6 +129,33 @@ const Profile = () => {
           />
         );
       }
+    }
+  };
+  // Function to handle GitHub username update
+  const onUpdateGithubUsername = async ({ body }) => {
+    console.log('body: ', body); // Check what’s being sent
+    try {
+      const response = await customFetch.patch(
+        '/users/add-github-username',
+        body,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json', // Set content type to JSON
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log('response.data: ', response.data);
+        const data = response.data;
+        setGithubUsername(data.githubUsername); // Update the state with new GitHub username
+        toast.success('GitHub username linked');
+      } else {
+        toast.error(response.data?.msg || 'Failed to link GitHub username.');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
     }
   };
   // action to perform Dropdown.jsx actions
@@ -287,6 +315,8 @@ const Profile = () => {
                     email={email}
                     isVerified={isVerified}
                     onUpdateEmail={onUpdateEmail}
+                    githubUsername={githubUsername}
+                    onUpdateGithubUsername={onUpdateGithubUsername}
                     onTogglePrivacy={onTogglePrivacy}
                   />
                 </div>

@@ -19,6 +19,7 @@ const UserSettings = ({
   onUpdateEmail,
   onTogglePrivacy,
   onOptionClick,
+  onUpdateGithubUsername,
 }) => {
   //EMAIL UPDATE
   const handleUpdateEmail = (e) => {
@@ -35,11 +36,8 @@ const UserSettings = ({
         />
       );
     }
-
-    const formData = new FormData();
-    formData.append('githubUsername', username);
-
-    onUpdateGithubUsername({ request: { formData } });
+    const body = JSON.stringify({ githubUsername: username }); //JSON object with githubUsername
+    onUpdateGithubUsername({ body }); // passing the JSON body directly to the function
   };
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
