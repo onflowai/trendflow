@@ -6,6 +6,7 @@ import { IoIosCloseCircle } from 'react-icons/io';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { MdDelete } from 'react-icons/md';
 import { FaSquareCheck } from 'react-icons/fa6';
+import { githubFullUrl } from '../utils/urlHelper';
 import {
   TrendFlashChart,
   Loading,
@@ -47,6 +48,9 @@ function TrendSmall({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
+  const githubUrl = createdBy.githubUsername
+    ? `${githubFullUrl()}${createdBy.githubUsername}`
+    : null; //creating the github url of user who created trend
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -95,7 +99,10 @@ function TrendSmall({
           </div>
           <footer className="bottom-row">
             <div className="user-icon">
-              <UserImgSmall user_img={createdBy.profile_img} />
+              <UserImgSmall
+                user_img={createdBy.profile_img}
+                githubUrl={githubUrl}
+              />
             </div>
             <div className="bottom-info">
               <span className="info-item">

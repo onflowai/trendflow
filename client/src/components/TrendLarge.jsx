@@ -64,7 +64,7 @@ function TrendLarge({
   const githubUrl = createdBy.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
-  console.log('createdBy.githubUsername', createdBy.githubUsername);
+
   const navigateToTrend = () => {
     if (isAdminPage && !isApproved) {
       navigate(`/dashboard/edit-trend/${slug}`);
