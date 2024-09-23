@@ -133,6 +133,7 @@ export const validateUserUpdate = withValidationErrors([
   body('role').not().exists().withMessage('Cannot change role'),
   body('username').not().exists().withMessage('Cannot change username'),
   body('email')
+    .optional()
     .notEmpty()
     .withMessage('email is required')
     .isEmail()
@@ -143,6 +144,4 @@ export const validateUserUpdate = withValidationErrors([
         throw new BadRequestError('email already exists'); //method allows users to submit updates to their profile without changing their email
       }
     }),
-  body('name').notEmpty().withMessage('name is required'),
-  body('lastName').notEmpty().withMessage('last name is required'),
 ]);

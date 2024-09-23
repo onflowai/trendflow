@@ -1,13 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UserImgSmall } from '../components';
+import { githubFullUrl } from '../utils/urlHelper';
 
 function FooterTrendDetails({ lastUpDate, createdBy }) {
+  const githubUrl = createdBy.githubUsername
+    ? `${githubFullUrl()}${createdBy.githubUsername}`
+    : null; //creating the github url of user who created trend
   return (
     <Container>
       <div className="left-section">
         <div className="label">Submitted by:</div>
-        <UserImgSmall className="img" user_img={createdBy.profile_img} />
+        <UserImgSmall
+          className="img"
+          user_img={createdBy.profile_img}
+          githubUrl={githubUrl}
+        />
         <div className="username">{createdBy.username}</div>
       </div>
       <div className="right-section">

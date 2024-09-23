@@ -16,6 +16,7 @@ import { RiEdit2Fill } from 'react-icons/ri'; //edit button
 import { FaSquareCheck } from 'react-icons/fa6'; //approve trend button
 import { IoIosCloseCircle } from 'react-icons/io'; //delete
 import { MdDelete } from 'react-icons/md';
+import { githubFullUrl } from '../utils/urlHelper';
 import {
   TrendChartComponent,
   Loading,
@@ -60,6 +61,10 @@ function TrendLarge({
   const handleMouseLeave = () => setIsHovered(false);
   const navigate = useNavigate(); // Use navigate for navigation
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id)); // checking if the current trend is saved
+  const githubUrl = createdBy.githubUsername
+    ? `${githubFullUrl()}${createdBy.githubUsername}`
+    : null; //creating the github url of user who created trend
+  console.log('createdBy.githubUsername', createdBy.githubUsername);
   const navigateToTrend = () => {
     if (isAdminPage && !isApproved) {
       navigate(`/dashboard/edit-trend/${slug}`);
@@ -199,7 +204,10 @@ function TrendLarge({
             {/* USER & BUTTONS */}
             <footer className="actions">
               <div className="user-section">
-                <UserImgSmall user_img={createdBy.profile_img} />
+                <UserImgSmall
+                  user_img={createdBy.profile_img}
+                  githubUrl={githubUrl}
+                />
                 <span className="username">{createdBy.username}</span>
               </div>
               <div className="admin-buttons">

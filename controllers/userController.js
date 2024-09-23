@@ -52,8 +52,15 @@ export const getCurrentUser = async (req, res) => {
  * @param {*} res
  */
 export const updateUser = async (req, res) => {
-  const newUser = { ...req.body }; //using spread operator to copy properties from req.body into newUser object
+  const { name, lastName, email } = req.body;
+  const newUser = {}; //using spread operator to copy properties from req.body into newUser object
   delete newUser.password; //if password somehow exists deleting it once again
+
+  // Only add fields to the update object if they exist in the request body
+  if (name) newUser.name = name;
+  if (lastName) newUser.lastName = lastName;
+  if (email) newUser.email = email;
+
   //if file attached with request then:
   if (req.file) {
     const response = await cloudinary.v2.uploader.upload(req.file.path); //upload file
@@ -61,15 +68,22 @@ export const updateUser = async (req, res) => {
     newUser.profile_img = response.secure_url; //updating newUser object with the URL and ID of the uploaded image
     newUser.profile_img_id = response.public_id; //public_id used for future reference or deletion.
   }
-  const updatedUser = await userModel.findByIdAndUpdate(
-    req.user.userID,
-    newUser, //new data to update the user with
-    { new: true }
-  ); //updating user by ID when user updates some value like last name (role not updatable)
-  res.status(StatusCodes.OK).json({ msg: 'user updated' });
-  //checking to see if there is already an image in cloud for the user
-  if (req.file && updatedUser.profile_img_id) {
-    await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id); //then delete the old image from Cloudinary using its public_id
+  try {
+    // Update the user with the new fields
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.user.userID,
+      newUser, // Only the fields that were provided
+      { new: true }
+    ); //updating user by ID when user updates some value like last name (role not updatable)
+    res.status(StatusCodes.OK).json({ msg: 'user updated' });
+    //checking to see if there is already an image in cloud for the user
+    if (req.file && updatedUser.profile_img_id) {
+      await cloudinary.v2.uploader.destroy(updatedUser.profile_img_id); //then delete the old image from Cloudinary using its public_id
+    }
+  } catch (error) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'Failed to update user', error: error.message });
   }
 }; //end updateUser
 /**

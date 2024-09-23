@@ -59,12 +59,13 @@ function Trend({
   loadingSlug,
   isGridView,
   isLargeTrendView,
+  githubUsername,
 }) {
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
   const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   const isLargeScreen = window.matchMedia('(min-width: 812px)').matches; // using media query hook to determine the screen size
   // console.log('isLargeScreen: ', isLargeScreen);
-  // console.log('Created by: ', createdBy);
+  console.log('Created by: ', createdBy);
   // Props for TrendLarge
   const largeProps = {
     _id,
@@ -89,6 +90,7 @@ function Trend({
     createdAt,
     createdBy,
     isApproved,
+    githubUsername,
   };
   // Props for TrendSmall
   const smallProps = {
@@ -112,6 +114,7 @@ function Trend({
     onApprove,
     isGridView,
     trendDesc,
+    githubUsername,
   };
 
   return (

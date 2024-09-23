@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Container from '../assets/wrappers/UserSettingsContainer';
+import { githubUrl } from '../utils/urlHelper';
 import {
   FormComponentButton,
   ToggleSwitch,
@@ -32,7 +33,7 @@ const UserSettings = ({
     if (!username) {
       return toast.error(
         <CustomErrorToast
-          message={`Please append your username to "https://github.com/<username>"`}
+          message={`Please append your username to "${githubUrl()}<username>"`}
         />
       );
     }
