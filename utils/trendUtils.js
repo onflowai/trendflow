@@ -81,7 +81,7 @@ export const paginateAndSortTrends = async (
     trendModel
       .find(queryObject)
       .select('-generatedBlogPost -trendUse')
-      .populate('createdBy', 'username githubUsername profile_img -_id')
+      .populate('createdBy', 'username githubUsername profile_img privacy -_id')
       .sort(sortKey) // sort the trends based on the sortKey
       .skip(skip)
       .limit(limit), // query trends with pagination and sorting

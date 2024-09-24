@@ -258,7 +258,28 @@ export const addGithubUsername = async (req, res) => {
   user.githubUsername = sanitizedGithubUsername;
   await user.save();
   res.status(StatusCodes.OK).json({
-    msg: 'GitHub username updated', // Updated message
-    githubUsername: user.githubUsername, // Only returning the username
+    msg: 'GitHub username updated', // updated message
+    githubUsername: user.githubUsername, // returning the username (only)
   });
 }; //end addGithubUsername
+/**
+ * PRIVACY BOOLEAN
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const togglePrivacy = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.userID);
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    user.privacy = !user.privacy; // Toggle the privacy setting
+    await user.save();
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Privacy setting updated', privacy: user.privacy });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};

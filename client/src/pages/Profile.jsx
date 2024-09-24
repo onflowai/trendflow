@@ -70,7 +70,14 @@ const Profile = () => {
   const updateUserImage = dashboardContext?.updateUserImage; //DashboardContext (the reason why both used is for farther consistency when more features will be added)
   const { updateUserImage: updateUserImageGlobal } = useUser(); // UserContext (the reason why both used is for farther consistency when more features will be added)
   console.log('PROFILE: ', user.savedTrends);
-  const { username, name, lastName, email, githubUsername: gitUsername } = user;
+  const {
+    username,
+    name,
+    lastName,
+    email,
+    githubUsername: gitUsername,
+    privacy,
+  } = user;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -133,7 +140,6 @@ const Profile = () => {
   };
   // Function to handle GitHub username update
   const onUpdateGithubUsername = async ({ body }) => {
-    console.log('body: ', body); // Check what’s being sent
     try {
       const response = await customFetch.patch(
         '/users/add-github-username',
@@ -141,15 +147,14 @@ const Profile = () => {
         {
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json', // Set content type to JSON
+            'Content-Type': 'application/json',
           },
         }
       );
-
       if (response.status === 200) {
         console.log('response.data: ', response.data);
         const data = response.data;
-        setGithubUsername(data.githubUsername); // Update the state with new GitHub username
+        setGithubUsername(data.githubUsername);
         toast.success('GitHub username linked');
       } else {
         toast.error(response.data?.msg || 'Failed to link GitHub username.');
@@ -213,8 +218,15 @@ const Profile = () => {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
   }; //TEMPORARY
-  const onTogglePrivacy = () => {
-    setPrivacy(!privacy);
+  //async for privacy PATCH
+  const onTogglePrivacy = async () => {
+    try {
+      const { data } = await customFetch.patch('/users/toggle-privacy', {});
+      setPrivacy(data.privacy); // Update privacy state based on response
+      toast.success('Privacy setting updated successfully');
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    }
   };
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -318,6 +330,7 @@ const Profile = () => {
                     githubUsername={githubUsername}
                     onUpdateGithubUsername={onUpdateGithubUsername}
                     onTogglePrivacy={onTogglePrivacy}
+                    privacy={privacy}
                   />
                 </div>
               </div>

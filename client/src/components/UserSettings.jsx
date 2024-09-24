@@ -21,6 +21,7 @@ const UserSettings = ({
   onTogglePrivacy,
   onOptionClick,
   onUpdateGithubUsername,
+  privacy,
 }) => {
   //EMAIL UPDATE
   const handleUpdateEmail = (e) => {
@@ -92,7 +93,7 @@ const UserSettings = ({
         </div>
         <div className="settings-item privacy-switch">
           <span className="privacy-text">Privacy:</span>
-          <ToggleSwitch onToggle={onTogglePrivacy} />
+          <ToggleSwitch onToggle={onTogglePrivacy} privacy={privacy} />
         </div>
         <div className="settings-item actions" ref={dropdownRef}>
           <span className="actions-text">Actions:</span>

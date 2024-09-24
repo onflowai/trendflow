@@ -31,10 +31,10 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
   const openai = new OpenAIApi(config); //new instance of openai
   let trendPost, trendDesc, trendUse;
   console.log(RESPONSE_USER_USE);
-  // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-4-1106-vision-preview
+  // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-3.5-turbo
   try {
     const blogPostResponse = await openai.createChatCompletion({
-      model: 'gpt-4-1106-vision-preview',
+      model: 'gpt-3.5-turbo',
       temperature: 0.7,
       max_tokens: MAX_TOKENS_POST,
       messages: [

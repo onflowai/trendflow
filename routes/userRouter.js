@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { logVisit } from '../controllers/visitController.js';
 import {
   updateUser,
+  togglePrivacy,
   saveUserTrend,
   getCurrentUser,
   removeUserTrend,
@@ -48,5 +49,6 @@ router.patch('/save-trend', authenticateUser, saveUserTrend);
 router.patch('/remove-trend', authenticateUser, removeUserTrend);
 router.get('/saved-trends', authenticateUser, getUserSavedTrends);
 router.patch('/add-github-username', authenticateUser, addGithubUsername);
+router.patch('/toggle-privacy', authenticateUser, togglePrivacy);
 
 export default router;

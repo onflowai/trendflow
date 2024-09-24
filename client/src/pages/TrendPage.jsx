@@ -9,6 +9,7 @@ import {
   ContentBoxHighlighted,
   RelatedTrendsComponent,
 } from '../components';
+import { getFullIconUrl } from '../utils/urlHelper';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
@@ -85,7 +86,7 @@ const TrendPage = () => {
       label: trendTech,
       icon: techIconUrl ? (
         <img
-          src={techIconUrl}
+          src={getFullIconUrl(techIconUrl)}
           alt="Technology Icon"
           style={{ width: '20px' }}
         />
@@ -98,7 +99,11 @@ const TrendPage = () => {
     {
       label: trendCategory,
       icon: cateIconUrl ? (
-        <img src={cateIconUrl} alt="Category Icon" style={{ width: '20px' }} />
+        <img
+          src={getFullIconUrl(cateIconUrl)}
+          alt="Category Icon"
+          style={{ width: '20px' }}
+        />
       ) : (
         <PiHashDuotone />
       ),

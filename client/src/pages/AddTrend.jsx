@@ -21,13 +21,16 @@ import customFetch from '../utils/customFetch';
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
+  console.log('Data which is being sent: ', data); // Already logging the data object
+  console.log('techIconUrl: ', data.techIconUrl); // Logging techIconUrl
+  console.log('cateIconUrl: ', data.cateIconUrl);
   console.log('Data which is being sent: ', data);
   try {
     await customFetch.post('/trends/submit', data);
     toast.success(
       <CustomSuccessToast message={'Thank You, Trend Was Submitted'} />
     );
-    return redirect('/dashboard');
+    // return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return error;

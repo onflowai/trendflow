@@ -17,6 +17,7 @@ import { FaSquareCheck } from 'react-icons/fa6'; //approve trend button
 import { IoIosCloseCircle } from 'react-icons/io'; //delete
 import { MdDelete } from 'react-icons/md';
 import { githubFullUrl } from '../utils/urlHelper';
+import { getFullIconUrl } from '../utils/urlHelper';
 import {
   TrendChartComponent,
   Loading,
@@ -170,7 +171,7 @@ function TrendLarge({
                       />
                     ) : (
                       <img
-                        src={techIconUrl}
+                        src={getFullIconUrl(techIconUrl)}
                         alt="Category Icon"
                         style={{
                           width: '20px',

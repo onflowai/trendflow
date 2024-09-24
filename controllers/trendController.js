@@ -112,13 +112,16 @@ export const getSingleTrend = async (req, res) => {
   const { slug } = req.params; //retrieving the id
   const trendObject = await trendModel
     .findOne({ slug: slug })
-    .populate('createdBy', 'username profile_img githubUsername -_id'); //retrieve the trend if it equals the id in the data
+    .populate('createdBy', 'username profile_img githubUsername privacy -_id'); //retrieve the trend if it equals the id in the data
   if (!trendObject) {
     return res.status(404).json({ msg: 'Trend not found' });
   }
+  if (trendObject.createdBy && trendObject.createdBy.privacy) {
+    trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
+  }
   trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html in case
   res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
-};
+}; //end single trend
 
 /**
  * UPDATE TREND only accessible before the Trend has been approved, after this controller is not reachable
@@ -239,7 +242,7 @@ export const approveTrend = async (req, res) => {
  * @param {*} res
  */
 export const getApprovedTrends = async (req, res) => {
-  // console.log(req.query);
+  console.log(req.query);
   let {
     search,
     trendTech,
@@ -279,7 +282,7 @@ export const getApprovedTrends = async (req, res) => {
   console.log('Sort Key:', sortKey);
 
   try {
-    // Query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
+    // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     let { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
       queryObject,
       sortKey,
@@ -287,9 +290,23 @@ export const getApprovedTrends = async (req, res) => {
       limit
     );
 
+    // privacy logic
+    trends = trends.map((trend) => {
+      console.log(
+        'Username:',
+        trend.createdBy.username,
+        'Privacy:',
+        trend.createdBy.privacy
+      );
+      if (trend.createdBy && trend.createdBy.privacy) {
+        trend.createdBy.githubUsername = ''; // removing githubUsername if privacy is enabled
+      }
+      return trend;
+    });
+
     if (status && status !== 'all') {
       trends = trends.filter((trend) => trend.trendStatus === status);
-      // Adjust the total trends count and pagination after filtering
+      // adjusting the total trends count and pagination after filtering
       totalTrends = trends.length;
       pagesNumber = Math.ceil(totalTrends / limit);
     }
@@ -301,7 +318,7 @@ export const getApprovedTrends = async (req, res) => {
     // Handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-};
+}; //end get approved trends
 /**
  * GET TREND_CATEGORY & TECHNOLOGIES
  * @param {*} req

@@ -34,6 +34,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    privacy: {
+      type: Boolean,
+      default: false,
+    },
     profile_img: String,
     profile_img_id: String,
     savedTrends: [

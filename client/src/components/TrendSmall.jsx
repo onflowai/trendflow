@@ -7,6 +7,7 @@ import { RiEdit2Fill } from 'react-icons/ri';
 import { MdDelete } from 'react-icons/md';
 import { FaSquareCheck } from 'react-icons/fa6';
 import { githubFullUrl } from '../utils/urlHelper';
+import { getFullIconUrl } from '../utils/urlHelper';
 import {
   TrendFlashChart,
   Loading,
@@ -112,7 +113,7 @@ function TrendSmall({
                       <PiHashLight />
                     ) : (
                       <img
-                        src={techIconUrl}
+                        src={getFullIconUrl(techIconUrl)}
                         alt="Technology Icon"
                         style={{ width: '20px', marginRight: '10px' }}
                       />

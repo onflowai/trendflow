@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const ToggleSwitch = ({ onToggle }) => {
-  const [isOn, setIsOn] = useState(false);
+const ToggleSwitch = ({ onToggle, privacy }) => {
+  const [isOn, setIsOn] = useState(privacy); // initializing with the privacy prop
 
   const toggle = () => {
     const newValue = !isOn;

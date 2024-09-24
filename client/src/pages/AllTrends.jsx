@@ -42,7 +42,6 @@ export const loader = async ({ request }) => {
     const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
     const trendsWithIcons = trendsData.trends.map((trend) => ({
       ...trend,
-      techIconUrl: getFullIconUrl(trend.techIconUrl),
       cateIconUrl: getFullIconUrl(trend.cateIconUrl),
     })); // using utility function to prepend base URL to iconUrl with trends tech url for icon
 
