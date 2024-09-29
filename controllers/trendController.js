@@ -92,6 +92,7 @@ export const getUserTrends = async (req, res) => {
  * @param {*} res
  */
 export const createTrend = async (req, res) => {
+  console.log('Incoming Data:', req.body);
   // if (req.user.role !== 'admin') {
   //   return res
   //     .status(StatusCodes.UNAUTHORIZED)
@@ -188,7 +189,13 @@ export const approveTrend = async (req, res) => {
       generatePostContent(trend.trend, trend.trendCategory, trend.trendTech), // Generate content with OpenAI
     ]);
     console.log('Script output: ', scriptOutput);
-    const data = JSON.parse(scriptOutput); //parsing the JSON output from scripts
+    let data; //parsing the JSON output from scripts
+    try {
+      data = JSON.parse(scriptOutput);
+    } catch (err) {
+      console.error('Error parsing script output:', scriptOutput); // log the problematic output
+      return res.status(500).json({ msg: 'Invalid JSON from Python script' });
+    }
     const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
 
     // Log intermediate outputs for verification

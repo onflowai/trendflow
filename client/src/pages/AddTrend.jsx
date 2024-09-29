@@ -9,7 +9,6 @@ import {
 } from '../components';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
-// import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants';
 import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
@@ -30,7 +29,7 @@ export const action = async ({ request }) => {
     toast.success(
       <CustomSuccessToast message={'Thank You, Trend Was Submitted'} />
     );
-    // return redirect('/dashboard');
+    return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return error;
@@ -45,8 +44,10 @@ const AddTrend = () => {
   const [technologies, setTechnologies] = useState([]);
   const [defaultTrendCategory, setDefaultTrendCategory] = useState(null);
   const [defaultTrendTech, setDefaultTrendTech] = useState(null);
-  const [techIconUrl, setTechIconUrl] = useState('');
-  const [cateIconUrl, setCateIconUrl] = useState('');
+  const [techLabel, setTechLabel] = useState(''); // storing tech label
+  const [cateLabel, setCateLabel] = useState(''); // storing category label
+  const [techIconUrl, setTechIconUrl] = useState(''); // storing tech icon URL
+  const [cateIconUrl, setCateIconUrl] = useState(''); // storing category icon URL
 
   //fetching the icon data from the node server
   useEffect(() => {
@@ -96,7 +97,7 @@ const AddTrend = () => {
                 name="trend"
                 placeholder="Any tech on your mind?"
               />
-              {/* <FormComponent type="text" name="Any tech on your mind?" /> */}
+              {/* CATEGORY SELECTOR */}
               <FormSelectorIcon
                 labelText="Choose Category:"
                 name="trendCategory"
@@ -108,8 +109,15 @@ const AddTrend = () => {
                   image: cate.image,
                 }))}
                 onChange={(name, value) => {
-                  setCateIconUrl(value ? value.image : '');
+                  setCateLabel(value ? value.label : '');
+                  setCateIconUrl(value ? value.value : '');
                 }}
+              />
+              <input
+                type="hidden"
+                id="cateLabel"
+                name="trendCategory"
+                value={cateLabel || ''}
               />
               <input
                 type="hidden"
@@ -117,6 +125,7 @@ const AddTrend = () => {
                 name="cateIconUrl"
                 value={cateIconUrl || ''}
               />
+              {/* TECH SELECTOR */}
               <FormSelectorIcon
                 labelText="Choose Technology:"
                 name="trendTech"
@@ -128,8 +137,15 @@ const AddTrend = () => {
                   image: tech.image,
                 }))}
                 onChange={(name, value) => {
-                  setTechIconUrl(value ? value.image : '');
+                  setTechLabel(value ? value.label : '');
+                  setTechIconUrl(value ? value.value : '');
                 }}
+              />
+              <input
+                type="hidden"
+                id="techLabel"
+                name="trendTech"
+                value={techLabel || ''}
               />
               <input
                 type="hidden"
