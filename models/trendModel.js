@@ -15,6 +15,7 @@ import { generateSlug } from '../utils/slugUtils.js';
  * trendCategory:
  * trendTech:
  * trendDesc:
+ * trendStatus: trending, breakout, cool-off, static, sublevel, undefined
  * createdBy: ObjectId('id_of_the_user')
  * isApproved:
  * slug:

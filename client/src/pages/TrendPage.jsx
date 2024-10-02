@@ -50,7 +50,7 @@ function useWindowSize() {
   return isMobile;
 }
 const TrendPage = () => {
-  const { trendObject } = useLoaderData(); //getting the trend from the loader above
+  const { trendObject, relatedTrends } = useLoaderData(); //getting the trend from the loader above
   const {
     trend,
     trendCategory,
@@ -66,6 +66,7 @@ const TrendPage = () => {
     cateIconUrl,
     createdBy,
   } = trendObject;
+  console.log('relatedTrends', relatedTrends);
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();

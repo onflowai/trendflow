@@ -137,7 +137,7 @@ function TrendLarge({
                   />
                 ) : (
                   <img
-                    src={cateIconUrl}
+                    src={getFullIconUrl(cateIconUrl)}
                     alt="Category Icon"
                     style={{
                       width: '16px',

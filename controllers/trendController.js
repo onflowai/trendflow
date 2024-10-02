@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
+import { fetchRelatedTrends } from '../utils/trendRelatedUtils.js';
 import { cloudinary2 } from '../config/cloudinary.js'; //using dif set of credentials
 import fs from 'fs/promises'; //allows to remove the image
 import {
@@ -111,17 +112,36 @@ export const createTrend = async (req, res) => {
  */
 export const getSingleTrend = async (req, res) => {
   const { slug } = req.params; //retrieving the id
-  const trendObject = await trendModel
-    .findOne({ slug: slug })
-    .populate('createdBy', 'username profile_img githubUsername privacy -_id'); //retrieve the trend if it equals the id in the data
-  if (!trendObject) {
-    return res.status(404).json({ msg: 'Trend not found' });
+  try {
+    const trendObject = await trendModel
+      .findOne({ slug: slug })
+      .populate(
+        'createdBy',
+        'username profile_img githubUsername privacy -_id'
+      ); //retrieve the trend if it equals the id in the data
+    if (!trendObject) {
+      return res.status(404).json({ msg: 'Trend not found' });
+    }
+    if (trendObject.createdBy && trendObject.createdBy.privacy) {
+      trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
+    }
+    trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html
+    const relatedTrends = await fetchRelatedTrends(trendObject); // fetching related trends from utility function
+    res.status(StatusCodes.OK).json({ trendObject, relatedTrends }); // return trend and related trends
+  } catch (error) {
+    // logging error details to console
+    console.error(`Error in getSingleTrend for slug: ${slug}`);
+    console.error('Error message:', error.message);
+    console.error('Stack trace:', error.stack);
+
+    // DEBUG detailed response for debugging
+    res.status(500).json({
+      msg: 'Server Error',
+      error: error.message,
+      stack: error.stack,
+      slug: slug,
+    });
   }
-  if (trendObject.createdBy && trendObject.createdBy.privacy) {
-    trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
-  }
-  trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html in case
-  res.status(StatusCodes.OK).json({ trendObject }); //returning the found trend
 }; //end single trend
 
 /**
