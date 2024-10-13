@@ -14,6 +14,7 @@ const Container = styled.section`
   // Styling for Mobile
   @media (max-width: 991px) {
     .spy-scroll-section {
+      z-index: 999;
       position: fixed; // Fixes the component at a specific position
       top: var(--nav-height); // Starts right below the navbar
       right: 0;

@@ -7,7 +7,8 @@ import {
   ContentRowComponent,
   ChartTrendComponent,
   ContentBoxHighlighted,
-  RelatedTrendsComponent,
+  RelatedTrendsDesktop,
+  RelatedTrendsMobile,
 } from '../components';
 import { getFullIconUrl } from '../utils/urlHelper';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
@@ -27,7 +28,6 @@ day.extend(advancedFormat);
  */
 //Fetching the trend data
 export const loader = async ({ params }) => {
-  console.log(params.slug);
   try {
     const { data } = await customFetch.get(`/trends/${params.slug}`);
     return data;
@@ -66,7 +66,6 @@ const TrendPage = () => {
     cateIconUrl,
     createdBy,
   } = trendObject;
-  console.log('relatedTrends', relatedTrends);
   const isMobile = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();
@@ -148,17 +147,14 @@ const TrendPage = () => {
               />
               {!isMobile && (
                 <div className="related-trend">
-                  <RelatedTrendsComponent
-                    lastUpDate={upDate}
-                    // createdBy={createdBy}
-                  />
+                  <RelatedTrendsDesktop relatedTrends={relatedTrends} />
                 </div>
               )}
             </div>
           </aside>
           {isMobile && (
             <div className="related-trend">
-              <RelatedTrendsComponent />
+              <RelatedTrendsMobile relatedTrends={relatedTrends} />
             </div>
           )}
         </div>

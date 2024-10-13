@@ -121,7 +121,7 @@ const Container = styled.section`
     box-sizing: border-box; // include padding and border in element's total width
 
     @media (max-width: 991px) {
-      padding: 0 1rem; // add padding for smaller screens
+      padding: 0 0rem; // add padding for smaller screens
     }
   }
 `;

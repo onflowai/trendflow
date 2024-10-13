@@ -61,3 +61,5 @@ export { default as TitleHighlighter } from './TitleHighlighter';
 export { default as SidebarSetting } from './SidebarSetting';
 export { default as ChartSettingsComponent } from './ChartSettingsComponent';
 export { default as FormComponentLogoBtn } from './FormComponentLogoBtn';
+export { default as RelatedTrendsMobile } from './RelatedTrendsMobile';
+export { default as RelatedTrendsDesktop } from './RelatedTrendsDesktop';

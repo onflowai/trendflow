@@ -40,18 +40,18 @@ const Container = styled.article`
     
     h4 {
       top: 120px;
-      z-index: 2;
+      z-index: 0;
     }
 
     h6 {
       top: 145px;
-      z-index: 2;
+      z-index: 0;
     }
     
     p {
       color: var(--grey-600);
       top: 160px;
-      z-index: 1;
+      z-index: 0;
     }
   }
 
