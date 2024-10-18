@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import useWindowSize from '../hooks/useWindowSize';
 day.extend(advancedFormat);
 /**
  * Trend Page will display detailed information about the trend
@@ -36,19 +37,6 @@ export const loader = async ({ params }) => {
     return redirect('/dashboard');
   }
 };
-function useWindowSize() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
-  useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 992);
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  return isMobile;
-}
 const TrendPage = () => {
   const { trendObject, relatedTrends } = useLoaderData(); //getting the trend from the loader above
   const {
@@ -117,7 +105,7 @@ const TrendPage = () => {
     <Container>
       <div className="trend-page-container">
         <div className="page-layout">
-          <div id="section1" className="trend">
+          <div id="Trend" className="trend">
             <div>
               <ChartTrendComponent
                 data={interestOverTime}
@@ -125,7 +113,7 @@ const TrendPage = () => {
                 trend={trend}
               />
             </div>
-            <h4 className="trend-title" id="section2"></h4>
+            <h4 className="trend-title" id="Guide"></h4>
             <div className="trend-center">
               <div className="trend-items">
                 <ContentRowComponent items={items} />
@@ -134,7 +122,6 @@ const TrendPage = () => {
                 <ContentBoxHighlighted trendUse={trendUse} />
               </div>
             </div>
-            <div className="" id="section3"></div>
             <div className="trend-blog-post">
               <DangerousHTML html={generatedBlogPost} />
             </div>
@@ -142,9 +129,7 @@ const TrendPage = () => {
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent
-                sectionIds={['section1', 'section2', 'section3']}
-              />
+              <ScrollSpyComponent sectionIds={['Trend', 'Guide', 'Related']} />
               {!isMobile && (
                 <div className="related-trend">
                   <RelatedTrendsDesktop relatedTrends={relatedTrends} />
@@ -152,6 +137,7 @@ const TrendPage = () => {
               )}
             </div>
           </aside>
+          <div className="" id="Related"></div>
           {isMobile && (
             <div className="related-trend">
               <RelatedTrendsMobile relatedTrends={relatedTrends} />

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Container from '../assets/wrappers/ScrollSpyContainer';
+import useWindowSize from '../hooks/useWindowSize';
 
 const ScrollSpyComponent = ({ sectionIds }) => {
   const [activeSection, setActiveSection] = useState('');
+  const isMobile = useWindowSize();
 
   const onScroll = () => {
     let currentSection = '';
-    const offset = 110; // adjusting this value based on other CSS styling
+    const offset = 200; // adjusting this value based on other CSS styling
     sectionIds.forEach((sectionId) => {
       const section = document.getElementById(sectionId);
       const sectionTop = section.getBoundingClientRect().top + window.scrollY;
@@ -26,6 +28,9 @@ const ScrollSpyComponent = ({ sectionIds }) => {
   }, [sectionIds]);
 
   const handleClick = (sectionId) => {
+    if (!isMobile && sectionId === 'Related') {
+      return; // preventing scroll in desktop for the "Related" section
+    }
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
