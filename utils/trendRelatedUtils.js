@@ -20,7 +20,7 @@ export const fetchRelatedTrends = async (trendObject) => {
       .limit(5); // limit results to 5 for now
 
     // fallback 1: if fewer than 5 results, remove the trendTech filter
-    if (relatedTrends.length < 5) {
+    if (relatedTrends.length < 6) {
       const fallbackTrends = await trendModel
         .find({
           _id: { $ne: trendObject._id },
@@ -28,7 +28,7 @@ export const fetchRelatedTrends = async (trendObject) => {
           isApproved: true,
         })
         .sort({ views: -1 }) // sort by views
-        .limit(5 - relatedTrends.length);
+        .limit(6 - relatedTrends.length);
 
       relatedTrends = [...relatedTrends, ...fallbackTrends];
     }

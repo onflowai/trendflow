@@ -87,7 +87,7 @@ function TrendSmall({
                 {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
               </h4>
               <h6 className="mono-heading">{trendCategory}</h6>
-              {!isGridView && (
+              {!isGridView && trendDesc && trendDesc.trim() && (
                 <div className="trend-desc">
                   <p className="mono-heading-thin">
                     {trendDesc.length > 60
