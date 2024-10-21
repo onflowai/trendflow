@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
+border-radius: var(--border-radius);
  .related-trends-desktop {
     display: flex;
     flex-direction: column;
@@ -10,10 +11,10 @@ const Container = styled.div`
   }
 
   .trend-small-card {
-    border-radius: 0.5rem;
+    border-radius: var(--border-radius);
     transition: transform 0.1s ease;
     height: 150px;
-    overflow: hidden;
+    //overflow: hidden;
   }
   .trend-title {
     padding-top: 1rem;

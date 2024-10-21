@@ -26,25 +26,26 @@ day.extend(advancedFormat);
  */
 function TrendSmall({
   _id,
+  slug,
   trend,
   views,
-  trendTech,
-  trendCategory,
-  slug,
   upDate,
   onSave,
   onRemove,
-  savedTrends,
-  techIconUrl,
-  flashChart,
   updatedAt,
   isLoading,
-  isApproved,
-  isAdminPage,
   createdBy,
+  trendTech,
   onApprove,
-  isGridView,
   trendDesc,
+  isApproved,
+  isGridView,
+  flashChart,
+  savedTrends,
+  techIconUrl,
+  isAdminPage,
+  relatedStyle,
+  trendCategory,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
@@ -68,7 +69,7 @@ function TrendSmall({
     }
   };
   return (
-    <Container onClick={handleCardClick}>
+    <Container style={relatedStyle} onClick={handleCardClick}>
       <header className="trend-small-card">
         <div className="overlay">
           <div className="info">

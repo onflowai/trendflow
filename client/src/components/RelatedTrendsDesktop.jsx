@@ -14,6 +14,11 @@ const RelatedTrendsDesktop = ({ relatedTrends }) => {
       </Container>
     );
   }
+
+  const relatedStyle = {
+    borderRadius: 'var(--border-radius)',
+    border: '1.5px solid var(--grey-50)', // Add the border style
+  };
   return (
     <Container>
       <div className="related-trends-desktop">
@@ -21,6 +26,7 @@ const RelatedTrendsDesktop = ({ relatedTrends }) => {
           <TrendSmall
             key={trend._id} //unique key for each trend
             {...trend}
+            relatedStyle={relatedStyle}
           />
         ))}
       </div>
