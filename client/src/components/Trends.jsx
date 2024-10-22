@@ -16,6 +16,11 @@ function Trends({
   onRemove,
   savedTrends,
 }) {
+  //Values used to style recharts in AllTrends & Admin pages
+  const chartHeight = 250;
+  const chartMarginTop = 10;
+  const chartMarginBottom = -30;
+
   // State for managing grid view with persistence
   const [isGridView, setIsGridView] = useLocalStorage('isGridView', false);
   // State for managing which button is active with persistence
@@ -122,6 +127,9 @@ function Trends({
             savedTrends={savedTrends}
             isGridView={isGridView}
             isLargeTrendView={isLargeTrendView}
+            chartHeight={chartHeight}
+            chartMarginTop={chartMarginTop}
+            chartMarginBottom={chartMarginBottom}
           />
         ))}
       </div>

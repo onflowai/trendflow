@@ -2,13 +2,23 @@ import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from 'recharts';
 import Container from '../assets/wrappers/FlashChartContainer';
 
-function AreaChartComponent({ data }) {
+function AreaChartComponent({
+  data,
+  chartHeight,
+  chartMarginTop,
+  chartMarginBottom,
+}) {
   return (
     <Container>
-      <ResponsiveContainer width="100%" height={240} debounce={500}>
+      <ResponsiveContainer width="100%" height={chartHeight} debounce={500}>
         <AreaChart
           data={data}
-          margin={{ top: 5, right: 0, left: -60, bottom: -40 }}
+          margin={{
+            top: chartMarginTop,
+            right: 0,
+            left: -60,
+            bottom: chartMarginBottom,
+          }}
         >
           <defs>
             <linearGradient id="colorCountTwo" x1="0" y1="0" x2="0" y2="1">

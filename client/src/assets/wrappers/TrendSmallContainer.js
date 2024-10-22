@@ -22,6 +22,19 @@ const Container = styled.article`
     flex-direction: column;
     justify-content: flex-end; // Align children to the bottom
     height: 100%; // Ensure it takes full height
+    //overflow: hidden;
+  }
+  .trend-title {
+  margin-top: 1rem; /* Adjust spacing of title */
+  text-align: left;
+  }
+
+.trend-desc {
+  margin-top: 2rem; /* Add some spacing if the description is present */
+  }
+  
+  .trend-desc:empty {
+  display: none;
   }
 
   .info {

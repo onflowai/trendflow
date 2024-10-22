@@ -7,6 +7,11 @@ import Container from '../assets/wrappers/RelatedTrendsDesktop';
  * @returns
  */
 const RelatedTrendsDesktop = ({ relatedTrends }) => {
+  //Values used to style recharts in AllTrends & Admin pages
+  const chartHeight = 100;
+  const chartMarginTop = 10;
+  const chartMarginBottom = -60;
+
   if (!relatedTrends || relatedTrends.length === 0) {
     return (
       <Container>
@@ -24,9 +29,11 @@ const RelatedTrendsDesktop = ({ relatedTrends }) => {
       <div className="related-trends-desktop">
         {relatedTrends.map(({ trendDesc, ...trend }) => (
           <TrendSmall
-            key={trend._id} //unique key for each trend
             {...trend}
             relatedStyle={relatedStyle}
+            chartHeight={chartHeight}
+            chartMarginTop={chartMarginTop}
+            chartMarginBottom={chartMarginBottom}
           />
         ))}
       </div>

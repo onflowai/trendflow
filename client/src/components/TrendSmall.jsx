@@ -46,6 +46,9 @@ function TrendSmall({
   isAdminPage,
   relatedStyle,
   trendCategory,
+  chartHeight,
+  chartMarginTop,
+  chartMarginBottom,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
@@ -79,7 +82,12 @@ function TrendSmall({
               </div>
             )}
             {isApproved ? (
-              <TrendFlashChart data={flashChart} />
+              <TrendFlashChart
+                data={flashChart}
+                chartHeight={chartHeight}
+                chartMarginTop={chartMarginTop}
+                chartMarginBottom={chartMarginBottom}
+              />
             ) : (
               <TrendFallFlashChart />
             )}

@@ -14,15 +14,21 @@ border-radius: var(--border-radius);
     border-radius: var(--border-radius);
     transition: transform 0.1s ease;
     height: 150px;
-    //overflow: hidden;
-  }
-  .trend-title {
-    padding-top: 1rem;
   }
   .trend-desc {
     margin-top: 0rem;
   }
-
+  .trend-desc:empty {
+    display: none;
+  }
+  .trend-title h4 {
+    top: 25px;
+    z-index: 0;
+  }
+  .trend-title h6 {
+    top: 50px;
+    z-index: 0;
+  }
 `;
 
 export default Container;

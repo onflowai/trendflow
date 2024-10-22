@@ -60,6 +60,9 @@ function Trend({
   isGridView,
   isLargeTrendView,
   githubUsername,
+  chartHeight,
+  chartMarginTop,
+  chartMarginBottom,
 }) {
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
   const isLoading = loadingSlug === slug; // determining if this specific trend is loading
@@ -115,6 +118,9 @@ function Trend({
     isGridView,
     trendDesc,
     githubUsername,
+    chartHeight,
+    chartMarginTop,
+    chartMarginBottom,
   };
 
   return (

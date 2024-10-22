@@ -6,7 +6,7 @@ cursor: pointer; // Apply pointer cursor to the entire container
     cursor: pointer; // Ensures cursor changes on hover
   }
 .recharts-surface{
-  cursor: pointer; 
+  cursor: pointer;
 }
 `;
 export default Container;
