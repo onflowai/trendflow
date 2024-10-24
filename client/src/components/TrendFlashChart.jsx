@@ -9,9 +9,9 @@ import Container from '../assets/wrappers/FlashChartContainer';
  */
 function AreaChartComponent({
   data,
-  chartHeight = 240,
-  chartMarginTop = 5,
-  chartMarginBottom = -40,
+  chartHeight,
+  chartMarginTop,
+  chartMarginBottom,
 }) {
   return (
     <Container>

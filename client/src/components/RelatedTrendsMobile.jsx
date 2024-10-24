@@ -12,6 +12,10 @@ import useLocalStorage from '../hooks/useLocalStorage';
  * @returns
  */
 const RelatedTrendsMobile = ({ relatedTrends }) => {
+  //Values used to style recharts in TrendPage
+  const chartHeight = 210;
+  const chartMarginTop = 5;
+  const chartMarginBottom = -40;
   // State for managing grid view with persistence
   const [isGridView, setIsGridView] = useLocalStorage('isGridView', false);
   // State for managing which button is active with persistence
@@ -91,6 +95,9 @@ const RelatedTrendsMobile = ({ relatedTrends }) => {
             {...trend} // Spread the trend data as props to the Trend component
             isGridView={isGridView}
             isLargeTrendView={isLargeTrendView}
+            chartHeight={chartHeight}
+            chartMarginTop={chartMarginTop}
+            chartMarginBottom={chartMarginBottom}
           />
         ))}
       </div>

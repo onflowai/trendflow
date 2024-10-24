@@ -53,12 +53,12 @@ const Container = styled.div`
   @media (max-width: 850px) {
     .toggle-container {
       display: flex; // Show toggle container for small screens
-      justify-content: left; // Center the buttons horizontally
+      justify-content: left; // Align buttons to the left
     }
 
-    .trends {
+    .related-trends-mobile {
       grid-template-columns: ${({ isGridView }) =>
-        isGridView ? 'repeat(2, 1fr)' : '1fr'};
+        isGridView ? 'repeat(2, 1fr)' : '1fr'}; /* Toggle grid/list view */
       gap: 1rem;
     }
   }
@@ -68,22 +68,22 @@ const Container = styled.div`
       display: block; // Show toggle button for large screens
     }
 
-    .trends {
-      grid-template-columns: repeat(2, 1fr); // 2 cards per row
+    .related-trends-mobile {
+      grid-template-columns: repeat(2, 1fr); // 2 cards per row by default
       gap: 2rem;
     }
   }
 
   @media (min-width: 1300px) {
-    .trends {
-      grid-template-columns: repeat(3, 1fr); // 3 cards in a row
+    .related-trends-mobile {
+      grid-template-columns: repeat(3, 1fr); // 3 cards per row on larger screens
       gap: 2rem;
     }
   }
 
   @media (min-width: 1740px) {
-    .trends {
-      grid-template-columns: repeat(4, 1fr); // 4 cards in a row
+    .related-trends-mobile {
+      grid-template-columns: repeat(4, 1fr); // 4 cards per row on extra-large screens
       gap: 2rem;
     }
   }

@@ -17,9 +17,9 @@ function Trends({
   savedTrends,
 }) {
   //Values used to style recharts in AllTrends & Admin pages
-  const chartHeight = 250;
-  const chartMarginTop = 10;
-  const chartMarginBottom = -30;
+  const chartHeight = 240;
+  const chartMarginTop = 5;
+  const chartMarginBottom = -40;
 
   // State for managing grid view with persistence
   const [isGridView, setIsGridView] = useLocalStorage('isGridView', false);
