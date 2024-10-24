@@ -7,6 +7,7 @@ const Container = styled.section`
   // Styling for Desktop
   @media (min-width: 992px) {
     .spy-scroll-section {
+      padding-top: 1.5rem;
       // Desktop specific styles here if needed
     }
   }

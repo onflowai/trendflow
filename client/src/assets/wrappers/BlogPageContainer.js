@@ -95,7 +95,6 @@ const Container = styled.div`
     }
 
     .scroll-spy-sidebar-aside {
-      padding-top: 1rem;
       position: -webkit-sticky;
       top: var(--nav-height);
       position: sticky;

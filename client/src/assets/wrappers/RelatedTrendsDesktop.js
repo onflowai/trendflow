@@ -29,6 +29,10 @@ border-radius: var(--border-radius);
     top: 50px;
     z-index: 0;
   }
+  .bottom-row {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
 `;
 
 export default Container;

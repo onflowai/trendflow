@@ -1,12 +1,17 @@
 import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from 'recharts';
 import Container from '../assets/wrappers/FlashChartContainer';
-
+/**
+ * This chart is used desktop view for related trends in TrendPage & in mobile view for grid-view AllTrends + Admin
+ * chartHeight, chartMarginTop, chartMarginBottom passed from parents if undefined set to default values' ='
+ * @param {*} param0
+ * @returns
+ */
 function AreaChartComponent({
   data,
-  chartHeight,
-  chartMarginTop,
-  chartMarginBottom,
+  chartHeight = 240,
+  chartMarginTop = 5,
+  chartMarginBottom = -40,
 }) {
   return (
     <Container>

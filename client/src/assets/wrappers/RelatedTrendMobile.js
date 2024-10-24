@@ -1,20 +1,29 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
-.related-trends-mobile {
+  margin-top: 1rem;
+  .related-trends-mobile {
     display: flex;
     flex-direction: column; /* ensuring the trends stack vertically */
     gap: 1rem;
     padding: 10px 15px;
   }
-  margin-top: 1rem;
+
+  .trend-small-card {
+    border-radius: var(--border-radius);
+    transition: transform 0.1s ease;
+    height: 100%; /* Ensure each trend has the same height */
+  }
+
   h2 {
     text-transform: none;
   }
+
   & > h5 {
     font-weight: 700;
     margin-bottom: 1.5rem;
   }
+
   .toggle-container, .toggle-container-large {
     display: none;
     margin-bottom: 0.6rem;
@@ -46,6 +55,7 @@ const Container = styled.div`
       display: flex; // Show toggle container for small screens
       justify-content: left; // Center the buttons horizontally
     }
+
     .trends {
       grid-template-columns: ${({ isGridView }) =>
         isGridView ? 'repeat(2, 1fr)' : '1fr'};
@@ -57,6 +67,7 @@ const Container = styled.div`
     .toggle-container-large {
       display: block; // Show toggle button for large screens
     }
+
     .trends {
       grid-template-columns: repeat(2, 1fr); // 2 cards per row
       gap: 2rem;

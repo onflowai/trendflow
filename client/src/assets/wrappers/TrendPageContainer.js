@@ -22,8 +22,8 @@ const Container = styled.section`
   .trend {
     padding: 1rem 4rem 4rem; // add padding
     width: 100%; // full width
-    max-width: 900px; // Limit max width to 800px
-    margin: 0 auto 2rem auto; // Center the trend container
+    max-width: 900px; // limit max width to 800px
+    margin: 0 auto 2rem auto; // center the trend container
   }
 
   .trend-use-container {
@@ -45,8 +45,8 @@ const Container = styled.section`
     transition: transform 0.3s ease; // smooth transform transition
     right: 0;
     top: var(--nav-height);
-    height: 100vh; // Full height
-    overflow-y: auto; // Allows scrolling
+    height: 100vh; // full height
+    overflow-y: auto; // allows scrolling
   }
 
   @media (min-width: 992px) {
@@ -56,32 +56,32 @@ const Container = styled.section`
     }
     
     .scroll-spy-sidebar-aside {
-      padding-top: 1rem;
-      position: -webkit-sticky; // Make sidebar sticky
-      top: var(--nav-height); // Start below the navbar
+      //padding-top: 1rem;
+      position: -webkit-sticky; // make sidebar sticky
+      top: var(--nav-height); // start below the navbar
       position: sticky;
       right: 0;
       width: 250px; // fixed width
-      height: calc(100vh - var(--nav-height)); // Full height minus the navbar height
+      height: calc(100vh - var(--nav-height)); // full height minus the navbar height
       z-index: 3; // ensure it is stacked properly
     }
     
     .scroll-spy-sidebar {
-      position: sticky; // Maintain sticky positioning
-      top: var(--nav-height); // Start below the navbar
-      height: calc(100vh - var(--nav-height)); // Adjust height to account for navbar
-      overflow-y: auto; // Allows scrolling within the sidebar
+      position: sticky; // maintain sticky positioning
+      top: var(--nav-height); // start below the navbar
+      height: calc(100vh - var(--nav-height)); // adjust height to account for navbar
+      overflow-y: auto; // allows scrolling within the sidebar
     }
   }
 
   @media (max-width: 991px) {
     .trend-page-layout {
       display: flex;
-      flex-direction: column; // Reiterate to ensure stacking
+      flex-direction: column; // reiterate to ensure stacking
     }
     .page-layout {
       display: flex;
-      flex-direction: column; // Reiterate to ensure stacking
+      flex-direction: column; // reiterate to ensure stacking
     }
 
     .trend {
