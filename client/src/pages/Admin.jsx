@@ -6,6 +6,7 @@ import {
   CustomErrorToast,
   StatComponent,
   ChartAdminComponent,
+  CustomSuccessToast,
 } from '../components';
 import useLocalStorage from '../hooks/useLocalStorage';
 import customFetch from '../utils/customFetch';
@@ -16,11 +17,9 @@ import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
 
 export const loader = async ({ request }) => {
-  console.log(request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
-  console.log('params: ', params);
   try {
     // Fetching all trends
     const trendsResponse = await customFetch.get('trends/admin/all-trends', {
@@ -75,7 +74,7 @@ const Admin = () => {
       setLoadingSlug(slug); // start loading
       await customFetch.patch(`trends/${slug}/approve`);
       // Handle successful approval (e.g., show a success message, refresh the list of trends, etc.)
-      toast.success('Trend approved successfully!');
+      toast.success(<CustomSuccessToast message={'Trend Approved'} />);
     } catch (error) {
       // Handle error (e.g., show an error message)
       toast.error(error?.response?.data?.msg || 'Error approving trend');
@@ -97,11 +96,8 @@ const Admin = () => {
     }
   };
   const { trends, stats, charts, searchValues } = useLoaderData();
-  console.log('Trends in Admin: ', trends);
-  console.log('Logging Charts: ', charts);
   const { user } = useOutletContext();
   const isAdminPage = user.role === 'admin';
-  console.log(user);
   return (
     <Container>
       <StatComponent

@@ -80,7 +80,6 @@ function SearchTrendsLarge({
     status: searchValues.status ? searchValues.status !== 'all' : false,
     updated: searchValues.updated ? searchValues.updated !== 'all' : false,
   });
-  console.log('searchValues.trendCategory : ', searchValues.trendCategory);
 
   // Effect to update URL params whenever filterValues change
   useEffect(() => {

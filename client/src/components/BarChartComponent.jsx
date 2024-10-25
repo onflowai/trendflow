@@ -41,7 +41,6 @@ function BarChartComponent({ data, forecastData = [] }) {
   const allData = [...data, ...forecastData];
   return (
     <Container>
-      {console.log('FORECAST IN CHART: ', forecastData)}
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}

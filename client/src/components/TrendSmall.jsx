@@ -116,9 +116,9 @@ function TrendSmall({
             </div>
             <div className="bottom-info">
               <span className="info-item">
-                {!isAdminPage ? (
+                {!(isAdminPage && isGridView) ? (
                   <span className="icon-tech">
-                    {techIconUrl === 'undefined' ? (
+                    {!techIconUrl ? (
                       <PiHashLight />
                     ) : (
                       <img

@@ -18,11 +18,9 @@ import { CombinedProvider } from '../context/CombinedContext.jsx';
  * @returns {Object} data for trends, saved trends, and search values
  */
 export const loader = async ({ request }) => {
-  // console.log('REQUEST URL ', request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
-  // console.log('params: ', params);
 
   // Parse the combined sort parameter into individual components
   if (params.sort) {
@@ -56,7 +54,6 @@ export const loader = async ({ request }) => {
 };
 //function for bookmarking trends for each user
 const onSave = async (_id) => {
-  // console.log('ID in onSave: ', _id);
   try {
     const response = await customFetch.patch('/users/save-trend', { _id });
     if (response.status === 200) {
@@ -86,9 +83,7 @@ const onRemove = async (_id) => {
 const AllTrends = () => {
   const { trends, savedTrendIds, error, searchValues, trendCategories } =
     useLoaderData();
-  console.log('TRENDS: ', trends);
   const [trendCategory, setTrendCategory] = useState([]);
-  console.log('trendCategory :', trendCategory);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
   //fetching the icon data from the node server

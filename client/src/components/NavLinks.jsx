@@ -17,7 +17,6 @@ const NavLinks = ({ isSidebar }) => {
         {dashboardAllLinks.map((link) => {
           const { text, path } = link;
           const { role } = user;
-          console.log(role);
           if (path === 'admin' && role !== 'admin') return;
           return (
             <NavLink
