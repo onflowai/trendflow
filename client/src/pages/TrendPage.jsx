@@ -20,6 +20,7 @@ import customFetch from '../utils/customFetch';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import useWindowSize from '../hooks/useWindowSize';
+import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 day.extend(advancedFormat);
 /**
  * Trend Page will display detailed information about the trend
@@ -27,18 +28,58 @@ day.extend(advancedFormat);
  * @returns
  *
  */
+//function to save a trend
+const onSave = async (_id) => {
+  try {
+    const response = await customFetch.patch('/users/save-trend', { _id });
+    if (response.status === 200) {
+      toast.success('Trend saved successfully');
+    } else {
+      toast.error('Failed to save trend');
+    }
+  } catch (error) {
+    toast.error('An error occurred while saving trend');
+    console.error(error);
+  }
+};
+//function to remove a saved trend
+const onRemove = async (_id) => {
+  try {
+    const response = await customFetch.patch('/users/remove-trend', { _id });
+    if (response.status === 200) {
+      toast.success('Trend unmarked successfully');
+    } else {
+      toast.error('Failed to unmark trend');
+    }
+  } catch (error) {
+    toast.error('An error occurred');
+    console.error(error);
+  }
+};
 //Fetching the trend data
 export const loader = async ({ params }) => {
   try {
-    const { data } = await customFetch.get(`/trends/${params.slug}`);
-    return data;
+    const { data: trendData } = await customFetch.get(`/trends/${params.slug}`);
+    console.log('trendData', trendData);
+    const { data: savedTrendsData } = await customFetch.get(
+      '/users/saved-trends'
+    ); // fetching saved trends for the user
+    console.log('savedTrendsData', savedTrendsData);
+    const savedTrendIds =
+      savedTrendsData?.savedTrends?.map((trend) => trend._id) || [];
+    console.log('savedTrendIds', savedTrendIds);
+    return { ...trendData, savedTrendIds };
   } catch (error) {
+    console.error('Loader error:', error);
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    return redirect('/dashboard');
+    return null;
   }
 };
 const TrendPage = () => {
-  const { trendObject, relatedTrends } = useLoaderData(); //getting the trend from the loader above
+  const { trendObject, relatedTrends, savedTrendIds } = useLoaderData(); //getting the trend from the loader above
+  const [isSaved, setIsSaved] = useState(
+    savedTrendIds.includes(trendObject._id)
+  );
   const {
     trend,
     trendCategory,
@@ -58,6 +99,17 @@ const TrendPage = () => {
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();
   const setSidebarVisibility = dashboardContext?.setSidebarVisibility; // Fallback
+
+  const handleBookmarkClick = async (e) => {
+    e.stopPropagation();
+    if (isSaved) {
+      await onRemove(trendObject._id); // Remove the bookmark
+      setIsSaved(false); // Update state
+    } else {
+      await onSave(trendObject._id); // Save the bookmark
+      setIsSaved(true); // Update state
+    }
+  };
 
   useEffect(() => {
     if (setSidebarVisibility) {
@@ -116,7 +168,11 @@ const TrendPage = () => {
             <h4 className="trend-title" id="Guide"></h4>
             <div className="trend-center">
               <div className="trend-items">
-                <ContentRowComponent items={items} />
+                <ContentRowComponent
+                  items={items}
+                  handleBookmarkClick={handleBookmarkClick}
+                  isSaved={isSaved}
+                />
               </div>
               <div className="trend-use-container">
                 <ContentBoxHighlighted trendUse={trendUse} />
@@ -132,7 +188,12 @@ const TrendPage = () => {
               <ScrollSpyComponent sectionIds={['Trend', 'Guide', 'Related']} />
               {!isMobile && (
                 <div className="related-trend">
-                  <RelatedTrendsDesktop relatedTrends={relatedTrends} />
+                  <RelatedTrendsDesktop
+                    relatedTrends={relatedTrends}
+                    onSave={onSave}
+                    onRemove={onRemove}
+                    savedTrends={savedTrendIds}
+                  />
                 </div>
               )}
             </div>
@@ -140,7 +201,12 @@ const TrendPage = () => {
           <div className="" id="Related"></div>
           {isMobile && (
             <div className="related-trend">
-              <RelatedTrendsMobile relatedTrends={relatedTrends} />
+              <RelatedTrendsMobile
+                relatedTrends={relatedTrends}
+                onSave={onSave}
+                onRemove={onRemove}
+                savedTrends={savedTrendIds}
+              />
             </div>
           )}
         </div>

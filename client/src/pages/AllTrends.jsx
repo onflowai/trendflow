@@ -38,6 +38,7 @@ export const loader = async ({ request }) => {
     );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
     const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
+    console.log('savedTrendsData', savedTrendsData);
     const trendsWithIcons = trendsData.trends.map((trend) => ({
       ...trend,
     })); // using utility function to prepend base URL to iconUrl with trends tech url for icon

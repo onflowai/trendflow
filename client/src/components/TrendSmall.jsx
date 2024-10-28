@@ -19,7 +19,6 @@ import Container from '../assets/wrappers/TrendSmallContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 day.extend(advancedFormat);
-
 /**
  * This component is used in the mobile screens with less info, data is passed from Trend.jsx
  * @returns

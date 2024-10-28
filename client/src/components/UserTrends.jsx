@@ -9,7 +9,11 @@ import Container from '../assets/wrappers/UserTrendsContainer';
  */
 
 function UserTrends({ trends, savedTrends, onRemove }) {
-  console.log('savedTrends:', savedTrends);
+  //Values used to style recharts in Profile page
+  const chartHeight = 210;
+  const chartMarginTop = 5;
+  const chartMarginBottom = -40;
+
   const isAdminPage = false; // hardcoding value to prevent tampering
   console.log('TRENDS:', trends);
   if (trends.length === 0) {
@@ -30,6 +34,9 @@ function UserTrends({ trends, savedTrends, onRemove }) {
               isAdminPage={isAdminPage}
               savedTrends={savedTrends}
               onRemove={onRemove}
+              chartHeight={chartHeight}
+              chartMarginTop={chartMarginTop}
+              chartMarginBottom={chartMarginBottom}
             ></Trend>
           );
         })}

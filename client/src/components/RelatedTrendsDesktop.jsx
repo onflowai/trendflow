@@ -6,7 +6,12 @@ import Container from '../assets/wrappers/RelatedTrendsDesktop';
  * @param {*} relatedTrends
  * @returns
  */
-const RelatedTrendsDesktop = ({ relatedTrends }) => {
+const RelatedTrendsDesktop = ({
+  relatedTrends,
+  savedTrends,
+  onSave,
+  onRemove,
+}) => {
   //Values used to style recharts in AllTrends & Admin pages
   const chartHeight = 100;
   const chartMarginTop = 10;
@@ -34,6 +39,9 @@ const RelatedTrendsDesktop = ({ relatedTrends }) => {
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
+            savedTrends={savedTrends}
+            onSave={onSave}
+            onRemove={onRemove}
           />
         ))}
       </div>

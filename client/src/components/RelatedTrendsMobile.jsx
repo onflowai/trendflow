@@ -11,7 +11,12 @@ import useLocalStorage from '../hooks/useLocalStorage';
  * @param {*}
  * @returns
  */
-const RelatedTrendsMobile = ({ relatedTrends }) => {
+const RelatedTrendsMobile = ({
+  relatedTrends,
+  savedTrends,
+  onSave,
+  onRemove,
+}) => {
   //Values used to style recharts in TrendPage
   const chartHeight = 210;
   const chartMarginTop = 5;
@@ -98,6 +103,9 @@ const RelatedTrendsMobile = ({ relatedTrends }) => {
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
+            savedTrends={savedTrends}
+            onSave={onSave}
+            onRemove={onRemove}
           />
         ))}
       </div>
