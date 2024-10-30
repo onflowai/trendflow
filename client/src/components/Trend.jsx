@@ -104,6 +104,7 @@ function Trend({
     upDate,
     onSave,
     onRemove,
+    onDelete,
     savedTrends,
     techIconUrl,
     flashChart,

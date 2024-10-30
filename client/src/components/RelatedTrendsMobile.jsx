@@ -73,25 +73,30 @@ const RelatedTrendsMobile = ({
   return (
     <Container isGridView={isGridView}>
       {/* Button container for switching views */}
-      <div className="toggle-container">
-        <button
-          className={`view-btn ${activeButton === 'grid' ? 'active' : ''}`}
-          onClick={() => handleButtonClick('grid')}
-        >
-          <BsGrid3X2GapFill size={30} />
-        </button>
-        <button
-          className={`view-btn ${activeButton === 'stream' ? 'active' : ''}`}
-          onClick={() => handleButtonClick('stream')}
-        >
-          <MdViewStream size={30} />
-        </button>
-        <button
-          className={`view-btn ${activeButton === 'large' ? 'active' : ''}`}
-          onClick={() => handleButtonClick('large')}
-        >
-          <TbRectangleFilled size={27} />
-        </button>
+      <div className="related-toggle-container">
+        <div className="toggle-container">
+          <button
+            className={`view-btn ${activeButton === 'grid' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('grid')}
+          >
+            <BsGrid3X2GapFill size={30} />
+          </button>
+          <button
+            className={`view-btn ${activeButton === 'stream' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('stream')}
+          >
+            <MdViewStream size={30} />
+          </button>
+          <button
+            className={`view-btn ${activeButton === 'large' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('large')}
+          >
+            <TbRectangleFilled size={27} />
+          </button>
+        </div>
+        <div>
+          <h4>Related:</h4>
+        </div>
       </div>
       <div className="related-trends-mobile">
         {relatedTrends.map((trend) => (

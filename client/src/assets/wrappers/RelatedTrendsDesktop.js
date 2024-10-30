@@ -7,6 +7,7 @@ border-radius: var(--border-radius);
     flex-direction: column;
     margin-top: 0.6rem;
     margin-right: 0.6rem;
+    margin-bottom: 0.6rem;
     gap: 1rem;
   }
 

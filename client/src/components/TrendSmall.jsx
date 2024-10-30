@@ -31,6 +31,7 @@ function TrendSmall({
   upDate,
   onSave,
   onRemove,
+  onDelete,
   updatedAt,
   isLoading,
   createdBy,
