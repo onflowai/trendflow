@@ -104,13 +104,11 @@ const AllTrends = () => {
 
     fetchData();
   }, [isClosed]);
+
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
-  // const techIconUrl = trends.trends.map((trend) => ({
-  //   ...trend,
-  //   iconUrl: `${API_BASE_URL}${trend.techIconUrl}`,
-  // })); // prepending base URL to iconUrl with trends tech url for icon
+
   return (
     <CombinedProvider value={{ trends, searchValues }}>
       <SearchTrends

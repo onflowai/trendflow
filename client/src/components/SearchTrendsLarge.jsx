@@ -3,7 +3,6 @@ import {
   Checkbox,
   FormSelectorIconLocal,
   FormSelectorIcon,
-  FormSelector,
 } from '../components';
 import Container from '../assets/wrappers/SearchTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
@@ -26,7 +25,7 @@ import {
   SORT_OPTIONS,
   TIME,
 } from '../utils/constants.js';
-import { useNavigate, useLocation, Link } from 'react-router-dom'; // Use useNavigate instead of useSubmit
+import { useNavigate, useLocation } from 'react-router-dom'; // Use useNavigate instead of useSubmit
 /**
  * Search Trends Large is used in AllTrends & Admin Page. it is used to filter trends using query params which are fetched from
  * frontend as well as backend
@@ -89,14 +88,15 @@ function SearchTrendsLarge({
   // Function to handle changes in dropdown and checkbox values
   const handleChange = (name, option) => {
     const value = option ? option.value : 'all';
+
     setFilterValues((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: prev[name] === value ? '' : value, // Toggle off if the value is already set
     }));
 
     setIndicatorState((prev) => ({
       ...prev,
-      [name]: value !== 'all', // Update indicator state
+      [name]: value !== 'all' && value !== '', // Update indicator state
     }));
   };
 
@@ -352,10 +352,9 @@ function SearchTrendsLarge({
                           SORT_OPTIONS.TOP_RATED_NOW.value
                         )}
                         onChange={() =>
-                          handleChange(
-                            'topRated',
-                            SORT_OPTIONS.TOP_RATED_NOW.value
-                          )
+                          handleChange('topRated', {
+                            value: SORT_OPTIONS.TOP_RATED_NOW.value,
+                          })
                         }
                         label={SORT_OPTIONS.TOP_RATED_NOW.label}
                       />
@@ -370,10 +369,9 @@ function SearchTrendsLarge({
                           SORT_OPTIONS.TOP_VIEWED_NOW.value
                         )}
                         onChange={() =>
-                          handleChange(
-                            'topViewed',
-                            SORT_OPTIONS.TOP_VIEWED_NOW.value
-                          )
+                          handleChange('topViewed', {
+                            value: SORT_OPTIONS.TOP_VIEWED_NOW.value,
+                          })
                         }
                         label={SORT_OPTIONS.TOP_VIEWED_NOW.label}
                       />
@@ -391,10 +389,11 @@ function SearchTrendsLarge({
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
-                          list={[
-                            { value: 'all', label: 'All', icon: FaInfinity },
-                            ...trendCategory,
-                          ]}
+                          list={trendCategory.map((cate) => ({
+                            value: cate.label, // Keep value as label for filtering
+                            label: cate.label,
+                            image: cate.image,
+                          }))}
                           onChange={handleChange}
                         />
                       </div>
@@ -412,10 +411,11 @@ function SearchTrendsLarge({
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
-                          list={[
-                            { value: 'all', label: 'All', icon: FaInfinity },
-                            ...technologies,
-                          ]}
+                          list={technologies.map((tech) => ({
+                            value: tech.label, // Keep value as label for filtering
+                            label: tech.label,
+                            image: tech.image,
+                          }))}
                           onChange={handleChange}
                         />
                       </div>
