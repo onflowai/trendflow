@@ -30,7 +30,7 @@ export const loader = async ({ request }) => {
     params.status = status; // Assign status to chartType
     params.updated = updated;
   }
-
+  //console.log('params:', params.toString());
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });
     const { data: savedTrendsData } = await customFetch.get(

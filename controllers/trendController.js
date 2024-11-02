@@ -277,9 +277,10 @@ export const getApprovedTrends = async (req, res) => {
     sort,
     page,
     limit,
-    viewCount,
+    topRated,
+    topViewed,
+    updated,
     status,
-    timePeriod,
   } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
   const queryObject = constructQueryObject(
     search,
@@ -287,7 +288,7 @@ export const getApprovedTrends = async (req, res) => {
     trendCategory,
     true
   ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
-  const sortKey = constructSortKey(sort);
+  const sortKey = constructSortKey(topRated, topViewed, updated);
   page = Number(page) || 1; //value page will be provided in the req
   limit = Number(limit) || 36; //limit will be provided, defaulting to 10 trends initially
 
@@ -295,11 +296,21 @@ export const getApprovedTrends = async (req, res) => {
   const currentMonth = new Date().getMonth(); //month of the current date, represented as an index from 0 (January) to 11 (December)
   const now = new Date(); // current date
 
-  if (sort === 'topRatedYear' || sort === 'topViewedYear') {
-    queryObject.updatedAt = { $gte: new Date(currentYear, 0, 1) }; // filtering trends updated from the start of the current year
-  } else if (sort === 'topRatedMonth' || sort === 'topViewedMonth') {
-    queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) }; // filter trends updated from the start of the current month
-  }
+  if (updated === 'newestMonth') {
+    queryObject.updatedAt = {
+      $gte: new Date(currentYear, currentMonth - 1, 1),
+    };
+  } else if (updated === 'newestYear') {
+    queryObject.updatedAt = { $gte: new Date(currentYear - 1, 0, 1) };
+  } // applying the 'updated' filter if provided
+
+  if (!queryObject.updatedAt) {
+    if (topRated === 'topRatedYear' || topViewed === 'topViewedYear') {
+      queryObject.updatedAt = { $gte: new Date(currentYear, 0, 1) }; // trends updated from the start of the current year
+    } else if (topRated === 'topRatedMonth' || topViewed === 'topViewedMonth') {
+      queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) }; // trends updated from the start of the current month
+    }
+  } // applying 'topRated' and 'topViewed' time-frame filters only if 'updated' didn't already set an 'updatedAt' filter
 
   // if (chartType && chartType !== 'all') {
   //   queryObject.trendStatus = chartType;
@@ -346,6 +357,7 @@ export const getApprovedTrends = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 }; //end get approved trends
+
 /**
  * GET TREND_CATEGORY & TECHNOLOGIES
  * @param {*} req
@@ -366,6 +378,7 @@ export const getSelectIconData = (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
+
 /**
  * UPLOAD TREND SVG is responsible for allow admin to upload/modify svg belonging to a trend before and after approval
  * @param {*} req
@@ -416,6 +429,7 @@ export const uploadTrendSVG = async (req, res) => {
       .json({ msg: 'SVG upload failed' });
   }
 };
+
 /**
  * GET TREND SVG
  * @param {*} req

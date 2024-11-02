@@ -39,6 +39,7 @@ function SearchTrendsLarge({
   setIsClosed,
   isAdminPage,
 }) {
+  console.log('trendCategory', trendCategory);
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
@@ -69,7 +70,6 @@ function SearchTrendsLarge({
     topViewed: searchValues.topViewed || '', // initializing as empty or from context
     updated: searchValues.updated || 'all',
   });
-
   const [indicatorState, setIndicatorState] = useState({
     trendCategory: searchValues.trendCategory
       ? searchValues.trendCategory !== 'all'
@@ -195,8 +195,8 @@ function SearchTrendsLarge({
                     ].map((option) => (
                       <div key={option.value}>
                         <Checkbox
-                          checked={isChecked('sort', option.value)}
-                          onChange={() => handleChange('sort', option.value)}
+                          checked={isChecked('topRated', option.value)} // Ensure 'topRated' is checked
+                          onChange={() => handleChange('topRated', option)} // Pass the whole option
                           label={option.label}
                         />
                         <p className="checkbox-description">
@@ -214,8 +214,8 @@ function SearchTrendsLarge({
                     ].map((option) => (
                       <div key={option.value}>
                         <Checkbox
-                          checked={isChecked('sort', option.value)}
-                          onChange={() => handleChange('sort', option.value)}
+                          checked={isChecked('topViewed', option.value)} // Ensure 'topViewed' is checked
+                          onChange={() => handleChange('topViewed', option)} // Pass the whole option
                           label={option.label}
                         />
                         <p className="checkbox-description">
@@ -238,10 +238,11 @@ function SearchTrendsLarge({
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
-                          list={[
-                            { value: 'all', label: 'All', icon: FaInfinity },
-                            ...trendCategory,
-                          ]}
+                          list={trendCategory.map((cate) => ({
+                            value: cate.label, // Keep value as label for filtering
+                            label: cate.label,
+                            image: cate.image,
+                          }))}
                           onChange={handleChange}
                         />
                       </div>
@@ -257,10 +258,11 @@ function SearchTrendsLarge({
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
-                          list={[
-                            { value: 'all', label: 'All', icon: FaInfinity },
-                            ...technologies,
-                          ]}
+                          list={technologies.map((tech) => ({
+                            value: tech.label, // Keep value as label for filtering
+                            label: tech.label,
+                            image: tech.image,
+                          }))}
                           onChange={handleChange}
                         />
                       </div>
@@ -284,7 +286,7 @@ function SearchTrendsLarge({
                               ...Object.values(ADMIN_STATUS),
                             ]}
                             onChange={(name, value) =>
-                              handleChange('status', value)
+                              handleChange(name, value)
                             }
                           />
                         ) : (
@@ -297,10 +299,11 @@ function SearchTrendsLarge({
                               ...Object.values(STATUS),
                             ]}
                             onChange={(name, value) =>
-                              handleChange('status', value)
+                              handleChange(name, value)
                             }
                           />
                         )}
+                        {console.log('Current filterValues:', filterValues)}
                       </div>
                     </div>
                     <div className="select">
@@ -310,19 +313,15 @@ function SearchTrendsLarge({
                             indicatorState.updated ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelector
+                        <FormSelectorIconLocal
                           labelText="Updated:"
                           name="updated"
                           defaultValue={filterValues.updated}
                           list={[
-                            TIME.NEWEST,
-                            TIME.OLDEST,
-                            TIME.NEWEST_MONTH,
-                            TIME.NEWEST_YEAR,
+                            { value: 'all', label: 'All', icon: FaInfinity },
+                            ...Object.values(TIME),
                           ]}
-                          onChange={(name, value) =>
-                            handleChange('updated', value)
-                          }
+                          onChange={(name, value) => handleChange(name, value)}
                         />
                       </div>
                       <div className="button-row">

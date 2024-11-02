@@ -45,10 +45,12 @@ export const constructQueryObject = (
  * @param {*} sort
  * @returns
  */
-export const constructSortKey = (sort) => {
+export const constructSortKey = (topRated, topViewed, updated) => {
   const sortingOptions = {
     newest: { updatedAt: -1 },
     oldest: { updatedAt: 1 },
+    newestMonth: { updatedAt: -1 },
+    newestYear: { updatedAt: -1 },
     topRatedNow: { combinedScore: -1 },
     topRatedYear: { combinedScore: -1 },
     topRatedMonth: { combinedScore: -1 },
@@ -56,7 +58,26 @@ export const constructSortKey = (sort) => {
     topViewedYear: { views: -1 },
     topViewedMonth: { views: -1 },
   }; // define sorting options, sort by newest (descending updatedAt) or sort by oldest (ascending updatedAt)
-  return sortingOptions[sort] || { updatedAt: -1 }; // efault to sorting by newest
+  //return sortingOptions[sort] || { updatedAt: -1 }; // efault to sorting by newest
+  const sortKey = {};
+
+  // Apply sorting for topRated if provided
+  if (topRated && sortingOptions[topRated]) {
+    Object.assign(sortKey, sortingOptions[topRated]);
+  }
+
+  // Apply sorting for topViewed if provided
+  if (topViewed && sortingOptions[topViewed]) {
+    Object.assign(sortKey, sortingOptions[topViewed]);
+  }
+
+  // Apply sorting for updated if provided
+  if (updated && sortingOptions[updated]) {
+    Object.assign(sortKey, sortingOptions[updated]);
+  }
+
+  // Default to sorting by 'newest' if no valid sort key is provided
+  return Object.keys(sortKey).length > 0 ? sortKey : { updatedAt: -1 };
   // return sortingOptions[sort] || null; // return the corresponding sort key or null if not found
 }; //END CONSTRUCT SORT KEY
 

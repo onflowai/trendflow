@@ -81,8 +81,10 @@ const FormSelectorIconLocal = ({
   // Function to handle changes in selection
   const handleChange = (option) => {
     setSelectedOption(option); // Update local state with the selected option
-    if (onChange) onChange(name, option);
-    if (onChange) onChange(name, option ? option.value : ''); // Call the onChange prop with name and value or empty if cleared
+    if (onChange) {
+      // Ensure we're sending the correct value
+      onChange(name, option ? option : { value: 'all', label: 'All' });
+    }
   };
 
   return (
