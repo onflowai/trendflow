@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema(
         ref: 'Trend', // reference to the Trend model prevents duplication
       },
     ],
+    savedFilters: {
+      type: Object,
+      default: {},
+    },
   },
   {
     timestamps: true,

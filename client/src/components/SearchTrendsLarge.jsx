@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Checkbox,
   FormSelectorIconLocal,
@@ -37,11 +37,14 @@ function SearchTrendsLarge({
   isClosed,
   setIsClosed,
   isAdminPage,
+  saveFilters,
+  resetFilters,
 }) {
   console.log('trendCategory', trendCategory);
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
+  const isFirstRender = useRef(true); // tracking the first render
   const { showSidebar, toggleSidebar } = useDashboardContext();
   // state to track if the filter is collapsed
   const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false);
@@ -69,6 +72,19 @@ function SearchTrendsLarge({
     topViewed: searchValues.topViewed || '', // initializing as empty or from context
     updated: searchValues.updated || 'all',
   });
+  useEffect(() => {
+    if (isFirstRender.current) {
+      setFilterValues({
+        trendCategory: searchValues.trendCategory || 'all',
+        trendTech: searchValues.trendTech || 'all',
+        status: searchValues.status || 'all',
+        topRated: searchValues.topRated || '',
+        topViewed: searchValues.topViewed || '',
+        updated: searchValues.updated || 'all',
+      });
+      isFirstRender.current = false; // running this use effect only once
+    }
+  }, [searchValues]);
   const [indicatorState, setIndicatorState] = useState({
     trendCategory: searchValues.trendCategory
       ? searchValues.trendCategory !== 'all'
@@ -114,6 +130,21 @@ function SearchTrendsLarge({
     });
     // navigate to the new URL with updated query params
     navigate(`?${params.toString()}`, { replace: true }); // updating the URL without reloading
+  };
+  const handleSave = () => {
+    saveFilters(filterValues);
+  };
+
+  const handleReset = () => {
+    setFilterValues({
+      trendCategory: 'all',
+      trendTech: 'all',
+      status: 'all',
+      topRated: '',
+      topViewed: '',
+      updated: 'all',
+    });
+    resetFilters();
   };
   const isChecked = (name, value) => filterValues[name] === value; // utility function to check if a checkbox is checked
   const date = new Date().toLocaleDateString();
@@ -326,12 +357,18 @@ function SearchTrendsLarge({
                       </div>
                       <div className="button-row">
                         <div className="save-button">
-                          <button className="btn btn-block form-btn">
+                          <button
+                            className="btn btn-block form-btn"
+                            onClick={handleSave}
+                          >
                             Save
                           </button>
                         </div>
                         <div className="reset-button">
-                          <button className="btn btn-block form-btn">
+                          <button
+                            className="btn btn-block form-btn"
+                            onClick={handleReset}
+                          >
                             Reset Filter
                           </button>
                         </div>
@@ -423,10 +460,18 @@ function SearchTrendsLarge({
                   </div>
                   <div className="button-row">
                     <div className="save-button">
-                      <button className="btn btn-block form-btn">Save</button>
+                      <button
+                        className="btn btn-block form-btn"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </button>
                     </div>
                     <div className="reset-button">
-                      <button className="btn btn-block form-btn">
+                      <button
+                        className="btn btn-block form-btn"
+                        onClick={handleReset}
+                      >
                         Reset Filter
                       </button>
                     </div>

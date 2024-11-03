@@ -6,6 +6,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import { getFullIconUrl } from '../utils/urlHelper';
 import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
+import { useNavigate } from 'react-router-dom';
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
@@ -30,7 +31,6 @@ export const loader = async ({ request }) => {
     params.status = status; // Assign status to chartType
     params.updated = updated;
   }
-  //console.log('params:', params.toString());
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });
     const { data: savedTrendsData } = await customFetch.get(
@@ -42,11 +42,17 @@ export const loader = async ({ request }) => {
     const trendsWithIcons = trendsData.trends.map((trend) => ({
       ...trend,
     })); // using utility function to prepend base URL to iconUrl with trends tech url for icon
+    const { data: savedFiltersData } = await customFetch.get(
+      '/users/get-saved-filters'
+    );
+    const savedFilters = savedFiltersData.filters || {};
+    const combinedParams = { ...savedFilters, ...params }; // using saved filters as defaults, but allowing URL params to override
 
     return {
       trends: { trends: trendsWithIcons },
       savedTrendIds,
-      searchValues: { ...params },
+      searchValues: combinedParams, //setting combinedParams as searchValues
+      //searchValues: { ...params },
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -82,6 +88,7 @@ const onRemove = async (_id) => {
   }
 };
 const AllTrends = () => {
+  const navigate = useNavigate();
   const { trends, savedTrendIds, error, searchValues, trendCategories } =
     useLoaderData();
   const [trendCategory, setTrendCategory] = useState([]);
@@ -104,7 +111,27 @@ const AllTrends = () => {
 
     fetchData();
   }, [isClosed]);
-
+  // save current filter parameters to users model
+  const saveFilters = async (filters) => {
+    try {
+      await customFetch.post('/users/save-filters', { filters });
+      toast.success('Filters saved successfully');
+    } catch (error) {
+      toast.error('Failed to save filters');
+      console.error(error);
+    }
+  };
+  // reset filters: clear state, URL params, and saved data in MongoDB
+  const resetFilters = async () => {
+    navigate('/dashboard');
+    try {
+      await customFetch.delete('/users/delete-filters');
+      toast.success('Filters reset successfully');
+    } catch (error) {
+      toast.error('Failed to reset filters');
+      console.error(error);
+    }
+  };
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
@@ -116,6 +143,8 @@ const AllTrends = () => {
         technologies={technologies}
         isClosed={isClosed}
         setIsClosed={setIsClosed}
+        saveFilters={saveFilters}
+        resetFilters={resetFilters}
       />
       <Trends
         trends={trends.trends}

@@ -283,3 +283,54 @@ export const togglePrivacy = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
+/**
+ * SAVE USER FILTERS: saves user's search filters to their profile
+ * @param {*} req
+ * @param {*} res
+ */
+export const saveUserFilters = async (req, res) => {
+  try {
+    const { filters } = req.body;
+    const user = await userModel.findByIdAndUpdate(
+      req.user.userID,
+      { savedFilters: filters },
+      { new: true }
+    );
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Filters saved successfully', filters: user.savedFilters });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};
+/**
+ * GET USER SAVED FILTERS: retrieves saved filters for the user
+ * @param {*} req
+ * @param {*} res
+ */
+export const getUserSavedFilters = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.userID);
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    }
+    res.status(StatusCodes.OK).json({ filters: user.savedFilters });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};
+/**
+ * DELETE USER SAVED FILTERS: clears saved filters from the user's profile
+ * @param {*} req
+ * @param {*} res
+ */
+export const deleteUserSavedFilters = async (req, res) => {
+  try {
+    await userModel.findByIdAndUpdate(req.user.userID, {
+      $unset: { savedFilters: '' }, // removes savedFilters from the document
+    });
+    res.status(StatusCodes.OK).json({ msg: 'Filters reset successfully' });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};

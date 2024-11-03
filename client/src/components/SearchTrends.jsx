@@ -6,12 +6,14 @@ import styled from 'styled-components';
  * @param {*} param0
  * @returns
  */
-function Trend({
+function SearchTrends({
   trendCategory,
   technologies,
   isClosed,
   setIsClosed,
   isAdminPage,
+  saveFilters,
+  resetFilters,
 }) {
   const isLargeScreen = window.matchMedia('(min-width: 499px)').matches; // using media query hook to determine the screen size
   return (
@@ -23,6 +25,8 @@ function Trend({
           technologies={technologies}
           isClosed={isClosed}
           setIsClosed={setIsClosed}
+          saveFilters={saveFilters}
+          resetFilters={resetFilters}
         />
       ) : (
         <SearchTrendsSmall />
@@ -35,4 +39,4 @@ const Container = styled.section`
   
 `;
 
-export default Trend;
+export default SearchTrends;
