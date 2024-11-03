@@ -46,14 +46,12 @@ function SearchTrendsLarge({
   const location = useLocation(); // getting the current URL parameters
   const isFirstRender = useRef(true); // tracking the first render
   const { showSidebar, toggleSidebar } = useDashboardContext();
-  // state to track if the filter is collapsed
-  const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false);
-  // state to track if the collapsed group is sticky
-  const [isSticky, setIsSticky] = useLocalStorage('isSticky', false);
-  //change for side bar button
-  const [isArrowBack, setIsArrowBack] = useLocalStorage('isArrowBack', true);
-  //state to track if the filter is closed
-  // const [isClosed, setIsClosed] = useLocalStorage('isClosed', false);
+  const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false); // state to track if the filter is collapsed
+  const [isSticky, setIsSticky] = useLocalStorage('isSticky', false); // state to track if the collapsed group is sticky
+  const [isArrowBack, setIsArrowBack] = useLocalStorage('isArrowBack', true); //change for side bar button
+  // const [isClosed, setIsClosed] = useLocalStorage('isClosed', false);//state to track if the filter is closed
+  const [isFilterActive, setIsFilterActive] = useState(false); //filters indicator light
+  const [hasSavedFilters, setHasSavedFilters] = useState(false); //tracking if saved filters are loaded or saved
   const handleToggleSidebar = () => {
     toggleSidebar(); // Existing toggle function
     setIsArrowBack(!isArrowBack); // Toggle the arrow state
@@ -82,6 +80,13 @@ function SearchTrendsLarge({
         topViewed: searchValues.topViewed || '',
         updated: searchValues.updated || 'all',
       });
+      const hasInitialSavedFilters = Object.keys(searchValues).some(
+        (key) =>
+          searchValues[key] &&
+          searchValues[key] !== 'all' &&
+          searchValues[key] !== ''
+      ); // checking if any initial saved filter is active and set hasSavedFilters
+      setHasSavedFilters(hasInitialSavedFilters);
       isFirstRender.current = false; // running this use effect only once
     }
   }, [searchValues]);
@@ -99,7 +104,16 @@ function SearchTrendsLarge({
   // Effect to update URL params whenever filterValues change
   useEffect(() => {
     updateQueryParams();
-  }, [filterValues]); // dependency array ensures the effect runs on filterValues change
+    const isActive =
+      hasSavedFilters &&
+      Object.keys(filterValues).some(
+        (key) =>
+          filterValues[key] &&
+          filterValues[key] !== 'all' &&
+          filterValues[key] !== ''
+      );
+    setIsFilterActive(isActive);
+  }, [filterValues, hasSavedFilters]); // dependency array ensures the effect runs on filterValues change
 
   // Function to handle changes in dropdown and checkbox values
   const handleChange = (name, option) => {
@@ -133,6 +147,7 @@ function SearchTrendsLarge({
   };
   const handleSave = () => {
     saveFilters(filterValues);
+    setHasSavedFilters(true);
   };
 
   const handleReset = () => {
@@ -145,6 +160,7 @@ function SearchTrendsLarge({
       updated: 'all',
     });
     resetFilters();
+    setHasSavedFilters(false);
   };
   const isChecked = (name, value) => filterValues[name] === value; // utility function to check if a checkbox is checked
   const date = new Date().toLocaleDateString();
@@ -356,6 +372,11 @@ function SearchTrendsLarge({
                         />
                       </div>
                       <div className="button-row">
+                        <div
+                          className={`indicator ${
+                            isFilterActive ? 'active' : ''
+                          }`}
+                        ></div>
                         <div className="save-button">
                           <button
                             className="btn btn-block form-btn"
@@ -459,6 +480,9 @@ function SearchTrendsLarge({
                     </div>
                   </div>
                   <div className="button-row">
+                    <div
+                      className={`indicator ${isFilterActive ? 'active' : ''}`}
+                    ></div>
                     <div className="save-button">
                       <button
                         className="btn btn-block form-btn"
