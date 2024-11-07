@@ -64,8 +64,9 @@ const FormSelectorIcon = ({
   const [selectedOption, setSelectedOption] = useState(initialOption);
 
   useEffect(() => {
+    const initialOption = list.find((option) => option.value === defaultValue);
     setSelectedOption(initialOption);
-  }, [defaultValue]);
+  }, [defaultValue, list]);
 
   const handleChange = (option) => {
     setSelectedOption(option);

@@ -61,7 +61,7 @@ function SearchTrendsLarge({
     setIsSticky(!isSticky);
   };
 
-  // State to track filter values
+  // state to track filter values
   const [filterValues, setFilterValues] = useState({
     trendCategory: searchValues.trendCategory || 'all',
     trendTech: searchValues.trendTech || 'all',
@@ -71,25 +71,47 @@ function SearchTrendsLarge({
     updated: searchValues.updated || 'all',
   });
   useEffect(() => {
-    if (isFirstRender.current) {
-      setFilterValues({
-        trendCategory: searchValues.trendCategory || 'all',
-        trendTech: searchValues.trendTech || 'all',
-        status: searchValues.status || 'all',
-        topRated: searchValues.topRated || '',
-        topViewed: searchValues.topViewed || '',
-        updated: searchValues.updated || 'all',
-      });
-      const hasInitialSavedFilters = Object.keys(searchValues).some(
-        (key) =>
-          searchValues[key] &&
-          searchValues[key] !== 'all' &&
-          searchValues[key] !== ''
-      ); // checking if any initial saved filter is active and set hasSavedFilters
-      setHasSavedFilters(hasInitialSavedFilters);
-      isFirstRender.current = false; // running this use effect only once
-    }
-  }, [searchValues]);
+    const params = new URLSearchParams(location.search);
+    const hasUrlParams = [...params.keys()].length > 0;
+
+    const initialValues = {
+      trendCategory: hasUrlParams
+        ? params.get('trendCategory') || 'all'
+        : searchValues.trendCategory || 'all',
+      trendTech: hasUrlParams
+        ? params.get('trendTech') || 'all'
+        : searchValues.trendTech || 'all',
+      status: hasUrlParams
+        ? params.get('status') || 'all'
+        : searchValues.status || 'all',
+      topRated: hasUrlParams
+        ? params.get('topRated') || ''
+        : searchValues.topRated || '',
+      topViewed: hasUrlParams
+        ? params.get('topViewed') || ''
+        : searchValues.topViewed || '',
+      updated: hasUrlParams
+        ? params.get('updated') || 'all'
+        : searchValues.updated || 'all',
+    };
+    setFilterValues((prevValues) => {
+      const isDifferent = Object.keys(initialValues).some(
+        (key) => prevValues[key] !== initialValues[key]
+      ); // updating filterValues only if different from the current state to avoid infinite loop
+      return isDifferent ? initialValues : prevValues; // update if there's a difference
+    });
+
+    const hasInitialSavedFilters = Object.keys(searchValues).some(
+      (key) =>
+        searchValues[key] &&
+        searchValues[key] !== 'all' &&
+        searchValues[key] !== ''
+    );
+    setHasSavedFilters(hasInitialSavedFilters);
+
+    isFirstRender.current = false;
+  }, [location.search, searchValues]); // dependency array run once on mount
+
   const [indicatorState, setIndicatorState] = useState({
     trendCategory: searchValues.trendCategory
       ? searchValues.trendCategory !== 'all'
@@ -101,9 +123,8 @@ function SearchTrendsLarge({
     updated: searchValues.updated ? searchValues.updated !== 'all' : false,
   });
 
-  // Effect to update URL params whenever filterValues change
+  // useEffect to update URL params whenever filterValues change
   useEffect(() => {
-    updateQueryParams();
     const isActive =
       hasSavedFilters &&
       Object.keys(filterValues).some(
@@ -113,6 +134,9 @@ function SearchTrendsLarge({
           filterValues[key] !== ''
       );
     setIsFilterActive(isActive);
+    if (!isFirstRender.current) {
+      updateQueryParams();
+    } // updating URL params only if `filterValues` truly changed
   }, [filterValues, hasSavedFilters]); // dependency array ensures the effect runs on filterValues change
 
   // Function to handle changes in dropdown and checkbox values
