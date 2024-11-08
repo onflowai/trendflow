@@ -8,7 +8,7 @@ import {
   LandingAbout,
   LandingServices,
   LandingFeatured,
-  Footer,
+  LandingFooter,
 } from '../components';
 /**
  *
@@ -26,7 +26,7 @@ const Landing = () => {
         <LandingAbout />
         <LandingFeatured />
       </div>
-      <Footer />
+      <LandingFooter />
     </Container>
   );
 };

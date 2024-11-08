@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Trends, SearchTrends, CustomErrorToast } from '../components';
+import { Trends, SearchTrends, CustomErrorToast, Footer } from '../components';
 import customFetch from '../utils/customFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { getFullIconUrl } from '../utils/urlHelper';
@@ -152,6 +152,7 @@ const AllTrends = () => {
         onSave={onSave}
         onRemove={onRemove}
       />
+      <Footer />
     </CombinedProvider>
   );
 };

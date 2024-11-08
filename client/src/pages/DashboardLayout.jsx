@@ -1,7 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/DashboardContainer';
-import { SidebarSmall, Sidebar, Navbar, CustomErrorToast } from '../components';
+import {
+  SidebarSmall,
+  Sidebar,
+  Navbar,
+  CustomErrorToast,
+  Footer,
+} from '../components';
 import { checkDefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
