@@ -152,7 +152,6 @@ const AllTrends = () => {
         onSave={onSave}
         onRemove={onRemove}
       />
-      <Footer />
     </CombinedProvider>
   );
 };

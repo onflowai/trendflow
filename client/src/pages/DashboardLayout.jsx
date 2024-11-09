@@ -103,6 +103,7 @@ const DashboardLayout = () => {
             <Navbar />
             <div className="dashboard-page">
               <Outlet context={{ user, stats }} />
+              <Footer />
             </div>
           </div>
         </main>
