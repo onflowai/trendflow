@@ -1,12 +1,12 @@
 import React from 'react';
-import { SearchTrendsLarge, SearchTrendsSmall } from '../components';
+import { FilterTrendsLarge, FilterTrendsSmall } from '.';
 import styled from 'styled-components';
 /**
  * SearchTrends sets which filter is to be used depending on screen size
  * @param {*} param0
  * @returns
  */
-function SearchTrends({
+function FilterTrends({
   trendCategory,
   technologies,
   isClosed,
@@ -19,7 +19,7 @@ function SearchTrends({
   return (
     <Container>
       {isLargeScreen ? (
-        <SearchTrendsLarge
+        <FilterTrendsLarge
           isAdminPage={isAdminPage}
           trendCategory={trendCategory}
           technologies={technologies}
@@ -29,7 +29,7 @@ function SearchTrends({
           resetFilters={resetFilters}
         />
       ) : (
-        <SearchTrendsSmall />
+        <FilterTrendsSmall />
       )}
     </Container>
   );
@@ -39,4 +39,4 @@ const Container = styled.section`
   
 `;
 
-export default SearchTrends;
+export default FilterTrends;

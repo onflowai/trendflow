@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Trends, SearchTrends, CustomErrorToast, Footer } from '../components';
+import { Trends, FilterTrends, CustomErrorToast, Footer } from '../components';
 import customFetch from '../utils/customFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { getFullIconUrl } from '../utils/urlHelper';
@@ -138,7 +138,7 @@ const AllTrends = () => {
 
   return (
     <CombinedProvider value={{ trends, searchValues }}>
-      <SearchTrends
+      <FilterTrends
         trendCategory={trendCategory}
         technologies={technologies}
         isClosed={isClosed}

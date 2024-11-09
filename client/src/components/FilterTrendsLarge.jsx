@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Checkbox,
-  FormSelectorIconLocal,
-  FormSelectorIcon,
-} from '../components';
-import Container from '../assets/wrappers/SearchTrendsContainer.js';
+import { Checkbox, FormSelectorIconLocal, FormSelectorIcon } from './index.js';
+import Container from '../assets/wrappers/FilterTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
-import { useDashboardContext } from '../pages/DashboardLayout';
-import useLocalStorage from '../hooks/useLocalStorage';
+import { useDashboardContext } from '../pages/DashboardLayout.jsx';
+import useLocalStorage from '../hooks/useLocalStorage.jsx';
 import { FaInfinity } from 'react-icons/fa6';
 import { HiMenu } from 'react-icons/hi';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
@@ -31,7 +27,7 @@ import { useNavigate, useLocation } from 'react-router-dom'; // Use useNavigate 
  * frontend as well as backend
  * @returns
  */
-function SearchTrendsLarge({
+function FilterTrendsLarge({
   trendCategory,
   technologies,
   isClosed,
@@ -542,4 +538,4 @@ function SearchTrendsLarge({
   );
 }
 
-export default SearchTrendsLarge;
+export default FilterTrendsLarge;

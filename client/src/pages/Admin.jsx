@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLoaderData, redirect } from 'react-router-dom';
 import {
   Trends,
-  SearchTrends,
+  FilterTrends,
   CustomErrorToast,
   StatComponent,
   ChartAdminComponent,
@@ -133,7 +133,7 @@ const Admin = () => {
         <ChartAdminComponent data={charts} title="Stats:" />
       )}
       <CombinedProvider value={{ trends, searchValues }}>
-        <SearchTrends
+        <FilterTrends
           isAdminPage={isAdminPage}
           trendCategory={trendCategory}
           technologies={technologies}

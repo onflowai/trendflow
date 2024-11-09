@@ -1,7 +1,7 @@
 import React from 'react';
 
-function SearchTrendsSmall() {
+function FilterTrendsSmall() {
   return <div>Search Trends Small</div>;
 }
 
-export default SearchTrendsSmall;
+export default FilterTrendsSmall;
