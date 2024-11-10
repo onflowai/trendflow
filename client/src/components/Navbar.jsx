@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Container from '../assets/wrappers/NavbarContainer';
 import UserDropdown from './UserDropdown';
 import DarkMode from './DarkMode';
-import FormComponentSearch from './FormComponentSearch';
+import SearchComponentExpand from './SearchComponentExpand.jsx';
 import { IoIosArrowForward, IoIosArrowBack, IoIosMenu } from 'react-icons/io';
 import { dashboardNavLinks } from '../assets/utils/data';
 import { NavLink } from 'react-router-dom';
@@ -44,7 +44,7 @@ function Navbar() {
           <IoIosMenu />
         </button>
         <div className="search-input">
-          <FormComponentSearch />
+          <SearchComponentExpand />
         </div>
         <div className="btn-container">
           <DarkMode className="dark-mode" />

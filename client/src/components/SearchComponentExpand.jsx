@@ -3,7 +3,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import styled from 'styled-components';
 
-const FormComponentSearch = ({ type = 'text', name, onSearch }) => {
+const SearchComponentExpand = ({ type = 'text', name, onSearch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);
@@ -73,14 +73,14 @@ const Container = styled.div`
     transition: width 0.3s ease, transform 0.3s ease;
 
     &.expanded {
-      width: 200px;
-      transform: translateX(-165px); /* Move left by the difference between expanded and initial width */
+      width: 245px;
+      transform: translateX(-205px); /* Move left by the difference between expanded and initial width */
     }
   }
 
   .icon {
     position: absolute;
-    left: 10px;
+    left: 15px;
     color: var(--grey-600);
     cursor: pointer;
   }
@@ -93,11 +93,11 @@ const Container = styled.div`
   .input {
     padding-left: 2rem; /* Adjust padding to make space for the icon */
     padding-right: 2rem; /* Adjust padding to make space for the clear icon */
-    cursor: default; /* Use default cursor */
+    cursor: pointer; /* Use default cursor */
     background: var(--background-color);
     border: 1px solid var(--grey-50);
     color: var(--text-color);
-    border-radius: var(--input-radius);
+    border-radius: var(--input-radius-round);
     height: 35px;
     width: 100%;
     opacity: 0;
@@ -114,4 +114,4 @@ const Container = styled.div`
   }
 `;
 
-export default FormComponentSearch;
+export default SearchComponentExpand;
