@@ -26,7 +26,7 @@ function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  const { setSearchValue } = useSearchContext(); // set setSearchValue from search context
+  const { setSearchValue, onClearSearch } = useSearchContext(); // set setSearchValue from search context
 
   return (
     <Container hasScrolled={hasScrolled}>
@@ -46,7 +46,10 @@ function Navbar() {
           <IoIosMenu />
         </button>
         <div className="search-input">
-          <SearchComponentExpand onSearch={setSearchValue} />
+          <SearchComponentExpand
+            onSearch={setSearchValue}
+            onClearSearch={onClearSearch}
+          />
         </div>
         <div className="btn-container">
           <DarkMode className="dark-mode" />
