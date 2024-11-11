@@ -189,3 +189,10 @@ Every hour: '0 * * * *'
 Every 30 minutes: '*/30 * * * *'
 Every day at 1 AM: '0 1 * * *'
 ```
+# MongoDB Features
+
+## MongoDB Indexing
+Indexing helps MongoDB quickly locate documents in a collection without scanning every document, significantly improving query performance, especially for larger collections.
+
+## MongoDB Time Series Collections
+Time Series Collections are optimized for storing time-based data, such as logs, metrics, and IoT data, where each entry includes a timestamp. Data in time series collections is organized by time, and data points from the same source (e.g., a single sensor or user session) are grouped for efficient retrieval and storage. MongoDB also uses specialized storage optimizations to reduce disk usage and improve query performance.
