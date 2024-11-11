@@ -3,7 +3,12 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import styled from 'styled-components';
 
-const SearchComponentExpand = ({ type = 'text', name, onSearch }) => {
+const SearchComponentExpand = ({
+  type = 'text',
+  name,
+  onSearch,
+  onClearSearch,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef(null);
@@ -25,6 +30,9 @@ const SearchComponentExpand = ({ type = 'text', name, onSearch }) => {
   const handleClear = () => {
     setInputValue('');
     inputRef.current.focus();
+    if (onClearSearch) {
+      onClearSearch();
+    } // call the clear search function from parent
   };
 
   const handleSearch = () => {

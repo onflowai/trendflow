@@ -7,6 +7,7 @@ import { getFullIconUrl } from '../utils/urlHelper';
 import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useSearchContext } from '../context/SearchContext';
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
@@ -18,17 +19,20 @@ import { useNavigate } from 'react-router-dom';
  * @param {Object} request - request object with URL information
  * @returns {Object} data for trends, saved trends, and search values
  */
-export const loader = async ({ request }) => {
+export const loader = async ({ request, searchValue }) => {
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
+  if (searchValue) {
+    params.search = searchValue;
+  }
 
-  // Parse the combined sort parameter into individual components
+  // parse the combined sort parameter into individual components
   if (params.sort) {
     const [topRated, topViewed, status, updated] = params.sort.split('|');
     params.topRated = topRated;
     params.topViewed = topViewed;
-    params.status = status; // Assign status to chartType
+    params.status = status; // assign status to chartType
     params.updated = updated;
   }
   try {
@@ -52,7 +56,6 @@ export const loader = async ({ request }) => {
       trends: { trends: trendsWithIcons },
       savedTrendIds,
       searchValues: combinedParams, //setting combinedParams as searchValues
-      //searchValues: { ...params },
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -94,6 +97,20 @@ const AllTrends = () => {
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
+  const { searchValue } = useSearchContext();
+  console.log('searchValue :', searchValue);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(searchValues); // updating URL parameters whenever searchValue changes
+    // Only update URL if searchValue differs from the current 'search' parameter in URL
+    if (searchValue && searchParams.get('search') !== searchValue) {
+      searchParams.set('search', searchValue);
+      navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
+    } else if (!searchValue && searchParams.has('search')) {
+      // Remove 'search' param if searchValue is empty and URL contains 'search'
+      searchParams.delete('search');
+      navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
+    }
+  }, [searchValue, navigate, searchValues]);
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {

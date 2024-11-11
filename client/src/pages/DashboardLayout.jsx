@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/DashboardContainer';
+import SearchProvider from '../context/SearchContext';
 import {
   SidebarSmall,
   Sidebar,
@@ -83,32 +84,34 @@ const DashboardLayout = () => {
 
   //RETURN -------------------------- RETURN
   return (
-    <DashboardContext.Provider
-      value={{
-        user,
-        showSidebar,
-        isDarkTheme,
-        toggleSidebar,
-        toggleDarkTheme,
-        logoutUser,
-        setSidebarVisibility,
-        updateUserImage,
-      }}
-    >
-      <Container>
-        <main className="dashboard">
-          <SidebarSmall />
-          <Sidebar />
-          <div>
-            <Navbar />
-            <div className="dashboard-page">
-              <Outlet context={{ user, stats }} />
-              <Footer />
+    <SearchProvider>
+      <DashboardContext.Provider
+        value={{
+          user,
+          showSidebar,
+          isDarkTheme,
+          toggleSidebar,
+          toggleDarkTheme,
+          logoutUser,
+          setSidebarVisibility,
+          updateUserImage,
+        }}
+      >
+        <Container>
+          <main className="dashboard">
+            <SidebarSmall />
+            <Sidebar />
+            <div>
+              <Navbar />
+              <div className="dashboard-page">
+                <Outlet context={{ user, stats }} />
+                <Footer />
+              </div>
             </div>
-          </div>
-        </main>
-      </Container>
-    </DashboardContext.Provider>
+          </main>
+        </Container>
+      </DashboardContext.Provider>
+    </SearchProvider>
   );
 };
 

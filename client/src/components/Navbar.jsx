@@ -7,6 +7,7 @@ import { IoIosArrowForward, IoIosArrowBack, IoIosMenu } from 'react-icons/io';
 import { dashboardNavLinks } from '../assets/utils/data';
 import { NavLink } from 'react-router-dom';
 import { useDashboardContext } from '../pages/DashboardLayout';
+import { useSearchContext } from '../context/SearchContext';
 
 function Navbar() {
   //toggle sidebar coming from DashboardLayout.jsx as context
@@ -25,6 +26,7 @@ function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  const { setSearchValue } = useSearchContext(); // set setSearchValue from search context
 
   return (
     <Container hasScrolled={hasScrolled}>
@@ -44,7 +46,7 @@ function Navbar() {
           <IoIosMenu />
         </button>
         <div className="search-input">
-          <SearchComponentExpand />
+          <SearchComponentExpand onSearch={setSearchValue} />
         </div>
         <div className="btn-container">
           <DarkMode className="dark-mode" />
