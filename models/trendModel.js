@@ -145,6 +145,15 @@ const TrendSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// indexes for optimized querying
+TrendSchema.index({ trendCategory: 1, trendTech: 1 }); // filtering by category and tech
+TrendSchema.index({ slug: 1 }); // quick lookups by slug
+TrendSchema.index({ isApproved: 1, updatedAt: -1 }); // optimizes approved trends sorted by update time
+TrendSchema.index({ views: -1 }); // sorting by views (top viewed)
+TrendSchema.index({ trendStatus: 1 }); // status-based filters
+TrendSchema.index({ createdAt: -1 }); // sorting by creation date
+
 TrendSchema.pre('validate', async function (next) {
   //Only generate a slug if the trend is new or the trend name has changed
   //This is important to avoid unnecessary slug generation on every save operation

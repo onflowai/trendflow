@@ -61,7 +61,7 @@ export const loader = async ({ request, searchValue }) => {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return { error: error?.response?.data?.msg || 'An error occurred' };
   }
-};
+}; //end loader
 //function for bookmarking trends for each user
 const onSave = async (_id) => {
   try {
