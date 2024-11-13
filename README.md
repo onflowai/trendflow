@@ -189,10 +189,35 @@ Every hour: '0 * * * *'
 Every 30 minutes: '*/30 * * * *'
 Every day at 1 AM: '0 1 * * *'
 ```
+
 # MongoDB Features
 
 ## MongoDB Indexing
+
 Indexing helps MongoDB quickly locate documents in a collection without scanning every document, significantly improving query performance, especially for larger collections.
 
 ## MongoDB Time Series Collections
+
 Time Series Collections are optimized for storing time-based data, such as logs, metrics, and IoT data, where each entry includes a timestamp. Data in time series collections is organized by time, and data points from the same source (e.g., a single sensor or user session) are grouped for efficient retrieval and storage. MongoDB also uses specialized storage optimizations to reduce disk usage and improve query performance.
+
+# Pagination
+
+# Pagination with Metadata (currentPage, pagesNumber, totalTrends, limit)
+
+## Cursor-Based Pagination
+
+The Cursor: Think of the cursor as a bookmark. It marks where we left off in the list, so the next time we fetch data, we continue from that point.
+Moving Forward with the Cursor: The cursor is usually the unique \_id of the last item from the previous batch of data. We send this \_id back to the frontend so that when the frontend requests the next set of data, it can say, "Start fetching after this \_id."
+
+trendflow uses both Cursor-Based Pagination and Pagination Metadata to navigate efficiently. Using the cursor to navigate large datasets without needing to skip, which boosts performance. While providing context to users by displaying pagesNumber and currentPage, users get a familiar indication of where they are in the dataset.
+
+````{
+  "trends": [/* Array of trends */],
+  "nextCursor": "605c72b8e7e6f7f4f4f4f4f4", // last _id of current batch
+  "hasNextPage": true,
+  "currentPage": 2,
+  "pagesNumber": 10,
+  "totalTrends": 100,
+  "limit": 10
+}```
+````

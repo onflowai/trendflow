@@ -37,12 +37,12 @@ export const loader = async ({ request, searchValue }) => {
   }
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });
+    console.log('trendsData', trendsData);
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     );
     //NOTE: this is done to reuse the /users/saved-trends GET in Profile as full fetch for user bookmarked trends (instead of _id fetch)
     const savedTrendIds = savedTrendsData.savedTrends.map((trend) => trend._id);
-    console.log('savedTrendsData', savedTrendsData);
     const trendsWithIcons = trendsData.trends.map((trend) => ({
       ...trend,
     })); // using utility function to prepend base URL to iconUrl with trends tech url for icon
@@ -53,7 +53,14 @@ export const loader = async ({ request, searchValue }) => {
     const combinedParams = { ...savedFilters, ...params }; // using saved filters as defaults, but allowing URL params to override
 
     return {
-      trends: { trends: trendsWithIcons },
+      trends: {
+        trends: trendsWithIcons,
+        totalTrends: trendsData.totalTrends,
+        pagesNumber: trendsData.pagesNumber,
+        currentPage: trendsData.currentPage,
+        nextCursor: trendsData.nextCursor,
+        hasNextPage: trendsData.hasNextPage,
+      },
       savedTrendIds,
       searchValues: combinedParams, //setting combinedParams as searchValues
     };
@@ -94,6 +101,9 @@ const AllTrends = () => {
   const navigate = useNavigate();
   const { trends, savedTrendIds, error, searchValues, trendCategories } =
     useLoaderData();
+  const { totalTrends, pagesNumber, currentPage, nextCursor, hasNextPage } =
+    trends;
+  console.log('AllTrends trends: ', trends);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
@@ -168,6 +178,11 @@ const AllTrends = () => {
         savedTrends={savedTrendIds}
         onSave={onSave}
         onRemove={onRemove}
+        totalTrends={totalTrends}
+        pagesNumber={pagesNumber}
+        currentPage={currentPage}
+        nextCursor={nextCursor}
+        hasNextPage={hasNextPage}
       />
     </CombinedProvider>
   );

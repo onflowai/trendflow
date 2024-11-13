@@ -88,15 +88,22 @@ export const constructSortKey = (topRated, topViewed, updated) => {
  * @param {*} sortKey
  * @param {*} page
  * @param {*} limit
+ * @param {*} cursor
  * @returns
  */
 export const paginateAndSortTrends = async (
   queryObject,
   sortKey,
   page,
-  limit
+  limit,
+  cursor
 ) => {
-  const skip = (page - 1) * limit; // calculate the number of documents to skip (skipping 0 trends, displaying all 10 then skipping them to next 10)
+  let skip = 0;
+  if (cursor) {
+    queryObject._id = { $gt: cursor }; // Fetch documents after this _id for cursor-based pagination
+  } else {
+    skip = (page - 1) * limit; // calculate the number of documents to skip (skipping 0 trends, displaying all 10 then skipping them to next 10)
+  } // check if cursor-based pagination is used
   const [trends, totalTrends] = await Promise.all([
     // execute both queries in parallel
     trendModel
@@ -104,12 +111,19 @@ export const paginateAndSortTrends = async (
       .select('-generatedBlogPost -trendUse')
       .populate('createdBy', 'username githubUsername profile_img privacy -_id')
       .sort(sortKey) // sort the trends based on the sortKey
-      .skip(skip)
-      .limit(limit), // query trends with pagination and sorting
+      .skip(skip || 0) // apply skip only if not using cursor
+      .limit(limit + 1), // query trends with pagination and sorting
     trendModel.countDocuments(queryObject), //getting total trends based on query
-  ]);
+  ]); // query trends with pagination and sorting
+
+  const hasNextPage = trends.length > limit; // check if there is a next page
+  if (hasNextPage) {
+    trends.pop(); // remove the extra document from results
+  }
+
+  const nextCursor = hasNextPage ? trends[trends.length - 1]._id : null; // set nextCursor for the next batch
   const pagesNumber = Math.ceil(totalTrends / limit); //calculating the page
-  return { totalTrends, pagesNumber, trends };
+  return { totalTrends, pagesNumber, trends, nextCursor, hasNextPage };
 }; //END PAGINATE AND SORT TRENDS
 
 /**

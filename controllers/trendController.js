@@ -281,6 +281,7 @@ export const getApprovedTrends = async (req, res) => {
     topViewed,
     updated,
     status,
+    cursor,
   } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
   const queryObject = constructQueryObject(
     search,
@@ -290,7 +291,11 @@ export const getApprovedTrends = async (req, res) => {
   ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
   const sortKey = constructSortKey(topRated, topViewed, updated);
   page = Number(page) || 1; //value page will be provided in the req
-  limit = Number(limit) || 36; //limit will be provided, defaulting to 10 trends initially
+  limit = Number(limit) || 36; //limit will be provided, defaulting to 36 trends initially
+
+  if (cursor) {
+    queryObject._id = { $gt: cursor }; // fetch documents after this _id
+  } // applying a cursor for efficient pagination
 
   const currentYear = new Date().getFullYear(); //this is the full year of the current date '2024'
   const currentMonth = new Date().getMonth(); //month of the current date, represented as an index from 0 (January) to 11 (December)
@@ -321,12 +326,8 @@ export const getApprovedTrends = async (req, res) => {
 
   try {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
-    let { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
-      queryObject,
-      sortKey,
-      page,
-      limit
-    );
+    let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
+      await paginateAndSortTrends(queryObject, sortKey, page, limit, cursor);
 
     // privacy logic
     trends = trends.map((trend) => {
@@ -349,9 +350,14 @@ export const getApprovedTrends = async (req, res) => {
       pagesNumber = Math.ceil(totalTrends / limit);
     }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ totalTrends, pagesNumber, currentPage: page, trends }); // Directly respond with the list of approved trends (could be an empty array)
+    res.status(StatusCodes.OK).json({
+      totalTrends,
+      pagesNumber,
+      currentPage: page,
+      trends,
+      nextCursor,
+      hasNextPage,
+    }); // Directly respond with the list of approved trends (could be an empty array)
   } catch (error) {
     // Handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
