@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Checkbox, FormSelectorIconLocal, FormSelectorIcon } from './index.js';
+import {
+  Checkbox,
+  FormSelectorIconLocal,
+  FormSelectorIconFilter,
+} from './index.js';
+import { toast } from 'react-toastify';
 import Container from '../assets/wrappers/FilterTrendsContainer.js';
 import { useCombinedContext } from '../context/CombinedContext.jsx';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
@@ -36,7 +41,6 @@ function FilterTrendsLarge({
   saveFilters,
   resetFilters,
 }) {
-  console.log('trendCategory', trendCategory);
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
   const location = useLocation(); // getting the current URL parameters
@@ -71,12 +75,9 @@ function FilterTrendsLarge({
     const hasUrlParams = [...params.keys()].length > 0;
 
     const initialValues = {
-      trendCategory: hasUrlParams
-        ? params.get('trendCategory') || 'all'
-        : searchValues.trendCategory || 'all',
-      trendTech: hasUrlParams
-        ? params.get('trendTech') || 'all'
-        : searchValues.trendTech || 'all',
+      trendCategory:
+        params.get('trendCategory') || searchValues.trendCategory || 'all',
+      trendTech: params.get('trendTech') || searchValues.trendTech || 'all',
       status: hasUrlParams
         ? params.get('status') || 'all'
         : searchValues.status || 'all',
@@ -166,21 +167,43 @@ function FilterTrendsLarge({
     navigate(`?${params.toString()}`, { replace: true }); // updating the URL without reloading
   };
   const handleSave = () => {
+    if (
+      filterValues.trendCategory === 'all' &&
+      filterValues.trendTech === 'all' &&
+      filterValues.status === 'all' &&
+      !filterValues.topRated &&
+      !filterValues.topViewed &&
+      filterValues.updated === 'all'
+    ) {
+      toast.success('No Filters to saved');
+      return;
+    }
     saveFilters(filterValues);
     setHasSavedFilters(true);
   };
 
-  const handleReset = () => {
-    setFilterValues({
-      trendCategory: 'all',
-      trendTech: 'all',
-      status: 'all',
-      topRated: '',
-      topViewed: '',
-      updated: 'all',
-    });
-    resetFilters();
-    setHasSavedFilters(false);
+  const handleReset = async () => {
+    try {
+      // Clear filter values in the state immediately
+      setFilterValues({
+        trendCategory: 'all',
+        trendTech: 'all',
+        status: 'all',
+        topRated: '',
+        topViewed: '',
+        updated: 'all',
+      });
+      setHasSavedFilters(false); // clear the saved filters indicator
+      navigate('/dashboard', { replace: true }); // update the URL immediately by removing all query parameters
+      await resetFilters(); // synchronize the backend filters reset
+      // Add a slight delay to ensure backend sync before re-render
+      setTimeout(() => {
+        toast.success('Filters reset successfully');
+      }, 100);
+    } catch (error) {
+      toast.error('Failed to reset filters');
+      console.error(error);
+    }
   };
   const isChecked = (name, value) => filterValues[name] === value; // utility function to check if a checkbox is checked
   const date = new Date().toLocaleDateString();
@@ -301,15 +324,23 @@ function FilterTrendsLarge({
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconFilter
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
-                          list={trendCategory.map((cate) => ({
-                            value: cate.label, // Keep value as label for filtering
-                            label: cate.label,
-                            image: cate.image,
-                          }))}
+                          list={[
+                            {
+                              value: 'all',
+                              label: 'All',
+                              image: null,
+                              icon: FaInfinity,
+                            },
+                            ...trendCategory.map((cate) => ({
+                              value: cate.label,
+                              label: cate.label,
+                              image: cate.image,
+                            })),
+                          ]}
                           onChange={handleChange}
                         />
                       </div>
@@ -321,15 +352,23 @@ function FilterTrendsLarge({
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconFilter
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}
-                          list={technologies.map((tech) => ({
-                            value: tech.label, // Keep value as label for filtering
-                            label: tech.label,
-                            image: tech.image,
-                          }))}
+                          list={[
+                            {
+                              value: 'all',
+                              label: 'All',
+                              image: null,
+                              icon: FaInfinity,
+                            },
+                            ...technologies.map((tech) => ({
+                              value: tech.label,
+                              label: tech.label,
+                              image: tech.image,
+                            })),
+                          ]}
                           onChange={handleChange}
                         />
                       </div>
@@ -370,7 +409,6 @@ function FilterTrendsLarge({
                             }
                           />
                         )}
-                        {console.log('Current filterValues:', filterValues)}
                       </div>
                     </div>
                     <div className="select">
@@ -463,7 +501,7 @@ function FilterTrendsLarge({
                             indicatorState.trendCategory ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconFilter
                           labelText="Choose Category:"
                           name="trendCategory"
                           defaultValue={filterValues.trendCategory}
@@ -485,7 +523,7 @@ function FilterTrendsLarge({
                             indicatorState.trendTech ? 'active' : ''
                           }`}
                         ></div>
-                        <FormSelectorIcon
+                        <FormSelectorIconFilter
                           labelText="Choose Technology:"
                           name="trendTech"
                           defaultValue={filterValues.trendTech}

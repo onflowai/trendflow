@@ -125,6 +125,10 @@ const App = () => {
 export default App;
 ```
 
+# Application Description:
+
+All calls are made in pages, except following components: AddInfoHubModal(hub submit), PaginationComponent(fetch next pagination), SelectTrends (fetch for adding trends to a blog).
+
 # Sorting
 
 ### Pre-computation and Caching

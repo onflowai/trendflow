@@ -56,7 +56,6 @@ export const getAllTrends = async (req, res) => {
   let { search, trendTech, trendCategory, sort, page, limit } = req.query;
   const queryObject = constructQueryObject(search, trendTech, trendCategory);
   const sortKey = constructSortKey(sort);
-  console.log('user object: ', req.user);
 
   page = Number(page) || 1;
   limit = Number(limit) || 36;
@@ -82,7 +81,6 @@ export const getAllTrends = async (req, res) => {
  * @param {*} res
  */
 export const getUserTrends = async (req, res) => {
-  // console.log(req.user);
   const trends = await trendModel.find({ createdBy: req.user.userID }); //getting the trends belonging to user that provided cookie and token
   res.status(StatusCodes.OK).json({ trends }); //if there is anything but response 200 resource is not found response fot the client
 };
@@ -93,7 +91,6 @@ export const getUserTrends = async (req, res) => {
  * @param {*} res
  */
 export const createTrend = async (req, res) => {
-  console.log('Incoming Data:', req.body);
   // if (req.user.role !== 'admin') {
   //   return res
   //     .status(StatusCodes.UNAUTHORIZED)
@@ -208,7 +205,6 @@ export const approveTrend = async (req, res) => {
       executePythonScript(trend.trend), // Execute Python script
       generatePostContent(trend.trend, trend.trendCategory, trend.trendTech), // Generate content with OpenAI
     ]);
-    console.log('Script output: ', scriptOutput);
     let data; //parsing the JSON output from scripts
     try {
       data = JSON.parse(scriptOutput);
@@ -217,11 +213,6 @@ export const approveTrend = async (req, res) => {
       return res.status(500).json({ msg: 'Invalid JSON from Python script' });
     }
     const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
-
-    // Log intermediate outputs for verification
-    console.log('Generated Blog Post:', trendPost);
-    console.log('Generated Description:', trendDesc);
-    console.log('Generated Use Cases:', trendUse);
     const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const combinedScore = calculateCombinedScore(
       data.t_score,
@@ -229,7 +220,6 @@ export const approveTrend = async (req, res) => {
       data.status,
       data.f_score
     ); //updating the combined score on initial generation with Views passed as 0
-    console.log('Calculated Combined Score:', combinedScore);
 
     //UPDATING MONGO
     const updatedTrend = await trendModel.findOneAndUpdate(
@@ -269,7 +259,6 @@ export const approveTrend = async (req, res) => {
  * @param {*} res
  */
 export const getApprovedTrends = async (req, res) => {
-  console.log(req.query);
   let {
     search,
     trendTech,
@@ -292,10 +281,6 @@ export const getApprovedTrends = async (req, res) => {
   const sortKey = constructSortKey(topRated, topViewed, updated);
   page = Number(page) || 1; //value page will be provided in the req
   limit = Number(limit) || 36; //limit will be provided, defaulting to 36 trends initially
-
-  if (cursor) {
-    queryObject._id = { $gt: cursor }; // fetch documents after this _id
-  } // applying a cursor for efficient pagination
 
   const currentYear = new Date().getFullYear(); //this is the full year of the current date '2024'
   const currentMonth = new Date().getMonth(); //month of the current date, represented as an index from 0 (January) to 11 (December)
@@ -328,15 +313,14 @@ export const getApprovedTrends = async (req, res) => {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
       await paginateAndSortTrends(queryObject, sortKey, page, limit, cursor);
-
     // privacy logic
     trends = trends.map((trend) => {
-      console.log(
-        'Username:',
-        trend.createdBy.username,
-        'Privacy:',
-        trend.createdBy.privacy
-      );
+      // console.log(
+      //   'Username:',
+      //   trend.createdBy.username,
+      //   'Privacy:',
+      //   trend.createdBy.privacy
+      // );
       if (trend.createdBy && trend.createdBy.privacy) {
         trend.createdBy.githubUsername = ''; // removing githubUsername if privacy is enabled
       }
@@ -349,7 +333,10 @@ export const getApprovedTrends = async (req, res) => {
       totalTrends = trends.length;
       pagesNumber = Math.ceil(totalTrends / limit);
     }
-
+    console.log(
+      'Trends fetched after applying cursor:',
+      trends.map((trend) => trend.trend) // This will log an array of trend names
+    );
     res.status(StatusCodes.OK).json({
       totalTrends,
       pagesNumber,
@@ -372,7 +359,6 @@ export const getApprovedTrends = async (req, res) => {
  */
 export const getSelectIconData = (req, res) => {
   try {
-    console.log('Request user:', req.user); // Log the user object
     if (!req.user) {
       return res
         .status(StatusCodes.BAD_REQUEST)

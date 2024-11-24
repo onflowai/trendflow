@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
+import { FaInfinity } from 'react-icons/fa6';
 
 const CustomOption = (props) => {
   const IconComponent = props.data.icon;
@@ -48,7 +49,7 @@ const CustomSingleValue = (props) => {
   );
 };
 
-const FormSelectorIcon = ({
+const FormSelectorIconFilter = ({
   name,
   labelText,
   list,
@@ -56,16 +57,15 @@ const FormSelectorIcon = ({
   onChange,
   isClearable = true,
 }) => {
-  const initialOption =
-    typeof defaultValue === 'string'
-      ? list.find((option) => option.value === defaultValue)
-      : defaultValue;
-
-  const [selectedOption, setSelectedOption] = useState(initialOption);
+  const [selectedOption, setSelectedOption] = useState(
+    list.find((option) => option.value === defaultValue) || list[0]
+  );
 
   useEffect(() => {
-    setSelectedOption(initialOption);
-  }, [defaultValue]);
+    const updatedOption =
+      list.find((option) => option.value === defaultValue) || list[0];
+    setSelectedOption(updatedOption); // Update state only when necessary
+  }, [defaultValue, list]);
 
   const handleChange = (option) => {
     setSelectedOption(option);
@@ -123,4 +123,4 @@ const customStyles = {
   }),
 };
 
-export default FormSelectorIcon;
+export default FormSelectorIconFilter;

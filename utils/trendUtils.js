@@ -98,24 +98,24 @@ export const paginateAndSortTrends = async (
   limit,
   cursor
 ) => {
-  let skip = 0;
+  //let skip = 0;
   if (cursor) {
-    queryObject._id = { $gt: cursor }; // Fetch documents after this _id for cursor-based pagination
-  } else {
-    skip = (page - 1) * limit; // calculate the number of documents to skip (skipping 0 trends, displaying all 10 then skipping them to next 10)
-  } // check if cursor-based pagination is used
+    queryObject._id = { $gt: cursor }; // fetch documents after this _id for cursor-based pagination
+  }
+  const skip = !cursor ? (page - 1) * limit : 0; // Only use skip if no cursor
+  // calculate the number of documents to skip (skipping 0 trends, displaying all 10 then skipping them to next 10) // check if cursor-based pagination is used
   const [trends, totalTrends] = await Promise.all([
     // execute both queries in parallel
     trendModel
       .find(queryObject)
       .select('-generatedBlogPost -trendUse')
       .populate('createdBy', 'username githubUsername profile_img privacy -_id')
-      .sort(sortKey) // sort the trends based on the sortKey
-      .skip(skip || 0) // apply skip only if not using cursor
+      .sort({ ...sortKey, _id: 1 }) // sort the trends based on the sortKey
+      .skip(skip) // apply skip only if not using cursor
       .limit(limit + 1), // query trends with pagination and sorting
     trendModel.countDocuments(queryObject), //getting total trends based on query
   ]); // query trends with pagination and sorting
-
+  console.log('queryObject:', queryObject);
   const hasNextPage = trends.length > limit; // check if there is a next page
   if (hasNextPage) {
     trends.pop(); // remove the extra document from results

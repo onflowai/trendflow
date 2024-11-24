@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Import necessary hooks
-import Trend from './Trend';
+import { Trend, PaginationComponent } from '../components';
 import Container from '../assets/wrappers/TrendsContainer'; // Styled container
 import useLocalStorage from '../hooks/useLocalStorage'; // Custom hook for local storage
 import { MdViewStream } from 'react-icons/md'; // Icon for list view
@@ -15,11 +15,6 @@ function Trends({
   onSave,
   onRemove,
   savedTrends,
-  totalTrends,
-  pagesNumber,
-  currentPage,
-  nextCursor,
-  hasNextPage,
 }) {
   console.log('trends in component: ', trends);
   //Values used to style recharts in AllTrends & Admin pages
@@ -139,6 +134,7 @@ function Trends({
           />
         ))}
       </div>
+      <PaginationComponent />
     </Container>
   );
 }

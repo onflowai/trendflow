@@ -51,7 +51,7 @@ export const loader = async ({ request, searchValue }) => {
     );
     const savedFilters = savedFiltersData.filters || {};
     const combinedParams = { ...savedFilters, ...params }; // using saved filters as defaults, but allowing URL params to override
-
+    console.log('loader: combinedParams', combinedParams);
     return {
       trends: {
         trends: trendsWithIcons,
@@ -110,17 +110,18 @@ const AllTrends = () => {
   const { searchValue } = useSearchContext();
   console.log('searchValue :', searchValue);
   useEffect(() => {
-    const searchParams = new URLSearchParams(searchValues); // updating URL parameters whenever searchValue changes
-    // Only update URL if searchValue differs from the current 'search' parameter in URL
+    const searchParams = new URLSearchParams(searchValues); // Get current URL parameters
+
+    // Update only if the searchValue is different from the URL param
     if (searchValue && searchParams.get('search') !== searchValue) {
-      searchParams.set('search', searchValue);
-      navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
+      searchParams.set('search', searchValue); // Add or update 'search' param
+      navigate(`/dashboard?${searchParams.toString()}`, { replace: true }); // Update URL
     } else if (!searchValue && searchParams.has('search')) {
-      // Remove 'search' param if searchValue is empty and URL contains 'search'
+      // Remove 'search' if searchValue is empty and param exists
       searchParams.delete('search');
       navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
     }
-  }, [searchValue, navigate, searchValues]);
+  }, [searchValue, searchValues, navigate]);
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
@@ -153,16 +154,16 @@ const AllTrends = () => {
     navigate('/dashboard');
     try {
       await customFetch.delete('/users/delete-filters');
-      toast.success('Filters reset successfully');
     } catch (error) {
       toast.error('Failed to reset filters');
       console.error(error);
     }
   };
+  //Simple error
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
-
+  console.log('searchValues ', searchValues);
   return (
     <CombinedProvider value={{ trends, searchValues }}>
       <FilterTrends
