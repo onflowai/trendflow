@@ -13,7 +13,7 @@ import { useSearchContext } from '../context/SearchContext';
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
-
+const trendsPerPage = 6; // Pagination Limit
 /**
  * Loader function to fetch trends and saved trends based on query parameters
  * @param {Object} request - request object with URL information
@@ -35,6 +35,7 @@ export const loader = async ({ request, searchValue }) => {
     params.status = status; // assign status to chartType
     params.updated = updated;
   }
+  params.limit = trendsPerPage;
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });
     console.log('trendsData', trendsData);
@@ -51,7 +52,6 @@ export const loader = async ({ request, searchValue }) => {
     );
     const savedFilters = savedFiltersData.filters || {};
     const combinedParams = { ...savedFilters, ...params }; // using saved filters as defaults, but allowing URL params to override
-    console.log('loader: combinedParams', combinedParams);
     return {
       trends: {
         trends: trendsWithIcons,
@@ -103,12 +103,10 @@ const AllTrends = () => {
     useLoaderData();
   const { totalTrends, pagesNumber, currentPage, nextCursor, hasNextPage } =
     trends;
-  console.log('AllTrends trends: ', trends);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
   const { searchValue } = useSearchContext();
-  console.log('searchValue :', searchValue);
   useEffect(() => {
     const searchParams = new URLSearchParams(searchValues); // Get current URL parameters
 
@@ -163,7 +161,6 @@ const AllTrends = () => {
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
-  console.log('searchValues ', searchValues);
   return (
     <CombinedProvider value={{ trends, searchValues }}>
       <FilterTrends

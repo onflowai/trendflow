@@ -31,7 +31,7 @@ const PaginationComponent = () => {
       // Append new trends to the local state
       setTrends((prevTrends) => [...prevTrends, ...newTrends]);
 
-      // Update pagination metadata in CombinedProvider
+      // updating pagination metadata in CombinedProvider
       updatePagination({
         currentPage: currentPage + 1,
         nextCursor: newNextCursor,

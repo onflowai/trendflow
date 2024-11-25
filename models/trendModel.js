@@ -149,6 +149,7 @@ const TrendSchema = new mongoose.Schema(
 // indexes for optimized querying
 TrendSchema.index({ trendCategory: 1, trendTech: 1 }); // filtering by category and tech
 TrendSchema.index({ slug: 1 }); // quick lookups by slug
+TrendSchema.index({ isApproved: 1, _id: 1 }); //index specifically for cursor pagination
 TrendSchema.index({ isApproved: 1, updatedAt: -1 }); // optimizes approved trends sorted by update time
 TrendSchema.index({ views: -1 }); // sorting by views (top viewed)
 TrendSchema.index({ trendStatus: 1 }); // status-based filters

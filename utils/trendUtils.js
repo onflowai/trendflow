@@ -99,30 +99,42 @@ export const paginateAndSortTrends = async (
   cursor
 ) => {
   //let skip = 0;
+  const sortFields = { ...sortKey, _id: 1 }; // add _id as a tie-breaker
   if (cursor) {
-    queryObject._id = { $gt: cursor }; // fetch documents after this _id for cursor-based pagination
+    const [updatedAtCursor, idCursor] = cursor.split('|'); // split the cursor into updatedAt and _id
+    queryObject.$or = [
+      { updatedAt: { $lt: updatedAtCursor } }, // fetch records with earlier updatedAt
+      {
+        updatedAt: updatedAtCursor, // handle tie-breaking for trends with the same updatedAt
+        _id: { $gt: idCursor },
+      },
+    ];
   }
-  const skip = !cursor ? (page - 1) * limit : 0; // Only use skip if no cursor
-  // calculate the number of documents to skip (skipping 0 trends, displaying all 10 then skipping them to next 10) // check if cursor-based pagination is used
+
+  // cursor-based pagination: no need for skip
+  const trendsQuery = trendModel
+    .find(queryObject)
+    .select('-generatedBlogPost -trendUse') // exclude unnecessary fields
+    .populate('createdBy', 'username githubUsername profile_img privacy -_id')
+    .sort(sortFields) // sort the trends based on the sortKey
+    .limit(limit + 1); //query trends with pagination fetch one extra to determine if there’s a next page
+
   const [trends, totalTrends] = await Promise.all([
-    // execute both queries in parallel
-    trendModel
-      .find(queryObject)
-      .select('-generatedBlogPost -trendUse')
-      .populate('createdBy', 'username githubUsername profile_img privacy -_id')
-      .sort({ ...sortKey, _id: 1 }) // sort the trends based on the sortKey
-      .skip(skip) // apply skip only if not using cursor
-      .limit(limit + 1), // query trends with pagination and sorting
-    trendModel.countDocuments(queryObject), //getting total trends based on query
-  ]); // query trends with pagination and sorting
-  console.log('queryObject:', queryObject);
+    trendsQuery,
+    trendModel.countDocuments(queryObject),
+  ]); //getting total trends based on query
+
   const hasNextPage = trends.length > limit; // check if there is a next page
   if (hasNextPage) {
     trends.pop(); // remove the extra document from results
   }
 
-  const nextCursor = hasNextPage ? trends[trends.length - 1]._id : null; // set nextCursor for the next batch
+  const nextCursor = hasNextPage
+    ? `${trends[trends.length - 1].updatedAt}|${trends[trends.length - 1]._id}`
+    : null; // generate the nextCursor using updatedAt and _id of the last document
+
   const pagesNumber = Math.ceil(totalTrends / limit); //calculating the page
+
   return { totalTrends, pagesNumber, trends, nextCursor, hasNextPage };
 }; //END PAGINATE AND SORT TRENDS
 

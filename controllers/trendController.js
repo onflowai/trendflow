@@ -306,9 +306,6 @@ export const getApprovedTrends = async (req, res) => {
   //   queryObject.trendStatus = chartType;
   // } // if chartType is provided, add it to the query object
 
-  console.log('Constructed Query Object:', queryObject);
-  console.log('Sort Key:', sortKey);
-
   try {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
