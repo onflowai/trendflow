@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Trends, FilterTrends, CustomErrorToast, Footer } from '../components';
+import {
+  Trends,
+  FilterTrends,
+  CustomErrorToast,
+  PaginationComponent,
+} from '../components';
 import customFetch from '../utils/customFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { getFullIconUrl } from '../utils/urlHelper';
@@ -13,7 +18,7 @@ import { useSearchContext } from '../context/SearchContext';
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
-const trendsPerPage = 6; // Pagination Limit
+const trendsPerPage = 8; // Pagination Limit
 /**
  * Loader function to fetch trends and saved trends based on query parameters
  * @param {Object} request - request object with URL information
@@ -99,17 +104,80 @@ const onRemove = async (_id) => {
 };
 const AllTrends = () => {
   const navigate = useNavigate();
-  const { trends, savedTrendIds, error, searchValues, trendCategories } =
-    useLoaderData();
-  const { totalTrends, pagesNumber, currentPage, nextCursor, hasNextPage } =
-    trends;
+  const {
+    trends: initialTrendsData,
+    savedTrendIds,
+    error,
+    searchValues: initialSearchValues,
+    trendCategories,
+  } = useLoaderData();
+  //const { totalTrends, pagesNumber, currentPage, nextCursor, hasNextPage } = trends;
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // State to track if the filter is closed in SearchTrends
   const { searchValue } = useSearchContext();
+  const [searchValues, setSearchValues] = useState(initialSearchValues);
+  const [trends, setTrends] = useState(initialTrendsData.trends || []);
+  const [pagination, setPagination] = useState({
+    totalTrends: initialTrendsData.totalTrends,
+    pagesNumber: initialTrendsData.pagesNumber,
+    currentPage: initialTrendsData.currentPage,
+    nextCursor: initialTrendsData.nextCursor,
+    hasNextPage: initialTrendsData.hasNextPage,
+  });
+  const updateSearchValues = (newValues) => {
+    const updatedSearchValues = { ...searchValues, ...newValues };
+    setSearchValues(updatedSearchValues);
+    console.log('Updated filterValues:', newValues);
+    // Update the URL to reflect new search or sort parameters
+    const searchParams = new URLSearchParams(updatedSearchValues);
+    navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
+  };
+  //loadMoreTrends used for cursor-based pagination to fetch more results while keeping the existing trends intact
+  const loadMoreTrends = async () => {
+    if (!pagination.hasNextPage) return;
+
+    try {
+      const response = await customFetch.get('/trends', {
+        params: {
+          ...searchValues, // Use updated search and sort params
+          cursor: pagination.nextCursor,
+          limit: trendsPerPage,
+        },
+      });
+
+      const { trends: newTrends, ...newPagination } = response.data;
+      setTrends((prevTrends) => [...prevTrends, ...newTrends]);
+      setPagination((prev) => ({ ...prev, ...newPagination }));
+    } catch (error) {
+      console.error('Error loading more trends:', error);
+    }
+  }; //end loadMoreTrends
+  //used for fetching a new, filtered list of trends based on updated filters or search terms, replacing the current trends
+  const fetchFilteredTrends = async () => {
+    try {
+      const response = await customFetch.get('/trends', {
+        params: {
+          ...searchValues, // Use updated filters and search params
+          limit: trendsPerPage,
+        },
+      });
+
+      const { trends: filteredTrends, ...newPagination } = response.data;
+      setTrends(filteredTrends); // Replace trends with filtered results
+      setPagination((prev) => ({ ...prev, ...newPagination }));
+    } catch (error) {
+      console.error('Error fetching filtered trends:', error);
+    }
+  }; //end fetchFilteredTrends
+  // When filters change, trigger this to update searchValues
+  const onFiltersApply = (filters) => {
+    updateSearchValues(filters);
+    fetchFilteredTrends();
+  };
+  //useEffect for handling filters
   useEffect(() => {
     const searchParams = new URLSearchParams(searchValues); // Get current URL parameters
-
     // Update only if the searchValue is different from the URL param
     if (searchValue && searchParams.get('search') !== searchValue) {
       searchParams.set('search', searchValue); // Add or update 'search' param
@@ -119,7 +187,7 @@ const AllTrends = () => {
       searchParams.delete('search');
       navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
     }
-  }, [searchValue, searchValues, navigate]);
+  }, [searchValue]);
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
@@ -162,8 +230,9 @@ const AllTrends = () => {
     return <div>Error loading data: {error}</div>;
   }
   return (
-    <CombinedProvider value={{ trends, searchValues }}>
+    <CombinedProvider value={{ searchValues }}>
       <FilterTrends
+        onFiltersApply={onFiltersApply}
         trendCategory={trendCategory}
         technologies={technologies}
         isClosed={isClosed}
@@ -172,15 +241,18 @@ const AllTrends = () => {
         resetFilters={resetFilters}
       />
       <Trends
-        trends={trends.trends}
+        trends={trends}
         savedTrends={savedTrendIds}
         onSave={onSave}
         onRemove={onRemove}
-        totalTrends={totalTrends}
-        pagesNumber={pagesNumber}
-        currentPage={currentPage}
-        nextCursor={nextCursor}
-        hasNextPage={hasNextPage}
+      />
+      <PaginationComponent
+        loadMoreTrends={loadMoreTrends}
+        totalTrends={pagination.totalTrends}
+        pagesNumber={pagination.pagesNumber}
+        currentPage={pagination.currentPage}
+        nextCursor={pagination.nextCursor}
+        hasNextPage={pagination.hasNextPage}
       />
     </CombinedProvider>
   );

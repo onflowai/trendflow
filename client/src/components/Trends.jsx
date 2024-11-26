@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Import necessary hooks
-import { Trend, PaginationComponent } from '../components';
+import { Trend } from '../components';
 import Container from '../assets/wrappers/TrendsContainer'; // Styled container
 import useLocalStorage from '../hooks/useLocalStorage'; // Custom hook for local storage
 import { MdViewStream } from 'react-icons/md'; // Icon for list view
@@ -134,7 +134,6 @@ function Trends({
           />
         ))}
       </div>
-      <PaginationComponent />
     </Container>
   );
 }

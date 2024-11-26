@@ -40,6 +40,7 @@ function FilterTrendsLarge({
   isAdminPage,
   saveFilters,
   resetFilters,
+  onFiltersApply,
 }) {
   const { searchValues } = useCombinedContext(); // Context for search parameters
   const navigate = useNavigate(); // updating the URL without form submission
@@ -105,7 +106,7 @@ function FilterTrendsLarge({
         searchValues[key] !== ''
     );
     setHasSavedFilters(hasInitialSavedFilters);
-
+    //onFiltersApply(filterValues);
     isFirstRender.current = false;
   }, [location.search, searchValues]); // dependency array run once on mount
 
@@ -140,16 +141,27 @@ function FilterTrendsLarge({
   const handleChange = (name, option) => {
     const value = option ? option.value : 'all';
 
-    setFilterValues((prev) => ({
-      ...prev,
-      [name]: prev[name] === value ? '' : value, // Toggle off if the value is already set
-    }));
+    setFilterValues((prev) => {
+      const newValues = {
+        ...prev,
+        [name]: prev[name] === value ? '' : value, // Toggle off if the value is already set
+      };
+      console.log('Updated filterValues:', newValues);
+      return newValues;
+    });
 
     setIndicatorState((prev) => ({
       ...prev,
       [name]: value !== 'all' && value !== '', // Update indicator state
     }));
+    onFiltersApply({
+      ...filterValues,
+      [name]: value,
+    });
   };
+  // useEffect(() => {
+  //   onFiltersApply(filterValues);
+  // }, [filterValues]);
 
   // Function to update query parameters and navigate
   const updateQueryParams = () => {

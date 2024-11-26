@@ -14,6 +14,7 @@ function FilterTrends({
   isAdminPage,
   saveFilters,
   resetFilters,
+  onFiltersApply,
 }) {
   const isLargeScreen = window.matchMedia('(min-width: 499px)').matches; // using media query hook to determine the screen size
   return (
@@ -27,6 +28,7 @@ function FilterTrends({
           setIsClosed={setIsClosed}
           saveFilters={saveFilters}
           resetFilters={resetFilters}
+          onFiltersApply={onFiltersApply}
         />
       ) : (
         <FilterTrendsSmall />
