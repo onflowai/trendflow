@@ -27,6 +27,7 @@ import {
   TIME,
 } from '../utils/constants.js';
 import { useNavigate, useLocation } from 'react-router-dom'; // Use useNavigate instead of useSubmit
+
 /**
  * Search Trends Large is used in AllTrends & Admin Page. it is used to filter trends using query params which are fetched from
  * frontend as well as backend
@@ -141,27 +142,18 @@ function FilterTrendsLarge({
   const handleChange = (name, option) => {
     const value = option ? option.value : 'all';
 
-    setFilterValues((prev) => {
-      const newValues = {
-        ...prev,
-        [name]: prev[name] === value ? '' : value, // Toggle off if the value is already set
-      };
-      console.log('Updated filterValues:', newValues);
-      return newValues;
-    });
+    const newFilterValues = {
+      ...filterValues,
+      [name]: filterValues[name] === value ? '' : value, // Toggle off if the value is already set
+    };
+    setFilterValues(newFilterValues);
 
     setIndicatorState((prev) => ({
       ...prev,
       [name]: value !== 'all' && value !== '', // Update indicator state
     }));
-    onFiltersApply({
-      ...filterValues,
-      [name]: value,
-    });
+    onFiltersApply(newFilterValues); // Pass the updated filter values
   };
-  // useEffect(() => {
-  //   onFiltersApply(filterValues);
-  // }, [filterValues]);
 
   // Function to update query parameters and navigate
   const updateQueryParams = () => {
@@ -178,6 +170,7 @@ function FilterTrendsLarge({
     // navigate to the new URL with updated query params
     navigate(`?${params.toString()}`, { replace: true }); // updating the URL without reloading
   };
+
   const handleSave = () => {
     if (
       filterValues.trendCategory === 'all' &&

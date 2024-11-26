@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import {
   Trends,
@@ -13,12 +13,14 @@ import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useSearchContext } from '../context/SearchContext';
+
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
  * which displays them all in /dashboard and /admin pages using the Trend.jsx. NOTE: visit Trend.jsx for detailed parameters used
  * @returns
  */
 const trendsPerPage = 8; // Pagination Limit
+const searchDebounce = 500; // 500ms debounce delay
 /**
  * Loader function to fetch trends and saved trends based on query parameters
  * @param {Object} request - request object with URL information
@@ -74,6 +76,7 @@ export const loader = async ({ request, searchValue }) => {
     return { error: error?.response?.data?.msg || 'An error occurred' };
   }
 }; //end loader
+
 //function for bookmarking trends for each user
 const onSave = async (_id) => {
   try {
@@ -88,6 +91,7 @@ const onSave = async (_id) => {
     console.error(error);
   }
 };
+
 //function for removing bookmarked trends
 const onRemove = async (_id) => {
   try {
@@ -102,6 +106,7 @@ const onRemove = async (_id) => {
     console.error(error);
   }
 };
+
 const AllTrends = () => {
   const navigate = useNavigate();
   const {
@@ -125,14 +130,67 @@ const AllTrends = () => {
     nextCursor: initialTrendsData.nextCursor,
     hasNextPage: initialTrendsData.hasNextPage,
   });
+
   const updateSearchValues = (newValues) => {
     const updatedSearchValues = { ...searchValues, ...newValues };
     setSearchValues(updatedSearchValues);
-    console.log('Updated filterValues:', newValues);
+    console.log('Updated searchValues:', updatedSearchValues);
     // Update the URL to reflect new search or sort parameters
     const searchParams = new URLSearchParams(updatedSearchValues);
     navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
   };
+
+  // Debounce function to limit the rate at which fetchFilteredTrends is called
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  //used for fetching a new, filtered list of trends based on updated filters or search terms, replacing the current trends
+  const fetchFilteredTrends = async (filters) => {
+    try {
+      const response = await customFetch.get('/trends', {
+        params: {
+          ...filters, // Use updated filters and search params
+          limit: trendsPerPage,
+        },
+      });
+
+      const { trends: filteredTrends, ...newPagination } = response.data;
+      setTrends(filteredTrends); // Replace trends with filtered results
+      setPagination((prev) => ({ ...prev, ...newPagination }));
+    } catch (error) {
+      console.error('Error fetching filtered trends:', error);
+    }
+  }; //end fetchFilteredTrends
+
+  // Debounced version of fetchFilteredTrends to prevent excessive calls
+  const debouncedFetchFilteredTrends = useCallback(
+    debounce(fetchFilteredTrends, searchDebounce), // debounce delay in ms
+    []
+  );
+
+  // When filters change, trigger this to update searchValues
+  const onFiltersApply = (filters) => {
+    updateSearchValues(filters);
+    fetchFilteredTrends(filters); // passing filters directly
+  };
+
+  //useEffect for handling searchValue changes
+  useEffect(() => {
+    if (searchValue !== undefined) {
+      const updatedFilters = { ...searchValues, search: searchValue };
+      updateSearchValues(updatedFilters);
+      debouncedFetchFilteredTrends(updatedFilters);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
+
   //loadMoreTrends used for cursor-based pagination to fetch more results while keeping the existing trends intact
   const loadMoreTrends = async () => {
     if (!pagination.hasNextPage) return;
@@ -153,41 +211,7 @@ const AllTrends = () => {
       console.error('Error loading more trends:', error);
     }
   }; //end loadMoreTrends
-  //used for fetching a new, filtered list of trends based on updated filters or search terms, replacing the current trends
-  const fetchFilteredTrends = async () => {
-    try {
-      const response = await customFetch.get('/trends', {
-        params: {
-          ...searchValues, // Use updated filters and search params
-          limit: trendsPerPage,
-        },
-      });
 
-      const { trends: filteredTrends, ...newPagination } = response.data;
-      setTrends(filteredTrends); // Replace trends with filtered results
-      setPagination((prev) => ({ ...prev, ...newPagination }));
-    } catch (error) {
-      console.error('Error fetching filtered trends:', error);
-    }
-  }; //end fetchFilteredTrends
-  // When filters change, trigger this to update searchValues
-  const onFiltersApply = (filters) => {
-    updateSearchValues(filters);
-    fetchFilteredTrends();
-  };
-  //useEffect for handling filters
-  useEffect(() => {
-    const searchParams = new URLSearchParams(searchValues); // Get current URL parameters
-    // Update only if the searchValue is different from the URL param
-    if (searchValue && searchParams.get('search') !== searchValue) {
-      searchParams.set('search', searchValue); // Add or update 'search' param
-      navigate(`/dashboard?${searchParams.toString()}`, { replace: true }); // Update URL
-    } else if (!searchValue && searchParams.has('search')) {
-      // Remove 'search' if searchValue is empty and param exists
-      searchParams.delete('search');
-      navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
-    }
-  }, [searchValue]);
   //fetching the icon data from the node server
   useEffect(() => {
     const fetchData = async () => {
@@ -205,6 +229,7 @@ const AllTrends = () => {
 
     fetchData();
   }, [isClosed]);
+
   // save current filter parameters to users model
   const saveFilters = async (filters) => {
     try {
@@ -215,6 +240,7 @@ const AllTrends = () => {
       console.error(error);
     }
   };
+
   // reset filters: clear state, URL params, and saved data in MongoDB
   const resetFilters = async () => {
     navigate('/dashboard');
@@ -225,6 +251,7 @@ const AllTrends = () => {
       console.error(error);
     }
   };
+
   //Simple error
   if (error) {
     return <div>Error loading data: {error}</div>;

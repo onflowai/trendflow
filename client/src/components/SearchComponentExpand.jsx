@@ -2,7 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import styled from 'styled-components';
-
+/**
+ *
+ * @param {*} param0
+ * @returns
+ */
 const SearchComponentExpand = ({
   type = 'text',
   name,
@@ -24,7 +28,11 @@ const SearchComponentExpand = ({
   };
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    const value = e.target.value;
+    setInputValue(value);
+    if (onSearch) {
+      onSearch(value); // Call onSearch as the user types
+    }
   };
 
   const handleClear = () => {

@@ -8,7 +8,10 @@ import { dashboardNavLinks } from '../assets/utils/data';
 import { NavLink } from 'react-router-dom';
 import { useDashboardContext } from '../pages/DashboardLayout';
 import { useSearchContext } from '../context/SearchContext';
-
+/**
+ *
+ * @returns
+ */
 function Navbar() {
   //toggle sidebar coming from DashboardLayout.jsx as context
   const { showSidebar, toggleSidebar } = useDashboardContext() || {};
