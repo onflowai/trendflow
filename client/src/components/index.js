@@ -50,6 +50,7 @@ export { default as ContentBoxHighlighted } from './ContentBoxHighlighted';
 export { default as ContentRowComponent } from './ContentRowComponent';
 export { default as FooterTrendDetails } from './FooterTrendDetails';
 export { default as SearchComponentExpand } from './SearchComponentExpand';
+export { default as SearchComponentStill } from './SearchComponentStill';
 export { default as Tooltip } from './Tooltip';
 export { default as Checkbox } from './Checkbox';
 export { default as CarouselCards } from './CarouselCards';

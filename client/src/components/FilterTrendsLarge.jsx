@@ -3,6 +3,7 @@ import {
   Checkbox,
   FormSelectorIconLocal,
   FormSelectorIconFilter,
+  SearchComponentStill,
 } from './index.js';
 import { toast } from 'react-toastify';
 import Container from '../assets/wrappers/FilterTrendsContainer.js';
@@ -71,6 +72,7 @@ function FilterTrendsLarge({
     topRated: searchValues.topRated || '', // initializing as empty or from context
     topViewed: searchValues.topViewed || '', // initializing as empty or from context
     updated: searchValues.updated || 'all',
+    search: searchValues.search || '',
   });
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -120,6 +122,7 @@ function FilterTrendsLarge({
       : false,
     status: searchValues.status ? searchValues.status !== 'all' : false,
     updated: searchValues.updated ? searchValues.updated !== 'all' : false,
+    search: searchValues.search ? searchValues.search !== '' : false,
   });
 
   // useEffect to update URL params whenever filterValues change
@@ -209,6 +212,36 @@ function FilterTrendsLarge({
       toast.error('Failed to reset filters');
       console.error(error);
     }
+  };
+
+  const handleSearchChange = (value) => {
+    const newFilterValues = {
+      ...filterValues,
+      search: value,
+    };
+    setFilterValues(newFilterValues);
+
+    setIndicatorState((prev) => ({
+      ...prev,
+      search: value !== '',
+    }));
+
+    onFiltersApply(newFilterValues);
+  };
+
+  const handleSearchClear = () => {
+    const newFilterValues = {
+      ...filterValues,
+      search: '',
+    };
+    setFilterValues(newFilterValues);
+
+    setIndicatorState((prev) => ({
+      ...prev,
+      search: false,
+    }));
+
+    onFiltersApply(newFilterValues);
   };
   const isChecked = (name, value) => filterValues[name] === value; // utility function to check if a checkbox is checked
   const date = new Date().toLocaleDateString();
@@ -375,6 +408,22 @@ function FilterTrendsLarge({
                             })),
                           ]}
                           onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="search">
+                      <div className="indicator-container">
+                        <div
+                          className={`indicator ${
+                            indicatorState.search ? 'active' : ''
+                          }`}
+                        ></div>
+                        <SearchComponentStill
+                          labelText="Search:"
+                          name="search"
+                          value={filterValues.search}
+                          onChange={(e) => handleSearchChange(e.target.value)}
+                          onClear={handleSearchClear}
                         />
                       </div>
                     </div>

@@ -93,8 +93,8 @@ const FormSelectorIconFilter = ({
 const customStyles = {
   control: (styles) => ({
     ...styles,
-    borderRadius: 'var(--input-radius)',
-    border: '1px solid #ccc',
+    borderRadius: 'var(--input-radius-rounded)',
+    border: '1.5px solid var(--grey-70)',
     // Ensure the control element's styling is consistent with the menu
   }),
   menu: (styles) => ({
