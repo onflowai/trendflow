@@ -46,36 +46,6 @@ export const submitTrend = async (req, res) => {
 }; //end SUBMIT
 
 /**
- * GET ALL TRENDS (only for ADMIN)
- * returns all trends with filtering, sorting, and pagination
- * @param {*} req
- * @param {*} res
- */
-export const getAllTrends = async (req, res) => {
-  // console.log(req);
-  let { search, trendTech, trendCategory, sort, page, limit } = req.query;
-  const queryObject = constructQueryObject(search, trendTech, trendCategory);
-  const sortKey = constructSortKey(sort);
-
-  page = Number(page) || 1;
-  limit = Number(limit) || 36;
-
-  try {
-    const { totalTrends, pagesNumber, trends } = await paginateAndSortTrends(
-      queryObject,
-      sortKey,
-      page,
-      limit
-    );
-    res
-      .status(StatusCodes.OK)
-      .json({ totalTrends, pagesNumber, currentPage: page, trends });
-  } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
-  } //if there is anything but response 200 resource is not found response fot the client
-};
-
-/**
  * GET USER TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)
  * @param {*} req
  * @param {*} res
@@ -254,6 +224,116 @@ export const approveTrend = async (req, res) => {
 }; //end APPROVE TREND
 
 /**
+ * GET ALL TRENDS (only for ADMIN)
+ * Returns all trends with filtering, sorting, and pagination.
+ * @param {*} req
+ * @param {*} res
+ */
+export const getAllTrends = async (req, res) => {
+  let {
+    search,
+    trendTech,
+    trendCategory,
+    sort,
+    page,
+    limit,
+    topRated,
+    topViewed,
+    updated,
+    status,
+    cursor,
+  } = req.query; // destructuring query parameters from the request
+
+  // Determine the isApproved value based on status
+  let isApproved;
+  if (status === 'Approved') {
+    isApproved = true;
+  } else if (status === 'Un-Approved') {
+    isApproved = false;
+  }
+
+  // constructing the query object based on provided filters
+  const queryObject = constructQueryObject(
+    search,
+    trendTech,
+    trendCategory,
+    isApproved,
+    undefined
+  ); //passing isApproved based on status + no status passed (undefined)
+
+  // for the admin page, include all trends regardless of approval status
+  //if status is not 'Approved' or 'Un-Approved' and not 'all' it might be a trendStatus
+  if (
+    status &&
+    status !== 'all' &&
+    status !== 'Approved' &&
+    status !== 'Un-Approved'
+  ) {
+    queryObject.trendStatus = status;
+  } // if a status filter is provided, add it to the query object
+
+  // building the sort key based on sorting parameters
+  const sortKey = constructSortKey(topRated, topViewed, updated);
+
+  // set default values for page and limit if not provided
+  page = Number(page) || 1;
+  limit = Number(limit) || 36;
+
+  // getting the current date components
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+
+  // 'updated' filter
+  if (updated === 'newestMonth') {
+    queryObject.updatedAt = {
+      $gte: new Date(currentYear, currentMonth - 1, 1),
+    };
+  } else if (updated === 'newestYear') {
+    queryObject.updatedAt = { $gte: new Date(currentYear - 1, 0, 1) };
+  }
+
+  // 'topRated' and 'topViewed' time-frame filters if 'updatedAt' is not already set
+  if (!queryObject.updatedAt) {
+    if (topRated === 'topRatedYear' || topViewed === 'topViewedYear') {
+      queryObject.updatedAt = { $gte: new Date(currentYear, 0, 1) };
+    } else if (topRated === 'topRatedMonth' || topViewed === 'topViewedMonth') {
+      queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) };
+    }
+  }
+
+  try {
+    let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
+      await paginateAndSortTrends(queryObject, sortKey, page, limit, cursor); // fetch trends using pagination, sorting, and optional cursor
+
+    //privacy logic if necessary (e.g., hide GitHub username if privacy is enabled)
+    trends = trends.map((trend) => {
+      if (trend.createdBy && trend.createdBy.privacy) {
+        trend.createdBy.githubUsername = '';
+      }
+      return trend;
+    });
+
+    // log REMOVE
+    console.log(
+      'Admin Trends fetched after applying cursor:',
+      trends.map((trend) => trend.trend)
+    );
+
+    res.status(StatusCodes.OK).json({
+      totalTrends,
+      pagesNumber,
+      currentPage: page,
+      trends,
+      nextCursor,
+      hasNextPage,
+    }); // sending the response with trends data and pagination info
+  } catch (error) {
+    // handling any errors during the database query
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+}; // end of getAllTrends
+
+/**
  * GET APPROVED TRENDS returns trends & sorts them according to the filter 'sort'
  * @param {*} req
  * @param {*} res
@@ -276,7 +356,8 @@ export const getApprovedTrends = async (req, res) => {
     search,
     trendTech,
     trendCategory,
-    true
+    true,
+    status
   ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
   const sortKey = constructSortKey(topRated, topViewed, updated);
   page = Number(page) || 1; //value page will be provided in the req
@@ -324,12 +405,12 @@ export const getApprovedTrends = async (req, res) => {
       return trend;
     });
 
-    if (status && status !== 'all') {
-      trends = trends.filter((trend) => trend.trendStatus === status);
-      // adjusting the total trends count and pagination after filtering
-      totalTrends = trends.length;
-      pagesNumber = Math.ceil(totalTrends / limit);
-    }
+    // if (status && status !== 'all') {
+    //   trends = trends.filter((trend) => trend.trendStatus === status);
+    //   // adjusting the total trends count and pagination after filtering
+    //   totalTrends = trends.length;
+    //   pagesNumber = Math.ceil(totalTrends / limit);
+    // }
     console.log(
       'Trends fetched after applying cursor:',
       trends.map((trend) => trend.trend) // This will log an array of trend names

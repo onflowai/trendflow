@@ -17,7 +17,8 @@ export const constructQueryObject = (
   search,
   trendTech,
   trendCategory,
-  isApproved
+  isApproved,
+  status
 ) => {
   const queryObject = {}; // initialize an empty query object
   if (isApproved !== undefined) {
@@ -35,6 +36,9 @@ export const constructQueryObject = (
   } // if trendTech is specified and not 'all' add trendTech to the query object
   if (trendCategory && trendCategory !== 'all') {
     queryObject.trendCategory = trendCategory; //dropdown query for trendCategory
+  }
+  if (status && status !== 'all') {
+    queryObject.trendStatus = status;
   }
   return queryObject; // return the constructed query object
 }; //END CONSTRUCT QUERY OBJECT
