@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+// AllTrends.jsx
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   Trends,
@@ -13,6 +14,7 @@ import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useSearchContext } from '../context/SearchContext';
+import Loading from '../components/Loading'; // Ensure correct import path
 
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
@@ -21,6 +23,7 @@ import { useSearchContext } from '../context/SearchContext';
  */
 const trendsPerPage = 8; // Pagination Limit
 const searchDebounce = 500; // 500ms debounce delay
+
 /**
  * Loader function to fetch trends and saved trends based on query parameters
  * @param {Object} request - request object with URL information
@@ -130,6 +133,9 @@ const AllTrends = () => {
     nextCursor: initialTrendsData.nextCursor,
     hasNextPage: initialTrendsData.hasNextPage,
   });
+  const [isLoading, setIsLoading] = useState(false); // State to track loading
+  const [preloadedTrends, setPreloadedTrends] = useState(null); // State for preloaded trends
+  const observer = useRef(); // Ref for the Intersection Observer
 
   const updateSearchValues = (newValues) => {
     const updatedSearchValues = { ...searchValues, ...newValues };
@@ -140,7 +146,7 @@ const AllTrends = () => {
     navigate(`/dashboard?${searchParams.toString()}`, { replace: true });
   };
 
-  // Debounce function to limit the rate at which fetchFilteredTrends is called
+  // debounce function to limit the rate at which fetchFilteredTrends is called
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -154,6 +160,7 @@ const AllTrends = () => {
   //used for fetching a new, filtered list of trends based on updated filters or search terms, replacing the current trends
   const fetchFilteredTrends = async (filters) => {
     try {
+      setIsLoading(true);
       const response = await customFetch.get('/trends', {
         params: {
           ...filters, // Use updated filters and search params
@@ -166,16 +173,18 @@ const AllTrends = () => {
       setPagination((prev) => ({ ...prev, ...newPagination }));
     } catch (error) {
       console.error('Error fetching filtered trends:', error);
+    } finally {
+      setIsLoading(false);
     }
   }; //end fetchFilteredTrends
 
-  // Debounced version of fetchFilteredTrends to prevent excessive calls
+  // debounced version of fetchFilteredTrends to prevent excessive calls
   const debouncedFetchFilteredTrends = useCallback(
     debounce(fetchFilteredTrends, searchDebounce), // debounce delay in ms
     []
   );
 
-  // When filters change, trigger this to update searchValues
+  // when filters change, trigger this to update searchValues
   const onFiltersApply = (filters) => {
     updateSearchValues(filters);
     fetchFilteredTrends(filters); // passing filters directly
@@ -193,9 +202,10 @@ const AllTrends = () => {
 
   //loadMoreTrends used for cursor-based pagination to fetch more results while keeping the existing trends intact
   const loadMoreTrends = async () => {
-    if (!pagination.hasNextPage) return;
+    if (!pagination.hasNextPage || isLoading) return;
 
     try {
+      setIsLoading(true);
       const response = await customFetch.get('/trends', {
         params: {
           ...searchValues, // Use updated search and sort params
@@ -209,8 +219,58 @@ const AllTrends = () => {
       setPagination((prev) => ({ ...prev, ...newPagination }));
     } catch (error) {
       console.error('Error loading more trends:', error);
+    } finally {
+      setIsLoading(false);
     }
   }; //end loadMoreTrends
+
+  //intersection observer callback
+  const lastTrendElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && pagination.hasNextPage) {
+            loadMoreTrends();
+          }
+        },
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: 1.0,
+        }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, pagination.hasNextPage]
+  );
+
+  //preloading
+  const preloadNextPage = async () => {
+    if (!pagination.hasNextPage || preloadedTrends) return;
+
+    try {
+      const response = await customFetch.get('/trends', {
+        params: {
+          ...searchValues,
+          cursor: pagination.nextCursor,
+          limit: trendsPerPage,
+        },
+      });
+      setPreloadedTrends(response.data.trends); //storing preloaded data in state
+    } catch (error) {
+      console.error('Error preloading next trends:', error);
+    }
+  };
+
+  // trigger preloading when nearing the bottom
+  useEffect(() => {
+    if (pagination.hasNextPage) {
+      preloadNextPage();
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.nextCursor]);
 
   //fetching the icon data from the node server
   useEffect(() => {
@@ -256,6 +316,7 @@ const AllTrends = () => {
   if (error) {
     return <div>Error loading data: {error}</div>;
   }
+
   return (
     <CombinedProvider value={{ searchValues }}>
       <FilterTrends
@@ -273,12 +334,9 @@ const AllTrends = () => {
         onSave={onSave}
         onRemove={onRemove}
       />
+      <div ref={lastTrendElementRef}></div>
       <PaginationComponent
-        loadMoreTrends={loadMoreTrends}
-        totalTrends={pagination.totalTrends}
-        pagesNumber={pagination.pagesNumber}
-        currentPage={pagination.currentPage}
-        nextCursor={pagination.nextCursor}
+        isLoading={isLoading}
         hasNextPage={pagination.hasNextPage}
       />
     </CombinedProvider>
