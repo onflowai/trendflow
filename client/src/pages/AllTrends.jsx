@@ -1,4 +1,3 @@
-// AllTrends.jsx
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
@@ -9,12 +8,10 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { getFullIconUrl } from '../utils/urlHelper';
 import { useLoaderData } from 'react-router-dom';
 import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useSearchContext } from '../context/SearchContext';
-import Loading from '../components/Loading'; // Ensure correct import path
 
 /**
  * Uses Trends and Search Trends using react fragment. Using PublicTrendsContext we are passing the data to Trends.jsx component
@@ -133,6 +130,7 @@ const AllTrends = () => {
     nextCursor: initialTrendsData.nextCursor,
     hasNextPage: initialTrendsData.hasNextPage,
   });
+  const [preloadedPagination, setPreloadedPagination] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // State to track loading
   const [preloadedTrends, setPreloadedTrends] = useState(null); // State for preloaded trends
   const observer = useRef(); // Ref for the Intersection Observer
@@ -163,13 +161,13 @@ const AllTrends = () => {
       setIsLoading(true);
       const response = await customFetch.get('/trends', {
         params: {
-          ...filters, // Use updated filters and search params
+          ...filters, // use updated filters and search params
           limit: trendsPerPage,
         },
       });
 
       const { trends: filteredTrends, ...newPagination } = response.data;
-      setTrends(filteredTrends); // Replace trends with filtered results
+      setTrends(filteredTrends); // replacing trends with filtered results
       setPagination((prev) => ({ ...prev, ...newPagination }));
     } catch (error) {
       console.error('Error fetching filtered trends:', error);
@@ -204,6 +202,11 @@ const AllTrends = () => {
   const loadMoreTrends = async () => {
     if (!pagination.hasNextPage || isLoading) return;
 
+    if (preloadedTrends) {
+      applyPreloadedTrends();
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await customFetch.get('/trends', {
@@ -224,6 +227,26 @@ const AllTrends = () => {
     }
   }; //end loadMoreTrends
 
+  //function to apply the preloaded trends
+  const applyPreloadedTrends = () => {
+    setTrends((prevTrends) => [...prevTrends, ...preloadedTrends]);
+
+    // Update pagination state based on the preloaded data
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: prev.currentPage + 1,
+      nextCursor: preloadedPagination.nextCursor,
+      hasNextPage: preloadedPagination.hasNextPage,
+    }));
+
+    // Clear preloaded data after applying
+    setPreloadedTrends(null);
+    setPreloadedPagination(null);
+
+    // Start preloading the next page
+    preloadNextPage();
+  };
+
   //intersection observer callback
   const lastTrendElementRef = useCallback(
     (node) => {
@@ -243,7 +266,7 @@ const AllTrends = () => {
       );
       if (node) observer.current.observe(node);
     },
-    [isLoading, pagination.hasNextPage]
+    [isLoading, pagination.hasNextPage, preloadedTrends]
   );
 
   //preloading
@@ -258,7 +281,12 @@ const AllTrends = () => {
           limit: trendsPerPage,
         },
       });
-      setPreloadedTrends(response.data.trends); //storing preloaded data in state
+
+      setPreloadedTrends(response.data.trends);
+      setPreloadedPagination({
+        nextCursor: response.data.nextCursor,
+        hasNextPage: response.data.hasNextPage,
+      });
     } catch (error) {
       console.error('Error preloading next trends:', error);
     }
