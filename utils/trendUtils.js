@@ -29,9 +29,9 @@ export const constructQueryObject = (
     if (status && status !== 'all') {
       queryObject.trendStatus = status;
     }
-    // if (isApproved !== undefined) {
-    //   queryObject.isApproved = isApproved;
-    // }
+    if (isApproved !== undefined) {
+      queryObject.isApproved = isApproved;
+    } //important if
   }
   if (search) {
     queryObject.$or = [

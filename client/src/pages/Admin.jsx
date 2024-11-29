@@ -1,22 +1,25 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useLoaderData, redirect, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import {
   Trends,
   FilterTrends,
   CustomErrorToast,
+  PaginationComponent,
   StatComponent,
   ChartAdminComponent,
   CustomSuccessToast,
-  PaginationComponent,
 } from '../components';
-import useLocalStorage from '../hooks/useLocalStorage';
 import customFetch from '../utils/customFetch';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { useLoaderData, redirect, useNavigate } from 'react-router-dom';
+import { CombinedProvider } from '../context/CombinedContext.jsx';
+import { useSearchContext } from '../context/SearchContext';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/AdminContainer';
-import { toast } from 'react-toastify';
-import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
-import { useSearchContext } from '../context/SearchContext';
+
+const trendsPerPage = 8; // pagination Limit
+const searchDebounce = 500; // 500ms debounce delay
 
 /**
  * Loader function to fetch trends and stats for the admin page
@@ -39,21 +42,24 @@ export const loader = async ({ request }) => {
   params.limit = trendsPerPage;
 
   try {
-    // Fetching all trends with pagination data
     const trendsResponse = await customFetch.get('trends/admin/all-trends', {
       params,
     });
     const trendsData = trendsResponse.data;
 
-    // Fetching basic application stats
     const statsResponse = await customFetch.get('users/admin/app-stats');
     const statsData = statsResponse.data;
 
-    // fetching stats for the charts
     const chartsResponse = await customFetch.get('/trends/admin/stats');
     const chartsData = chartsResponse.data;
 
-    // Return all data
+    // Fetch saved filters
+    const { data: savedFiltersData } = await customFetch.get(
+      '/users/get-saved-filters'
+    );
+    const savedFilters = savedFiltersData.filters || {};
+    const combinedParams = { ...savedFilters, ...params }; // saved filters as defaults, but allow URL params to override
+
     return {
       trends: {
         trends: trendsData.trends,
@@ -65,16 +71,13 @@ export const loader = async ({ request }) => {
       },
       stats: statsData,
       charts: chartsData,
-      searchValues: { ...params },
+      searchValues: combinedParams,
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return redirect('/dashboard');
   }
 };
-
-const trendsPerPage = 8; // pagination Limit
-const searchDebounce = 500; // 500ms debounce delay
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -97,16 +100,16 @@ const Admin = () => {
     nextCursor: initialTrendsData.nextCursor,
     hasNextPage: initialTrendsData.hasNextPage,
   });
-  const [isLoading, setIsLoading] = useState(false); // state to track loading
-  const [preloadedTrends, setPreloadedTrends] = useState(null); // state for preloaded trends
+  const [isLoading, setIsLoading] = useState(false); // State to track loading
+  const [preloadedTrends, setPreloadedTrends] = useState(null); // State for preloaded trends
   const [preloadedPagination, setPreloadedPagination] = useState(null);
-  const observer = useRef(); // ref for the Intersection Observer
+  const observer = useRef(); // Ref for the Intersection Observer
   const { searchValue } = useSearchContext();
 
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
-  const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // state to track if the filter is closed in SearchTrends
+  const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // state to track if the filter is closed in FilterTrends
 
   // function to update search values and navigate
   const updateSearchValues = (newValues) => {
@@ -135,7 +138,7 @@ const Admin = () => {
       setIsLoading(true);
       const response = await customFetch.get('trends/admin/all-trends', {
         params: {
-          ...filters, // updated filters and search params
+          ...filters, // use updated filters and search params
           limit: trendsPerPage,
         },
       });
@@ -294,34 +297,52 @@ const Admin = () => {
   // approve a trend
   const approveTrend = async (slug) => {
     try {
-      setLoadingSlug(slug); // Start loading
+      setLoadingSlug(slug); // start loading
       await customFetch.patch(`trends/${slug}/approve`);
-      // Handle successful approval
       toast.success(<CustomSuccessToast message={'Trend Approved'} />);
-      // Refresh the trends list
-      fetchFilteredTrends(searchValues);
+      fetchFilteredTrends(searchValues); // refresh the trends list
     } catch (error) {
-      // Handle error
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
-      setLoadingSlug(null); // Stop loading
+      setLoadingSlug(null); // stop loading
     }
   };
 
   // remove a trend
   const removeTrend = async (slug) => {
     try {
-      setLoadingSlug(slug); // Start loading
+      setLoadingSlug(slug); // start loading
       await customFetch.delete(`/trends/edit/${slug}`);
-      // Handle successful deletion
       toast.success('Trend deleted successfully!');
-      // Refresh the trends list
-      fetchFilteredTrends(searchValues);
+      fetchFilteredTrends(searchValues); // refresh the trends list
     } catch (error) {
-      // Handle error
       toast.error(error?.response?.data?.msg || 'Error deleting trend');
     } finally {
-      setLoadingSlug(null); // Stop loading
+      setLoadingSlug(null); //stop loading
+    }
+  };
+
+  // save current filter parameters to user's model
+  const saveFilters = async (filters) => {
+    try {
+      await customFetch.post('/users/save-filters', { filters });
+      toast.success('Filters saved successfully');
+    } catch (error) {
+      toast.error('Failed to save filters');
+      console.error(error);
+    }
+  };
+
+  // reset filters: clear state, URL params, and saved data in MongoDB
+  const resetFilters = async () => {
+    navigate('/dashboard/admin');
+    try {
+      await customFetch.delete('/users/delete-filters');
+      setSearchValues({}); // reset searchValues to default
+      fetchFilteredTrends({}); // fetch trends with default filters
+    } catch (error) {
+      toast.error('Failed to reset filters');
+      console.error(error);
     }
   };
 
@@ -367,6 +388,8 @@ const Admin = () => {
           technologies={technologies}
           isClosed={isClosed}
           setIsClosed={setIsClosed}
+          saveFilters={saveFilters}
+          resetFilters={resetFilters}
         />
         <Trends
           trends={trends}
