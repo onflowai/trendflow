@@ -14,6 +14,11 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
+    transition: background-color 0.1s ease-in-out; /* Smooth hover effect */
+
+    &:hover {
+      background-color: var(--grey-50); /* Highlight on hover */
+    }
   }
 
   .filter-app {

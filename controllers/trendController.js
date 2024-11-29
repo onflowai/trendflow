@@ -244,33 +244,20 @@ export const getAllTrends = async (req, res) => {
     cursor,
   } = req.query; // destructuring query parameters from the request
 
-  // Determine the isApproved value based on status
-  let isApproved;
-  if (status === 'Approved') {
-    isApproved = true;
-  } else if (status === 'Un-Approved') {
-    isApproved = false;
-  }
-
   // constructing the query object based on provided filters
   const queryObject = constructQueryObject(
     search,
     trendTech,
     trendCategory,
-    isApproved,
-    undefined
+    undefined,
+    status
   ); //passing isApproved based on status + no status passed (undefined)
 
   // for the admin page, include all trends regardless of approval status
   //if status is not 'Approved' or 'Un-Approved' and not 'all' it might be a trendStatus
-  if (
-    status &&
-    status !== 'all' &&
-    status !== 'Approved' &&
-    status !== 'Un-Approved'
-  ) {
-    queryObject.trendStatus = status;
-  } // if a status filter is provided, add it to the query object
+  // if (queryObject.isApproved === undefined) {
+  //   queryObject.isApproved = true;
+  // } // if a status filter is provided, add it to the query object
 
   // building the sort key based on sorting parameters
   const sortKey = constructSortKey(topRated, topViewed, updated);
@@ -358,7 +345,7 @@ export const getApprovedTrends = async (req, res) => {
     trendCategory,
     true,
     status
-  ); // Adding isApproved: true, constructQueryObject will create query parameters as an object
+  ); // adding hardcoded isApproved: true, constructQueryObject will create query parameters as an object
   const sortKey = constructSortKey(topRated, topViewed, updated);
   page = Number(page) || 1; //value page will be provided in the req
   limit = Number(limit) || 36; //limit will be provided, defaulting to 36 trends initially
@@ -427,7 +414,7 @@ export const getApprovedTrends = async (req, res) => {
     // Handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-}; //end get approved trends
+}; //end GET APPROVED TRENDS
 
 /**
  * GET TREND_CATEGORY & TECHNOLOGIES

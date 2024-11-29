@@ -110,7 +110,11 @@ const customStyles = {
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
-    backgroundColor: isSelected ? '#4caf50' : isFocused ? '#a5d6a7' : null,
+    backgroundColor: isSelected
+      ? 'var(--primary-200)'
+      : isFocused
+      ? 'var(--primary-50)'
+      : null,
     color: '#000',
     ':first-of-type': {
       borderTopLeftRadius: '10px',

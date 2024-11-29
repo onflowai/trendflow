@@ -21,8 +21,17 @@ export const constructQueryObject = (
   status
 ) => {
   const queryObject = {}; // initialize an empty query object
-  if (isApproved !== undefined) {
-    queryObject.isApproved = isApproved;
+  if (status === 'approved') {
+    queryObject.isApproved = true;
+  } else if (status === 'un-approved') {
+    queryObject.isApproved = false;
+  } else {
+    if (status && status !== 'all') {
+      queryObject.trendStatus = status;
+    }
+    // if (isApproved !== undefined) {
+    //   queryObject.isApproved = isApproved;
+    // }
   }
   if (search) {
     queryObject.$or = [
@@ -37,9 +46,9 @@ export const constructQueryObject = (
   if (trendCategory && trendCategory !== 'all') {
     queryObject.trendCategory = trendCategory; //dropdown query for trendCategory
   }
-  if (status && status !== 'all') {
-    queryObject.trendStatus = status;
-  }
+  // if (status && status !== 'all') {
+  //   queryObject.trendStatus = status;
+  // }
   return queryObject; // return the constructed query object
 }; //END CONSTRUCT QUERY OBJECT
 
