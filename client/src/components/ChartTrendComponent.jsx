@@ -10,7 +10,8 @@ import { TbTimeline } from 'react-icons/tb';
  * @param {*} param0
  * @returns
  */
-function ChartTrendComponent({ data, forecast, trend }) {
+function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
+  console.log('TRENDS IN PAGE', trend);
   const { previousYear, currentYear } = data;
   const combinedData = [...previousYear, ...currentYear]; //combining trend data
   const combinedForecast = [
@@ -65,7 +66,16 @@ function ChartTrendComponent({ data, forecast, trend }) {
   return (
     <Container>
       <div className="chart-header">
-        <div className="trend-title">{trend}</div>
+        <div className="logo-trend">
+          {trendLogo ? (
+            <img
+              src={trendLogo}
+              style={{ width: '20px' }}
+              className="trend-logo"
+            />
+          ) : null}
+          <div className="trend-title">{trend}</div>
+        </div>
         <div className="chart-controls-container">
           <div className="chart-controls">
             <button

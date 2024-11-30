@@ -85,7 +85,8 @@ const Container = styled.div`
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    margin-left: 0.5rem;
   }
 
   @media (min-width: 992px) {

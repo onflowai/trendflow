@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const Container = styled.main`
   margin-top: 0rem;
   text-align: left;
+  
 
   .chart-header {
     display: flex;
@@ -10,6 +11,18 @@ const Container = styled.main`
     align-items: center;
     margin-bottom: 1rem;
     flex-wrap: wrap; // allowing wrapping in smaller screens
+  }
+
+  .logo-trend {
+  display: flex;
+  align-items: center; /* Vertically align items */
+  gap: 0.5rem; /* Space between the image and the title */
+  }
+
+  .trend-logo {
+    width: 20px;
+    height: 20px; /* Ensures a uniform size */
+    border-radius: 50%; /* Optional: Makes the logo round */
   }
 
   .trend-title {

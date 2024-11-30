@@ -13,11 +13,7 @@ const TrendIconList = ({ trends }) => {
           className="trend-link"
         >
           <div className="trend-item">
-            <img
-              src={getFullIconUrl(trend.svg_url)}
-              alt={trend.trend}
-              className="trend-icon"
-            />
+            <img src={trend.svg_url} alt={trend.trend} className="trend-icon" />
             <div className="trend-title">{trend.trend}</div>
           </div>
         </Link>
@@ -29,8 +25,8 @@ const TrendIconList = ({ trends }) => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the items horizontally */
-  margin-top: 1rem; /* Add margin on top */
+  align-items: flex-start; /* Ensure the whole column aligns left */
+  margin-top: 1rem;
 
   .trend-link {
     text-decoration: none;
@@ -42,13 +38,14 @@ const Container = styled.div`
 
   .trend-item {
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertically align items */
+    justify-content: flex-start; /* Align items to the left */
     transition: transform 0.3s ease;
   }
 
   .trend-icon {
-    width: 50px; /* Increase the size of the icons */
-    height: 50px; /* Increase the size of the icons */
+    width: 50px;
+    height: 50px;
     margin-right: 1rem;
     transition: transform 0.3s ease;
   }

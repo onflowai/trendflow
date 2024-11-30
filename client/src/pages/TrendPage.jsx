@@ -82,6 +82,7 @@ const TrendPage = () => {
   );
   const {
     trend,
+    svg_url,
     trendCategory,
     trendTech,
     updatedAt,
@@ -163,6 +164,7 @@ const TrendPage = () => {
                 data={interestOverTime}
                 forecast={forecast}
                 trend={trend}
+                trendLogo={svg_url}
               />
             </div>
             <h4 className="trend-title" id="Guide"></h4>
