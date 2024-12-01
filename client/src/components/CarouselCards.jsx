@@ -5,7 +5,7 @@ import Container from '../assets/wrappers/CarouselCardContainer';
 import PropTypes from 'prop-types';
 import { GoPlus } from 'react-icons/go';
 
-function CarouselCards({ infoHubItems, isAdmin }) {
+function CarouselCards({ infoHubItems, isAdmin, onDelete }) {
   const [showModal, setShowModal] = useState(false);
   const [items, setItems] = useState(infoHubItems);
 
@@ -30,7 +30,12 @@ function CarouselCards({ infoHubItems, isAdmin }) {
           </div>
         )}
         {items.map((item) => (
-          <Card key={item._id} {...item} />
+          <Card
+            key={item._id}
+            {...item}
+            onDelete={onDelete}
+            isAdmin={isAdmin}
+          />
         ))}
       </div>
       {showModal && (

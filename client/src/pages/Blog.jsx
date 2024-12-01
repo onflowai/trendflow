@@ -40,7 +40,8 @@ const Blog = () => {
   const { user } = useOutletContext();
   const isAdmin = user?.role === 'admin'; // is the user is an admin
   const currentDate = new Date().toLocaleDateString(); //date formatting
-  const { posts, infoHubItems, error } = useLoaderData();
+  const { posts, infoHubItems: initialInfoHubItems, error } = useLoaderData();
+  const [infoHubItems, setInfoHubItems] = useState(initialInfoHubItems);
   const authors = posts
     .map((post) => post.author)
     .filter(
@@ -48,8 +49,19 @@ const Blog = () => {
         self.findIndex((a) => a._id === author._id) === index
     )
     .slice(0, 16); // getting unique authors from the posts limit to 16 authors
-  console.log('posts ', posts);
-  console.log('infoHubItems ', infoHubItems);
+
+  //deleting info hub
+  const handleDeleteHubItem = async (id) => {
+    try {
+      await customFetch.delete(`/infohub/delete/${id}`);
+      setInfoHubItems(infoHubItems.filter((item) => item._id !== id));
+      toast.success('Item deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete item:', error);
+      toast.error('Failed to delete item');
+    }
+  };
+
   if (error) {
     return <div>Error loading blogs: {error}</div>;
   }
@@ -61,7 +73,11 @@ const Blog = () => {
           <ProfileHeader user={user} message="Explore useful news and blogs" />
         </div>
         <div className="carousel-container">
-          <CarouselCards infoHubItems={infoHubItems} isAdmin={isAdmin} />
+          <CarouselCards
+            infoHubItems={infoHubItems}
+            isAdmin={isAdmin}
+            onDelete={handleDeleteHubItem}
+          />
         </div>
       </div>
       <div className="blog-container">
