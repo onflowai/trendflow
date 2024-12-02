@@ -1,13 +1,11 @@
-import React, { useState } from 'react'; // Import necessary hooks
+import React, { useState } from 'react';
 import Card from './Card';
 import { AddInfoHubModal } from '../components';
 import Container from '../assets/wrappers/CarouselCardContainer';
-import PropTypes from 'prop-types';
 import { GoPlus } from 'react-icons/go';
 
-function CarouselCards({ infoHubItems, isAdmin, onDelete }) {
+function CarouselCards({ infoHubItems, isAdmin, onAdd, onDelete }) {
   const [showModal, setShowModal] = useState(false);
-  const [items, setItems] = useState(infoHubItems);
 
   const handleAddClick = () => {
     setShowModal(true);
@@ -17,8 +15,9 @@ function CarouselCards({ infoHubItems, isAdmin, onDelete }) {
     setShowModal(false);
   };
 
-  const handleAddItem = (newItem) => {
-    setItems([...items, newItem]);
+  const handleAddItem = (newItemData) => {
+    onAdd(newItemData);
+    setShowModal(false);
   };
 
   return (
@@ -29,7 +28,7 @@ function CarouselCards({ infoHubItems, isAdmin, onDelete }) {
             <GoPlus className="plus-icon" />
           </div>
         )}
-        {items.map((item) => (
+        {infoHubItems.map((item) => (
           <Card
             key={item._id}
             {...item}
@@ -44,17 +43,5 @@ function CarouselCards({ infoHubItems, isAdmin, onDelete }) {
     </Container>
   );
 }
-
-// CarouselCards.propTypes = {
-//   infoHubItems: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       _id: PropTypes.string.isRequired,
-//       title: PropTypes.string.isRequired,
-//       description: PropTypes.string.isRequired,
-//       link: PropTypes.string.isRequired,
-//       updatedAt: PropTypes.string.isRequired,
-//     })
-//   ).isRequired,
-// };
 
 export default CarouselCards;

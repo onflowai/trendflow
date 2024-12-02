@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Form, useLoaderData, useNavigation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLoaderData, useOutletContext, Link } from 'react-router-dom';
 import {
   ProfileHeader,
   CarouselCards,
@@ -7,9 +7,6 @@ import {
   Tooltip,
 } from '../components';
 import customFetch from '../utils/customFetch';
-import { useOutletContext } from 'react-router-dom';
-import { useUser } from '../context/UserContext'; // importing UserContext
-import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/BlogContainer';
 import { toast } from 'react-toastify';
 import { CiCirclePlus } from 'react-icons/ci';
@@ -34,7 +31,6 @@ export const loader = async () => {
     return { error: error.message };
   }
 };
-export const action = async ({ request }) => {};
 
 const Blog = () => {
   const { user } = useOutletContext();
@@ -42,6 +38,7 @@ const Blog = () => {
   const currentDate = new Date().toLocaleDateString(); //date formatting
   const { posts, infoHubItems: initialInfoHubItems, error } = useLoaderData();
   const [infoHubItems, setInfoHubItems] = useState(initialInfoHubItems);
+
   const authors = posts
     .map((post) => post.author)
     .filter(
@@ -54,7 +51,9 @@ const Blog = () => {
   const handleDeleteHubItem = async (id) => {
     try {
       await customFetch.delete(`/infohub/delete/${id}`);
-      setInfoHubItems(infoHubItems.filter((item) => item._id !== id));
+      setInfoHubItems((prevItems) =>
+        prevItems.filter((item) => item._id !== id)
+      );
       toast.success('Item deleted successfully');
     } catch (error) {
       console.error('Failed to delete item:', error);

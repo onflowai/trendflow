@@ -20,10 +20,11 @@ function CardLarge({
 }) {
   const upDate = day(updatedAt).format('MM YYYY');
   const handleDelete = () => {
-    if (onDelete) {
+    if (window.confirm('Proceed to delete?')) {
       onDelete(_id);
     }
   };
+
   return (
     <Container>
       <div className="card">
@@ -65,10 +66,4 @@ function CardLarge({
   );
 }
 
-// CardLarge.propTypes = {
-//   title: PropTypes.string.isRequired,
-//   description: PropTypes.string.isRequired,
-//   link: PropTypes.string.isRequired,
-//   updatedAt: PropTypes.string.isRequired,
-// };
 export default CardLarge;
