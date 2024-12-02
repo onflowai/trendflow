@@ -1,21 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Container from '../assets/wrappers/UserDropdownContainer';
+import useClickOutside from '../hooks/useClickOutside';
 import { useDashboardContext } from '../pages/DashboardLayout';
-import { UserImgSmall } from '../components';
+import { UserImgSmall, Dropdown } from '../components';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 /**
  * Component responsible for the user dropdown functionality in the dashboard (only used in navbar)
  * @returns
  */
 const UserDropdown = () => {
-  const [showDropdown, setDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const { user, logoutUser } = useDashboardContext() || {};
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  const dropdownOptions = [
+    { label: 'Logout User', action: 'logout' },
+    { label: 'Add Account', action: 'addAccount' },
+  ];
+
+  const handleOptionClick = (action) => {
+    if (action === 'logout') {
+      logoutUser();
+    } else if (action === 'addAccount') {
+      navigate('/add-account');
+    }
+    setShowDropdown(false);
+  };
+
+  useClickOutside(dropdownRef, () => setShowDropdown(false));
+
   return (
-    <Container>
+    <Container ref={dropdownRef}>
       <button
         type="button"
         className="user-btn"
-        onClick={() => setDropdown(!showDropdown)}
+        onClick={() => setShowDropdown(!showDropdown)}
       >
         <UserImgSmall user_img={user?.profile_img} />
         <div className="username">{user?.name}</div>
@@ -25,14 +46,13 @@ const UserDropdown = () => {
           <IoIosArrowDown className="arrow-icon" />
         )}
       </button>
-      <div className={showDropdown ? 'dropdown show-dropdown' : 'dropdown'}>
-        <button type="button" className="dropdown-btn" onClick={logoutUser}>
-          logout user
-        </button>
-        <button type="button" className="dropdown-btn">
-          Add Account
-        </button>
-      </div>
+      {showDropdown && (
+        <Dropdown
+          options={dropdownOptions}
+          onOptionClick={handleOptionClick}
+          className="user-dropdown" // Optional: pass a className for styling
+        />
+      )}
     </Container>
   );
 };

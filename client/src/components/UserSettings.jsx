@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Container from '../assets/wrappers/UserSettingsContainer';
 import { githubUrl } from '../utils/urlHelper';
 import {
@@ -8,6 +8,7 @@ import {
   FormComponentLogoBtn,
 } from '../components';
 import { CiSettings } from 'react-icons/ci';
+import useClickOutside from '../hooks/useClickOutside';
 /**
  *
  * @param {*} param0
@@ -29,6 +30,7 @@ const UserSettings = ({
     const formData = new FormData(e.target.closest('form'));
     onUpdateEmail({ request: { formData } });
   };
+
   //GITHUB USERNAME UPDATE
   const handleUpdateGithub = (username) => {
     if (!username) {
@@ -38,29 +40,24 @@ const UserSettings = ({
         />
       );
     }
-    const body = JSON.stringify({ githubUsername: username }); //JSON object with githubUsername
+    const body = JSON.stringify({ githubUsername: username }); // JSON object with githubUsername
     onUpdateGithubUsername({ body }); // passing the JSON body directly to the function
   };
+
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownVisible(false);
-    }
-  };
+
+  useClickOutside(dropdownRef, () => setIsDropdownVisible(false));
+
   const handleToggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
+    setIsDropdownVisible((prev) => !prev);
   };
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+
   const dropdownOptions = [
     { label: 'Verify Profile', action: 'verify' },
     { label: 'Delete Profile', action: 'delete' },
   ];
+
   return (
     <Container>
       <h6 className="header">Settings:</h6>

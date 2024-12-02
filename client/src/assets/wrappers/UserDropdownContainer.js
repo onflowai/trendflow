@@ -12,7 +12,6 @@ const Container = styled.div`
     border: none;
     cursor: pointer;
   }
-
   .username {
     margin-right: 0.5rem;
   }

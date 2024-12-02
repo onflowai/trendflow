@@ -1,22 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-const Dropdown = ({ options, onOptionClick }) => {
-  // const dropdownRef = useRef(null);
-  // const handleClickOutside = (event) => {
-  //     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-  //       setIsDropdownVisible(false);
-  //     }
-  //   };
-  // useEffect(() => {
-  //     document.addEventListener('mousedown', handleClickOutside);
-  //     return () => {
-  //       document.removeEventListener('mousedown', handleClickOutside);
-  //     };
-  //   }, []);
+const Dropdown = ({ options, onOptionClick, className }) => {
   return (
-    <Container>
-      <div className="dropdown">
+    <Container className={className}>
+      <div className="dropdown-menu">
         {options.map((option, index) => (
           <div
             key={index}
@@ -34,10 +22,10 @@ const Dropdown = ({ options, onOptionClick }) => {
 const Container = styled.div`
   position: relative;
 
-  .dropdown {
+  .dropdown-menu {
     position: absolute;
-    top: 0px;
-    right: -40px;
+    top: 100%;
+    right: 0;
     background: white;
     border: 1px solid var(--grey-50);
     border-radius: var(--border-radius);
@@ -65,14 +53,6 @@ const Container = styled.div`
       }
     }
   }
-  /* &.settings-dropdown {
-    .dropdown {
-      top: auto;
-      bottom: 0;
-      transform: translateY(100%);
-    }
-  } */
-  
 `;
 
 export default Dropdown;
