@@ -7,6 +7,7 @@ import Container from '../assets/wrappers/CardContainer'; // general layout, col
  * @returns
  */
 function Card({
+  _id,
   title,
   description,
   link,
@@ -16,6 +17,7 @@ function Card({
   isAdmin,
 }) {
   const largeProps = {
+    _id,
     svg_img,
     title,
     description,

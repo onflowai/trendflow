@@ -16,13 +16,13 @@ const Container = styled.div`
     left: 10px; // Move to the top-left corner
     background: transparent;
     border: none;
-    color: var(--white);
+    color: var(--red);
     cursor: pointer;
     font-size: 1.5rem;
     z-index: 4; // Ensure it sits above all overlays
   }
   .delete-button:hover {
-    color: var(--grey-100);
+    color: var(--red-light);
   }
  
   .card {

@@ -2,50 +2,47 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import day from 'dayjs';
 import styled from 'styled-components';
-import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
+import { getFullIconUrl } from '../utils/urlHelper';
 import CarouselSlider from './CarouselSlider';
 import DangerousMarkdown from './DangerousMarkdown';
 import { truncateMarkdown } from '../utils/helpers';
 import { RiEdit2Fill } from 'react-icons/ri';
 
-/**
- * BlogPost returns each individual blog post
- * @returns
- */
 function BlogPost({ title, content, slug, trends, author, user, updatedAt }) {
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 300);
+  const isAuthor = user?.role === 'admin' && user._id === author._id;
+
   return (
     <Container className="blog-item">
       <div className="content-wrapper">
         <div className="blog-details">
-          <Link to={`/dashboard/blog/${slug}`} className="blog-link">
-            <div className="title-container">
-              <div className="edit-link">
-                {user?.role === 'admin' && user._id === author._id && (
-                  <Link to={`/dashboard/edit-blog/${slug}`} className="edit">
-                    <RiEdit2Fill />
-                  </Link>
-                )}
-              </div>
+          <div className="title-container">
+            {/* EDIT LINK */}
+            {isAuthor && (
+              <Link to={`/dashboard/edit-blog/${slug}`} className="edit-link">
+                <RiEdit2Fill />
+              </Link>
+            )}
+            {/* BLOG LINK */}
+            <Link to={`/dashboard/blog/${slug}`} className="blog-link">
               <div className="blog-title">{title}</div>
-            </div>
-            <div className="blog-date">
-              {upDate}
-              {trends.map((trend, index) => (
-                <img
-                  key={index}
-                  src={getFullIconUrl(trend.techIconUrl)}
-                  alt={trend.trend}
-                  className="tech-icon"
-                />
-              ))}
-            </div>
-            <div className="blog-content-short">
-              {/* small - tag for display  */}
-              <DangerousMarkdown content={truncatedContent} small />
-            </div>
-          </Link>
+            </Link>
+          </div>
+          <div className="blog-date">
+            {upDate}
+            {trends.map((trend, index) => (
+              <img
+                key={index}
+                src={getFullIconUrl(trend.techIconUrl)}
+                alt={trend.trend}
+                className="tech-icon"
+              />
+            ))}
+          </div>
+          <div className="blog-content-short">
+            <DangerousMarkdown content={truncatedContent} small />
+          </div>
         </div>
         <div className="carousel">
           <CarouselSlider trends={trends} />
@@ -59,15 +56,15 @@ const Container = styled.div`
   .blog-item {
     padding: 20px;
     background-color: var(--white);
-    border-bottom: 1.5px solid var(--gray-50); /* Thin line between posts */
+    border-bottom: 1.5px solid var(--gray-50);
     text-align: left;
-    margin-bottom: 20px; /* Add space between each blog post */
+    margin-bottom: 20px;
   }
 
   .content-wrapper {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Align items at the top */
+    align-items: flex-start;
   }
 
   .blog-details {
@@ -76,13 +73,15 @@ const Container = styled.div`
 
   .carousel {
     margin-left: 20px;
-    margin-top: 20px; /* top margin to align with blog content */
+    margin-top: 20px;
   }
+
   .title-container {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
   }
+
   .edit-link {
     color: var(--grey-700);
     font-size: 1.25rem;
@@ -90,10 +89,8 @@ const Container = styled.div`
     display: flex;
     align-items: center;
   }
-  .edit{
-    color: var(--primary2-600);
-  }
-  .edit:hover {
+
+  .edit-link:hover {
     color: var(--primary-600);
   }
 
@@ -104,15 +101,14 @@ const Container = styled.div`
     flex-direction: column;
   }
 
-  .blog-title:hover {
-    text-decoration: underline;
-  }
-
   .blog-title {
     font-size: 1.5rem;
     font-weight: bold;
-    margin-bottom: 10px;
     color: var(--black);
+  }
+
+  .blog-title:hover {
+    text-decoration: underline;
   }
 
   .blog-date {
@@ -131,7 +127,6 @@ const Container = styled.div`
   .blog-content-short {
     font-size: 1rem;
     color: var(--grey-700);
-    margin-bottom: 10px;
     margin-bottom: 3rem;
   }
 `;
