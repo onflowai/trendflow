@@ -136,6 +136,11 @@ const Admin = () => {
   const fetchFilteredTrends = async (filters) => {
     try {
       setIsLoading(true);
+
+      // Reset preloaded data before fetching new trends
+      setPreloadedTrends(null);
+      setPreloadedPagination(null);
+
       const response = await customFetch.get('trends/admin/all-trends', {
         params: {
           ...filters, // use updated filters and search params
@@ -314,7 +319,13 @@ const Admin = () => {
       setLoadingSlug(slug); // start loading
       await customFetch.delete(`/trends/edit/${slug}`);
       toast.success('Trend deleted successfully!');
-      fetchFilteredTrends(searchValues); // refresh the trends list
+
+      // Reset preloaded data
+      setPreloadedTrends(null);
+      setPreloadedPagination(null);
+
+      // Refresh the trends list
+      fetchFilteredTrends(searchValues);
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error deleting trend');
     } finally {
