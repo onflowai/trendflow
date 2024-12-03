@@ -18,7 +18,7 @@ display: flex;
 gap: 0 0.5rem;
 background: transparent;
 border: none;
- width: 7rem;
+width: 7rem;
 height: 7rem;
 border-radius: 50%;
 background-color: ${(props) =>

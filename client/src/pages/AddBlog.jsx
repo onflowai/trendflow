@@ -10,13 +10,21 @@ import {
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
 import { IoCloseCircle } from 'react-icons/io5';
-import { useOutletContext, useLoaderData, useParams } from 'react-router-dom';
-import { Form, useNavigation, redirect } from 'react-router-dom';
+import {
+  useOutletContext,
+  useLoaderData,
+  useParams,
+  Form,
+  useNavigation,
+  redirect,
+  useNavigate,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 // import '@uiw/react-markdown-editor/dist/markdown-editor.css'; //HERE
 /**
- * AddBlog lets Admin create a blog, if there is
+ * AddBlog lets Admin create and edit blog when slug is present, the component is in "edit mode"
+ * when no slug is present, the component is in "create mode".
  * @param {*} param0
  * @returns
  */
@@ -39,31 +47,17 @@ export const loader = async ({ params }) => {
   }
   return { blog: null };
 };
-//action for admin to create / update blog
+
+// action for admin to create / update blog
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   data.trends = JSON.parse(data.trends);
 
-  // // Ensure trends is not undefined before parsing
-  // if (data.trends) {
-  //   try {
-  //     data.trends = JSON.parse(data.trends);
-  //   } catch (error) {
-  //     console.error('Error parsing trends:', error); // Debugging line
-  //     return {
-  //       error: 'Invalid trends data',
-  //     };
-  //   }
-  // } else {
-  //   data.trends = [];
-  // }
-
   try {
     if (params.slug) {
       // Update existing blog
-      await customFetch.patch(`/blogs/${params.slug}`, data);
-      console.log('data: ', data);
+      await customFetch.patch(`/blogs/edit/${params.slug}`, data);
       toast.success(
         <CustomSuccessToast message={'Blog post updated successfully!'} />
       );
@@ -93,10 +87,10 @@ const AddBlog = () => {
   const blog = loaderData?.blog;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState(blog ? blog.title : '');
   const [content, setContent] = useState(blog ? blog.content : '');
-  console.log('content ', content);
   const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
 
@@ -108,24 +102,20 @@ const AddBlog = () => {
     }
     setBgColor(getRandomColor());
   }, [blog]);
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const trendIds = selectedTrends.map((trend) => trend._id);
 
-  //   try {
-  //     await customFetch.post('/blog/create-post', {
-  //       title,
-  //       content,
-  //       author: user._id,
-  //       trends: trendIds,
-  //     });
-  //     toast.success(
-  //       <CustomSuccessToast message={'Blog post created successfully!'} />
-  //     );
-  //   } catch (error) {
-  //     toast.error(<CustomErrorToast message={'Failed to create blog post.'} />);
-  //   }
-  // };
+  // handle delete action
+  const handleDelete = async () => {
+    if (!slug) return; // no slug, no delete
+    try {
+      await customFetch.delete(`/blogs/delete/${slug}`);
+      toast.success(
+        <CustomSuccessToast message={'Blog post deleted successfully!'} />
+      );
+      navigate('/dashboard/blog');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  };
 
   return (
     <Container>
@@ -147,18 +137,18 @@ const AddBlog = () => {
               <TitleHighlighter
                 title={slug ? 'Edit Blog Post:' : 'Create a Blog Post:'}
               />
-              <div className="delete-container">
-                <IoCloseCircle className="delete-icon" />
-              </div>
-              <div className="submit-container">
-                <button
-                  type="submit"
-                  className="btn btn-block form-btn"
-                  disabled={isSubmitting}
+              {slug && (
+                <div
+                  className="delete-container"
+                  onClick={handleDelete}
+                  style={{ cursor: 'pointer' }}
                 >
-                  {isSubmitting ? 'submitting' : 'submit'}
-                </button>
-              </div>
+                  <IoCloseCircle
+                    className="delete-icon"
+                    title="Delete this post"
+                  />
+                </div>
+              )}
             </div>
             <div className="form-center">
               <FormComponent
@@ -178,7 +168,7 @@ const AddBlog = () => {
                   const trendsField = document.querySelector(
                     'input[name="trends"]'
                   );
-                  const trendIds = trends.map((trend) => trend.value); // Extracting only the IDs
+                  const trendIds = trends.map((trend) => trend.value);
                   trendsField.value = JSON.stringify(trendIds);
                 }}
                 placeholder="Search"
@@ -199,6 +189,15 @@ const AddBlog = () => {
                 />
               </div>
               <input type="hidden" name="content" value={content} />
+            </div>
+            <div className="submit-container">
+              <button
+                type="submit"
+                className="btn btn-block form-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'submitting' : 'submit'}
+              </button>
             </div>
           </Form>
         </div>
