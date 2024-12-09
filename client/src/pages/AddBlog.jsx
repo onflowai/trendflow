@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   SelectTrends,
-  UserImgLarge,
+  UserImgSmall,
   EditMarkdown,
   FormComponent,
   TitleHighlighter,
@@ -9,7 +9,7 @@ import {
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
-import { IoCloseCircle } from 'react-icons/io5';
+import { RiDeleteBack2Fill } from 'react-icons/ri';
 import {
   useOutletContext,
   useLoaderData,
@@ -23,11 +23,12 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 // import '@uiw/react-markdown-editor/dist/markdown-editor.css'; //HERE
 /**
- * AddBlog lets Admin create and edit blog when slug is present, the component is in "edit mode"
+ * AddBlog lets Admin CREATE or EDIT blog. When slug is present the component is in "edit mode"
  * when no slug is present, the component is in "create mode".
  * @param {*} param0
  * @returns
  */
+
 //loader for admin to edit existing blog if the slug is present in params
 export const loader = async ({ params }) => {
   if (params.slug) {
@@ -119,16 +120,6 @@ const AddBlog = () => {
 
   return (
     <Container>
-      <div className="user-container clearfix">
-        <div className="user-info">
-          <div className="user-profile">
-            <UserImgLarge user_img={user.profile_img} />
-          </div>
-          <div className="username">
-            <h5>{user.username}</h5>
-          </div>
-        </div>
-      </div>
       <div className="submit-container">
         <div>
           <Form method="post" className="form">
@@ -136,6 +127,7 @@ const AddBlog = () => {
             <div className="header" style={{ backgroundColor: bgColor }}>
               <TitleHighlighter
                 title={slug ? 'Edit Blog Post:' : 'Create a Blog Post:'}
+                size="3em"
               />
               {slug && (
                 <div
@@ -143,7 +135,7 @@ const AddBlog = () => {
                   onClick={handleDelete}
                   style={{ cursor: 'pointer' }}
                 >
-                  <IoCloseCircle
+                  <RiDeleteBack2Fill
                     className="delete-icon"
                     title="Delete this post"
                   />
@@ -151,28 +143,45 @@ const AddBlog = () => {
               )}
             </div>
             <div className="form-center">
-              <FormComponent
-                defaultValue="Max 50 Characters"
-                type="text"
-                name="title"
-                placeholder="Blog Post Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-              <SelectTrends
-                labelText="Select Trend(s)"
-                selectedTrends={selectedTrends}
-                setSelectedTrends={(trends) => {
-                  setSelectedTrends(trends);
-                  const trendsField = document.querySelector(
-                    'input[name="trends"]'
-                  );
-                  const trendIds = trends.map((trend) => trend.value);
-                  trendsField.value = JSON.stringify(trendIds);
-                }}
-                placeholder="Search"
-              />
+              <div className="form-controls">
+                <div className="user-title-wrap">
+                  <UserImgSmall
+                    user_img={user.profile_img}
+                    className="user-img-small"
+                  />
+                  <FormComponent
+                    defaultValue="Max 50 Characters"
+                    type="text"
+                    name="title"
+                    placeholder="Blog Post Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </div>
+                <SelectTrends
+                  labelText="Select Trend(s)"
+                  selectedTrends={selectedTrends}
+                  setSelectedTrends={(trends) => {
+                    setSelectedTrends(trends);
+                    const trendsField = document.querySelector(
+                      'input[name="trends"]'
+                    );
+                    const trendIds = trends.map((trend) => trend.value);
+                    trendsField.value = JSON.stringify(trendIds);
+                  }}
+                  placeholder="Search"
+                />
+                <div className="submit-btn-container">
+                  <button
+                    type="submit"
+                    className="btn btn-block form-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'submitting' : 'submit'}
+                  </button>
+                </div>
+              </div>
               <input
                 type="hidden"
                 name="trends"
@@ -189,15 +198,6 @@ const AddBlog = () => {
                 />
               </div>
               <input type="hidden" name="content" value={content} />
-            </div>
-            <div className="submit-container">
-              <button
-                type="submit"
-                className="btn btn-block form-btn"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'submitting' : 'submit'}
-              </button>
             </div>
           </Form>
         </div>

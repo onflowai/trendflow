@@ -15,6 +15,10 @@ const Container = styled.div`
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
     margin-bottom: 1rem;
     position: relative;
+    font-size: 2rem;
+    font-weight: bold;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .header-title {
     position: absolute;
@@ -28,17 +32,27 @@ const Container = styled.div`
   }
   .delete-icon {
     font-size: 44px;
-    color: white;
+    color: var(--red);
     cursor: pointer;
   }
 
   .delete-icon:hover {
-    color: red;
+    color: var(--red-dark);
   }
   .form-center {
-    display: grid;
-    grid-template-columns: 1fr; /* default to single column layout */
+    display: flex;
+    flex-direction: column;
     row-gap: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .form-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   @media (min-width: 992px) {

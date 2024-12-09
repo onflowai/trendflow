@@ -270,23 +270,21 @@ ul {
 .btn-color {
   cursor: pointer;
   color: var(--grey-500);
-  background: var(--white);
-  border: 1px solid var(--grey-200);
-  border-radius: var(--button-round-radius);
+  background: var(--grey-50);
+  border: 1.5px solid var(--grey-70);
+  border-radius: var(--input-radius-rounded);
   letter-spacing: var(--letter-spacing);
   padding: 0.6rem 0.75rem;
-  box-shadow: var(--shadow-1);
   transition: var(--transition);
   text-transform: capitalize;
   display: inline-block;
 }
 .btn:hover {
-  background: var(--grey-50);
-  box-shadow: var(--shadow-3);
+  background: var(--grey-100);
+  border: var(--grey-100);
 }
 .btn-color:hover {
   background: var(--primary-200);
-  box-shadow: var(--shadow-3);
 }
 .btn-hipster {
   color: var(--primary-500);
