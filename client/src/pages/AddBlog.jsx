@@ -142,22 +142,27 @@ const AddBlog = () => {
                 </div>
               )}
             </div>
+
             <div className="form-center">
               <div className="form-controls">
                 <div className="user-title-wrap">
-                  <UserImgSmall
-                    user_img={user.profile_img}
-                    className="user-img-small"
-                  />
-                  <FormComponent
-                    defaultValue="Max 50 Characters"
-                    type="text"
-                    name="title"
-                    placeholder="Blog Post Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                  />
+                  <div className="user-img-wrap">
+                    <UserImgSmall
+                      user_img={user.profile_img}
+                      className="user-img-small"
+                    />
+                  </div>
+                  <div className="title-input-wrap">
+                    <FormComponent
+                      defaultValue="Max 50 Characters"
+                      type="text"
+                      name="title"
+                      placeholder="Blog Post Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
                 <SelectTrends
                   labelText="Select Trend(s)"
@@ -189,6 +194,8 @@ const AddBlog = () => {
                   selectedTrends.map((trend) => trend.value)
                 )}
               />
+            </div>
+            <div className="form-center">
               <div className="edit-markdown">
                 <EditMarkdown
                   initialContent={content}
