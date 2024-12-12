@@ -17,7 +17,12 @@ import { useUser } from '../context/UserContext'; // importing UserContext
 import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/ProfileContainer';
 import { toast } from 'react-toastify';
-import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
+import {
+  IoCheckmarkDoneOutline,
+  IoEyeOutline,
+  IoArrowUp,
+  IoAlbumsOutline,
+} from 'react-icons/io5';
 
 /**
  * Profile utilizes few components it uses From with encType='multipart/form-data' to pass data with files in this case
@@ -245,22 +250,22 @@ const Profile = () => {
           {
             title: 'Approved Trends',
             value: stats.approvedTrends,
-            icon: <FcApprove />,
+            icon: <IoCheckmarkDoneOutline />,
           },
           {
             title: 'Total Trend Views',
             value: stats.totalTrendViews,
-            icon: <FcLineChart />,
+            icon: <IoEyeOutline />,
           },
           {
             title: 'Submitted Trends',
             value: stats.submittedTrends,
-            icon: <FcCheckmark />,
+            icon: <IoArrowUp />,
           },
           {
             title: 'Total Site Trends',
             value: stats.totalSiteTrends,
-            icon: <FcCancel />,
+            icon: <IoAlbumsOutline />,
           },
         ]}
       />

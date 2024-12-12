@@ -16,7 +16,12 @@ import { CombinedProvider } from '../context/CombinedContext.jsx';
 import { useSearchContext } from '../context/SearchContext';
 import { useOutletContext } from 'react-router-dom';
 import Container from '../assets/wrappers/AdminContainer';
-import { FcApprove, FcCheckmark, FcLineChart, FcCancel } from 'react-icons/fc';
+import {
+  IoPeopleOutline,
+  IoAlbumsOutline,
+  IoCheckmarkDoneOutline,
+  IoAlbums,
+} from 'react-icons/io5';
 
 const trendsPerPage = 8; // pagination Limit
 const searchDebounce = 500; // 500ms debounce delay
@@ -365,26 +370,22 @@ const Admin = () => {
           {
             title: 'Total Users',
             value: stats.users,
-            icon: <FcApprove />,
-            change: 1.01,
+            icon: <IoPeopleOutline />,
           },
           {
             title: 'Total Trends',
             value: stats.trends,
-            icon: <FcLineChart />,
-            change: -1.01,
+            icon: <IoAlbumsOutline />,
           },
           {
             title: 'Total Approved Trends',
             value: stats.approved,
-            icon: <FcCheckmark />,
-            change: 1.01,
+            icon: <IoCheckmarkDoneOutline />,
           },
           {
             title: 'Total Unapproved Trends',
             value: stats.unapproved,
-            icon: <FcCancel />,
-            change: 1.01,
+            icon: <IoAlbums />,
           },
         ]}
       />

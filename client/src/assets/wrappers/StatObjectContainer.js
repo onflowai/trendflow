@@ -4,127 +4,91 @@ const Container = styled.main`
   margin: 2rem 0;
   background-color: #fff;
   border-radius: 10px;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-  /* border: none; */
-
-  header h1,
-  header p {
-   text-align: left;
-    margin: 0;
-    padding: 0;
-    color: #333;
-  }
-
-  header h1 {
-    font-size: 2rem; // Adjust for responsive design
-    margin-bottom: 0.5rem;
-  }
-
-  header p {
-    margin-bottom: 2rem;
-    font-size: 1.5rem; // Adjust for responsive design
-  }
 
   .stats-container {
-  display: flex;
-  justify-content: space-around; /* This distributes children with space around them */
-  border: 1.5px solid var(--grey-50);
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-radius: var(--border-radius);
-  @media (max-width: 868px) {
-    flex-direction: column;
-    align-items: center;
+    display: flex;
+    justify-content: space-around; /* distributing items with space around */
+    border: 1.5px solid var(--grey-50);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: var(--border-radius);
+    @media (max-width: 868px) {
+      flex-direction: column; /* stack items in a column */
+      align-items: center;
+    }
   }
-}
 
-.stat {
-display: flex;
-flex-direction: column; /* Stacks content-group and change vertically */
-align-items: center; /* This centers the flex children, might need adjustment based on your needs */
-width: 100%; /* Ensure stat takes full width for spacing to take effect, adjust as needed */
-padding: 1rem;
-text-align: left;
-border-right: 1.5px solid var(--grey-50);
-  &:last-child {
-    border-right: none;
+  .stat {
+    display: flex;
+    flex-direction: column; /* stack content-group vertically */
+    align-items: center; /* center items */
+    width: 100%; /* full width for spacing */
+    padding: 1rem;
+    text-align: left;
+    border-right: 1.5px solid var(--grey-50); /* divider for larger screens */
+    &:last-child {
+      border-right: none;
+    }
+
+    @media (max-width: 868px) {
+      border-right: none; /* remove dividers on smaller screens */
+      border-bottom: 1.5px solid var(--grey-50); /* adding bottom border as divider */
+      &:last-child {
+        border-bottom: none; /* removing bottom border for the last item */
+      }
+    }
   }
-}
 
-.content-group {
-  margin-left: 2rem;
-  display: flex;
-  justify-content: space-between; /* Pushes children to the edges */
-  align-items: center; /* Keeps items vertically aligned */
-  width: 100%; /* Ensures the group spans the full width of its parent */
-}
+  .content-group {
+    margin-left: 2rem;
+    display: flex;
+    justify-content: space-between; /* Push children to the edges */
+    align-items: center; /* Keeps items vertically aligned */
+    width: 100%; /* Ensure it spans full width */
+  }
 
   .icon-box {
-    width: 50px;
-    height: 50px;
+    width: clamp(30px, 5vw, 50px); /* Gradually scales between 30px and 50px */
+    height: clamp(30px, 5vw, 50px);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px var(--grey-30);;
+    box-shadow: 0 2px 4px var(--grey-50);
     border-radius: 10px;
     margin-right: 2em;
   }
 
   h3 {
-    align-content: left;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 2vw, 2rem); /* gradually scales between 1.5rem and 2rem */
     font-weight: bold;
     margin: 0;
   }
 
   p {
-    font-size: 1.2rem;
-    color: var(--grey-300);;
+    font-size: clamp(1rem, 1vw, 1.2rem); /* gradually scales between 1rem and 1.2rem */
+    color: var(--grey-300);
     margin: 0;
   }
 
   @media (max-width: 768px) {
     .stat {
-      flex-direction: column;
-      border-bottom: 1px solid var(--grey-50);;
+      flex-direction: column; /* stack content vertically */
+      border-bottom: 1.5px solid var(--grey-50); /* add divider between stacked items */
       &:last-child {
-        border-bottom: none;
+        border-bottom: none; /* remove divider for the last item */
       }
     }
 
-    .change {
-      margin-left: 0;
-      margin-top: 0.5rem;
-      order: 3; /* Ensure it's placed at the bottom in a column layout */
-    width: 100%; /* Full width */
-    text-align: center; /* Center text */
-    margin-top: 0.5rem; /* Space above */
+    .icon-box {
+      width: 30px; /* smaller icon for smaller screens */
+      height: 30px;
+      margin-right: 1.5rem; /* adjust spacing */
     }
-    stats-container {
-    flex-direction: column;
-    align-items: center;
-  }
 
-  .stat {
-    display: flex;
-    flex-direction: row; /* Align items horizontally */
-    align-items: center; /* Center items vertically */
-    justify-content: start; /* Align items to start of the container */
-    width: 100%; /* Full width */
-    padding: 0.5rem; /* Reduced padding */
-    border-bottom: 1px solid var(--grey-50); /* Separator */
+    h3,
+    p {
+      font-size: 1rem; /* smaller text for smaller screens */
+    }
   }
-
-  .icon-box {
-    width: 30px; /* Smaller icon */
-    height: 30px; /* Smaller icon */
-    margin-right: 0.5rem; /* Adjust spacing */
-  }
-
-  h3, p {
-    font-size: 1rem; /* Smaller text */
-  }
-  }
-
 `;
 export default Container;
