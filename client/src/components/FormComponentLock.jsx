@@ -44,7 +44,7 @@ const Container = styled.div`
   background: var(--background-color);
   border: 1px solid var(--grey-50);
   color: var(--text-color);
-  border-radius: var(--input-radius);
+  border-radius: var(--input-radius-rounded);
   width: 100%;
   height: 35px;
   line-height: 32px; /* Center the text vertically */

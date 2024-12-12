@@ -146,7 +146,7 @@ const Container = styled.main`
   .form-select {
     width: 100%;
     padding: 0.375rem 0.75rem;
-    border-radius: var(--input-radius);
+    border-radius: var(--input-radius-rounded);
     background: var(--background-color);
     border: 1px solid var(--grey-50);
     color: var(--text-color);

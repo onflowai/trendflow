@@ -93,8 +93,8 @@ const FormSelectorIcon = ({
 const customStyles = {
   control: (styles) => ({
     ...styles,
-    borderRadius: 'var(--input-radius)',
-    border: '1px solid #ccc',
+    borderRadius: 'var(--input-radius-rounded)',
+    border: '1.5px solid var(--grey-70)',
     // Ensure the control element's styling is consistent with the menu
   }),
   menu: (styles) => ({
@@ -110,7 +110,11 @@ const customStyles = {
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
-    backgroundColor: isSelected ? '#4caf50' : isFocused ? '#a5d6a7' : null,
+    backgroundColor: isSelected
+      ? 'var(--primary-200)'
+      : isFocused
+      ? 'var(--primary-50)'
+      : null,
     color: '#000',
     ':first-of-type': {
       borderTopLeftRadius: '10px',
