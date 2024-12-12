@@ -42,6 +42,36 @@ function ChartAdminComponent({ data, title }) {
     setChartOption(selectedOption);
   };
 
+  //react-select custom styling
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: '1.5px solid var(--grey-70)', // custom border
+      borderRadius: 'var(--input-radius-rounded)', // rounded corners
+      boxShadow: state.isFocused ? 'var(--grey-50)' : 'none', // shadow on focus
+      '&:hover': {
+        border: '1.5px solid var(--grey-100)', // Custom hover color
+      },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? 'var(--primary-100)' // custom selected background color
+        : state.isFocused
+        ? 'var(--primary-300)' // custom hover background color
+        : 'transparent', // default background
+      color: state.isSelected ? 'var(--grey-900)' : 'var(--grey-900)', // custom text color
+      '&:hover': {
+        backgroundColor: 'var(--primary-200)',
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // custom menu shadow
+      borderRadius: 'var(--border-radius-inner)', // rounded corners
+    }),
+  };
+
   return (
     <Container>
       <div className="chart-header">
@@ -88,6 +118,7 @@ function ChartAdminComponent({ data, title }) {
               value={chartOption}
               onChange={handleChartTypeChange}
               options={chartOptions}
+              styles={customStyles}
             />
           </div>
         </div>
@@ -124,6 +155,7 @@ function ChartAdminComponent({ data, title }) {
               value={chartOption}
               onChange={handleChartTypeChange}
               options={chartOptions}
+              styles={customStyles}
             />
           </div>
         </div>

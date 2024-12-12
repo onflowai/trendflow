@@ -14,9 +14,10 @@ const Container = styled.main`
   }
 
   .logo-trend {
-  display: flex;
-  align-items: center; /* Vertically align items */
-  gap: 0.5rem; /* Space between the image and the title */
+    display: flex;
+    align-items: center; /*vertically align items */
+    gap: 0.5rem; /* space between the image and the title */
+    margin-bottom: 1rem;
   }
 
   .trend-logo {
@@ -50,7 +51,6 @@ const Container = styled.main`
     margin-left: 1rem;
     .chart-selector {
       border-radius: 8px;
-      box-shadow: 0 4px 8px var(--grey-50);
     }
   }
 
@@ -116,7 +116,7 @@ const Container = styled.main`
       align-items: center; // Center align in smaller screens
     }
     .trend-title {
-      margin-bottom: 1rem; // Add margin below trend title
+      margin-bottom: 0rem; // Add margin below trend title
       text-align: center;
     }
     .chart-controls-container {
@@ -144,7 +144,6 @@ const Container = styled.main`
         flex-shrink: 0; // Prevent shrinking
         margin-left: auto; // Align to the right
         margin-left: 1rem;
-        box-shadow: 0 4px 8px var(--grey-50);
         .chart-selector {
           width: auto; // Auto width for the selector
         }
