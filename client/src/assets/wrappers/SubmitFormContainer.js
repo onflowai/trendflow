@@ -71,7 +71,7 @@ const Container = styled.section`
   }
   
   .form-btn {
-    margin-top: 1rem;
+    margin-top: 0rem;
     display: grid;
     align-items: center;
     place-items: center;

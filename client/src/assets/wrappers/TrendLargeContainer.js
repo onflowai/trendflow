@@ -5,11 +5,11 @@ const Container = styled.article`
 cursor: pointer; // Make the entire container behave like a clickable element
 transition: background-color 0.2s ease; // Smooth transition for background color
 &:hover {
-    background-color: var(--grey-50); // Change background on hover
+    background-color: var(--card-highlight); // Change background on hover
   }
 .loading-overlay {
   position: absolute;
-  background-color: white;
+  background-color: var(--white);
   
 }
 

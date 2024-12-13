@@ -89,7 +89,7 @@ const AddTrend = () => {
       <div className="submit-container">
         <div>
           <Form method="post" className="form">
-            <h4 className="form-title">Submit a Tech:</h4>
+            <h4 className="form-title">Submit Tech:</h4>
             <div className="form-center">
               {/* <LogoCarousel /> */}
               <FormComponentLogos
