@@ -95,12 +95,13 @@ const customStyles = {
     ...styles,
     borderRadius: 'var(--input-radius-rounded)',
     border: '1.5px solid var(--grey-70)',
-    // Ensure the control element's styling is consistent with the menu
+    backgroundColor: 'var(--selector-main-color)',
   }),
   menu: (styles) => ({
     ...styles,
     borderRadius: '10px',
     marginTop: '0px', // Adjust the top margin to reduce or eliminate the gap
+    backgroundColor: 'var(--selector-dropdown-main-color)',
   }),
   menuList: (styles) => ({
     ...styles,

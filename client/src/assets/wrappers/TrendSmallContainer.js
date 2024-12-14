@@ -73,7 +73,7 @@ const Container = styled.article`
     grid-template-columns: auto 1fr auto; // Define the columns
     align-items: center;
     padding: 0.5rem 0.5rem;
-    background: var(--white);
+    background: var(--small-card-bottom-row);
     border-top: 1.5px solid var(--grey-50);
     gap: 0.5rem; // Add some space between the items
   }

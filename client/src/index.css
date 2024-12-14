@@ -110,10 +110,13 @@ html {
   --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-  /* COMPONENTS */
+  /* COMPONENTS  */
   --card-background: var(--white);
   --card-highlight: var(--grey-50);
   --border-color: var(--grey-50);
+  --small-card-bottom-row: var(--white);
+  --selector-main-color: var(--white);
+  --selector-dropdown-main-color: var(--white);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -124,6 +127,8 @@ html {
   --dark-mode-bg-third-color: #1e1e1e;
   --dark-mode-text-third-color: #484848;
 
+  --white-in-dark-mode: var(--dark-mode-bg-color);
+
   /* LIGHT MODE */
   --background-color: var(--white);
   --text-color: var(--grey-900);
@@ -132,6 +137,19 @@ html {
   /* Sidebar */
   --background-third-color: var(--grey-50);
   --text-third-color: var(--grey-500);
+
+  /* LOGO (Light Mode) */
+  --logo-text-gradient: linear-gradient(
+    45deg,
+    var(--primary-400),
+    var(--primary-900)
+  );
+  /* LOGO HOVER (Light Mode) */
+  --logo-text-gradient-hover: linear-gradient(
+    45deg,
+    var(--primary2-400),
+    var(--primary-800)
+  );
 }
 /* DARK MODE MOD */
 .dark-theme {
@@ -142,23 +160,59 @@ html {
   --text-third-color: var(--dark-mode-text-third-color);
   --background-third-color: var(--dark-mode-bg-third-color);
 
+  /* CONTENT DARK MODE */
   --card-background: var(--dark-mode-bg-second-color);
   --card-highlight: var(--primary-400);
   --border-color: var(--grey-900);
+  --small-card-bottom-row: var(--primary-400);
 
+  --selector-main-color: #2a2a2a;
+  --selector-dropdown-main-color: var(--primary-300);
+
+  /* LOGO HOVER (Dark Mode) */
+  --logo-text-gradient: linear-gradient(
+    45deg,
+    var(--primary2-400),
+    var(--primary-800)
+  );
+  /* LOGO HOVER (Dark Mode) */
+  --logo-text-gradient-hover: linear-gradient(
+    45deg,
+    var(--primary-400),
+    var(--primary-900)
+  );
+
+  --white: var(--white-in-dark-mode);
   /* Re-defining Grey Colors for Dark Mode */
-  /* Re-defining Grey Colors for Dark Mode */
-  --grey-5: #1a1a1a; /* Very Dark */
+  --grey-5: #1a1a1a;
   --grey-30: #2a2a2a;
   --grey-50: #3a3a3a;
   --grey-70: #4a4a4a;
   --grey-100: #5a5a5a;
   --grey-200: #6a6a6a;
   --grey-300: #7a7a7a;
-  --grey-400: #8a8a8a;
+  --grey-400: #b6b6b6;
   --grey-500: #9a9a9a;
   --grey-600: #aaaaaa;
   --grey-700: #babaab;
+  --grey-800: #cecece;
+  --grey-900: #535353;
+
+  /* LOGO CONTAINER (DARK MODE) */
+  .logo-container:hover {
+    /* Indented-Looking Box Shadow */
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.852);
+
+    /* Change Text Gradient on Hover */
+    --logo-text-gradient: var(--logo-text-gradient-hover);
+  }
+
+  .logo-container:active {
+    /* Optional: Define styles for active (click) state if needed */
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.7),
+      0 2px 2px rgba(0, 0, 0, 0.761);
+    transform: translateY(0px);
+  }
 }
 /* FONTS */
 .mono-heading-thin {
@@ -283,6 +337,25 @@ ul {
 }
 .section-title h2 {
   text-transform: uppercase;
+}
+
+/* LOGO CONTAINER */
+.logo-container {
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.logo-container:hover {
+  /* Indented-Looking Box Shadow */
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  /* Change Text Gradient on Hover */
+  --logo-text-gradient: var(--logo-text-gradient-hover);
+}
+
+.logo-container:active {
+  /* Optional: Define styles for active (click) state if needed */
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.1);
+  transform: translateY(0px);
 }
 
 /* buttons */
