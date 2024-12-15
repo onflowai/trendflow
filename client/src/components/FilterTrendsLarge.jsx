@@ -49,6 +49,7 @@ function FilterTrendsLarge({
   const location = useLocation(); // getting the current URL parameters
   const isFirstRender = useRef(true); // tracking the first render
   const { showSidebar, toggleSidebar } = useDashboardContext();
+  const { isDarkTheme } = useDashboardContext();
   const [isCollapsed, setIsCollapsed] = useLocalStorage('isCollapsed', false); // state to track if the filter is collapsed
   const [isSticky, setIsSticky] = useLocalStorage('isSticky', false); // state to track if the collapsed group is sticky
   const [isArrowBack, setIsArrowBack] = useLocalStorage('isArrowBack', true); //change for side bar button
@@ -380,6 +381,7 @@ function FilterTrendsLarge({
                             })),
                           ]}
                           onChange={handleChange}
+                          isDarkTheme={isDarkTheme}
                         />
                       </div>
                     </div>
@@ -408,6 +410,7 @@ function FilterTrendsLarge({
                             })),
                           ]}
                           onChange={handleChange}
+                          isDarkTheme={isDarkTheme}
                         />
                       </div>
                     </div>

@@ -124,9 +124,10 @@ const customStyles = {
   }),
   menuList: (styles) => ({
     ...styles,
-    paddingTop: '0px', // Reduce or eliminate padding at the top of the menu list
-    paddingBottom: '0px', // Adjust bottom padding if needed
+    paddingTop: '0px',
+    paddingBottom: '0px',
     backgroundColor: 'var(--selector-dropdown-main-color)',
+    borderRadius: 'inherit',
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
@@ -135,7 +136,11 @@ const customStyles = {
       : isFocused
       ? 'var(--primary-50)'
       : null,
-    color: '#000',
+    color: isSelected
+      ? 'var(--text-color)'
+      : isFocused
+      ? 'var(--text-color)'
+      : 'var(--text-color)',
     ':first-of-type': {
       borderTopLeftRadius: '10px',
       borderTopRightRadius: '10px',
@@ -144,6 +149,10 @@ const customStyles = {
       borderBottomLeftRadius: '10px',
       borderBottomRightRadius: '10px',
     },
+  }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
   }),
 };
 

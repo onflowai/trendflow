@@ -95,18 +95,20 @@ const customStyles = {
     ...styles,
     borderRadius: 'var(--input-radius-rounded)',
     border: '1.5px solid var(--grey-70)',
-    // Ensure the control element's styling is consistent with the menu
+    backgroundColor: 'var(--selector-main-color)',
   }),
   menu: (styles) => ({
     ...styles,
-    borderRadius: '10px',
-    marginTop: '0px', // Adjust the top margin to reduce or eliminate the gap
+    borderRadius: '10px', // Outer dropdown rounding
+    marginTop: '0px', // Align dropdown with the selector
+    overflow: 'hidden', // Prevent inner elements from breaking rounding
   }),
   menuList: (styles) => ({
     ...styles,
-    paddingTop: '0px', // Reduce or eliminate padding at the top of the menu list
-    paddingBottom: '0px', // Adjust bottom padding if needed
-    // Further adjust spacing to ensure the dropdown fits snugly against the control
+    paddingTop: '0px',
+    paddingBottom: '0px',
+    backgroundColor: 'var(--selector-dropdown-main-color)',
+    borderRadius: 'inherit', // Inherit rounding from `menu`
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
@@ -115,7 +117,7 @@ const customStyles = {
       : isFocused
       ? 'var(--primary-50)'
       : null,
-    color: '#000',
+    color: 'var(--text-color)',
     ':first-of-type': {
       borderTopLeftRadius: '10px',
       borderTopRightRadius: '10px',
@@ -124,6 +126,10 @@ const customStyles = {
       borderBottomLeftRadius: '10px',
       borderBottomRightRadius: '10px',
     },
+  }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
   }),
 };
 

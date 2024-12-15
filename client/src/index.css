@@ -65,6 +65,7 @@ html {
   /* rest of the colors */
   --black: #222;
   --white: #fff;
+  --white-no-dark: #fff;
   --off-white: #fdfdfd;
   --red: #f7606f;
   --red-light: #f8d7da;

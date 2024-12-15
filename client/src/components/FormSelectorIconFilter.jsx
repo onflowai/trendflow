@@ -27,23 +27,57 @@ const CustomOption = (props) => {
 };
 
 const CustomSingleValue = (props) => {
+  const { isDarkTheme, name } = props.selectProps || {}; // Pass theme and dropdown name via selectProps
+  console.log('HERE in SINGLE VALUE: ', name, isDarkTheme);
   const IconComponent = props.data.icon;
+  const applyCustomStyling = name === 'trendCategory'; //ISSUE HERE isDarkTheme cannot be passed
   return (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {props.data.image && (
-          <img
-            src={props.data.image}
-            alt={props.data.label}
-            style={{ width: '20px', marginRight: '10px' }}
-          />
+          <div
+            style={{
+              backgroundColor: applyCustomStyling
+                ? 'var(--white-no-dark)'
+                : 'transparent', // white background only when styling applies
+              borderRadius: applyCustomStyling ? '20%' : '0', // rounded only in dark mode for trendCategory
+              width: applyCustomStyling ? '25px' : 'auto', // box size for dark mode
+              height: applyCustomStyling ? '25px' : 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '5px', // space between box and label
+            }}
+          >
+            <img
+              src={props.data.image}
+              alt={props.data.label}
+              style={{
+                width: '20px', // SVG size
+                height: '20px',
+              }}
+            />
+          </div>
         )}
         {IconComponent && (
-          <span style={{ marginRight: '10px' }}>
-            <IconComponent />
-          </span>
+          <div
+            style={{
+              backgroundColor: applyCustomStyling
+                ? 'var(--white-no-dark)'
+                : 'transparent',
+              borderRadius: applyCustomStyling ? '20%' : '0',
+              width: applyCustomStyling ? '25px' : 'auto',
+              height: applyCustomStyling ? '25px' : 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '5px',
+            }}
+          >
+            <IconComponent style={{ width: '20px', height: '20px' }} />
+          </div>
         )}
-        {props.data.label}
+        <span>{props.data.label}</span>
       </div>
     </components.SingleValue>
   );
@@ -51,12 +85,14 @@ const CustomSingleValue = (props) => {
 
 const FormSelectorIconFilter = ({
   name,
+  isDarkTheme,
   labelText,
   list,
   defaultValue,
   onChange,
   isClearable = true,
 }) => {
+  console.log('HERE: ', name, isDarkTheme);
   const [selectedOption, setSelectedOption] = useState(
     list.find((option) => option.value === defaultValue) || list[0]
   );
@@ -85,6 +121,7 @@ const FormSelectorIconFilter = ({
           styles={customStyles}
           isClearable={isClearable}
           components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
+          selectProps={{ isDarkTheme, name }} // Pass additional props
         />
       </div>
     </Container>
@@ -116,7 +153,11 @@ const customStyles = {
       : isFocused
       ? 'var(--primary-50)'
       : null,
-    color: '#000',
+    color: isSelected
+      ? 'var(--text-color)'
+      : isFocused
+      ? 'var(--text-color)'
+      : 'var(--text-color)',
     ':first-of-type': {
       borderTopLeftRadius: '10px',
       borderTopRightRadius: '10px',
@@ -125,6 +166,10 @@ const customStyles = {
       borderBottomLeftRadius: '10px',
       borderBottomRightRadius: '10px',
     },
+  }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
   }),
 };
 
