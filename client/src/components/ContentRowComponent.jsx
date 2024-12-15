@@ -115,7 +115,7 @@ const Container = styled.div`
     gap: 0.6rem;
     padding: 0.6rem 1rem;
     border-radius: var(--round-radius);
-    background: var(--primary-50);
+    background: var(--content-row-component-item);
     color: var(--grey-900);
     text-align: center;
 
@@ -138,7 +138,7 @@ const Container = styled.div`
     color: var(--grey-900);
 
     &.styled {
-      background: var(--primary-100);
+      background: var(--content-row-component);
     }
 
     &.unstyled:hover {
@@ -146,7 +146,7 @@ const Container = styled.div`
     }
 
     &.styled:hover {
-      background: var(--primary-5);
+      background: var(--content-row-component-highlighted);
     }
 
     &.unstyled:active,

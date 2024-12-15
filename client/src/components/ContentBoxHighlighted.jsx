@@ -12,7 +12,7 @@ function ContentBoxHighlighted({ trendUse }) {
 
 const Container = styled.div`
  border: 1.5px solid var(--primary-400); 
-  background-color: var(--primary-5);
+  background-color: var(--content-box-highlighted);
   padding: 1rem;
   border-radius: var(--border-radius);
   margin: 1rem;

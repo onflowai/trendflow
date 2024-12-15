@@ -110,13 +110,20 @@ html {
   --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-  /* COMPONENTS  */
+  /* COMPONENTS: ALL TRENDS */
   --card-background: var(--white);
   --card-highlight: var(--grey-50);
   --border-color: var(--grey-50);
   --small-card-bottom-row: var(--white);
   --selector-main-color: var(--white);
   --selector-dropdown-main-color: var(--white);
+  /* TREND PAGE */
+  --select-small-color: var(--white);
+  --select-small-dropdown-color: var(--white);
+  --content-row-component-highlighted: var(--primary-5);
+  --content-row-component: var(--primary-100);
+  --content-row-component-item: var(--primary-50);
+  --content-box-highlighted: var(--primary-5);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -160,14 +167,20 @@ html {
   --text-third-color: var(--dark-mode-text-third-color);
   --background-third-color: var(--dark-mode-bg-third-color);
 
-  /* CONTENT DARK MODE */
+  /* COMPONENTS: ALL TRENDS DARK MODE */
   --card-background: var(--dark-mode-bg-second-color);
   --card-highlight: var(--primary-400);
   --border-color: transparent;
   --small-card-bottom-row: var(--primary-400);
-
   --selector-main-color: var(--dark-mode-bg-color);
   --selector-dropdown-main-color: var(--primary-300);
+  /* TREND PAGE */
+  --select-small-color: var(--dark-mode-bg-color);
+  --select-small-dropdown-color: var(--primary-400);
+  --content-row-component: var(--primary-400);
+  --content-row-component-highlighted: var(--primary3-500);
+  --content-row-component-item: var(--primary3-400);
+  --content-box-highlighted: var(--primary-600);
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(
