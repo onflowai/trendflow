@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div
         style={{
-          backgroundColor: '#f6f6f6',
+          backgroundColor: 'var(--tool-tip-background)',
           padding: '10px',
           borderRadius: '10px',
           boxShadow: '0 2px 2px rgba(0,0,0,0.2)',
@@ -61,8 +61,16 @@ function AreaChartComponent({ data }) {
         >
           <defs>
             <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#662fdc" stopOpacity={1} />
-              <stop offset="95%" stopColor="#f55ec8" stopOpacity={0.05} />
+              <stop
+                offset="5%"
+                stopColor="var(--flash-chart-color1)"
+                stopOpacity={1}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--flash-chart-color2)"
+                stopOpacity={0.05}
+              />
             </linearGradient>
           </defs>
 
@@ -87,7 +95,7 @@ function AreaChartComponent({ data }) {
             style={{ cursor: 'pointer' }}
             type="monotone"
             dataKey="count"
-            stroke="#4541de"
+            stroke="var(--flash-chart-line-color)"
             fill="url(#colorCount)"
             animationDuration={400}
             animationEasing="ease-out"

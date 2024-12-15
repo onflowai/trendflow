@@ -52,6 +52,7 @@ function ChartAdminComponent({ data, title }) {
       '&:hover': {
         border: '1.5px solid var(--grey-100)', // Custom hover color
       },
+      backgroundColor: 'var(--selector-main-color)',
     }),
     option: (provided, state) => ({
       ...provided,
@@ -60,7 +61,11 @@ function ChartAdminComponent({ data, title }) {
         : state.isFocused
         ? 'var(--primary-300)' // custom hover background color
         : 'transparent', // default background
-      color: state.isSelected ? 'var(--grey-900)' : 'var(--grey-900)', // custom text color
+      color: state.isSelected
+        ? 'var(--text-color)' // Text color for selected option
+        : state.isFocused
+        ? 'var(--text-color)' // Text color for focused (hovered) option
+        : 'var(--text-color)', // Text color for default options
       '&:hover': {
         backgroundColor: 'var(--primary-200)',
       },
@@ -69,6 +74,11 @@ function ChartAdminComponent({ data, title }) {
       ...provided,
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // custom menu shadow
       borderRadius: 'var(--border-radius-inner)', // rounded corners
+      backgroundColor: 'var(--select-small-dropdown-color)',
+    }),
+    singleValue: (provided, state) => ({
+      ...provided,
+      color: 'var(--text-color)',
     }),
   };
 

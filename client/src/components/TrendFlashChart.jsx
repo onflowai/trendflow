@@ -27,8 +27,16 @@ function AreaChartComponent({
         >
           <defs>
             <linearGradient id="colorCountTwo" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4541de" stopOpacity={1} />
-              <stop offset="95%" stopColor="#e976c7" stopOpacity={0} />
+              <stop
+                offset="5%"
+                stopColor="var(--flash-chart-color1)"
+                stopOpacity={1}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--flash-chart-color2)"
+                stopOpacity={0}
+              />
             </linearGradient>
           </defs>
 
@@ -42,7 +50,7 @@ function AreaChartComponent({
             style={{ cursor: 'pointer' }}
             type="monotone"
             dataKey="count"
-            stroke="#4541de"
+            stroke="var(--flash-chart-line-color)"
             fill="url(#colorCountTwo)"
             animationDuration={400}
             animationEasing="ease-out"
