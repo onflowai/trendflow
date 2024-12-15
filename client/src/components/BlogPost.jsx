@@ -104,7 +104,7 @@ const Container = styled.div`
   .blog-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--black);
+    color: var(--text-color);
   }
 
   .blog-title:hover {

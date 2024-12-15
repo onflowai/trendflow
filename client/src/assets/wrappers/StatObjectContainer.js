@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Container = styled.main`
   margin: 2rem 0;
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 10px;
 
   .stats-container {

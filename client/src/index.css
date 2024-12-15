@@ -125,6 +125,9 @@ html {
   --content-row-component: var(--primary-100);
   --content-row-component-item: var(--primary-50);
   --content-box-highlighted: var(--primary-5);
+  /* PROFILE */
+  --dropdown-background: var(--white);
+  --dropdown-background-hover: var(--grey-50);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -182,6 +185,9 @@ html {
   --content-row-component-highlighted: var(--primary3-500);
   --content-row-component-item: var(--primary3-400);
   --content-box-highlighted: var(--primary-600);
+  /* PROFILE */
+  --dropdown-background: #727272;
+  --dropdown-background-hover: #454545;
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(

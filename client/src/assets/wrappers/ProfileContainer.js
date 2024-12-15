@@ -47,7 +47,7 @@ const Container = styled.main`
     position: absolute;
     top: 0px;
     right: -40px;
-    background: white;
+    background: var(--dropdown-background);
     border: 1px solid var(--grey-50);
     border-radius: var(--border-radius);
     padding: 0.5rem;
@@ -66,7 +66,7 @@ const Container = styled.main`
       border-radius: var(--border-radius);
 
       &:hover {
-        background: var(--grey-50);
+        background: var(--dropdown-background-hover);
       }
 
       &:active {

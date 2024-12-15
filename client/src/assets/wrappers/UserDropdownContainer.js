@@ -11,8 +11,10 @@ const Container = styled.div`
     background: transparent;
     border: none;
     cursor: pointer;
+    color: var(--text-color);
   }
   .username {
+    color: var(--text-color);
     margin-right: 0.5rem;
   }
 

@@ -84,12 +84,12 @@ const Container = styled.div`
 
     .card-title {
       font-weight: bold;
-      color: black;
+      color: var(--text-color);
     }
 
     .card-description {
       display: none;
-      color: black;
+      color: var(--text-color);
     }
   }
 
