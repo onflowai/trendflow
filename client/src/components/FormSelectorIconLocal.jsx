@@ -115,7 +115,7 @@ const customStyles = {
     ...styles,
     borderRadius: 'var(--input-radius-rounded)',
     border: '1.5px solid var(--grey-70)',
-    // Ensure the control element's styling is consistent with the menu
+    backgroundColor: 'var(--selector-main-color)',
   }),
   menu: (styles) => ({
     ...styles,
@@ -126,7 +126,7 @@ const customStyles = {
     ...styles,
     paddingTop: '0px', // Reduce or eliminate padding at the top of the menu list
     paddingBottom: '0px', // Adjust bottom padding if needed
-    // Further adjust spacing to ensure the dropdown fits snugly against the control
+    backgroundColor: 'var(--selector-dropdown-main-color)',
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,

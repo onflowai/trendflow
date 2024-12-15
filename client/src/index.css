@@ -163,10 +163,10 @@ html {
   /* CONTENT DARK MODE */
   --card-background: var(--dark-mode-bg-second-color);
   --card-highlight: var(--primary-400);
-  --border-color: var(--grey-900);
+  --border-color: transparent;
   --small-card-bottom-row: var(--primary-400);
 
-  --selector-main-color: #2a2a2a;
+  --selector-main-color: var(--dark-mode-bg-color);
   --selector-dropdown-main-color: var(--primary-300);
 
   /* LOGO HOVER (Dark Mode) */

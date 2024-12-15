@@ -6,7 +6,7 @@ const Container = styled.article`
   transition: background-color 0.2s ease; // Smooth transition for background color
 
   &:hover {
-    background-color: var(--grey-50); // Change background on hover
+    background-color: var(--card-highlight); // Change background on hover //
   }
 
   .trend-small-card {
