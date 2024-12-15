@@ -28,7 +28,6 @@ const CustomOption = (props) => {
 
 const CustomSingleValue = (props) => {
   const { isDarkTheme, name } = props.selectProps || {}; // Pass theme and dropdown name via selectProps
-  console.log('HERE in SINGLE VALUE: ', name, isDarkTheme);
   const IconComponent = props.data.icon;
   const applyCustomStyling = name === 'trendCategory'; //ISSUE HERE isDarkTheme cannot be passed
   return (
@@ -38,7 +37,7 @@ const CustomSingleValue = (props) => {
           <div
             style={{
               backgroundColor: applyCustomStyling
-                ? 'var(--white-no-dark)'
+                ? 'var(--off-white)'
                 : 'transparent', // white background only when styling applies
               borderRadius: applyCustomStyling ? '20%' : '0', // rounded only in dark mode for trendCategory
               width: applyCustomStyling ? '25px' : 'auto', // box size for dark mode
@@ -63,7 +62,7 @@ const CustomSingleValue = (props) => {
           <div
             style={{
               backgroundColor: applyCustomStyling
-                ? 'var(--white-no-dark)'
+                ? 'var(--off-white)'
                 : 'transparent',
               borderRadius: applyCustomStyling ? '20%' : '0',
               width: applyCustomStyling ? '25px' : 'auto',
@@ -92,7 +91,6 @@ const FormSelectorIconFilter = ({
   onChange,
   isClearable = true,
 }) => {
-  console.log('HERE: ', name, isDarkTheme);
   const [selectedOption, setSelectedOption] = useState(
     list.find((option) => option.value === defaultValue) || list[0]
   );
@@ -121,7 +119,7 @@ const FormSelectorIconFilter = ({
           styles={customStyles}
           isClearable={isClearable}
           components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
-          selectProps={{ isDarkTheme, name }} // Pass additional props
+          selectProps={{ isDarkTheme, name }}
         />
       </div>
     </Container>

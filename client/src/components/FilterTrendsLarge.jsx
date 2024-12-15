@@ -568,6 +568,7 @@ function FilterTrendsLarge({
                             image: cate.image,
                           }))}
                           onChange={handleChange}
+                          isDarkTheme={isDarkTheme}
                         />
                       </div>
                     </div>
@@ -590,6 +591,7 @@ function FilterTrendsLarge({
                             image: tech.image,
                           }))}
                           onChange={handleChange}
+                          isDarkTheme={isDarkTheme}
                         />
                       </div>
                     </div>

@@ -124,10 +124,9 @@ const customStyles = {
   }),
   menuList: (styles) => ({
     ...styles,
-    paddingTop: '0px',
-    paddingBottom: '0px',
+    paddingTop: '0px', // Reduce or eliminate padding at the top of the menu list
+    paddingBottom: '0px', // Adjust bottom padding if needed
     backgroundColor: 'var(--selector-dropdown-main-color)',
-    borderRadius: 'inherit',
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,

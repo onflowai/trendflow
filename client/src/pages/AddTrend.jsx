@@ -7,6 +7,7 @@ import {
   FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
+import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
 import { Form, useNavigation, redirect } from 'react-router-dom';
@@ -39,6 +40,7 @@ const AddTrend = () => {
   const { user } = useOutletContext(); //getting the user from DashboardLayout
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
+  const { isDarkTheme } = useDashboardContext();
 
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
@@ -112,6 +114,7 @@ const AddTrend = () => {
                   setCateLabel(value ? value.label : '');
                   setCateIconUrl(value ? value.value : '');
                 }}
+                isDarkTheme={isDarkTheme}
               />
               <input
                 type="hidden"
@@ -140,6 +143,7 @@ const AddTrend = () => {
                   setTechLabel(value ? value.label : '');
                   setTechIconUrl(value ? value.value : '');
                 }}
+                isDarkTheme={isDarkTheme}
               />
               <input
                 type="hidden"

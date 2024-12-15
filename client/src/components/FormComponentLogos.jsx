@@ -36,7 +36,7 @@ const Container = styled.div`
   .carousel-container {
     position: absolute;
     left: 5px; // Position inside the input on the left
-    top: 68%;
+    top: 65%;
     transform: translateY(-50%);
     /* transform: translateX(-40%); */
     height: 23px;
