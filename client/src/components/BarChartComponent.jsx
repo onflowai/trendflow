@@ -36,6 +36,31 @@ function CustomizedAxisTick(props) {
   );
 }
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: 'var(--tool-tip-background)', // Tooltip background
+          padding: '10px', // Padding inside the box
+          borderRadius: '10px', // Rounded corners
+          boxShadow: '0 2px 2px rgba(0,0,0,0.2)', // Subtle shadow
+          fontSize: '10px', // Small font size
+        }}
+      >
+        <p style={{ margin: 0 }}>{label}</p>
+        {payload.map((entry, index) => (
+          <p key={`tooltip-${index}`} style={{ margin: 0 }}>
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 function BarChartComponent({ data, forecastData = [] }) {
   // const chartData = forecastData.length ? [...data, ...forecastData] : data;
   const allData = [...data, ...forecastData];
@@ -65,18 +90,27 @@ function BarChartComponent({ data, forecastData = [] }) {
             tick={{ fill: '#b3b3b3', fontSize: 13 }}
           />
           <Tooltip
-            cursor={{ fill: '#ededed' }}
+            cursor={{ fill: 'var(--bar-chart-highlight)' }}
             contentStyle={{
-              backgroundColor: '#f6f6f6',
+              backgroundColor: 'var(--bar-chart-highlight)',
               border: 'none',
               radius: '8px',
               outline: 'none',
             }}
+            content={<CustomTooltip />}
           />
           <defs>
             <linearGradient id="barColor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4541de" stopOpacity={1} />
-              <stop offset="95%" stopColor="#e976c7" stopOpacity={0.05} />
+              <stop
+                offset="5%"
+                stopColor="var(--bar-chart-color1)"
+                stopOpacity={1}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--bar-chart-color2)"
+                stopOpacity={0.05}
+              />
             </linearGradient>
           </defs>
           {/* <Bar dataKey="count" fill="url(#barColor)" radius={[8, 8, 0, 0]} /> */}

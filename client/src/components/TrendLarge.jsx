@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs'; //bookmark
 import { LiaClock } from 'react-icons/lia'; //updatedAt icon
 import { MdCategory } from 'react-icons/md';
+import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import { PiHashLight, PiEyeLight } from 'react-icons/pi'; //views icon & fallback icon
 //Status icons
 import { PiTrendUp, PiTrendDown } from 'react-icons/pi'; //trending icons, cool-off icons
@@ -56,7 +57,7 @@ function TrendLarge({
   createdBy,
   isApproved,
 }) {
-  // console.log('ID____: ', _id);
+  const { isDarkTheme } = useDashboardContext();
   const [isHovered, setIsHovered] = useState(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -140,9 +141,14 @@ function TrendLarge({
                     src={getFullIconUrl(cateIconUrl)}
                     alt="Category Icon"
                     style={{
-                      width: '16px',
-                      height: '16px',
+                      width: '17px',
+                      height: '17px',
                       marginRight: '5px',
+                      backgroundColor: isDarkTheme
+                        ? 'var(--off-white)'
+                        : 'transparent', // Add white background in dark mode
+                      borderRadius: '20%', // Optional: Make the background circular
+                      padding: isDarkTheme ? '1px' : '0', // Add some padding for better appearance
                     }}
                   />
                 )}

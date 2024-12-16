@@ -132,11 +132,18 @@ html {
   --color-under-the-line1: #4541de;
   --color-under-the-line2: #e976c7;
   --line-color: #4541de;
+  /* BAR CHART */
+  --bar-chart-color1: #4541de;
+  --bar-chart-color2: #e976c7;
+  --bar-chart-tool-tip: #f6f6f6;
   /* FLASH CHART (TrendFlashChart)*/
   --flash-chart-color1: #4541de;
-  --flash-chart-color1: #e976c7;
+  --flash-chart-color2: #e976c7;
   --flash-chart-line-color: #4541de;
   --tool-tip-background: #f6f6f6;
+  --admin-btn-icons: var(--grey-500);
+  --admin-btn-icons-hover: var(--primary-500);
+  --admin-btn-icons-active: var(--primary-700);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -201,11 +208,18 @@ html {
   --color-under-the-line1: #4541de;
   --color-under-the-line2: #e976c7;
   --line-color: #4541de;
+  /* BAR CHART */
+  --bar-chart-color1: #4541de;
+  --bar-chart-color2: #e976c7;
+  --bar-chart-highlight: var(--primary2-700);
   /* FLASH CHART (TrendFlashChart)*/
   --flash-chart-color1: #4541de;
-  --flash-chart-color1: #e976c7;
+  --flash-chart-color2: #e976c7;
   --flash-chart-line-color: #4541de;
   --tool-tip-background: #4541de;
+  --admin-btn-icons: #babaab;
+  --admin-btn-icons-hover: var(--primary2-300);
+  --admin-btn-icons-active: var(--primary2-400);
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(
@@ -221,6 +235,8 @@ html {
   );
 
   --white: var(--white-in-dark-mode);
+  --red-dark: var(--red);
+  --black: #e7e7e7;
   /* Re-defining Grey Colors for Dark Mode */
   --grey-5: #1a1a1a;
   --grey-30: #2a2a2a;
@@ -443,7 +459,7 @@ button:disabled {
 /* Base styling for icon button */
 .btn-icon {
   cursor: pointer;
-  color: var(--grey-500); /* Default icon color */
+  color: var(--admin-btn-icons); /* Default icon color */
   background: transparent; /* No background */
   border: none; /* No border */
   padding: 0; /* Remove any padding */
@@ -455,12 +471,12 @@ button:disabled {
 
 /* Hover state for icon button */
 .btn-icon:hover {
-  color: var(--primary-500); /* Highlight color on hover */
+  color: var(--admin-btn-icons-hover); /* Highlight color on hover */
 }
 
 /* Active (click) state for icon button */
 .btn-icon:active {
-  color: var(--primary-700); /* Change color on click */
+  color: var(--admin-btn-icons-active); /* Change color on click */
 }
 
 /* Disabled state for icon button */

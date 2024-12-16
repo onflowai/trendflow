@@ -141,7 +141,7 @@ function TrendSmall({
               </div>
               {isAdminPage ? (
                 <>
-                  <Tooltip description="Edit Trend">
+                  <Tooltip description="Edit Trend" xOffset={-90} yOffset={-65}>
                     <Link
                       to={`/dashboard/edit-trend/${slug}`}
                       className="btn-icon edit-btn"
@@ -151,7 +151,11 @@ function TrendSmall({
                     </Link>
                   </Tooltip>
                   {isApproved ? (
-                    <Tooltip description="Unapprove Trend">
+                    <Tooltip
+                      description="Unapprove Trend"
+                      xOffset={-90}
+                      yOffset={-65}
+                    >
                       <button
                         className="btn-icon action-btn"
                         onClick={(e) => {
@@ -163,7 +167,11 @@ function TrendSmall({
                       </button>
                     </Tooltip>
                   ) : (
-                    <Tooltip description="Approve Trend">
+                    <Tooltip
+                      description="Approve Trend"
+                      xOffset={-90}
+                      yOffset={-65}
+                    >
                       <button
                         className="btn-icon action-btn"
                         onClick={(e) => {
@@ -175,7 +183,11 @@ function TrendSmall({
                       </button>
                     </Tooltip>
                   )}
-                  <Tooltip description="Delete Trend">
+                  <Tooltip
+                    description="Delete Trend"
+                    xOffset={-90}
+                    yOffset={-65}
+                  >
                     <button
                       className="btn-icon btn-icon-danger"
                       onClick={(e) => {

@@ -71,7 +71,7 @@ const Container = styled.div`
   }
   .user-name {
     font-size: 1rem; // Adjust as needed
-    color: black; // Set username color to black
+    color: var(--black); // Set username color to black
     margin-left: 0.6rem; // Space between image and name
     transition: color 0.3s ease;
   }
