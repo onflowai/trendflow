@@ -3,12 +3,13 @@ import img from '../assets/images/test-img.jpg';
 import Container from '../assets/wrappers/LandingPageContainer';
 import customFetch from '../utils/customFetch';
 import { Link, useLoaderData } from 'react-router-dom';
+import useWindowSize from '../hooks/useWindowSize';
 import {
   LandingNavbar,
   LandingHero,
   LandingAbout,
   LandingServices,
-  LandingFeatured,
+  FeaturedTrends,
   LandingFooter,
 } from '../components';
 /**
@@ -49,7 +50,6 @@ export const loader = async () => {
 };
 const Landing = () => {
   const { trends } = useLoaderData();
-  console.log('TRENDS: ', trends);
   return (
     <Container>
       <div className="container">
@@ -59,7 +59,7 @@ const Landing = () => {
         <LandingHero />
         <LandingServices />
         <LandingAbout />
-        <LandingFeatured />
+        <FeaturedTrends />
       </div>
       <LandingFooter />
     </Container>

@@ -540,7 +540,7 @@ export const searchTrends = async (req, res) => {
 /**
  * GET TOP VIEWED TRENDS
  * This controller fetches the top viewed approved trends with pagination.
- * It enforces `topViewed=topViewedNow` and restricts `limit` to a fixed 30 trends per page.
+ * It enforces `topViewed=topViewedNow` and restricts `limit` to a fixed number of trends.
  * It excludes `generatedBlogPost` and `trendUse` fields.
  *
  * @param {Object} req - Express request object

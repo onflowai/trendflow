@@ -10,7 +10,7 @@ const ProjectBox = ({ project }) => (
   </div>
 );
 
-const LandingFeatured = () => (
+const FeaturedTrends = () => (
   <Container>
     <section id="trends"></section>
     <div className="title-box special-sponsors">Weekly Top Trends</div>
@@ -26,4 +26,4 @@ const LandingFeatured = () => (
   </Container>
 );
 
-export default LandingFeatured;
+export default FeaturedTrends;
