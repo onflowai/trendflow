@@ -15,6 +15,7 @@ import {
   uploadTrendSVG,
   getSelectIconData,
   getApprovedTrends,
+  getTopViewedTrends,
 } from '../controllers/trendController.js';
 import { adminStats, appTrendStats } from '../controllers/visitController.js';
 import {
@@ -57,6 +58,7 @@ router
     submitTrend
   );
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
+router.route('/top-viewed').get(getTopViewedTrends); //NOTE user does not need to have an account to see Top Trends
 router.route('/admin/stats').get(adminStats);
 router.route('/app/stats').get(authenticateUser, appTrendStats);
 router

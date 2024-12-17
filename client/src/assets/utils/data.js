@@ -85,19 +85,19 @@ export const services = [
   {
     id: 2,
     icon: '🪐',
-    title: 'Endless Library',
+    title: 'Endless Tech Trends',
     text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Asperiores, officia.',
   },
   {
     id: 3,
     icon: '🔍',
-    title: 'Topics Tool',
+    title: 'Filtering Tools',
     text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Asperiores, officia.',
   },
   {
     id: 4,
     icon: '🎧',
-    title: 'Read Articles',
+    title: 'Read Get Started Articles',
     text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Asperiores, officia.',
   },
   {
@@ -109,7 +109,7 @@ export const services = [
   {
     id: 6,
     icon: '🫧',
-    title: 'Explore Packages',
+    title: 'Discover Alternatives',
     text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Asperiores, officia.',
   },
 ];

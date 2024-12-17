@@ -109,6 +109,7 @@ export const paginateAndSortTrends = async (
   sortKey,
   page,
   limit,
+  trendLimit,
   cursor
 ) => {
   //let skip = 0;
@@ -124,18 +125,27 @@ export const paginateAndSortTrends = async (
     ];
   }
 
+  const adjustedLimit = trendLimit
+    ? Math.min(limit + 1, trendLimit)
+    : limit + 1; // adjust the query limit only if trendLimit is provided
+
   // cursor-based pagination: no need for skip
   const trendsQuery = trendModel
     .find(queryObject)
     .select('-generatedBlogPost -trendUse') // exclude unnecessary fields
     .populate('createdBy', 'username githubUsername profile_img privacy -_id')
     .sort(sortFields) // sort the trends based on the sortKey
-    .limit(limit + 1); //query trends with pagination fetch one extra to determine if there’s a next page
+    .limit(limit + 1) //query trends with pagination fetch one extra to determine if there’s a next page
+    .limit(adjustedLimit); // limit trends fetched overall
 
   const [trends, totalTrends] = await Promise.all([
     trendsQuery,
     trendModel.countDocuments(queryObject),
   ]); //getting total trends based on query
+
+  const cappedTotalTrends = trendLimit
+    ? Math.min(totalTrends, trendLimit)
+    : totalTrends; // capping total trends count for certain controllers
 
   const hasNextPage = trends.length > limit; // check if there is a next page
   if (hasNextPage) {
@@ -146,9 +156,15 @@ export const paginateAndSortTrends = async (
     ? `${trends[trends.length - 1].updatedAt}|${trends[trends.length - 1]._id}`
     : null; // generate the nextCursor using updatedAt and _id of the last document
 
-  const pagesNumber = Math.ceil(totalTrends / limit); //calculating the page
+  const pagesNumber = Math.ceil(cappedTotalTrends / limit); //calculating the page
 
-  return { totalTrends, pagesNumber, trends, nextCursor, hasNextPage };
+  return {
+    totalTrends: cappedTotalTrends,
+    pagesNumber,
+    trends,
+    nextCursor,
+    hasNextPage,
+  };
 }; //END PAGINATE AND SORT TRENDS
 
 /**

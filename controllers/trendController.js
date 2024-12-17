@@ -434,7 +434,7 @@ export const getSelectIconData = (req, res) => {
     console.error('Error fetching icon data:', error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-};
+}; //end getSelectIconData
 
 /**
  * UPLOAD TREND SVG is responsible for allow admin to upload/modify svg belonging to a trend before and after approval
@@ -534,5 +534,67 @@ export const searchTrends = async (req, res) => {
     res.status(StatusCodes.OK).json({ trends });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};
+
+/**
+ * GET TOP VIEWED TRENDS
+ * This controller fetches the top viewed approved trends with pagination.
+ * It enforces `topViewed=topViewedNow` and restricts `limit` to a fixed 30 trends per page.
+ * It excludes `generatedBlogPost` and `trendUse` fields.
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const getTopViewedTrends = async (req, res) => {
+  console.log('getTopViewedTrends controller invoked');
+  console.log('Received Query Parameters:', req.query);
+
+  // **1. Hard-Coded Parameters**
+  const topViewed = 'topViewedNow'; // Enforce internally
+  const page = 1; // Fixed to 1
+  const limit = 12; // Fixed limit per page
+  const trendLimit = 13;
+
+  // **2. Construct the Query Object**
+  const queryObject = { isApproved: true };
+
+  // **3. Define the Sort Key**
+  const sortKey = { views: -1 };
+
+  try {
+    // **4. Fetch Trends with Pagination and Sorting**
+    const { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
+      await paginateAndSortTrends(
+        queryObject,
+        sortKey,
+        page,
+        limit,
+        trendLimit,
+        undefined
+      );
+
+    // **5. Apply Privacy Logic**
+    const sanitizedTrends = trends.map((trend) => {
+      if (trend.createdBy && trend.createdBy.privacy) {
+        trend.createdBy.githubUsername = ''; // Remove sensitive info
+      }
+      return trend;
+    });
+
+    // **6. Respond with Paginated Trends Data**
+    return res.status(StatusCodes.OK).json({
+      totalTrends,
+      pagesNumber,
+      currentPage: page,
+      trends: sanitizedTrends,
+      nextCursor,
+      hasNextPage,
+    });
+  } catch (error) {
+    console.error('Error fetching top viewed trends:', error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: error.message });
   }
 };
