@@ -19,6 +19,8 @@ import {
   Settings,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
+import PublicLayout from './layouts/PublicLayout'; // layout for public routes
+import ProtectedLayout from './layouts/ProtectedLayout'; // layout for protected routes
 /**
  * using React Router v6 from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
  * 'loader' property allows you to specify a loader function that fetches data asynchronously before rendering the corresponding component
@@ -57,9 +59,8 @@ import { loader as landingLoader } from './pages/Landing';
 //which displays what is shown in the url of the page ("/" is a home page)
 const router = createBrowserRouter([
   {
-    //nesting routs with index route for the landing for "/" path
     path: '/',
-    element: <HomeLayout />,
+    element: <PublicLayout />,
     errorElement: <Error />,
     children: [
       {
@@ -77,6 +78,17 @@ const router = createBrowserRouter([
         element: <Login />,
         action: loginAction,
       },
+    ],
+  },
+  {
+    path: '/',
+    element: (
+      <UserProvider>
+        <ProtectedLayout />
+      </UserProvider>
+    ),
+    errorElement: <Error />,
+    children: [
       {
         path: 'dashboard',
         element: <DashboardLayout />,
@@ -151,12 +163,7 @@ const router = createBrowserRouter([
 //   return <RouterProvider router={router} />;
 // };
 const App = () => {
-  //using RouterProvided and creating instance of router from above
-  return (
-    <UserProvider>
-      <RouterProvider router={router} />
-    </UserProvider>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
