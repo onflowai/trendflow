@@ -39,6 +39,7 @@ function TrendSmall({
   onApprove,
   trendDesc,
   isApproved,
+  isFeatured,
   isGridView,
   flashChart,
   savedTrends,
@@ -200,18 +201,20 @@ function TrendSmall({
                   </Tooltip>
                 </>
               ) : (
-                <span
-                  className="bookmark-btn"
-                  onClick={handleBookmarkClick}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {isSaved || isHovered ? (
-                    <BsFillBookmarkFill size="20px" />
-                  ) : (
-                    <BsBookmark size="20px" />
-                  )}
-                </span>
+                !isFeatured && ( // Check if `isFeatured` is false
+                  <span
+                    className="bookmark-btn"
+                    onClick={handleBookmarkClick}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {isSaved || isHovered ? (
+                      <BsFillBookmarkFill size="20px" />
+                    ) : (
+                      <BsBookmark size="20px" />
+                    )}
+                  </span>
+                )
               )}
             </div>
           </footer>

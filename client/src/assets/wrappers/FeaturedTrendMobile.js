@@ -9,25 +9,24 @@ const Container = styled.section`
     margin-bottom: 2rem;
   }
 
-  .related-trends-mobile {
+  .featured-trends-mobile {
     display: grid;
     grid-template-columns: ${({ isGridView }) =>
       isGridView ? 'repeat(2, 1fr)' : '1fr'};
     gap: 1rem;
-    padding: 10px 15px;
+    padding: 10px 0px;
   }
 
   .trend-small-card {
     border-radius: var(--border-radius);
     transition: transform 0.1s ease;
     height: 100%; /* Ensure each trend has the same height */
-    /* height: ${({ isGridView }) => (isGridView ? '170px' : 'auto')}; */
   }
 
   .toggle-container, .toggle-container-large {
     display: none;
-    margin-bottom: 0.6rem;
-    margin-left: 1rem;
+    margin-bottom: 0rem;
+    margin-left: 0rem;
   }
 
   .view-btn, .grid-view-btn {
@@ -44,12 +43,12 @@ const Container = styled.section`
     color: var(--grey-100); /* Highlight the active button */
   }
 
-  .related-toggle-container {
+  .featured-toggle-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    padding: 0 15px;
+    padding: 0 0px;
   }
 
   @media (max-width: 850px) {
@@ -58,7 +57,7 @@ const Container = styled.section`
       justify-content: left; /* Align buttons to the left */
     }
 
-    .related-trends-mobile {
+    .featured-trends-mobile {
       grid-template-columns: ${({ isGridView }) =>
         isGridView ? 'repeat(2, 1fr)' : '1fr'}; /* Toggle grid/list view */
       gap: 1rem;
@@ -70,7 +69,7 @@ const Container = styled.section`
       display: block; /* Show toggle button for large screens */
     }
 
-    .related-trends-mobile {
+    .featured-trends-mobile {
       grid-template-columns: ${({ isGridView }) =>
         isGridView ? 'repeat(2, 1fr)' : '1fr'}; /* Adjust based on grid view */
       gap: 2rem;
@@ -78,7 +77,7 @@ const Container = styled.section`
   }
 
   @media (min-width: 1300px) {
-    .related-trends-mobile {
+    .featured-trends-mobile {
       grid-template-columns: ${({ isGridView }) =>
         isGridView
           ? 'repeat(3, 1fr)'
@@ -88,7 +87,7 @@ const Container = styled.section`
   }
 
   @media (min-width: 1740px) {
-    .related-trends-mobile {
+    .featured-trends-mobile {
       grid-template-columns: ${({ isGridView }) =>
         isGridView
           ? 'repeat(4, 1fr)'

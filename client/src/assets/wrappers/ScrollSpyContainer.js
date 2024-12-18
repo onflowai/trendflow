@@ -21,7 +21,7 @@ const Container = styled.section`
       right: 0;
       width: 100%; // Takes the full width of the viewport
       height: auto; // Height adjusts to content
-      background: white; // White background for visibility
+      background: var(--white); // White background for visibility
       display: flex;
       justify-content: center; // Centers items horizontally
       align-items: center; // Aligns items vertically

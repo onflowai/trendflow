@@ -34,6 +34,7 @@ const RelatedTrendsDesktop = ({
       <div className="related-trends-desktop">
         {relatedTrends.map(({ trendDesc, ...trend }) => (
           <TrendSmall
+            key={trend._id}
             {...trend}
             relatedStyle={relatedStyle}
             chartHeight={chartHeight}

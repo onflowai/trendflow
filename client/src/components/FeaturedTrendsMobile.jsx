@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Trend from './Trend';
-import Container from '../assets/wrappers/RelatedTrendMobile';
+import Container from '../assets/wrappers/FeaturedTrendMobile';
 import { MdViewStream } from 'react-icons/md';
 import { BsGrid3X2GapFill } from 'react-icons/bs';
 import { TbRectangleFilled } from 'react-icons/tb';
@@ -8,13 +8,14 @@ import useLocalStorage from '../hooks/useLocalStorage';
 /**
  * Featured Trends Mobile mirrors Related Trends Mobile takes on data from Lading to display related trends
  * in mobile mode
- * @param {*} relatedTrends
+ * @param {*} featuredTrends
  * @param {*}
  * @returns
  */
 const FeaturedTrendsMobile = ({ featuredTrends }) => {
+  const isFeatured = true;
   //Values used to style recharts in TrendPage
-  const chartHeight = 210;
+  const chartHeight = 190;
   const chartMarginTop = 5;
   const chartMarginBottom = -40;
   // State for managing grid view with persistence
@@ -61,15 +62,15 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
   if (!featuredTrends || featuredTrends.length === 0) {
     return (
       <Container>
-        <h2>No Related Trends</h2>
+        <h2>No Featured Trends</h2>
       </Container>
     );
   }
-  // Fetch related trends or pass them as props
+  // Fetch featured trends or pass them as props
   return (
     <Container isGridView={isGridView}>
       {/* Button container for switching views */}
-      <div className="related-toggle-container">
+      <div className="featured-toggle-container">
         <div className="toggle-container">
           <button
             className={`view-btn ${activeButton === 'grid' ? 'active' : ''}`}
@@ -94,7 +95,7 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
           <h4>Featured:</h4>
         </div>
       </div>
-      <div className="related-trends-mobile">
+      <div className="featured-trends-mobile">
         {featuredTrends.map((trend) => (
           <Trend
             key={trend._id} // Ensure unique key for each trend
@@ -104,6 +105,7 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
+            isFeatured={isFeatured}
           />
         ))}
       </div>

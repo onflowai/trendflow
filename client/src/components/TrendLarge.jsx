@@ -50,6 +50,7 @@ function TrendLarge({
   onUnapprove,
   onApprove,
   onDelete,
+  isFeatured,
   onSave,
   onRemove,
   savedTrends,
@@ -230,18 +231,20 @@ function TrendLarge({
                     </Link>
                   </Tooltip>
                 ) : (
-                  <Link
-                    className="bookmark-btn"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                    onClick={handleBookmarkClick}
-                  >
-                    {isSaved || isHovered ? (
-                      <BsFillBookmarkFill size="20px" />
-                    ) : (
-                      <BsBookmark size="20px" />
-                    )}
-                  </Link>
+                  !isFeatured && ( // Only render the bookmark button if `isFeatured` is false
+                    <Link
+                      className="bookmark-btn"
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      onClick={handleBookmarkClick}
+                    >
+                      {isSaved || isHovered ? (
+                        <BsFillBookmarkFill size="20px" />
+                      ) : (
+                        <BsBookmark size="20px" />
+                      )}
+                    </Link>
+                  )
                 )}
                 {isAdminPage && (
                   <>

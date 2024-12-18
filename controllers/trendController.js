@@ -94,7 +94,17 @@ export const getSingleTrend = async (req, res) => {
     }
     trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html
     const relatedTrends = await fetchRelatedTrends(trendObject); // fetching related trends from utility function
-    res.status(StatusCodes.OK).json({ trendObject, relatedTrends }); // return trend and related trends
+
+    const sanitizedRelatedTrends = relatedTrends.map((relatedTrend) => {
+      if (relatedTrend.createdBy && relatedTrend.createdBy.privacy) {
+        relatedTrend.createdBy.githubUsername = ''; // Remove if privacy is enabled
+      }
+      return relatedTrend;
+    }); // apply privacy logic to each related trend
+
+    res
+      .status(StatusCodes.OK)
+      .json({ trendObject, relatedTrends: sanitizedRelatedTrends }); // return trend and related trends
   } catch (error) {
     // logging error details to console
     console.error(`Error in getSingleTrend for slug: ${slug}`);
