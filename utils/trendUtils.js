@@ -135,8 +135,8 @@ export const paginateAndSortTrends = async (
     .select('-generatedBlogPost -trendUse') // exclude unnecessary fields
     .populate('createdBy', 'username githubUsername profile_img privacy -_id')
     .sort(sortFields) // sort the trends based on the sortKey
-    .limit(limit + 1) //query trends with pagination fetch one extra to determine if there’s a next page
     .limit(adjustedLimit); // limit trends fetched overall
+  //.limit(limit + 1) //query trends with pagination fetch one extra to determine if there’s a next page
 
   const [trends, totalTrends] = await Promise.all([
     trendsQuery,

@@ -5,6 +5,8 @@ import LandingNavbarLinks from './LandingNavbarLinks';
 import LandingNavbarSocials from './LandingNavbarSocials';
 import Container from '../assets/wrappers/LandingNavbarContainer';
 import Logo from './Logo';
+import DarkMode from './DarkMode';
+import LogoBrand from './LogoBrand';
 const LandingNavbar = () => {
   //using useState to set scroll initially to false
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -25,7 +27,7 @@ const LandingNavbar = () => {
       <nav className="navbar">
         <div className="nav-center">
           <div className="nav-header">
-            <Logo />
+            <LogoBrand />
             <button type="button" className="nav-toggle" id="nav-toggle">
               <i className="fas fa-bars"></i>
             </button>

@@ -377,7 +377,14 @@ export const getApprovedTrends = async (req, res) => {
   try {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
-      await paginateAndSortTrends(queryObject, sortKey, page, limit, cursor);
+      await paginateAndSortTrends(
+        queryObject,
+        sortKey,
+        page,
+        limit,
+        undefined,
+        cursor
+      ); //undefined is set so that all trends will be pulled from the controller
     // privacy logic
     trends = trends.map((trend) => {
       // console.log(
@@ -547,23 +554,18 @@ export const searchTrends = async (req, res) => {
  * @param {Object} res - Express response object
  */
 export const getTopViewedTrends = async (req, res) => {
-  console.log('getTopViewedTrends controller invoked');
-  console.log('Received Query Parameters:', req.query);
-
-  // **1. Hard-Coded Parameters**
   const topViewed = 'topViewedNow'; // Enforce internally
-  const page = 1; // Fixed to 1
-  const limit = 12; // Fixed limit per page
-  const trendLimit = 13;
+  const page = 1; // page
+  const limit = 12; // fixed limit per page
+  const trendLimit = 10; //fixed limit of trends for this controller
 
-  // **2. Construct the Query Object**
   const queryObject = { isApproved: true };
 
-  // **3. Define the Sort Key**
   const sortKey = { views: -1 };
 
+  const cursor = req.query.cursor;
+
   try {
-    // **4. Fetch Trends with Pagination and Sorting**
     const { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
       await paginateAndSortTrends(
         queryObject,
@@ -571,18 +573,16 @@ export const getTopViewedTrends = async (req, res) => {
         page,
         limit,
         trendLimit,
-        undefined
+        cursor
       );
 
-    // **5. Apply Privacy Logic**
     const sanitizedTrends = trends.map((trend) => {
       if (trend.createdBy && trend.createdBy.privacy) {
-        trend.createdBy.githubUsername = ''; // Remove sensitive info
+        trend.createdBy.githubUsername = '';
       }
       return trend;
     });
 
-    // **6. Respond with Paginated Trends Data**
     return res.status(StatusCodes.OK).json({
       totalTrends,
       pagesNumber,

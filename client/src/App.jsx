@@ -21,19 +21,20 @@ import {
 import { UserProvider } from './context/UserContext.jsx';
 import PublicLayout from './layouts/PublicLayout'; // layout for public routes
 import ProtectedLayout from './layouts/ProtectedLayout'; // layout for protected routes
+import { ThemeProvider } from './context/ThemeContext';
 /**
  * using React Router v6 from React 18 to utilize 'action' property allows you to specify an action function to be executed before rendering the corresponding component.
  * 'loader' property allows you to specify a loader function that fetches data asynchronously before rendering the corresponding component
  * @returns
  */
 //Function responsible for setting DarkTheme by persisting it in local storage
-export const checkDefaultTheme = () => {
-  //retrieving the state of the darkTheme to check if it true
-  const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
-  document.body.classList.toggle('dark-theme', isDarkTheme);
-  return isDarkTheme;
-};
-checkDefaultTheme();
+// export const checkDefaultTheme = () => {
+//   //retrieving the state of the darkTheme to check if it true
+//   const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
+//   document.body.classList.toggle('dark-theme', isDarkTheme);
+//   return isDarkTheme;
+// };
+// checkDefaultTheme();
 
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
@@ -163,7 +164,11 @@ const router = createBrowserRouter([
 //   return <RouterProvider router={router} />;
 // };
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 };
 
 export default App;

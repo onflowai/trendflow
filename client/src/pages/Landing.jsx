@@ -9,10 +9,10 @@ import {
   LandingAbout,
   LandingFooter,
   LandingNavbar,
-  FeaturedTrends,
   LandingServices,
   CustomErrorToast,
-  PaginationComponent,
+  PaginationFeatured,
+  FeaturedTrendsMobile,
   FeaturedTrendsDesktop,
 } from '../components';
 /**
@@ -66,6 +66,7 @@ const Landing = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef();
+  const isMobile = useWindowSize();
 
   /**
    * Function to load more trends when the user scrolls to the bottom
@@ -129,9 +130,15 @@ const Landing = () => {
         <LandingHero />
         <LandingServices />
         <LandingAbout />
-        <div>
-          <FeaturedTrendsDesktop featuredTrends={trends} />
-          <PaginationComponent
+        <div className="featured-trends">
+          {isMobile ? (
+            <FeaturedTrendsMobile featuredTrends={trends} />
+          ) : (
+            <FeaturedTrendsDesktop featuredTrends={trends} />
+          )}
+          <div ref={lastTrendElementRef}></div>
+          <PaginationFeatured
+            link="/login"
             isLoading={isLoading}
             hasNextPage={pagination.hasNextPage}
           />

@@ -6,17 +6,13 @@ import { BsGrid3X2GapFill } from 'react-icons/bs';
 import { TbRectangleFilled } from 'react-icons/tb';
 import useLocalStorage from '../hooks/useLocalStorage';
 /**
- * Related Trends Mobile takes on data from TrendPage to display related trends
+ * Featured Trends Mobile mirrors Related Trends Mobile takes on data from Lading to display related trends
+ * in mobile mode
  * @param {*} relatedTrends
  * @param {*}
  * @returns
  */
-const FeaturedTrendsMobile = ({
-  relatedTrends,
-  savedTrends,
-  onSave,
-  onRemove,
-}) => {
+const FeaturedTrendsMobile = ({ featuredTrends }) => {
   //Values used to style recharts in TrendPage
   const chartHeight = 210;
   const chartMarginTop = 5;
@@ -62,7 +58,7 @@ const FeaturedTrendsMobile = ({
       setIsLargeTrendView(true); // Set large view on
     }
   };
-  if (!relatedTrends || relatedTrends.length === 0) {
+  if (!featuredTrends || featuredTrends.length === 0) {
     return (
       <Container>
         <h2>No Related Trends</h2>
@@ -95,11 +91,11 @@ const FeaturedTrendsMobile = ({
           </button>
         </div>
         <div>
-          <h4>Related:</h4>
+          <h4>Featured:</h4>
         </div>
       </div>
       <div className="related-trends-mobile">
-        {relatedTrends.map((trend) => (
+        {featuredTrends.map((trend) => (
           <Trend
             key={trend._id} // Ensure unique key for each trend
             {...trend} // Spread the trend data as props to the Trend component
@@ -108,9 +104,6 @@ const FeaturedTrendsMobile = ({
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
-            savedTrends={savedTrends}
-            onSave={onSave}
-            onRemove={onRemove}
           />
         ))}
       </div>

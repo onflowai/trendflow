@@ -28,6 +28,7 @@ import {
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { useTheme } from '../context/ThemeContext';
 day.extend(advancedFormat);
 /**
  * This component is used in the large screens with more info, data is passed from Trend.jsx
@@ -57,7 +58,7 @@ function TrendLarge({
   createdBy,
   isApproved,
 }) {
-  const { isDarkTheme } = useDashboardContext();
+  const { isDarkTheme } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);

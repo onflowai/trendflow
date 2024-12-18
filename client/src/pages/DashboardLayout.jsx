@@ -9,9 +9,9 @@ import {
   CustomErrorToast,
   Footer,
 } from '../components';
-import { checkDefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * Dashboard Layout takes on components and sets up the layout. NOTE loader is used.
@@ -54,14 +54,14 @@ const DashboardLayout = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [userToggled]); // dependency on userToggled to reset when user manually toggles
-  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme);
+  const { isDarkTheme, toggleDarkTheme } = useTheme();
   //function responsible for setting the dark theme
-  const toggleDarkTheme = () => {
-    const newDarkTheme = !isDarkTheme; //newDarkTheme is opposite of isDarkTheme
-    setIsDarkTheme(newDarkTheme); //passing it to set
-    document.body.classList.toggle('dark-theme', newDarkTheme); //targeting body with toggle('class', boolean)
-    localStorage.setItem('darkTheme', newDarkTheme); //storing new value darkTheme as newDarkTheme
-  };
+  // const toggleDarkTheme = () => {
+  //   const newDarkTheme = !isDarkTheme; //newDarkTheme is opposite of isDarkTheme
+  //   setIsDarkTheme(newDarkTheme); //passing it to set
+  //   document.body.classList.toggle('dark-theme', newDarkTheme); //targeting body with toggle('class', boolean)
+  //   localStorage.setItem('darkTheme', newDarkTheme); //storing new value darkTheme as newDarkTheme
+  // };
   //setting the sidebar equal to opposite of showSidebar
   const toggleSidebar = () => {
     setShowSidebar((prevState) => !prevState);

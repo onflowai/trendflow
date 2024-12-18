@@ -71,3 +71,4 @@ export { default as FormComponentLogoBtn } from './FormComponentLogoBtn';
 export { default as RelatedTrendsMobile } from './RelatedTrendsMobile';
 export { default as RelatedTrendsDesktop } from './RelatedTrendsDesktop';
 export { default as PaginationComponent } from './PaginationComponent';
+export { default as PaginationFeatured } from './PaginationFeatured';

@@ -20,28 +20,28 @@ const Container = styled.section`
   @media (max-width: 850px) {
     .featured-trends-desktop {
       grid-template-columns: repeat(2, 1fr); // 2 cards per row on small screens
-      gap: 1rem;
+      gap: 2rem;
     }
   }
 
   @media (min-width: 851px) and (max-width: 1299px) {
     .featured-trends-desktop {
       grid-template-columns: repeat(3, 1fr); // 3 cards per row on medium screens
-      gap: 1.5rem;
+      gap: 1rem;
     }
   }
 
   @media (min-width: 1300px) and (max-width: 1739px) {
     .featured-trends-desktop {
       grid-template-columns: repeat(4, 1fr); // 4 cards per row on large screens
-      gap: 2rem;
+      gap: 1rem;
     }
   }
 
   @media (min-width: 1740px) {
     .featured-trends-desktop {
       grid-template-columns: repeat(4, 1fr); // maintaining 4 cards per row on extra-large screens
-      gap: 2rem;
+      gap: 1rem;
     }
   }
 
