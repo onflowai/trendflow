@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import img from '../assets/images/test-img.jpg';
 import Container from '../assets/wrappers/LandingPageContainer';
 import customFetch from '../utils/customFetch';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
 import {
-  LandingNavbar,
   LandingHero,
   LandingAbout,
-  LandingServices,
-  FeaturedTrends,
   LandingFooter,
+  LandingNavbar,
+  FeaturedTrends,
+  LandingServices,
+  CustomErrorToast,
+  PaginationComponent,
+  FeaturedTrendsDesktop,
 } from '../components';
 /**
  *
@@ -49,7 +52,74 @@ export const loader = async () => {
   }
 };
 const Landing = () => {
-  const { trends } = useLoaderData();
+  const navigate = useNavigate();
+  const {
+    trends: initialTrendsData,
+    hasNextPage,
+    nextCursor,
+  } = useLoaderData();
+
+  const [trends, setTrends] = useState(initialTrendsData || []);
+  const [pagination, setPagination] = useState({
+    nextCursor: nextCursor || null,
+    hasNextPage: hasNextPage || false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const observer = useRef();
+
+  /**
+   * Function to load more trends when the user scrolls to the bottom
+   */
+  const loadMoreTrends = async () => {
+    if (!pagination.hasNextPage || isLoading) return;
+
+    try {
+      setIsLoading(true);
+      const response = await customFetch.get('/trends/top-viewed', {
+        params: {
+          cursor: pagination.nextCursor,
+          //limit: trendsPerPage,
+        },
+      });
+
+      const {
+        trends: newTrends,
+        nextCursor: newNextCursor,
+        hasNextPage: newHasNextPage,
+      } = response.data;
+
+      setTrends((prevTrends) => [...prevTrends, ...newTrends]);
+      setPagination({
+        nextCursor: newNextCursor,
+        hasNextPage: newHasNextPage,
+      });
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+      console.error('Error loading more trends:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }; //end loadMoreTrends
+
+  /**
+   * Intersection Observer callback to trigger loadMoreTrends
+   */
+  const lastTrendElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && pagination.hasNextPage) {
+          loadMoreTrends();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, pagination.hasNextPage]
+  );
+
   return (
     <Container>
       <div className="container">
@@ -59,7 +129,13 @@ const Landing = () => {
         <LandingHero />
         <LandingServices />
         <LandingAbout />
-        <FeaturedTrends />
+        <div>
+          <FeaturedTrendsDesktop featuredTrends={trends} />
+          <PaginationComponent
+            isLoading={isLoading}
+            hasNextPage={pagination.hasNextPage}
+          />
+        </div>
       </div>
       <LandingFooter />
     </Container>
