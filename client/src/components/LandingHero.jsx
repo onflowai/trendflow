@@ -2,6 +2,7 @@ import React from 'react';
 import img from '../assets/images/test-img.jpg';
 import { tagLarge, tagSmall } from '../assets/utils/data';
 import Container from '../assets/wrappers/LandingHeroContainer';
+import HeroAnimated from './HeroAnimated';
 import { Link } from 'react-router-dom';
 const LandingHero = () => {
   return (
@@ -21,7 +22,9 @@ const LandingHero = () => {
               Start Using
             </Link>
           </div>
-          <img src={img} alt="" className="img main-img" />
+          <div className="img main-img">
+            <HeroAnimated />
+          </div>
         </div>
       </Container>
     </section>

@@ -3,6 +3,7 @@ import { useDashboardContext } from '../pages/DashboardLayout';
 import styled from 'styled-components';
 import { IoSettingsSharp } from 'react-icons/io5'; // Assuming you're using FontAwesome for icons
 import { Link } from 'react-router-dom';
+import { HiUser } from 'react-icons/hi2';
 
 const SidebarSetting = () => {
   const { user } = useDashboardContext() || {};
@@ -11,7 +12,11 @@ const SidebarSetting = () => {
       <div className="sidebar-setting">
         <Link to="/dashboard/profile" className="user-container">
           <div className="user-pic-wrapper">
-            <img src={user?.profile_img} alt="User" className="user-pic" />
+            {user.profile_img ? (
+              <img src={user?.profile_img} alt="User" className="user-pic" />
+            ) : (
+              <HiUser size={25} className="icon" class="user-default-pic" />
+            )}
           </div>
           <span className="user-name">{user?.username}</span>
         </Link>
@@ -47,6 +52,10 @@ const Container = styled.div`
     height: 35px; // Adjust size as needed
     border-radius: 50%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--primary-100);
   }
   .user-pic {
     width: 100%;
@@ -68,6 +77,10 @@ const Container = styled.div`
   }
   .user-pic-wrapper:hover::before {
     opacity: 1;
+  }
+  .user-default-pic {
+    font-size: 30px; // Adjust icon size
+    color: var(--primary-500); // Set icon color
   }
   .user-name {
     font-size: 1rem; // Adjust as needed

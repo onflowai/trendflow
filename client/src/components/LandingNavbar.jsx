@@ -51,6 +51,7 @@ const LandingNavbar = () => {
                 />
               );
             })}
+            <DarkMode className="dark-mode" />
           </ul>
         </div>
       </nav>

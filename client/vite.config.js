@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 
 /**
  * This is where configurations can be made like a proxy
@@ -10,7 +11,16 @@ import react from '@vitejs/plugin-react';
  */
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    svgr({
+      exportAsDefault: false, // Enables named exports like ReactComponent
+      svgrOptions: {
+        // Optional: Customize SVGR options if needed
+      },
+    }),
+  ],
+
   server: {
     proxy: {
       '/api': {
