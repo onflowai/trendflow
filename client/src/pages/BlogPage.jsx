@@ -27,6 +27,7 @@ export const loader = async ({ params }) => {
     return redirect('/dashboard');
   }
 };
+//isMobile only for Blog Page
 function useWindowSize() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
   useEffect(() => {
