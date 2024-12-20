@@ -2,19 +2,19 @@ import styled from 'styled-components';
 
 const Container = styled.section`
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: var(--white);
-  box-shadow: ${(props) =>
-    props.hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.1)' : 'none'};
-  background: var(--background-color);
-  z-index: 2;
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-}
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--white);
+    box-shadow: ${(props) =>
+      props.hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.1)' : 'none'};
+    background: var(--background-color);
+    z-index: 999;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+  }
 .nav-icons {
   display: none;
 }

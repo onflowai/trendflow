@@ -10,6 +10,8 @@ export { default as LandingNavbar } from './LandingNavbar';
 export { default as LandingHero } from './LandingHero';
 export { default as LandingAbout } from './LandingAbout';
 export { default as LandingServices } from './LandingServices';
+export { default as LandingOverlayMenu } from './LandingOverlayMenu';
+export { default as LandingMenuLink } from './LandingMenuLink';
 export { default as FeaturedTrends } from './FeaturedTrends';
 export { default as FeaturedTrendsDesktop } from './FeaturedTrendsDesktop';
 export { default as FeaturedTrendsMobile } from './FeaturedTrendsMobile';

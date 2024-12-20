@@ -4,12 +4,16 @@ import { Link } from 'react-router-dom';
 import LandingNavbarLinks from './LandingNavbarLinks';
 import LandingNavbarSocials from './LandingNavbarSocials';
 import Container from '../assets/wrappers/LandingNavbarContainer';
+import { IoIosMenu } from 'react-icons/io';
 import Logo from './Logo';
 import DarkMode from './DarkMode';
 import LogoBrand from './LogoBrand';
+import LandingOverlayMenu from './LandingOverlayMenu';
+
 const LandingNavbar = () => {
   //using useState to set scroll initially to false
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   //Setting hasScrolled to true if scrolled down, false if scrolled to top
   useEffect(() => {
     const handleScroll = () => {
@@ -22,14 +26,24 @@ const LandingNavbar = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const toggleOverlay = () => {
+    setIsOverlayOpen(!isOverlayOpen);
+  };
+
   return (
     <Container hasScrolled={hasScrolled}>
       <nav className="navbar">
         <div className="nav-center">
           <div className="nav-header">
             <LogoBrand />
-            <button type="button" className="nav-toggle" id="nav-toggle">
-              <i className="fas fa-bars"></i>
+            <button
+              type="button"
+              className="nav-toggle"
+              onClick={toggleOverlay}
+              aria-label="Toggle menu"
+            >
+              <IoIosMenu />
             </button>
           </div>
           {/* <!-- left this comment on purpose --> */}
@@ -55,6 +69,7 @@ const LandingNavbar = () => {
           </ul>
         </div>
       </nav>
+      {isOverlayOpen && <LandingOverlayMenu toggleOverlay={toggleOverlay} />}
     </Container>
   );
 };
