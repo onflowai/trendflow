@@ -23,7 +23,7 @@ const NavLinks = ({ isSidebar }) => {
               to={path}
               key={text}
               className="nav-link"
-              onClick={isSidebar ? null : toggleSidebar}
+              onClick={isSidebar ? toggleSidebar : null}
               end
             >
               {text}

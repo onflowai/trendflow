@@ -28,20 +28,20 @@ const LinkItem = styled.a`
   padding: 1rem 0;
   text-decoration: none;
   color: var(--grey-700);
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
+  transition: color 0.3s ease, transform 0.1s ease;
 
   &:hover {
     color: var(--primary-500);
-    transform: scale(1.05);
+    transform: scale(1.01);
   }
 `;
 
 const Divider = styled.hr`
   width: 100%;
   border: none;
-  border-top: 1px solid var(--grey-300);
+  border-top: 1.5px solid var(--grey-100);
   margin: 0.5rem 0;
 `;
 

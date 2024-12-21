@@ -95,6 +95,9 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
 };
 
 const OverlayContainer = styled.div`
+@media (min-width: 992px) {
+    display: none;
+  }
   position: fixed;
   top: 0;
   left: 0;
@@ -164,10 +167,10 @@ const SocialLinks = styled.div`
 const CallsDivider = styled.hr`
   width: 100%;
   border: none;
-  border-top: 1px solid var(--grey-300);
-  margin: 1rem 0;
+  border-top: 1.5px solid var(--grey-100);
+  margin: 0.5rem 0;
 `;
-
+//border-top: 1.5px solid var(--grey-100);
 const DividerLine = styled.hr`
   width: 100%;
   border: none;

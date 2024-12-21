@@ -1,3 +1,5 @@
+// src/components/SidebarSmall.js
+
 import React from 'react';
 import styled from 'styled-components';
 import { IoIosClose } from 'react-icons/io';
@@ -16,7 +18,6 @@ const SidebarSmall = () => {
   const { showSidebar, toggleSidebar, user, logoutUser } =
     useDashboardContext() || {};
   const navigate = useNavigate();
-  console.log('user: ', user);
 
   const handleLogout = async () => {
     try {
@@ -43,9 +44,7 @@ const SidebarSmall = () => {
         <div className="content">
           <Header>
             <Logo />
-            <DarkModeContainer>
-              <DarkMode />
-            </DarkModeContainer>
+            <DarkMode />
             <CloseButton
               type="button"
               onClick={toggleSidebar}
@@ -57,34 +56,37 @@ const SidebarSmall = () => {
           <OverlayContent>
             {/* NAVIGATION LINKS */}
             <NavLinksWrapper>
-              <NavLinks isSidebar={true} />
+              <NavLinks className="nav-links" isSidebar />
               <Divider />
-              <LandingMenuLink
-                link={{
-                  id: 'start-using',
-                  href: '#start-using',
-                  text: 'start using',
-                }}
-                onClick={toggleSidebar} // Assuming 'start using' navigates within the app
-                showDivider={true}
-              />
+              {user?.role === 'guestUser' && (
+                <CreateAccountLink>
+                  <LandingMenuLink
+                    link={{
+                      id: 'create-account',
+                      href: '/register',
+                      text: 'Create Account',
+                    }}
+                    onClick={toggleSidebar}
+                    showDivider={false}
+                  />
+                  <Divider />
+                </CreateAccountLink>
+              )}
             </NavLinksWrapper>
 
             {/* SOCIAL LINKS */}
-            <SocialLinks>
-              {socialLinks.map((link) => (
-                <LandingNavbarSocials
-                  {...link}
-                  key={link.id}
-                  itemClass="overlay-icon"
-                  onClick={toggleSidebar}
-                />
-              ))}
-            </SocialLinks>
 
-            {/* LOGOUT BUTTON */}
+            {/* BUTTON */}
             <ButtonContainer>
-              <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+              {user?.role === 'guestUser' ? (
+                <LeaveButton className="btn" onClick={handleLogout}>
+                  Leave
+                </LeaveButton>
+              ) : (
+                <button className="btn" onClick={handleLogout}>
+                  Logout
+                </button>
+              )}
             </ButtonContainer>
           </OverlayContent>
         </div>
@@ -124,31 +126,62 @@ const Container = styled.aside`
     flex-direction: column;
     align-items: center;
   }
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: transparent;
+    border-color: transparent;
+    font-size: 2rem;
+    color: var(--red-dark);
+    cursor: pointer;
+  }
+  .nav-links {
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    color: var(--text-second-color);
+    padding: 1rem 0;
+    text-transform: capitalize;
+    transition: var(--transition);
+    border: none;
+  }
+  .nav-link:hover {
+    color: var(--primary-500);
+  }
+  .icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    display: grid;
+    place-items: center;
+  }
+  
+  .active {
+    color: var(--primary-500);
+  }
 `;
 
 const Header = styled.div`
-  position: relative;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-`;
-
-const DarkModeContainer = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-bottom: 2rem;
+  position: relative;
 `;
 
 const CloseButton = styled.button`
   background: transparent;
   border: none;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: var(--grey-600);
   cursor: pointer;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
+  transition: color 0.1s ease;
+  justify-self: end;
 
   &:hover {
     color: var(--primary-500);
@@ -156,7 +189,6 @@ const CloseButton = styled.button`
 `;
 
 const OverlayContent = styled.div`
-  margin-top: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -172,18 +204,20 @@ const NavLinksWrapper = styled.div`
   align-items: flex-start;
 `;
 
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  list-style: none;
+const CreateAccountLink = styled.div`
+  width: 100%;
 `;
 
 const Divider = styled.hr`
   width: 100%;
   border: none;
-  border-top: 1px solid var(--grey-300);
+  border-top: 1.5px solid var(--grey-100);
   margin: 1rem 0;
+`;
+const SocialLinks = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -194,7 +228,27 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const LogoutButton = styled.button`
+// const LogoutButton = styled.button`
+//   padding: 0.75rem 1.5rem;
+//   background-color: var(--red-dark);
+//   color: var(--white);
+//   border: none;
+//   border-radius: 4px;
+//   cursor: pointer;
+//   font-size: 1rem;
+//   transition: background-color 0.3s ease;
+
+//   &:hover {
+//     background-color: var(--red-light);
+//   }
+
+//   &:focus {
+//     outline: none;
+//     box-shadow: 0
+//   }
+// `;
+
+const LeaveButton = styled.button`
   padding: 0.75rem 1.5rem;
   background-color: var(--red-dark);
   color: var(--white);
@@ -202,15 +256,15 @@ const LogoutButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.1s ease;
+
 
   &:hover {
-    background-color: var(--red-light);
+    background-color: var(--yellow-light);
   }
 
   &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--red-light);
+    box-shadow: 0 0 0 2px var(--yellow-light);
   }
 `;
 

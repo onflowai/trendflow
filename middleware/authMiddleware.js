@@ -45,16 +45,14 @@ export const authorizedPermissions = (requiredPermission) => {
       `Role: ${userRole}, Permissions: ${userPermissions}, Required: ${requiredPermission}`
     ); // Debugging line
     if (!userPermissions.includes(requiredPermission)) {
-      throw new UnauthorizedError('Unauthorized to access this resource !!!');
+      throw new UnauthorizedError('Please Create Account To Use This Feature.');
     }
     next();
   };
 };
 export const authorizedAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
-    throw new UnauthorizedError(
-      'Unauthorized to access this resource, admin only!'
-    );
+    throw new UnauthorizedError('Unauthorized Access');
   }
   next();
 };
