@@ -12,8 +12,6 @@ background: none;
 
   .icon {
     color: var(--grey-600);
-    width: 20px;
-    height: 20px;
     transition: transform 0.3s;
   }
 

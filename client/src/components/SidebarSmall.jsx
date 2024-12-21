@@ -44,7 +44,7 @@ const SidebarSmall = () => {
         <div className="content">
           <Header>
             <Logo />
-            <DarkMode />
+            <DarkMode size={20} />
             <CloseButton
               type="button"
               onClick={toggleSidebar}

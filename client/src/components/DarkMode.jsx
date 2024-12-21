@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDashboardContext } from '../pages/DashboardLayout';
-import { PiMoonFill, PiMoonLight } from 'react-icons/pi';
+import { BsMoon, BsMoonFill, BsFillMoonStarsFill } from 'react-icons/bs';
 import Container from '../assets/wrappers/DarkModeContainer';
 
-const DarkMode = () => {
+const DarkMode = ({ size = 16 }) => {
   const { isDarkTheme, toggleDarkTheme } = useDashboardContext() || {};
 
   return (
     <Container onClick={toggleDarkTheme} className={isDarkTheme ? 'dark' : ''}>
       {isDarkTheme ? (
-        <PiMoonFill className="icon moon-icon" />
+        <BsFillMoonStarsFill size={size} className="icon moon-icon" />
       ) : (
-        <PiMoonLight className="icon moon-icon" />
+        <BsMoon size={size} className="icon moon-icon" />
       )}
     </Container>
   );

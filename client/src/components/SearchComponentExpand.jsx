@@ -58,7 +58,7 @@ const SearchComponentExpand = ({
   return (
     <Container>
       <div className={`input-container ${isExpanded ? 'expanded' : ''}`}>
-        <LuSearch className="icon" onClick={handleFocus} />
+        <LuSearch size={18} className="icon" onClick={handleFocus} />
         <input
           type={type}
           id={name}

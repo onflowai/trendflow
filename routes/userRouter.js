@@ -48,7 +48,12 @@ router.patch(
   updateUserImage // A new controller function to handle image upload
 );
 router.post('/visits', logVisit);
-router.patch('/save-trend', authenticateUser, saveUserTrend);
+router.patch(
+  '/save-trend',
+  authenticateUser,
+  authorizedPermissions('write'),
+  saveUserTrend
+);
 router.patch('/remove-trend', authenticateUser, removeUserTrend);
 router.get('/saved-trends', authenticateUser, getUserSavedTrends);
 router.patch('/add-github-username', authenticateUser, addGithubUsername);

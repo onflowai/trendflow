@@ -136,6 +136,7 @@ html {
   --bar-chart-color1: #4541de;
   --bar-chart-color2: #e976c7;
   --bar-chart-tool-tip: #f6f6f6;
+  --bar-chart-highlight: var(--primary2-50);
   /* FLASH CHART (TrendFlashChart)*/
   --flash-chart-color1: #4541de;
   --flash-chart-color2: #e976c7;
@@ -429,7 +430,6 @@ ul {
 }
 .btn:hover {
   background: var(--grey-100);
-  border: var(--grey-100);
 }
 .btn-color:hover {
   background: var(--primary-200);

@@ -43,7 +43,7 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
       <Header>
         <Logo />
         <DarkModeContainer>
-          <DarkMode />
+          <DarkMode size={20} />
         </DarkModeContainer>
         <CloseButton
           type="button"
