@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
+import { trendflowPyApi } from '../api/trendflowPyApi.js';
 import { fetchRelatedTrends } from '../utils/trendRelatedUtils.js';
 import { cloudinary2 } from '../config/cloudinary.js'; //using dif set of credentials
 import fs from 'fs/promises'; //allows to remove the image
@@ -181,17 +182,27 @@ export const approveTrend = async (req, res) => {
     }
 
     //CALLING THE SCRIPT and OPENAI (executing both asynchronous functions concurrently)
-    const [scriptOutput, openAIResult] = await Promise.all([
-      executePythonScript(trend.trend), // Execute Python script
+    const [trendflowPyApiResponse, openAIResult] = await Promise.all([
+      trendflowPyApi(trend.trend), //api call to python scripts
+      //executePythonScript(trend.trend), // Execute Python script
       generatePostContent(trend.trend, trend.trendCategory, trend.trendTech), // Generate content with OpenAI
     ]);
-    let data; //parsing the JSON output from scripts
-    try {
-      data = JSON.parse(scriptOutput);
-    } catch (err) {
-      console.error('Error parsing script output:', scriptOutput); // log the problematic output
-      return res.status(500).json({ msg: 'Invalid JSON from Python script' });
+
+    // Handle Python API response
+    if (!trendflowPyApiResponse.success) {
+      throw new Error(
+        trendflowPyApiResponse.error || 'Python API returned an error'
+      );
     }
+
+    const data = trendflowPyApiResponse.trends_data;
+    // let data; //parsing the JSON output from scripts
+    // try {
+    //   data = JSON.parse(scriptOutput);
+    // } catch (err) {
+    //   console.error('Error parsing script output:', scriptOutput); // log the problematic output
+    //   return res.status(500).json({ msg: 'Invalid JSON from Python script' });
+    // }
     const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
     const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const combinedScore = calculateCombinedScore(

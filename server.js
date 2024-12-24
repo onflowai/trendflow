@@ -16,13 +16,23 @@ import userRouter from './routes/userRouter.js';
 import blogRouter from './routes/blogRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
 
+//public (for public assets and complete frontend build folder developed in client ES6 modules using ESM syntax)
+import { dirname } from 'path'; //__dirname and __filename, which are readily available in CommonJS modules
+import { fileURLToPath } from 'url'; //
+import path from 'path'; //
+
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 //schedulers (using redis and node-cron to limit number of calls for stats)
 // import { startScheduledJobs } from './schedulers/scheduledJobs.js';
 
-//setting up access to .env
-dotenv.config();
+// Determine the environment
+const env = process.env.NODE_ENV || 'development';
+
+//setting up access to .env and loading the corresponding .env file
+dotenv.config({
+  path: path.resolve(process.cwd(), `.env.${env}`),
+});
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -32,24 +42,22 @@ cloudinary.config({
 
 export { cloudinary };
 
-//public (for public assets and complete frontend build folder developed in client ES6 modules using ESM syntax)
-import { dirname } from 'path'; //__dirname and __filename, which are readily available in CommonJS modules
-import { fileURLToPath } from 'url'; //
-import path from 'path'; //
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 //evoking app
 const app = express();
 //if we are in dev log the data if not do not
-if (process.env.NODE_ENV === 'development') {
-  //HTTP request LOGGER middleware for Node calling dev
+// if (process.env.NODE_ENV === 'development') {
+//   //HTTP request LOGGER middleware for Node calling dev
+//   app.use(morgan('dev'));
+// }
+if (env === 'development') {
   app.use(morgan('dev'));
-}
+} // HTTP request logger middleware for development
 // Serve static files from the assets folder
 app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving static assets
 
-app.use(express.static(path.resolve(__dirname, './public'))); //
+app.use(express.static(path.resolve(__dirname, './public'))); //the dist folder from frontend goes here
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
 app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
@@ -75,6 +83,10 @@ app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
+app.get('*', (res, req) => {
+  res.sendFile(path.resolve(__dirname, ''));
+}); //pointing to the DIST which was manually moved to the public folder on server
+
 //NOT found middleware
 //default use case when user tries to access something on a server that is not what is given
 app.use('*', (req, res) => {
@@ -87,16 +99,32 @@ app.use(errorHandlerMiddleware);
 //this is done so that the hosting platform can inject the any value into the port with env
 const port = process.env.PORT || 5100;
 
-try {
-  await mongoose.connect(process.env.MONGODB_URL);
-  console.log(`server is running on port: ${port}...`);
-  // startScheduledJobs();//redis
-} catch (error) {
-  console.log(error);
-  process.exit(1);
-}
-
+// try {
+//   await mongoose.connect(process.env.MONGODB_URL);
+//   console.log(`server is running on port: ${port}...`);
+//   // startScheduledJobs();//redis
+// } catch (error) {
+//   console.log(error);
+//   process.exit(1);
+// }
 //listener on port 5100
-app.listen(port, () => {
-  console.log(`server is running here: ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`server is running here: ${port}`);
+// });
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`Connected to MongoDB`);
+
+    app.listen(port, () => {
+      console.log(`Server is running on port: ${port}`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to MongoDB', error);
+    process.exit(1);
+  }
+};
+startServer();

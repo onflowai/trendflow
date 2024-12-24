@@ -47,8 +47,8 @@ const Container = styled.section`
     }
 
     code {
-      background-color: var(--grey-50); // Light gray background
-      border: 1px solid var(--grey-70);
+      background-color: var(--code-box-background); // Light gray background
+      border: 1.5px solid var(--code-box-border-color);
       border-radius: 5px; // Rounded corners
       padding: 15px; // Padding inside the code box
       display: block; // Ensure block-level display
@@ -66,6 +66,10 @@ const Container = styled.section`
     padding: 10px;
     font-family: monospace;
     color: var(--grey-700);
+  }
+
+  .hljs {
+  color: var(--code-box-text-color);
   }
 `;
 export default Container;
