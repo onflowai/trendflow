@@ -1,6 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
-
-//error constructor for NOT FOUND
+/**
+ * Custom errors: biggest benefit is that more data can be logged instantly for the whole application as all of the
+ * error handling is in one file, right here
+ */
+//error constructor for NOT FOUND 404
 export class NotFoundError extends Error {
   constructor(message) {
     super(message);
@@ -8,7 +11,7 @@ export class NotFoundError extends Error {
     this.statusCode = StatusCodes.NOT_FOUND;
   }
 }
-//error constructor for BAD REQUEST
+//error constructor for BAD REQUEST 400
 export class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -24,7 +27,7 @@ export class UnauthenticatedError extends Error {
     this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
-//error constructor for UNAUTHORIZED
+//error constructor for UNAUTHORIZED 403
 export class UnauthorizedError extends Error {
   constructor(message) {
     super(message);

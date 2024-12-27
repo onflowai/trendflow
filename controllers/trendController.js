@@ -2,7 +2,7 @@ import trendModel from '../models/trendModel.js';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
-import { executePythonScript } from '../utils/script_controller.js';
+//import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
 import { trendflowPyApi } from '../api/trendflowPyApi.js';
 import { fetchRelatedTrends } from '../utils/trendRelatedUtils.js';
@@ -14,8 +14,16 @@ import {
   paginateAndSortTrends,
   calculateCombinedScore,
 } from '../utils/trendUtils.js';
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+} from '../errors/customErrors.js';
 /**
- * This is where functionality of trends implemented
+ * This is where functionality of trends implemented.
+ * Automatic Error Handling: the import 'express-async-errors'; in server.js allows
+ * no need of set up custom try/catch blocks in the controllers, uncaught errors are
+ * automatically forwarded to the error handler.
  * @param {*} req
  * @param {*} res
  * @returns
@@ -31,14 +39,12 @@ import {
  * @param {*} res
  * @returns
  */
-export const submitTrend = async (req, res) => {
+export const submitTrend = async (req, res, next) => {
   let { trend } = req.body; //using scoped variable
   trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
   const existingTrend = await trendModel.findOne({ trend });
   if (existingTrend) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'Trend already exists' });
+    throw new BadRequestError('Trend already exists');
   }
   req.body.createdBy = req.user.userID; //adding createdBy property storing user id
   const trendObject = await trendModel.create({
@@ -64,11 +70,6 @@ export const getUserTrends = async (req, res) => {
  * @param {*} res
  */
 export const createTrend = async (req, res) => {
-  // if (req.user.role !== 'admin') {
-  //   return res
-  //     .status(StatusCodes.UNAUTHORIZED)
-  //     .json({ msg: 'Unauthorized access' });
-  // }
   req.body.createdBy = req.user.userID; //createdBy populated with userDI
   const trendObject = await trendModel.create(req.body); //async adding a new trend object to the database (create looks for an object)
   res.status(StatusCodes.CREATED).json({ trendObject }); //response fot the client with created trend is 201
@@ -90,7 +91,8 @@ export const getSingleTrend = async (req, res) => {
         'username profile_img githubUsername privacy -_id'
       ); //retrieve the trend if it equals the id in the data
     if (!trendObject) {
-      return res.status(404).json({ msg: 'Trend not found' });
+      //return res.status(404).json({ msg: 'Trend not found' });
+      throw new NotFoundError('Trend not found');
     }
     if (trendObject.createdBy && trendObject.createdBy.privacy) {
       trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
@@ -109,13 +111,8 @@ export const getSingleTrend = async (req, res) => {
       .status(StatusCodes.OK)
       .json({ trendObject, relatedTrends: sanitizedRelatedTrends }); // return trend and related trends
   } catch (error) {
-    // logging error details to console
-    console.error(`Error in getSingleTrend for slug: ${slug}`);
-    console.error('Error message:', error.message);
-    console.error('Stack trace:', error.stack);
-
     // DEBUG detailed response for debugging
-    res.status(500).json({
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: 'Server Error',
       error: error.message,
       stack: error.stack,
@@ -142,7 +139,7 @@ export const editTrend = async (req, res) => {
     }
   );
   if (!updateTrend) {
-    return res.status(404).json({ msg: 'Trend not found' });
+    throw new NotFoundError('Trend not found');
   }
   //response
   res
@@ -150,21 +147,17 @@ export const editTrend = async (req, res) => {
     .json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
 };
 
-//DELETE TREND
-// export const deleteTrend = async (req, res) => {
-//   const { id } = req.params; //1: find trend
-//   const removeTrend = await trendModel.findByIdAndDelete(id); //using findByIdAndDelete to delete data out of TrendModel based on id
-//   console.log(removeTrend);
-//   const newTrendObject = trends.filter((trend) => trend.id !== id); //2: filter out all trends besides the one that is provided
-//   trends = newTrendObject; //3: Storing the new trends in the trends array
-//   res.status(StatusCodes.OK).json({ msg: 'trend deleted', trend: removeTrend }); //returning the found trend
-// };
-//DELETE TREND
+/**
+ * DELETE TREND
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const deleteTrend = async (req, res) => {
   const { slug } = req.params; //1: find trend
   const removeTrend = await trendModel.findOneAndDelete({ slug: slug });
   if (!removeTrend) {
-    return res.status(404).json({ msg: 'Trend not found' });
+    throw new NotFoundError('Trend not found');
   }
   res.status(StatusCodes.OK).json({ msg: 'Trend deleted', trend: removeTrend });
 };
@@ -180,9 +173,8 @@ export const approveTrend = async (req, res) => {
   try {
     const trend = await trendModel.findOne({ slug: slug }); // Find the trend using the slug
     if (!trend) {
-      return res.status(404).json({ msg: 'Trend not found' });
+      throw new NotFoundError('Trend not found');
     }
-
     //CALLING THE SCRIPT and OPENAI (executing both asynchronous functions concurrently)
     const [trendflowPyApiResponse, openAIResult] = await Promise.all([
       trendflowPyApi(trend.trend), //api call to python scripts
@@ -198,13 +190,6 @@ export const approveTrend = async (req, res) => {
     }
 
     const data = trendflowPyApiResponse.trends_data;
-    // let data; //parsing the JSON output from scripts
-    // try {
-    //   data = JSON.parse(scriptOutput);
-    // } catch (err) {
-    //   console.error('Error parsing script output:', scriptOutput); // log the problematic output
-    //   return res.status(500).json({ msg: 'Invalid JSON from Python script' });
-    // }
     const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
     const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const combinedScore = calculateCombinedScore(
@@ -242,7 +227,7 @@ export const approveTrend = async (req, res) => {
       .json({ msg: 'Trend approved', trend: updatedTrend });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: error.message });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 }; //end APPROVE TREND
 
@@ -275,12 +260,6 @@ export const getAllTrends = async (req, res) => {
     undefined,
     status
   ); //passing isApproved based on status + no status passed (undefined)
-
-  // for the admin page, include all trends regardless of approval status
-  //if status is not 'Approved' or 'Un-Approved' and not 'all' it might be a trendStatus
-  // if (queryObject.isApproved === undefined) {
-  //   queryObject.isApproved = true;
-  // } // if a status filter is provided, add it to the query object
 
   // building the sort key based on sorting parameters
   const sortKey = constructSortKey(topRated, topViewed, updated);
@@ -389,13 +368,11 @@ export const getApprovedTrends = async (req, res) => {
     if (topRated === 'topRatedYear' || topViewed === 'topViewedYear') {
       queryObject.updatedAt = { $gte: new Date(currentYear, 0, 1) }; // trends updated from the start of the current year
     } else if (topRated === 'topRatedMonth' || topViewed === 'topViewedMonth') {
-      queryObject.updatedAt = { $gte: new Date(currentYear, currentMonth, 1) }; // trends updated from the start of the current month
+      queryObject.updatedAt = {
+        $gte: new Date(currentYear, currentMonth, 1),
+      }; // trends updated from the start of the current month
     }
   } // applying 'topRated' and 'topViewed' time-frame filters only if 'updated' didn't already set an 'updatedAt' filter
-
-  // if (chartType && chartType !== 'all') {
-  //   queryObject.trendStatus = chartType;
-  // } // if chartType is provided, add it to the query object
 
   try {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
@@ -410,24 +387,12 @@ export const getApprovedTrends = async (req, res) => {
       ); //undefined is set so that all trends will be pulled from the controller
     // privacy logic
     trends = trends.map((trend) => {
-      // console.log(
-      //   'Username:',
-      //   trend.createdBy.username,
-      //   'Privacy:',
-      //   trend.createdBy.privacy
-      // );
       if (trend.createdBy && trend.createdBy.privacy) {
         trend.createdBy.githubUsername = ''; // removing githubUsername if privacy is enabled
       }
       return trend;
     });
 
-    // if (status && status !== 'all') {
-    //   trends = trends.filter((trend) => trend.trendStatus === status);
-    //   // adjusting the total trends count and pagination after filtering
-    //   totalTrends = trends.length;
-    //   pagesNumber = Math.ceil(totalTrends / limit);
-    // }
     console.log(
       'Trends fetched after applying cursor:',
       trends.map((trend) => trend.trend) // This will log an array of trend names
@@ -455,14 +420,11 @@ export const getApprovedTrends = async (req, res) => {
 export const getSelectIconData = (req, res) => {
   try {
     if (!req.user) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: 'User not authenticated' });
+      throw new UnauthenticatedError('User not authenticated');
     }
     res.status(StatusCodes.OK).json({ TREND_CATEGORY, TECHNOLOGIES });
   } catch (error) {
-    console.error('Error fetching icon data:', error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+    return next(error);
   }
 }; //end getSelectIconData
 
@@ -486,7 +448,7 @@ export const uploadTrendSVG = async (req, res) => {
     const sanitizedSlug = sanitizeHTML(req.params.slug);
     const currentTrend = await trendModel.findOne({ slug: sanitizedSlug });
     if (!currentTrend) {
-      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+      throw new NotFoundError('Trend not found');
     }
     const updatedTrend = {
       svg_url: response.secure_url, // updating trend object with the URL and ID of the uploaded SVG
@@ -498,7 +460,7 @@ export const uploadTrendSVG = async (req, res) => {
       { new: true }
     );
     if (!trend) {
-      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+      throw new NotFoundError('Trend not found');
     }
     res
       .status(StatusCodes.OK)
@@ -515,7 +477,7 @@ export const uploadTrendSVG = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: 'SVG upload failed' });
   }
-};
+}; //end uploadTrendSVG
 
 /**
  * GET TREND SVG
@@ -528,7 +490,7 @@ export const getTrendSVG = async (req, res) => {
   try {
     const trend = await trendModel.findOne({ slug });
     if (!trend) {
-      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+      throw new NotFoundError('Trend not found');
     }
     res.status(StatusCodes.OK).json({ svg_url: trend.svg_url });
   } catch (error) {
@@ -537,20 +499,19 @@ export const getTrendSVG = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: 'Error fetching SVG' });
   }
-};
+}; //end getTrendSVG
+
 /**
  * SEARCH TRENDS
  * Search for trends based on a search query
  * @param {*} req
  * @param {*} res
  */
-export const searchTrends = async (req, res) => {
+export const searchTrends = async (req, res, next) => {
   const { search } = req.query;
 
   if (!search) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'Search query is required' });
+    return next(new BadRequestError('Search query is required'));
   }
 
   try {
@@ -563,7 +524,7 @@ export const searchTrends = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ trends });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+    return next(error);
   }
 };
 
@@ -576,7 +537,7 @@ export const searchTrends = async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
-export const getTopViewedTrends = async (req, res) => {
+export const getTopViewedTrends = async (req, res, next) => {
   const topViewed = 'topViewedNow'; // Enforce internally
   const page = 1; // page
   const limit = 12; // fixed limit per page
