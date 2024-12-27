@@ -36,7 +36,7 @@ const LandingNavbar = () => {
       <nav className="navbar">
         <div className="nav-center">
           <div className="nav-header">
-            <LogoBrand />
+            <LogoBrand link="/" />
             <button
               type="button"
               className="nav-toggle"

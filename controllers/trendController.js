@@ -36,7 +36,9 @@ export const submitTrend = async (req, res) => {
   trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
   const existingTrend = await trendModel.findOne({ trend });
   if (existingTrend) {
-    return res.status(400).json({ msg: 'Trend already exists' });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: 'Trend already exists' });
   }
   req.body.createdBy = req.user.userID; //adding createdBy property storing user id
   const trendObject = await trendModel.create({

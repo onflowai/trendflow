@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDashboardContext } from '../pages/DashboardLayout';
-import { BsMoon, BsMoonFill, BsFillMoonStarsFill } from 'react-icons/bs';
+import { useTheme } from '../context/ThemeContext'; // Adjust the path if necessary
+import { BsMoon, BsFillMoonStarsFill } from 'react-icons/bs';
 import Container from '../assets/wrappers/DarkModeContainer';
 
 const DarkMode = ({ size = 16 }) => {
-  const { isDarkTheme, toggleDarkTheme } = useDashboardContext() || {};
+  const { isDarkTheme, toggleDarkTheme } = useTheme(); // Use ThemeContext
 
   return (
     <Container onClick={toggleDarkTheme} className={isDarkTheme ? 'dark' : ''}>

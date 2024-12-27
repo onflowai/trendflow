@@ -21,7 +21,7 @@ const Sidebar = () => {
       >
         <div className="content">
           <header>
-            <LogoBrand />
+            <LogoBrand link="/dashboard" />
           </header>
           <div>
             <NavLinks isSidebar />

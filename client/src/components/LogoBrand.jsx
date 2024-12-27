@@ -3,11 +3,11 @@ import logo from '../assets/images/logo-02.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-const Logo = () => {
+const LogoBrand = ({ link }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/dashboard');
+    navigate(link);
   };
 
   const handleKeyPress = (e) => {
@@ -84,4 +84,4 @@ const Container = styled.section`
   }
 `;
 
-export default Logo;
+export default LogoBrand;
