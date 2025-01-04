@@ -14,7 +14,7 @@ import {
 } from 'react-icons/hi2'; //breakout icon, static icon, arrow down sublevel
 //Admin icons
 import { RiEdit2Fill } from 'react-icons/ri'; //edit button
-import { FaSquareCheck } from 'react-icons/fa6'; //approve trend button
+import { FaSquareCheck, FaSquarePlus } from 'react-icons/fa6'; //approve trend button
 import { IoIosCloseCircle } from 'react-icons/io'; //delete
 import { MdDelete } from 'react-icons/md';
 import { githubFullUrl } from '../utils/urlHelper';
@@ -298,6 +298,21 @@ function TrendLarge({
                             }}
                           >
                             <FaSquareCheck size={23} />
+                          </button>
+                        </Tooltip>
+                        <Tooltip
+                          description="Manual Approve"
+                          xOffset={-90}
+                          yOffset={-65}
+                        >
+                          <button
+                            className="btn-icon action-btn"
+                            onClick={(e) => {
+                              handleInnerClick(e);
+                              onApprove(slug);
+                            }}
+                          >
+                            <FaSquarePlus size={23} />
                           </button>
                         </Tooltip>
                         <Tooltip

@@ -5,15 +5,16 @@ import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { MdDelete } from 'react-icons/md';
-import { FaSquareCheck } from 'react-icons/fa6';
+import { FaSquareCheck, FaSquarePlus } from 'react-icons/fa6';
 import { githubFullUrl } from '../utils/urlHelper';
 import { getFullIconUrl } from '../utils/urlHelper';
 import {
-  TrendFlashChart,
   Loading,
-  TrendFallFlashChart,
-  UserImgSmall,
   Tooltip,
+  UserImgSmall,
+  AddTrendModal,
+  TrendFlashChart,
+  TrendFallFlashChart,
 } from '../components';
 import Container from '../assets/wrappers/TrendSmallContainer';
 import day from 'dayjs';
@@ -49,6 +50,7 @@ function TrendSmall({
   trendCategory,
   chartHeight,
   chartMarginTop,
+  onApproveManual,
   chartMarginBottom,
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -168,21 +170,39 @@ function TrendSmall({
                       </button>
                     </Tooltip>
                   ) : (
-                    <Tooltip
-                      description="Approve Trend"
-                      xOffset={-90}
-                      yOffset={-65}
-                    >
-                      <button
-                        className="btn-icon action-btn"
-                        onClick={(e) => {
-                          handleInnerClick(e);
-                          onApprove(slug);
-                        }}
+                    <>
+                      <Tooltip
+                        description="Approve Trend"
+                        xOffset={-90}
+                        yOffset={-65}
                       >
-                        <FaSquareCheck size={20} />
-                      </button>
-                    </Tooltip>
+                        <button
+                          className="btn-icon action-btn"
+                          onClick={(e) => {
+                            handleInnerClick(e);
+                            onApprove(slug);
+                          }}
+                        >
+                          <FaSquareCheck size={20} />
+                        </button>
+                      </Tooltip>
+
+                      <Tooltip
+                        description="Manual Approve"
+                        xOffset={-90}
+                        yOffset={-65}
+                      >
+                        <button
+                          className="btn-icon action-btn"
+                          onClick={(e) => {
+                            handleInnerClick(e);
+                            onApproveManual(slug);
+                          }}
+                        >
+                          <FaSquarePlus size={20} />
+                        </button>
+                      </Tooltip>
+                    </>
                   )}
                   <Tooltip
                     description="Delete Trend"

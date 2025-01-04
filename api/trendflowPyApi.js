@@ -7,11 +7,12 @@ const pythonApiUrl =
 
 /**
  * Calls the Flask Python API to analyze trends.
- * @param {string} keywords - The keywords to analyze.
- * @returns {object} - The response data from the Python API.
- * @throws {Error} - Throws an error if the API call fails.
+ * @param {string} keywords - keywords to analyze
+ * @returns {object} - response data from the Python API
+ * @throws {Error} - throwing an error if the API call fails
  */
 export async function trendflowPyApi(keywords) {
+  console.log('+++++++++++++++++++++++++API call KEYWORDS: ', keywords);
   try {
     const response = await axios.post(
       pythonApiUrl,
@@ -19,7 +20,7 @@ export async function trendflowPyApi(keywords) {
       {
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.TRENDFLOW_PY_API_KEY, // Ensure this is set in your environment variables
+          'x-api-key': process.env.TRENDFLOW_PY_API_KEY,
         },
       }
     );

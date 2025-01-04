@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   Trends,
+  AddTrendModal,
   FilterTrends,
   CustomErrorToast,
   PaginationComponent,
@@ -115,6 +116,10 @@ const Admin = () => {
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // state to track if the filter is closed in FilterTrends
+
+  const [showAddTrendModal, setShowAddTrendModal] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState(''); // HERE: State to hold selected slug
+  const [jsonData, setJsonData] = useState(null); // HERE: State to hold JSON data from CSV
 
   // function to update search values and navigate
   const updateSearchValues = (newValues) => {
@@ -317,7 +322,21 @@ const Admin = () => {
       setLoadingSlug(null); // stop loading
     }
   };
-
+  // Modify manualApproveTrend to accept JSON data
+  const manualApproveTrend = async (slug, data) => {
+    try {
+      setLoadingSlug(slug); // start loading
+      await customFetch.patch(`trends/${slug}/manual-approve`, { data });
+      toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
+      fetchFilteredTrends(searchValues); // refresh the trends list
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.msg || 'Error manually approving trend'
+      );
+    } finally {
+      setLoadingSlug(null); // stop loading
+    }
+  };
   // remove a trend
   const removeTrend = async (slug) => {
     try {
@@ -362,6 +381,18 @@ const Admin = () => {
     }
   };
 
+  // Function to handle manual approve and open modal
+  const handleApproveManual = (slug) => {
+    // HERE: Function to handle manual approve
+    setSelectedSlug(slug); // HERE: Set the selected slug
+    setShowAddTrendModal(true); // HERE: Open the modal
+  };
+
+  // Function to handle adding trend after manual approval
+  const handleAddTrend = () => {
+    // HERE: Function to handle after adding trend
+    fetchFilteredTrends(searchValues); // Refresh the trends list
+  };
   return (
     <Container>
       <StatComponent
@@ -409,6 +440,7 @@ const Admin = () => {
           onApprove={approveTrend}
           isAdminPage={isAdminPage}
           loadingSlug={loadingSlug}
+          onApproveManual={handleApproveManual}
         />
         <div ref={lastTrendElementRef}></div>
         <PaginationComponent
@@ -416,6 +448,14 @@ const Admin = () => {
           hasNextPage={pagination.hasNextPage}
         />
       </CombinedProvider>
+      {showAddTrendModal && (
+        <AddTrendModal
+          onClose={() => setShowAddTrendModal(false)}
+          onAdd={handleAddTrend}
+          slug={selectedSlug}
+          onManualApprove={manualApproveTrend}
+        />
+      )}
     </Container>
   );
 };

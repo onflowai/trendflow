@@ -15,6 +15,7 @@ function Trends({
   onSave,
   onRemove,
   savedTrends,
+  onApproveManual,
 }) {
   console.log('trends in component: ', trends);
   //Values used to style recharts in AllTrends & Admin pages
@@ -131,6 +132,7 @@ function Trends({
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
+            onApproveManual={onApproveManual}
           />
         ))}
       </div>

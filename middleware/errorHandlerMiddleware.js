@@ -4,7 +4,19 @@ import {
   UnauthorizedError,
   BadRequestError,
 } from '../errors/customErrors.js';
-
+/**
+ * /**
+ * Centralized Error Handling Middleware for Express.js
+ *
+ * This middleware function captures all errors that occur in the application,
+ * whether they're thrown in route handlers or passed via `next(error)`. It determines
+ * the type of error and sets the appropriate HTTP status code
+ * and error message.
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 const errorHandlerMiddleware = (err, req, res, next) => {
   console.error(err); // Log the error for debugging
 
