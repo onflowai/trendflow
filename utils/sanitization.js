@@ -1,4 +1,3 @@
-// utils/sanitization.js
 import { JSDOM } from 'jsdom';
 import createDOMPurify from 'dompurify';
 import validator from 'validator';

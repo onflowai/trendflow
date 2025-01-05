@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// It's better to store the API URL in environment variables for flexibility
 const pythonApiUrl =
   process.env.TRENDFLOW_PY_API_URL || 'http://127.0.0.1:5002/api/analyze';
 //|| 'http://localhost:5002/api/analyze'

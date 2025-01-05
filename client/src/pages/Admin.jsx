@@ -330,9 +330,7 @@ const Admin = () => {
       toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
       fetchFilteredTrends(searchValues); // refresh the trends list
     } catch (error) {
-      toast.error(
-        error?.response?.data?.msg || 'Error manually approving trend'
-      );
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
       setLoadingSlug(null); // stop loading
     }

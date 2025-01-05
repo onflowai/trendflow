@@ -16,6 +16,7 @@ import {
   getSelectIconData,
   getApprovedTrends,
   getTopViewedTrends,
+  approveTrendManual,
 } from '../controllers/trendController.js';
 import { adminStats, appTrendStats } from '../controllers/visitController.js';
 import {
@@ -96,5 +97,11 @@ router.patch(
   authenticateUser,
   authorizedPermissions('write'),
   approveTrend
+);
+router.patch(
+  '/:slug/manual-approve',
+  authenticateUser,
+  authorizedPermissions('write'),
+  approveTrendManual
 );
 export default router;

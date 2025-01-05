@@ -1,4 +1,3 @@
-// AddTrendModal.jsx
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -6,8 +5,18 @@ import { UploadLogo } from '../components';
 import { FiDownload, FiUpload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { parseCSV } from '../utils/csvProcessor';
+
 const trendsBase = import.meta.env.VITE_TRENDS_BASE_1;
 const trendsGeo = import.meta.env.VITE_TRENDS_GEO_1;
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const validMimeTypes = [
+  'text/csv',
+  'application/vnd.ms-excel',
+  'application/csv',
+  'text/plain',
+];
+
 /**
  *
  */
@@ -18,12 +27,20 @@ const trendsGeo = import.meta.env.VITE_TRENDS_GEO_1;
  * @returns {boolean} - returns true if the structure is valid, else false
  */
 const validateJSONStructure = (data) => {
-  if (!Array.isArray(data)) return false;
+  if (!Array.isArray(data) || data.length === 0) return false;
+  const MAX_ENTRIES = 1000; // prevent excessively large data
+  if (data.length > MAX_ENTRIES) return false;
+
   for (let item of data) {
     if (
       typeof item.date !== 'string' ||
       typeof item.count !== 'number' ||
       isNaN(new Date(item.date).getTime())
+      // typeof item.date !== 'string' ||
+      // !/^\d{4}-\d{2}-\d{2}$/.test(item.date) || // validating date format YYYY-MM-DD
+      // typeof item.count !== 'number' ||
+      // !Number.isInteger(item.count) ||
+      // item.count < 0 // Ensure count is non-negative
     ) {
       return false;
     }
@@ -54,11 +71,13 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
       return;
     } // validate file existence
 
-    if (
-      file.type !== 'text/csv' &&
-      file.type !== 'application/vnd.ms-excel' &&
-      file.type !== 'application/csv'
-    ) {
+    if (file.size > MAX_FILE_SIZE) {
+      setError('File size exceeds the maximum limit of 1MB.');
+      toast.error('File size exceeds the maximum limit of 1MB.');
+      return;
+    } // validate max file size
+
+    if (!validMimeTypes.includes(file.type)) {
       setError('Please upload a valid CSV file.');
       toast.error('Please upload a valid CSV file.');
       return;

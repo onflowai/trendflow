@@ -5,7 +5,9 @@ import { sanitizeHTML } from '../utils/sanitization.js';
 //import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
 import { trendflowPyApi } from '../api/trendflowPyApi.js';
+import { trendflowPyManualApi } from '../api/trendflowPyManualApi.js';
 import { fetchRelatedTrends } from '../utils/trendRelatedUtils.js';
+import { validateAndSanitizeCSVData } from '../utils/csvValidator.js';
 import { cloudinary2 } from '../config/cloudinary.js'; //using dif set of credentials
 import fs from 'fs/promises'; //allows to remove the image
 import {
@@ -230,6 +232,95 @@ export const approveTrend = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 }; //end APPROVE TREND
+
+/**
+ * MANUAL APPROVE TREND
+ * @param {Object} req - express request object
+ * @param {Object} res - express response object
+ * @returns {Object} - JSON response with status and message
+ */
+export const approveTrendManual = async (req, res) => {
+  const { slug } = req.params; // extracting slug from URL parameters
+  let { data } = req.body; // extracting data from request body
+
+  try {
+    const sanitizedData = validateAndSanitizeCSVData(data); // validating and sanitize CSV data
+
+    const trend = await trendModel.findOne({ slug: slug });
+    if (!trend) {
+      throw new NotFoundError('Trend not found');
+    } // finding the trend by slug
+
+    const trendflowPyApiResponse = await trendflowPyManualApi(
+      slug,
+      sanitizedData
+    ); // calling the manual trendflowPyManualApi with slug and sanitized data
+
+    if (!trendflowPyApiResponse.success) {
+      throw new Error(
+        trendflowPyApiResponse.error || 'trendflowPyManualApi returned an error'
+      );
+    } // handling trendflowPyManualApi response
+
+    const processedData = trendflowPyApiResponse.trends_data;
+
+    const openAIResult = await generatePostContent(
+      trend.trend,
+      trend.trendCategory,
+      trend.trendTech
+    ); // generating content using OpenAI based on the processed data
+
+    const { trendPost, trendDesc, trendUse } = openAIResult; // destructuring OpenAI result
+    const safeTrendPost = sanitizeHTML(trendPost); // sanitizing the generated content
+
+    const combinedScore = calculateCombinedScore(
+      processedData.t_score,
+      0,
+      processedData.status,
+      processedData.f_score
+    ); // calculating the combined score
+
+    const updatedTrend = await trendModel.findOneAndUpdate(
+      { slug: slug },
+      {
+        $set: {
+          interestOverTime: processedData.trends_data,
+          trendStatus: processedData.status,
+          flashChart: processedData.flashChart,
+          generatedBlogPost: safeTrendPost,
+          trendDesc: trendDesc,
+          trendUse: trendUse,
+          isApproved: true,
+          forecast: processedData.forecast,
+          t_score: processedData.t_score,
+          f_score: processedData.f_score,
+          combinedScore: combinedScore, // Store the updated combined score
+        },
+      },
+      { new: true } // return the updated document
+    ); // updating the trend document in MongoDB
+
+    // respond with success
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Trend manually approved', trend: updatedTrend });
+  } catch (error) {
+    console.error('Error in approveTrendManual:', error.message);
+
+    // determine appropriate status code
+    const statusCode =
+      error instanceof NotFoundError
+        ? StatusCodes.NOT_FOUND
+        : error.message.startsWith('Invalid')
+        ? StatusCodes.BAD_REQUEST
+        : StatusCodes.INTERNAL_SERVER_ERROR;
+
+    // respond with error message
+    res
+      .status(statusCode)
+      .json({ msg: error.message || 'Internal Server Error' });
+  }
+}; //end MANUAL APPROVE TREND
 
 /**
  * GET ALL TRENDS (only for ADMIN)
