@@ -242,10 +242,8 @@ export const approveTrend = async (req, res) => {
 export const approveTrendManual = async (req, res) => {
   const { slug } = req.params; // extracting slug from URL parameters
   let { data } = req.body; // extracting data from request body
-
   try {
     const sanitizedData = validateAndSanitizeCSVData(data); // validating and sanitize CSV data
-
     const trend = await trendModel.findOne({ slug: slug });
     if (!trend) {
       throw new NotFoundError('Trend not found');
@@ -394,10 +392,10 @@ export const getAllTrends = async (req, res) => {
     });
 
     // log REMOVE
-    console.log(
-      'Admin Trends fetched after applying cursor:',
-      trends.map((trend) => trend.trend)
-    );
+    // console.log(
+    //   'Admin Trends fetched after applying cursor:',
+    //   trends.map((trend) => trend.trend)
+    // );
 
     res.status(StatusCodes.OK).json({
       totalTrends,

@@ -1,3 +1,4 @@
+import axios from 'axios';
 /**
  * Processes manual trend approval data using a Python API or external service.
  *
@@ -20,7 +21,6 @@ export const trendflowPyManualApi = async (slug, data) => {
           'x-api-key':
             process.env.TRENDFLOW_PY__MANUAL_API_KEY || 'your-manual-api-key',
         },
-        timeout: 10000, // 10 seconds timeout
       }
     );
 

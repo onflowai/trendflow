@@ -326,6 +326,7 @@ const Admin = () => {
   const manualApproveTrend = async (slug, data) => {
     try {
       setLoadingSlug(slug); // start loading
+      setShowAddTrendModal(false); //close modal
       await customFetch.patch(`trends/${slug}/manual-approve`, { data });
       toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
       fetchFilteredTrends(searchValues); // refresh the trends list
