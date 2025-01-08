@@ -49,11 +49,9 @@ const CustomTooltip = ({ active, payload, label }) => {
         }}
       >
         <p style={{ margin: 0 }}>{label}</p>
-        {payload.map((entry, index) => (
-          <p key={`tooltip-${index}`} style={{ margin: 0 }}>
-            {entry.name}: {entry.value}
-          </p>
-        ))}
+        <p>
+          <b> Δ :</b> {`${payload[0].value}%`}
+        </p>
       </div>
     );
   }

@@ -6,8 +6,12 @@ import { FiDownload, FiUpload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { parseCSV } from '../utils/csvProcessor';
 
-const trendsBase = import.meta.env.VITE_TRENDS_BASE_1;
-const trendsGeo = import.meta.env.VITE_TRENDS_GEO_1;
+const trendsLabel = import.meta.env.VITE_TRENDS_LABEL_BASE_1;
+const trendsBase = import.meta.env.VITE_TRENDS_LINK_BASE_1;
+const trendsGeo = import.meta.env.VITE_TRENDS_LINK_GEO_1;
+const trendsLabel2 = import.meta.env.VITE_TRENDS_LABEL_BASE_2;
+const trendsBase2 = import.meta.env.VITE_TRENDS_LINK_BASE_2;
+const trendsGeo2 = import.meta.env.VITE_TRENDS_LINK_GEO_2;
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const validMimeTypes = [
@@ -18,11 +22,7 @@ const validMimeTypes = [
 ];
 
 /**
- *
- */
-
-/**
- * validates the structure of the parsed JSON data
+ * Validates the structure of the parsed JSON data
  * @param {Array<Object>} data - parsed JSON data from the CSV
  * @returns {boolean} - returns true if the structure is valid, else false
  */
@@ -36,11 +36,6 @@ const validateJSONStructure = (data) => {
       typeof item.date !== 'string' ||
       typeof item.count !== 'number' ||
       isNaN(new Date(item.date).getTime())
-      // typeof item.date !== 'string' ||
-      // !/^\d{4}-\d{2}-\d{2}$/.test(item.date) || // validating date format YYYY-MM-DD
-      // typeof item.count !== 'number' ||
-      // !Number.isInteger(item.count) ||
-      // item.count < 0 // Ensure count is non-negative
     ) {
       return false;
     }
@@ -97,7 +92,7 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
           setError('Incorrect Structure of CSV');
           toast.error('Incorrect Structure of CSV');
           return;
-        } // validating the structure of the parsed JSON
+        } // validate the structure of the parsed JSON
 
         setIsUploading(true);
         await onManualApprove(slug, parsedData);
@@ -120,10 +115,17 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
     reader.readAsText(file);
   };
 
-  // Generate the Google Trends link using the slug
-  const trendsLink = `${trendsBase}${encodeURIComponent(
+  const trendsLink1 = `${trendsBase}${encodeURIComponent(
     slug
   )}&geo=${trendsGeo}`;
+  const trendsLink2 = `${trendsBase2}${encodeURIComponent(
+    slug
+  )}&geo=${trendsGeo2}`;
+
+  const links = [
+    { label: trendsLabel, href: trendsLink1 },
+    { label: trendsLabel2, href: trendsLink2 },
+  ];
 
   return (
     <Overlay>
@@ -131,25 +133,44 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
         <div>
           <UploadLogo />
         </div>
-        <button className="modal-close-btn" onClick={onClose}>
+        <button
+          className="modal-close-btn"
+          onClick={onClose}
+          aria-label="Close Modal"
+        >
           &times;
         </button>
-        <h2>Add Trend Data</h2>
-        <div className="google-trends-link">
-          <a href={trendsLink} target="_blank" rel="noopener noreferrer">
-            {trendsLink}
-          </a>
-          <FiDownload size={24} style={{ marginLeft: '10px' }} />
+        <h2>Add Trend Data:</h2>
+
+        {/* Updated Trends Links Section */}
+        <div className="trends-links">
+          {links.map((link, index) => (
+            <div key={index} className="link-item">
+              <label className="form-label">{link.label}</label>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.href}
+                <FiDownload size={24} style={{ marginLeft: '10px' }} />
+              </a>
+            </div>
+          ))}
         </div>
+
+        {/* Instructions Box with Download Icon on the Left */}
         <div className="instructions-box">
-          <p>
-            Please upload a CSV file containing the trend data. Ensure the data
-            structure is correct.
-          </p>
+          <div className="instructions-content">
+            <div className="instruction-icon" aria-label="Download Icon">
+              <FiDownload size={24} />
+            </div>
+            <p>
+              Use provided links to download the scv file and upload it here.
+              The download link looks like the provided icon.
+            </p>
+          </div>
         </div>
+
         {error && (
           <ErrorBox>
-            <p>Incorrect Structure of CSV</p>
+            <p>{error}</p>
           </ErrorBox>
         )}
         {jsonData && (
@@ -187,6 +208,8 @@ AddTrendModal.propTypes = {
 
 export default AddTrendModal;
 
+// Styled Components
+
 const Overlay = styled.div`
   position: fixed;
   top: 0;
@@ -201,7 +224,7 @@ const Overlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: #fff;
+  background-color: var(--white);
   padding: 20px 30px;
   border-radius: 8px;
   width: 90%;
@@ -210,6 +233,7 @@ const ModalContent = styled.div`
   text-align: center;
 
   .modal-close-btn {
+    color: var(--black);
     position: absolute;
     top: 10px;
     right: 15px;
@@ -219,38 +243,82 @@ const ModalContent = styled.div`
     cursor: pointer;
   }
 
-  .google-trends-link {
+  .trends-links {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
     margin-bottom: 15px;
 
-    a {
-      color: #007bff;
-      text-decoration: none;
-      word-break: break-all;
+    .link-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 10px;
+
+      .form-label {
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      a {
+        display: flex;
+        align-items: center;
+        color: #007bff;
+        text-decoration: none;
+        word-break: break-all;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        svg {
+          color: #007bff;
+        }
+      }
     }
   }
 
   .instructions-box {
-    background-color: #f9f9f9;
+    background-color: var(--card-highlight);
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
+
+    .instructions-content {
+      display: flex;
+      align-items: center;
+
+      .instruction-icon {
+        color: #007bff;
+        margin-right: 10px;
+        cursor: pointer;
+
+        &:hover {
+          color: #0056b3;
+        }
+
+        svg {
+          transition: color 0.3s ease;
+        }
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+        text-align: left;
+      }
+    }
   }
 
-  .error-message {
-    color: red;
-    margin-top: 10px;
+  .instructions-box .instructions-content p {
+    flex: 1; 
   }
 
-  .json-preview {
-    margin-top: 10px;
-    max-height: 200px;
-    overflow-y: scroll;
-    background-color: #f4f4f4;
-    padding: 10px;
-    border-radius: 5px;
+  .instructions-box .instructions-content .instruction-icon:hover svg {
+    color: #0056b3;
+  }
+
+  .instructions-box p {
     text-align: left;
   }
 `;
@@ -276,7 +344,7 @@ const FileInputContainer = styled.div`
     justify-content: center;
 
     &:hover {
-      color: #ffffff;
+      color: var(--white);
       background-color: var(--primary-400);
     }
 
@@ -300,23 +368,30 @@ const ConvertedFileContainer = styled.div`
   }
 
   .json-preview {
-    background-color: #e8e8e8;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--grey-70);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 `;
 
 const ErrorBox = styled.div`
   margin-top: 20px;
-  background-color: #f0f0f0; 
+  background-color: var(--red-light); 
   padding: 15px;
   border-radius: 5px;
   text-align: left;
 
   p {
-    color: red;
+    color: var(--red-dark);
     margin-bottom: 10px;
   }
 
   .json-preview {
-    background-color: #dcdcdc;
+    background-color: var(--grey-70);
   }
 `;
