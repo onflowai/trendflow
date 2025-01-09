@@ -34,15 +34,12 @@ export const loader = async ({ params }) => {
   try {
     const { data } = await customFetch.get('/users/current-user'); // Fetch current user
     if (!data.user || data.user.role !== 'admin') {
-      console.log(data.user);
       toast.error(
         <CustomErrorToast message="Unauthorized access to this Resource!" />
       );
       return redirect('/dashboard');
     }
-    console.log('data :', data);
     const trendResponse = await customFetch.get(`/trends/edit/${params.slug}`);
-    console.log('data2 :', trendResponse.data);
     return { user: data.user, trendObject: trendResponse.data.trendObject };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);

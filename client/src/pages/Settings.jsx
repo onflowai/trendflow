@@ -30,11 +30,9 @@ import {
  * @returns
  */
 export const loader = async ({ request }) => {
-  console.log(request.url);
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
-  console.log('params: ', params);
   try {
     // Fetching app stats for the charts
     const chartsResponse = await customFetch.get('/trends/app/stats');

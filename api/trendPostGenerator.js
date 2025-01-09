@@ -24,13 +24,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 // Async function to generate blog content using OpenAI
 export const generatePostContent = async (trend, trendCategory, trendTech) => {
-  // console.log('TREND HERE ----------------------> ', trend);
   const config = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(config); //new instance of openai
   let trendPost, trendDesc, trendUse;
-  console.log(RESPONSE_USER_USE);
   // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-3.5-turbo
   try {
     const blogPostResponse = await openai.createChatCompletion({
@@ -49,7 +47,6 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
       ],
     });
     trendPost = blogPostResponse.data.choices[0]?.message?.content || '';
-    // console.log('BLOG HERE ----------------------> ', trendPost);
   } catch (error) {
     console.error('Error generating startup/how-to blog post:', error);
     throw new Error('Failed to generate startup/how-to blog post');
@@ -73,7 +70,6 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
       });
       //Using blogPost to generate a paragraph of best uses for the trend
       trendDesc = trendDescResponse.data.choices[0]?.message?.content || '';
-      console.log('DESC HERE ----------------------> ', trendDesc);
       const trendUseResponse = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
@@ -87,7 +83,6 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
         ],
       });
       trendUse = trendUseResponse.data.choices[0]?.message?.content || '';
-      // console.log('USE HERE ----------------------> ', trendUse);
     } catch (error) {
       console.error('Error generating trend details:', error);
       throw new Error('Failed to generate trend details');

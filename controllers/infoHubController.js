@@ -10,9 +10,6 @@ import cloudinary2 from 'cloudinary';
  * @returns
  */
 export const createInfoHub = async (req, res) => {
-  console.log('Received data:', req.body);
-  console.log('Received file:', req.file);
-
   const { title, description, link } = req.body;
 
   if (!req.file) {

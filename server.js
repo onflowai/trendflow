@@ -101,15 +101,12 @@ const port = process.env.PORT || 5100;
 
 // try {
 //   await mongoose.connect(process.env.MONGODB_URL);
-//   console.log(`server is running on port: ${port}...`);
 //   // startScheduledJobs();//redis
 // } catch (error) {
-//   console.log(error);
 //   process.exit(1);
 // }
 //listener on port 5100
 // app.listen(port, () => {
-//   console.log(`server is running here: ${port}`);
 // });
 const startServer = async () => {
   try {

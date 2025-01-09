@@ -17,7 +17,6 @@ function Trends({
   savedTrends,
   onApproveManual,
 }) {
-  console.log('trends in component: ', trends);
   //Values used to style recharts in AllTrends & Admin pages
   const chartHeight = 240;
   const chartMarginTop = 5;

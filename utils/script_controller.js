@@ -7,8 +7,6 @@ import axios from 'axios';
  */
 export const executePythonScript = async (keywords) => {
   try {
-    console.log('trend keyword in script controller: ', keywords);
-
     // Send POST request to Flask server with keywords
     const response = await axios.post(
       'http://127.0.0.1:5000/run-script',
@@ -20,7 +18,6 @@ export const executePythonScript = async (keywords) => {
       }
     );
 
-    console.log(`Output from Python: ${response.data.output}`);
     return response.data.output;
   } catch (error) {
     console.error(`Error executing Python script: ${error}`);

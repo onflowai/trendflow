@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const action = async ({ params }) => {
-  console.log(params);
   return null;
 };
 const DeleteTrend = () => {

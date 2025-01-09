@@ -20,7 +20,6 @@ day.extend(advancedFormat);
 export const loader = async ({ params }) => {
   try {
     const { data } = await customFetch.get(`/blogs/${params.slug}`);
-    console.log('data ', data);
     return { blogObject: data };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -48,7 +47,6 @@ const getRandomColor = () => {
 const BlogPage = () => {
   const { slug } = useParams();
   const { blogObject } = useLoaderData();
-  console.log('blogObject ', blogObject);
   const { title, content, author, updatedAt, trends } = blogObject;
   const upDate = day(updatedAt).format('MM YYYY');
   const isMobile = useWindowSize();

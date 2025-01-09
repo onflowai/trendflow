@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState } from 'react';
 const CombinedContext = createContext();
 
 export const CombinedProvider = ({ children, value }) => {
-  console.log('value: ', value);
   // Initialize `trends` and `pagination` as state so they update on re-render
 
   const [searchValues, setSearchValues] = useState(value?.searchValues || {});

@@ -60,14 +60,11 @@ const onRemove = async (_id) => {
 export const loader = async ({ params }) => {
   try {
     const { data: trendData } = await customFetch.get(`/trends/${params.slug}`);
-    console.log('trendData', trendData);
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     ); // fetching saved trends for the user
-    console.log('savedTrendsData', savedTrendsData);
     const savedTrendIds =
       savedTrendsData?.savedTrends?.map((trend) => trend._id) || [];
-    console.log('savedTrendIds', savedTrendIds);
     return { ...trendData, savedTrendIds };
   } catch (error) {
     console.error('Loader error:', error);

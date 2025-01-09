@@ -22,7 +22,6 @@ const CarouselSlider = ({ trends }) => {
       prevIndex === 0 ? trends.length - 1 : prevIndex - 1
     );
   };
-  console.log(trends);
   return (
     <SliderContainer>
       <IoIosArrowBack onClick={prevSlide} className="arrow arrow-left" />

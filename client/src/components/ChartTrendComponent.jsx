@@ -11,15 +11,12 @@ import { TbTimeline } from 'react-icons/tb';
  * @returns
  */
 function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
-  console.log('TRENDS IN PAGE', trend);
   const { previousYear, currentYear } = data;
   const combinedData = [...previousYear, ...currentYear]; //combining trend data
   const combinedForecast = [
     ...(forecast.previousYear || []),
     ...(forecast.currentYear || []),
   ]; //combining forecast data
-  console.log('CHART DATA', combinedData);
-  console.log('FORECAST IN COMPONENT ', combinedForecast);
   const [chartData, setChartData] = useState(combinedData);
   const [dataView, setDataView] = useState('combined'); //keeping track of current data displayed
   const [forecastData, setForecastData] = useState([]);

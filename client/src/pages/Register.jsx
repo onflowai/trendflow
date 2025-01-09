@@ -12,20 +12,17 @@ import { toast } from 'react-toastify';
 export const action = async ({ request }) => {
   const formData = await request.formData(); //react router interface for garbing the data from the form
   const data = Object.fromEntries(formData); //turn array of the arrays into the object
-  // console.log(data);
   try {
     await customFetch.post('/auth/register', data); //POST call with data payload
     toast.success(<CustomErrorToast message={'Registration Successful'} />);
     return redirect('/login'); //function has to return something in this case a redirect
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    // console.log(error);
     return error;
   }
 };
 const Register = () => {
   const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
-  console.log(navigation);
   //if the navigation state is 'submitting', isSubmitting is true; otherwise, it's false.
   const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
   return (

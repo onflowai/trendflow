@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const pythonApiUrl =
-  process.env.TRENDFLOW_PY_API_URL || 'http://127.0.0.1:5002/api/analyze';
-//|| 'http://localhost:5002/api/analyze'
+const pythonApiUrl = process.env.TRENDFLOW_PY_API_URL;
 
 /**
  * Calls the Flask Python API to analyze trends.
@@ -11,7 +9,6 @@ const pythonApiUrl =
  * @throws {Error} - throwing an error if the API call fails
  */
 export async function trendflowPyApi(keywords) {
-  console.log('+++++++++++++++++++++++++API call KEYWORDS: ', keywords);
   try {
     const response = await axios.post(
       pythonApiUrl,

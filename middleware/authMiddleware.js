@@ -28,22 +28,17 @@ export const authenticateUser = (req, res, next) => {
   try {
     const decoded = verifyJWT(token); // Verify and decode token
     req.user = { userID: decoded.userID, role: decoded.role };
-    console.log(`User authenticated with role: ${req.user.role}`); // Debugging
     next();
   } catch (error) {
-    console.error('Error in token verification:', error.message); // Debugging
     throw new UnauthenticatedError('Authentication invalid');
   }
 };
-
+//here
 export const authorizedPermissions = (requiredPermission) => {
   return (req, res, next) => {
     // Default to an empty object if req.user is undefined
     const userRole = req.user ? req.user.role : 'guest';
     const userPermissions = rolePermissions[userRole] || [];
-    console.log(
-      `Role: ${userRole}, Permissions: ${userPermissions}, Required: ${requiredPermission}`
-    ); // Debugging line
     if (!userPermissions.includes(requiredPermission)) {
       throw new UnauthorizedError('Please Create Account To Use This Feature.');
     }

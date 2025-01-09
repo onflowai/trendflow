@@ -9,8 +9,7 @@ import axios from 'axios';
 export const trendflowPyManualApi = async (slug, data) => {
   try {
     const response = await axios.post(
-      process.env.TRENDFLOW_PY_MANUAL_API_URL ||
-        'http://127.0.0.1:5003/api/manual-analyze',
+      process.env.TRENDFLOW_PY_MANUAL_API_URL,
       {
         slug: slug,
         data: data,

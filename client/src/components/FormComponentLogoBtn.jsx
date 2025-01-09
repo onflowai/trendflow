@@ -13,11 +13,9 @@ const FormComponentLogoBtn = ({
   iconUrl,
 }) => {
   const [inputValue, setInputValue] = useState(`${baseUrl}${defaultValue}`); //if defaultValue is empty, inputValue will just be github.com/
-  console.log('defaultValue', defaultValue);
 
   const handleInputChange = (e) => {
     const inputText = e.target.value;
-    console.log('inputText', inputText);
     if (inputText.startsWith(baseUrl)) {
       setInputValue(inputText);
     } else {

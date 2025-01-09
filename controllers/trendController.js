@@ -390,9 +390,6 @@ export const getAllTrends = async (req, res) => {
       }
       return trend;
     });
-
-    // log REMOVE
-    // console.log(
     //   'Admin Trends fetched after applying cursor:',
     //   trends.map((trend) => trend.trend)
     // );
@@ -482,10 +479,10 @@ export const getApprovedTrends = async (req, res) => {
       return trend;
     });
 
-    console.log(
-      'Trends fetched after applying cursor:',
-      trends.map((trend) => trend.trend) // This will log an array of trend names
-    );
+    // console.log(
+    //   'Trends fetched after applying cursor:',
+    //   trends.map((trend) => trend.trend)
+    // );
     res.status(StatusCodes.OK).json({
       totalTrends,
       pagesNumber,

@@ -5,7 +5,7 @@ import trendModel from './models/trendModel.js';
 import userModel from './models/userModel.js';
 dotenv.config();
 /**
- * File used to load trends in batches from /utils/data.json
+ * File used to load trends in batches from /utils/data.json for testing
  */
 try {
   await mongoose.connect(process.env.MONGODB_URL);
@@ -18,7 +18,6 @@ try {
   });
   await trendModel.deleteMany({ createdBy: user._id });
   await trendModel.create(trends);
-  console.log('Trends Loaded');
 } catch (error) {
   console.log(error);
   process.exit(0);

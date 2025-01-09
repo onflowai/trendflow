@@ -8,8 +8,7 @@ import img from '../assets/images/test-error.svg';
  */
 const Error = () => {
   const error = useRouteError();
-  console.log(error);
-
+  //HERE
   if (error.status === 404) {
     return (
       <Container>

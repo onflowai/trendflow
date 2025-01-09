@@ -48,7 +48,6 @@ export const loader = async () => {
 };
 export const action = async ({ request }) => {
   const formData = await request.formData(); //getting the form data out of the request where it is loaded with react
-  console.log('FormaData ', formData);
   const file = formData.get('profile_img'); //pointing to the image upload by user
   if (file && file.size > 50000000) {
     toast.error('image size too large'); //changed to automatic compression on backend and user can upload whatever image with npm sharp
@@ -69,12 +68,10 @@ const Profile = () => {
   const isVerified = true; //TEMPORARY
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
-  console.log('trends in PROFILE: ', trends);
   const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
   const dashboardContext = useDashboardContext();
   const updateUserImage = dashboardContext?.updateUserImage; //DashboardContext (the reason why both used is for farther consistency when more features will be added)
   const { updateUserImage: updateUserImageGlobal } = useUser(); // UserContext (the reason why both used is for farther consistency when more features will be added)
-  console.log('PROFILE: ', user.savedTrends);
   const {
     username,
     name,
@@ -157,7 +154,6 @@ const Profile = () => {
         }
       );
       if (response.status === 200) {
-        console.log('response.data: ', response.data);
         const data = response.data;
         setGithubUsername(data.githubUsername);
         toast.success('GitHub username linked');
@@ -172,6 +168,7 @@ const Profile = () => {
   const handleOptionClick = (action) => {
     switch (action) {
       case 'verify':
+        //HERE
         // Perform verify profile action
         console.log('Verify profile action triggered');
         // Example: API call to verify profile

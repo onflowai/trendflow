@@ -26,7 +26,6 @@ function Card({
     onDelete,
     isAdmin,
   };
-  console.log('largeProps ', largeProps);
   return (
     <Container>
       <CardLarge {...largeProps} />

@@ -45,7 +45,6 @@ export const loader = async ({ request, searchValue }) => {
   params.limit = trendsPerPage;
   try {
     const { data: trendsData } = await customFetch.get('/trends', { params });
-    console.log('trendsData', trendsData);
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
     );
@@ -138,7 +137,6 @@ const AllTrends = () => {
   const updateSearchValues = (newValues) => {
     const updatedSearchValues = { ...searchValues, ...newValues };
     setSearchValues(updatedSearchValues);
-    console.log('Updated searchValues:', updatedSearchValues);
     // Update the URL to reflect new search or sort parameters
     const searchParams = new URLSearchParams(updatedSearchValues);
     navigate(`/dashboard?${searchParams.toString()}`, { replace: true });

@@ -125,7 +125,6 @@ const Admin = () => {
   const updateSearchValues = (newValues) => {
     const updatedSearchValues = { ...searchValues, ...newValues };
     setSearchValues(updatedSearchValues);
-    console.log('Updated searchValues:', updatedSearchValues);
     // Update the URL to reflect new search or sort parameters
     const searchParams = new URLSearchParams(updatedSearchValues);
     navigate(`/dashboard/admin?${searchParams.toString()}`, { replace: true });

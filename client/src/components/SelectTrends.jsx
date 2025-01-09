@@ -130,7 +130,6 @@ const SelectTrends = ({
       </div>
     );
   };
-  console.log('selectedTrends', selectedTrends);
   return (
     <Container>
       {labelText && <div className="form-label">{labelText}</div>}

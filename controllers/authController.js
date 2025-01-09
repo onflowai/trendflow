@@ -28,7 +28,6 @@ export const login = async (req, res) => {
   ); //async function which takes the password entered by the user and the password from database to compare them
   if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials'); //if password does not match then:
   const token = createJWT({ userID: user._id, role: user.role }); //encoding user id user role into the token + iat and exp generated
-  // console.log(token);
   const oneDay = 86400000; //one day in milliseconds
   //res.json({ token }); //seeing the token
   //cookie named token, httpOnly cookie cannot be accessed by javascript

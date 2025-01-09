@@ -15,7 +15,6 @@ function UserTrends({ trends, savedTrends, onRemove }) {
   const chartMarginBottom = -40;
 
   const isAdminPage = false; // hardcoding value to prevent tampering
-  console.log('TRENDS:', trends);
   if (trends.length === 0) {
     return (
       <Container>

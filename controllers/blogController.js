@@ -15,7 +15,6 @@ export const createPost = async (req, res) => {
     title = sanitizeHTML(title);
     content = sanitizeHTML(content);
     const author = req.user.userID; // populating author with userID from the authenticated user
-    console.log('Sanitized data:', { title, content, author, trends });
     const validTrends = await trendModel.find({ _id: { $in: trends } });
     if (validTrends.length !== trends.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -89,9 +88,6 @@ export const getSinglePost = async (req, res) => {
 export const updatePost = async (req, res) => {
   const { slug } = req.params;
   const { content, trends } = req.body;
-
-  console.log('Updating post with content:', content);
-  console.log('Updating post with trends:', trends);
 
   try {
     if (trends) {
