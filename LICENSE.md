@@ -1,4 +1,4 @@
-# TrendFlow Public License (Draft)
+# TrendFlow Public License 1.0
 
 **Version 2.0 (DRAFT - Non-OSI Compliant)**
 
@@ -7,13 +7,13 @@ This is a custom license intended for the TrendFlow project, blending open-sourc
 
 ## 1. Definitions
 
-1.1 **"Software"**: The TrendFlow software, including its source code, documentation, configuration files, and any associated materials.
+1.1 **"Software"**: The TrendFlow software, including its source code, documentation, configuration files, and any associated materials. The name TrendFlow and its logos are trademarks of onflow. This license does not grant you any right to use the TrendFlow mark in a way that might confuse others about official affiliation, endorsement, or ownership. Use of the TrendFlow mark in domain names, product names, or company names without explicit written permission is prohibited.”
 
-1.2 **"Original Author"**: onflow, the initial creator and copyright holder of the Software.
+1.2 **"Original Author"**: onflow, the initial creator and copyright holder of the Software. TrendFlow is a trademark (or service mark) owned by onflow. This license does not grant you any rights to use the TrendFlow name or marks in a way that implies endorsement or affiliation.
 
 1.3 **"User" (or "You")**: Any individual or entity who uses, copies, modifies, distributes, or otherwise exercises any rights granted under this License.
 
-1.4 **"Non-Commercial"**: Means not primarily intended for or directed toward commercial advantage, financial gain, or profit. Any activity involving charging money, generating revenue, or providing the Software as part of a business offering is considered "Commercial" and is prohibited without explicit written permission from the Original Author.
+1.4 **"Non-Commercial"**: Means not primarily intended for or directed toward commercial advantage, financial gain, or profit. Any activity involving charging money, generating revenue, or providing the Software as part of a business offering is considered "Commercial" and is prohibited without explicit written permission from the Original Author. Nothing in this license grants permission to use the TrendFlow name or any trademark/service mark owned by onflow. Any usage of the trademark for software forks, modifications, or distributions must receive explicit permission from the trademark holder.
 
 1.5 **"Contribution"**: Any original work of authorship, including modifications or additions to the Software, submitted by a User to the Original Author for possible inclusion in the Software.
 
@@ -49,27 +49,65 @@ Donations related to the Software are permitted solely to cover direct server ho
 
 ## 5. Contributions and Ownership
 
-5.1 **Contribution Approval**:  
+5.1 **Contribution Approval**  
 No one may incorporate a Contribution into the official codebase without explicit, written approval from the Original Author. If a proposed Contribution is accepted, the Contributor is subject to the conditions below.
 
-5.2 **Basic Contributors**:  
+5.2 **Basic Contributors**  
 By submitting a Contribution and having it accepted without further agreements, a Basic Contributor grants all copyrights in their Contribution to the Original Author. The Basic Contributor retains moral rights and is credited as the author of that code, but holds no ownership or special approval rights over future changes.
 
-5.3 **Co-Owner Contributors**:  
+5.3 **Co-Owner Contributors**  
 A Contributor may request or be offered the status of Co-Owner Contributor. If granted in writing by the Original Author, the Co-Owner Contributor retains joint copyright ownership of their accepted Contribution. Co-Owners may have a voice in major licensing changes and certain critical decisions if explicitly agreed upon in a separate co-ownership agreement.
 
 - Co-Owners must comply with all terms of this License; if they violate its terms, their co-ownership status and rights under this License may be terminated.
 
-  5.4 **No Automatic Co-Ownership**:  
+### 5.3.1 Grant of Co-Ownership
+
+A Contributor may request or be offered the status of Co-Owner Contributor. If granted in writing by the Original Author, the Co-Owner Contributor retains joint copyright ownership of their accepted Contribution.
+
+### 5.3.2 Governance and Decision-Making
+
+- **Major Changes:** Major decisions affecting the license of the Software (e.g., changing the licensing model) must be approved by a majority (or supermajority) vote among the Original Author and active Co-Owner Contributors.
+- **Resolution of Disputes:** Should a disagreement arise among Co-Owners regarding major changes, the Original Author’s vote shall serve as a tiebreaker.
+- **Inactive or Unresponsive Co-Owners:** A Co-Owner who does not respond to a written request for a vote or discussion within a specified period (e.g., 30 days) is deemed to have abstained. Abstentions do not block major changes but do not count as affirmative votes.
+
+### 5.3.3 Scope of Co-Ownership
+
+- **Limited to Contributed Code:** Co-Ownership applies only to the Contributor’s accepted code. It does not grant rights or control over the remainder of the Software outside that Contributor’s specific contributions, unless otherwise agreed in writing.
+- **Collective License Changes:** Co-Owners understand that any new license version (or major modification to this License) must honor or grandfather in existing users’ rights as described in Section 6.2 (Termination Limitations), in line with copyright law.
+
+### 5.3.4 Termination of Co-Ownership
+
+- If a Co-Owner Contributor violates this License or a separate co-ownership agreement, the Original Author may revoke their co-ownership status for future versions of the Software, in accordance with Section 6.
+- Revocation of co-ownership does **not** automatically revoke any prior valid licenses granted to other users who received the Software at an earlier time.
+
+  5.4 **No Automatic Co-Ownership**  
   Co-ownership is never automatic. It must be explicitly granted by the Original Author. Without such explicit grant, the Contributor is considered a Basic Contributor.
 
 ## 6. Termination of Rights
 
-6.1 **Non-Co-Owners**:  
-If a non-co-owner User violates any terms of this License, their right to use, modify, and distribute the Software may be revoked at the discretion of the Original Author. Continued use after a violation may subject them to legal action under applicable law.
+### 6.1 Termination vs. Prior Grants
 
-6.2 **Co-Owners**:  
-If a Co-Owner violates this License, their co-ownership and all associated rights immediately terminate. They revert to having no special rights beyond what any ordinary User would have under this License (unless otherwise determined by the Original Author and any applicable co-ownership agreement).
+- **No Retroactive Revocation:** This License grants certain rights at the time a User receives the Software under these terms. Those rights cannot be retroactively revoked for the copies already lawfully obtained.
+- **Future Versions:** If the Original Author or Co-Owners terminate a User’s rights due to a violation, that User loses permission to access, use, or distribute any future updates or new versions of the Software published under this License. However, they retain whatever rights they had to prior releases, except as otherwise prohibited by law.
+
+### 6.2 Non-Co-Owners
+
+If a non-co-owner User violates any terms of this License, the Original Author may revoke that User’s right to access and contribute to **future** versions or updates. Continued misuse after a violation may subject them to legal action.  
+Existing public copies or forks of earlier versions may remain under the previously granted license, though the violating User’s distribution rights can be contested if they continue to breach this License’s terms.
+
+### 6.3 Co-Owners
+
+If a Co-Owner violates this License or any separate co-ownership agreement:
+
+- The Original Author may revoke that Co-Owner’s special status for **future** versions of the Software, eliminating their vote on major changes and their direct license grants to third parties regarding those future versions.
+- Past releases in which the Co-Owner contributed code remain licensed as they were at the time of release, and other users’ rights to those versions are unaffected.
+
+### 6.4 Effect on Derived Works
+
+- Termination of a particular User’s rights under this License does not terminate rights properly granted to other downstream recipients who remain in compliance with the License.
+- A validly licensed Derived Work distributed by a non-violating third party does not automatically lose its license status because a separate User violated the terms.
+
+---
 
 ## 7. Disclaimer of Warranty
 
@@ -82,5 +120,3 @@ IN NO EVENT SHALL THE ORIGINAL AUTHOR OR ANY CONTRIBUTOR BE LIABLE FOR ANY CLAIM
 ## 9. Amendments
 
 This License may be updated by the Original Author. Major changes to the terms affecting co-owners may require their agreement per any separate co-ownership agreement. Any updated license shall be publicly posted. Continued use of the Software after license updates constitutes acceptance of the revised terms.
-
----
