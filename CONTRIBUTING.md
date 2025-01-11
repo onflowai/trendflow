@@ -6,15 +6,15 @@ Thank you for your interest in contributing to **TrendFlow**! We appreciate your
 
 ## Table of Contents
 
-1. [Code of Conduct](#code-of-conduct)
-2. [Getting Started](#getting-started)
-3. [How to Submit Issues](#how-to-submit-issues)
-4. [Proposing Changes (Pull Requests)](#proposing-changes-pull-requests)
-5. [Contributor License Agreement (CLA)](#contributor-license-agreement-cla)
-6. [Coding Standards](#coding-standards)
-7. [Testing Requirements](#testing-requirements)
-8. [Approval & Merging Process](#approval--merging-process)
-9. [Contact](#contact)
+1. [Code of Conduct](#1-code-of-conduct)
+2. [Getting Started](#2-getting-started)
+3. [How to Submit Issues](#3-how-to-submit-issues)
+4. [Proposing Changes (Pull Requests)](#4-proposing-changes-pull-requests)
+5. [Contributor License Agreement (CLA)](#5-contributor-license-agreement-cla)
+6. [Coding Standards](#6-coding-standards)
+7. [Testing Requirements](#7-testing-requirements)
+8. [Approval & Merging Process](#8-approval--merging-process)
+9. [Contact](#9-contact)
 
 ---
 
