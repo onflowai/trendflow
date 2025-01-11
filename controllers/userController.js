@@ -157,8 +157,6 @@ export const saveUserTrend = async (req, res) => {
   try {
     const { _id } = req.body;
     const user = await userModel.findById(req.user.userID);
-    console.log('_id in saveUserTrend: ', _id);
-    console.log('req.user.userID in saveUserTrend: ', req.user.userID);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
     }
@@ -236,7 +234,6 @@ export const removeUserTrend = async (req, res) => {
  * @returns
  */
 export const addGithubUsername = async (req, res) => {
-  console.log('Request Body: ', req.body);
   const { githubUsername } = req.body;
   const sanitizedGithubUsername = sanitizeHTML(githubUsername); //sanitize username
   if (!sanitizedGithubUsername) {

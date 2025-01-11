@@ -28,6 +28,11 @@ export default defineConfig({
         changeOrigin: true, //CORS policy temporary fix
         rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
       },
+      '/assets': {
+        target: 'http://localhost:5100',
+        changeOrigin: true,
+        rewrite: (path) => path, // no rewrite needed
+      },
     },
   },
   // define: {

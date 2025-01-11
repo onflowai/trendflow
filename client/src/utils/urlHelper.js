@@ -4,7 +4,15 @@ const GITHUB_URL = import.meta.env.VITE_GITHUB_URL || '';
 const FULL_GITHUB_URL = import.meta.env.VITE_FULL_GITHUB_URL || '';
 
 //API URL
-export const getFullIconUrl = (iconUrl) => `${API_BASE_URL}${iconUrl}`;
+//export const getFullIconUrl = (iconUrl) => `${API_BASE_URL}${iconUrl}`;
+//export const getFullIconUrl = (iconUrl) => `${iconUrl}`;
+export const getFullIconUrl = (iconUrl) => {
+  if (import.meta.env.DEV) {
+    return `${iconUrl}`; // relative path in development
+  } else {
+    return `${API_BASE_URL}${iconUrl}`; // relative path for production
+  }
+};
 //FRONTEND URL
 export const getFullTrendUrl = (slug) =>
   `${FRONTEND_BASE_URL}/dashboard/trend/${slug}`;

@@ -2,7 +2,7 @@
   "name": "mern-trendflow-ai",
   "version": "1.0.0",
   "description": "[TrendFlow](https://google.com)",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "setup-project": "npm install && cd client && npm install",
@@ -10,7 +10,8 @@
     "start-server": "NODE_ENV=production node server.js",
     "client": "cd client && npm run dev",
     "dev": "NODE_ENV=development concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "start": "npm run start-server"
+    "build": "npm run client",
+    "start": "npm run build && npm run start-server"
   },
   "keywords": [],
   "author": "",
