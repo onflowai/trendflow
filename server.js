@@ -1,6 +1,5 @@
 import 'express-async-errors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
@@ -32,6 +31,23 @@ import path from 'path'; //
 // Determine the environment
 const env = process.env.NODE_ENV || 'development';
 
+// Explicitly load .env.<environment> first
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+const result = dotenv.config({ path: envPath });
+
+if (result.error) {
+  console.error(`Failed to load ${envPath}:`, result.error);
+} else {
+  console.log(`Loaded environment variables from ${envPath}`);
+}
+
+// Fallback to default .env
+dotenv.config();
+
+// Debug logs to confirm the values
+// console.log('NODE_ENV:', env);
+// console.log('MONGODB_URL:', process.env.MONGODB_URL);
+
 //setting up access to .env and loading the corresponding .env file
 dotenv.config({
   path: path.resolve(process.cwd(), `.env.${env}`),
@@ -48,18 +64,20 @@ export { cloudinary };
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express(); // initializing express app
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-  })
-);
+
 // app.use(
 //   cors({
-//     origin:
-//       env === 'production' ? 'https://yourdomain.com' : 'http://localhost:5173',
-//     credentials: true, // allowing credentials (cookies, authorization headers, etc.)
+//     origin: 'http://localhost:5173',
 //   })
-// ); // setting up CORS to allow requests from localhost:5173
+// );
+
+app.use(
+  cors({
+    origin:
+      env === 'production' ? process.env.PROD_URL : 'http://localhost:5173',
+    credentials: true, // allowing credentials (cookies, authorization headers, etc.)
+  })
+); // setting up CORS to allow requests from localhost:5173
 
 app.use(
   helmet({
@@ -69,7 +87,7 @@ app.use(
         imgSrc: [
           "'self'",
           'data:',
-          'https://yourdomain.com',
+          'https://trendflowai.com',
           'http://localhost:5173',
         ],
         // Add other directives as needed
@@ -79,12 +97,13 @@ app.use(
 ); // helmet security helps secure express apps by setting various HTTP headers
 app.use(mongoSanitize());
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 400, // 400 requests per windowMs
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-}); //prevent abuse by limiting repeated requests
-app.use(limiter);
+//Cloudflare will handle rate limiting
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 400, // 400 requests per windowMs
+//   message: 'Too many requests from this IP, please try again after 15 minutes',
+// }); //prevent abuse by limiting repeated requests
+//app.use(limiter);
 
 //evoking app
 //if we are in dev log the data if not do not
@@ -106,21 +125,6 @@ if (env === 'production') {
 app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving static assets from the assets folder
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'))); // Serving server-side uploads
 //app.use(express.static(path.resolve(__dirname, 'client', 'dist'))); // serving React build
-// Serve React App in Production
-if (env === 'production') {
-  // Serve static files from the React app
-  app.use(express.static(path.join(__dirname, 'client', 'dist')));
-
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-  });
-} else {
-  // Development route
-  app.get('/', (req, res) => {
-    res.send('hello world');
-  });
-} //automated client dist serve
 
 //app.use(express.static(path.resolve(__dirname, './public'))); //the dist folder from frontend goes here
 app.use(express.json()); //setting up middleware json
@@ -140,6 +144,22 @@ app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 app.use('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
 });
+
+// Serve React App in Production
+if (env === 'production') {
+  // Serve static files from the React app
+  app.use(express.static(path.join(__dirname, 'client', 'dist')));
+
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  });
+} else {
+  // Development route
+  app.get('/', (req, res) => {
+    res.send('hello world');
+  });
+} //automated client dist serve
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.resolve(__dirname, ''));

@@ -27,6 +27,7 @@ dist-ssr
 .env
 .env.development
 .env.production
+ecosystem.config.cjs
 
 #assests
 /assets
