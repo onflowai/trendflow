@@ -16,6 +16,7 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
+
 /**
  * Login page uses react Form with method='post' to collect data in formData and using custom axios API posted to backend
  * @returns
@@ -23,40 +24,35 @@ import { toast } from 'react-toastify';
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  const errors = { msg: '' }; //setting up custom error for password if it is too short
+  const errors = { msg: '' }; // Setting up custom error for password if it is too short
   if (data.password.length < 3) {
     errors.msg = 'Password is too short';
     return errors;
   }
   try {
-    await customFetch.post('/auth/login', data);
+    const response = await customFetch.post('/auth/login', data);
     toast.success(<CustomSuccessToast message={'Login Successful'} />);
+    // No need to store the token manually since it's handled via HTTP Only cookies
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
   }
   return null;
 };
+
 const Login = () => {
   const navigate = useNavigate();
   const guestUser = async () => {
-    const data = {
-      username: 'guest',
-      name: 'user',
-      email: 'user@trendflow.com',
-      role: 'guestUser',
-      password: 'dkflt!4FdsCds&',
-      lastName: 'user',
-    };
     try {
-      await customFetch.post('/auth/login', data);
-      await customFetch.post('/users/visits', { role: 'guestUser' });
-      toast.success(<CustomSuccessToast message={'Welcome to trendFlow'} />);
+      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
       return navigate('/dashboard');
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
-  }; //guestUser signs in using a dummy user already in database
+  }; //guestUser signs in using guestLogin controller
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const errors = useActionData(); //
@@ -79,12 +75,8 @@ const Login = () => {
             {errors.msg}
           </p>
         )}
-        <FormComponent type="email" name="email" defaultValue="test@test.com" />
-        <FormComponent
-          type="password"
-          name="password"
-          defaultValue="Samuel12$"
-        />
+        <FormComponent type="email" name="email" />
+        <FormComponent type="password" name="password" />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'Signing In' : 'Sign In'}
         </button>

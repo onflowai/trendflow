@@ -15,7 +15,7 @@ const SidebarSetting = () => {
             {user.profile_img ? (
               <img src={user?.profile_img} alt="User" className="user-pic" />
             ) : (
-              <HiUser size={25} className="icon" class="user-default-pic" />
+              <HiUser size={25} className="user-default-pic" />
             )}
           </div>
           <span className="user-name">{user?.username}</span>

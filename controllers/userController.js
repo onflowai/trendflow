@@ -17,29 +17,44 @@ import mongoose from 'mongoose';
  * @param {*} res
  */
 export const getCurrentUser = async (req, res) => {
-  const userID = req.user.userID;
-  const user = await userModel.findOne({ _id: userID }); //NOTE user data is stored and managed server-side with JWT
-  const approvedTrends = await trendModel.countDocuments({
-    createdBy: userID,
-    isApproved: true,
-  }); //user stats
-  const submittedTrends = await trendModel.countDocuments({
-    createdBy: userID,
-  }); //user stats
-  const totalSiteTrends = await trendModel.countDocuments(); // this is a total trends, not user-specific
-  const totalTrendViews = await trendModel.aggregate([
-    { $match: { createdBy: new mongoose.Types.ObjectId(userID) } }, //referencing the user with $match user specific
-    { $group: { _id: null, totalViews: { $sum: '$views' } } }, //
-  ]); //using mongodb aggregation operation (looks for array) to count views of each trend
-  const viewsResult =
-    totalTrendViews.length > 0 ? totalTrendViews[0].totalViews : 0;
+  const { userID, role } = req.user;
+  let user;
+  if (role === 'guestUser') {
+    user = await userModel.findById(userID);
+  } else {
+    user = await userModel.findById(userID);
+  }
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' }); //handling no user
+  }
+  let approvedTrends = 0; // initializing approved trends by user
+  let submittedTrends = 0; // initializing submitted trends by user
+  let totalSiteTrends = await trendModel.countDocuments(); // this is a total trends, not user-specific
+  let totalTrendViews = 0; //// initializing trends views by user
+
+  if (role !== 'guestUser') {
+    approvedTrends = await trendModel.countDocuments({
+      createdBy: userID,
+      isApproved: true,
+    }); //user stats
+    submittedTrends = await trendModel.countDocuments({
+      createdBy: userID,
+    }); //user stats
+    const trendViews = await trendModel.aggregate([
+      //HERE
+      { $match: { createdBy: new mongoose.Types.ObjectId(userID) } }, //referencing the user with $match user specific
+      { $group: { _id: null, totalViews: { $sum: '$views' } } }, //
+    ]); //using mongodb aggregation operation (looks for array) to count views of each trend
+
+    totalTrendViews = trendViews.length > 0 ? trendViews[0].totalViews : 0;
+  }
   const userControlled = user.toJSON(); //userControlled is user without password implemented in the model
   res.status(StatusCodes.OK).json({
     user: userControlled,
     stats: {
       approvedTrends,
       submittedTrends,
-      totalTrendViews: viewsResult,
+      totalTrendViews,
       totalSiteTrends,
     },
   });
@@ -184,7 +199,11 @@ export const saveUserTrend = async (req, res) => {
  */
 export const getUserSavedTrends = async (req, res) => {
   try {
-    const user = await userModel.findById(req.user.userID).populate({
+    const { userID, role } = req.user; //destructuring the request
+    if (role === 'guestUser') {
+      return res.status(StatusCodes.OK).json({ savedTrends: [] }); //return empty array
+    } //this is a temporary implementation guest user needs to be able to save trends for session
+    const user = await userModel.findById(userID).populate({
       path: 'savedTrends',
       populate: {
         path: 'createdBy',
@@ -199,7 +218,7 @@ export const getUserSavedTrends = async (req, res) => {
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // handle errors
   }
-};
+}; //end getUserSavedTrends
 /**
  * REMOVE USER TREND
  * @param {*} req

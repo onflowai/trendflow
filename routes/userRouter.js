@@ -61,5 +61,6 @@ router.patch('/toggle-privacy', authenticateUser, togglePrivacy);
 router.post('/save-filters', authenticateUser, saveUserFilters);
 router.get('/get-saved-filters', authenticateUser, getUserSavedFilters);
 router.delete('/delete-filters', authenticateUser, deleteUserSavedFilters);
+//router.patch('/upgrade-account', authenticateUser, upgradeAccount);
 
 export default router;

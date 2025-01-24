@@ -50,11 +50,17 @@ const UserSchema = new mongoose.Schema(
       type: Object,
       default: {},
     },
+    expiresAt: {
+      type: Date,
+      default: null, //only set for guest users
+    },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
+UserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // index only affects documents where 'expiresAt' is set (guestUser in authController)
 //instance method to limit getCurrentUser return data (removing password)
 UserSchema.methods.toJSON = function () {
   let obj = this.toObject(); //transforming UserSchema to object
