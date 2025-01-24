@@ -24,31 +24,36 @@ const rolePermissions = {
  * @returns
  */
 export const authenticateUser = async (req, res, next) => {
-  const { token } = req.cookies;
+  const { token, guestUserID } = req.cookies;
+
+  if (!token && guestUserID) {
+    // Attempt to find the existing guest user
+    const guestUser = await UserModel.findById(guestUserID);
+
+    console.log('Fetched guestUser:', guestUser);
+
+    if (
+      guestUser &&
+      guestUser.role === 'guestUser' &&
+      new Date() < guestUser.expiresAt
+    ) {
+      req.user = { userID: guestUser._id, role: guestUser.role };
+      console.log('Authenticated as guestUser:', req.user);
+      return next();
+    }
+  }
   if (!token) {
     req.user = { role: 'guestUser' }; // Keep it simple; permissions will be derived from the role
+    console.log('No token and no valid guestUserID.');
     return next();
   }
   try {
-    const decoded = verifyJWT(token); // verifying and decode token
-    const { userID, role } = decoded; // destructuring decoded token
-
-    let user;
-
-    if (role === 'guestUser') {
-      user = await UserModel.findById(userID); //fetch guest user from UserModel
-      if (!user) {
-        req.user = { role: 'guestUser' }; //fallback to guestUser role if not found
-        return next();
-      }
-      req.user = { userID: user._id, role: user.role }; //attach guest user info
-    } else {
-      user = await UserModel.findById(userID); //fetch user from UserModel
-      if (!user) throw new UnauthenticatedError('Authentication invalid'); //handling invalid user
-      req.user = { userID: user._id, role: user.role }; // Attach user info
-    }
+    const decoded = verifyJWT(token);
+    console.log('Decoded JWT:', decoded);
+    req.user = { userID: decoded.userID, role: decoded.role };
     next();
   } catch (error) {
+    console.log('Authentication error:', error.message);
     throw new UnauthenticatedError('Authentication invalid');
   }
 }; //end authenticateUser

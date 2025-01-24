@@ -77,24 +77,27 @@ export const logout = (req, res) => {
  */
 export const guestLogin = async (req, res) => {
   try {
-    const randomStr = Math.random().toString(36).substring(2, 5); //generate base36 to include letters and numbers
-    const uniqueUsername = `guest_${randomStr}`; // example: guest_3df
-    const uniqueEmail = `guest_${randomStr}@trendflow.com`; // example: guest_3df@trendflow.com
+    let guestUser;
 
-    const name = 'Trend';
-    const lastName = 'Flow';
+    // Check if the guestUserID cookie exists
+    const { guestUserID } = req.cookies;
 
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration of guest user
-    const guestUser = new UserModel({
-      username: uniqueUsername,
-      email: uniqueEmail,
-      name,
-      lastName,
-      role: 'guestUser',
-      expiresAt, // setting expiration date
-    }); // creating new guest user
-    await guestUser.save(); // saving the guest user to the database
-    await visitModel.create({ role: 'guestUser' }); // log the visit
+    if (guestUserID) {
+      // Attempt to find the existing guest user
+      guestUser = await UserModel.findById(guestUserID);
+
+      // Check if the guestUser exists and hasn't expired
+      if (guestUser && new Date() < guestUser.expiresAt) {
+        console.log('Reusing existing guestUser.');
+      } else {
+        // If guestUser doesn't exist or has expired, create a new one
+        guestUser = await guestCreateSession();
+      }
+    } else {
+      // If no guestUserID cookie, create a new guestUser
+      guestUser = await guestCreateSession();
+    }
+
     const expiresIn = process.env.JWT_GUEST_EXPIRES_IN;
     const token = createJWT(
       { userID: guestUser._id, role: guestUser.role },
@@ -109,6 +112,13 @@ export const guestLogin = async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 'None' requires secure to be true
     }); // setting HTTP Only cookie with the token
 
+    res.cookie('guestUserID', guestUser._id, {
+      httpOnly: true,
+      expires: new Date(Date.now() + oneDay),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    }); // setting HTTP Only cookie with the guestUserID
+
     res.status(StatusCodes.OK).json({ msg: 'Guest user logged in' });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -117,7 +127,33 @@ export const guestLogin = async (req, res) => {
     });
   }
 }; //end guestLogin
+/**
+ * GUEST LOGIN
+ * used in Landing 'Create Account Later' stored in user model deleted after set time
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const guestCreateSession = async (req, res) => {
+  const randomStr = Math.random().toString(36).substring(2, 5); //generate base36 to include letters and numbers
+  const uniqueUsername = `guest_${randomStr}`; // example: guest_3df
+  const uniqueEmail = `guest_${randomStr}@trendflow.com`; // example: guest_3df@trendflow.com
 
+  const name = 'Trend';
+  const lastName = 'Flow';
+
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration of guest user
+  const guestUser = new UserModel({
+    username: uniqueUsername,
+    email: uniqueEmail,
+    name,
+    lastName,
+    role: 'guestUser',
+    expiresAt, // setting expiration date
+  }); // creating new guest user
+  await guestUser.save(); // saving the guest user to the database
+  return guestUser;
+}; //end guestCreateSession
 /**
  * TODO: UPGRADE ACCOUNT
  * upgrade guestUser or a user
@@ -125,45 +161,52 @@ export const guestLogin = async (req, res) => {
  * @param {*} res
  * @returns
  */
-// export const upgradeAccount = async (req, res) => {
-//   const { password, name, email } = req.body;
-//   if (!password || !name || !email) {
-//     throw new BadRequestError('Please provide all required fields.');
-//   }
-//   try {
-//     const user = await UserModel.findById(req.user.userID);
-//     if (!user) {
-//       throw new UnauthenticatedError('User not found.');
-//     }
-//     if (user.role !== 'guestUser') {
-//       throw new BadRequestError('Account is already a regular user.');
-//     }
-//     user.password = await hashPassword(password); // updating user details
-//     user.name = name; // updating user details
-//     user.email = email; // updating user details
-//     user.role = 'user'; // updating guestUser to user
-//     user.expiresAt = null; // Remove expiration
+export const upgradeAccount = async (req, res) => {
+  const { password, name, email } = req.body;
+  if (!password || !name || !email) {
+    throw new BadRequestError('Please provide all required fields.');
+  }
+  try {
+    const user = await UserModel.findById(req.user.userID);
+    if (!user) {
+      throw new UnauthenticatedError('User not found.');
+    }
+    if (user.role !== 'guestUser') {
+      throw new BadRequestError('Account is already a regular user.');
+    }
+    user.password = await hashPassword(password); // updating user details
+    user.name = name; // updating user details
+    user.email = email; // updating user details
+    user.role = 'user'; // updating guestUser to user
+    user.expiresAt = null; // Remove expiration
 
-//     await user.save();
-//     const JWT_EXPIRES_IN = process.env.JWT_SECRET;
-//     const token = createJWT(
-//       { userID: user._id, role: user.role },
-//       JWT_EXPIRES_IN
-//     ); // 1 day
-//     const oneDay = 86400000; // One day in milliseconds
+    await user.save();
+    const JWT_EXPIRES_IN = process.env.JWT_SECRET;
+    const token = createJWT(
+      { userID: user._id, role: user.role },
+      JWT_EXPIRES_IN
+    ); // 1 day
+    const oneDay = 86400000; // One day in milliseconds
 
-//     res.cookie('token', token, {
-//       httpOnly: true,
-//       expires: new Date(Date.now() + oneDay),
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-//     });
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + oneDay),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    });
 
-//     res.status(StatusCodes.OK).json({ msg: 'Account upgraded successfully.' });
-//   } catch (error) {
-//     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-//       msg: 'Failed to upgrade account',
-//       error: error.message,
-//     });
-//   }
-// };//end upgradeAccount
+    res.cookie('guestUserID', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()), // Expire immediately
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    }); //removing the guestUserID for new user creation
+
+    res.status(StatusCodes.OK).json({ msg: 'Account upgraded successfully.' });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: 'Failed to upgrade account',
+      error: error.message,
+    });
+  }
+}; //end upgradeAccount
