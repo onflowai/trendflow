@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
+//import { getFullIconUrl } from '../utils/urlHelper';
 
 const CustomOption = (props) => {
   const IconComponent = props.data.icon;
@@ -9,6 +10,7 @@ const CustomOption = (props) => {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {props.data.image && (
           <img
+            //src={getFullIconUrl(props.data.image)}
             src={props.data.image}
             alt={props.data.label}
             style={{ width: '20px', marginRight: '10px' }}
@@ -48,6 +50,7 @@ const CustomSingleValue = (props) => {
             }}
           >
             <img
+              //src={getFullIconUrl(props.data.image)}
               src={props.data.image}
               alt={props.data.label}
               style={{

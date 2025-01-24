@@ -3,41 +3,67 @@ import {
   UnauthorizedError,
   BadRequestError,
 } from '../errors/customErrors.js';
+import UserModel from '../models/userModel.js';
 import { verifyJWT } from '../utils/tokenUtils.js';
 /**
  * Creating restricted access to trend routs if the cookies are not present or jwt is not valid
  * If token verified attach the user from jtw to the request which look like: { userID: '65c8ef9bd50a47753d20fe84', role: 'user' }
  * This will be used in all of the controller
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
 const rolePermissions = {
   user: ['read', 'write'],
   admin: ['read', 'write', 'delete'],
   guestUser: ['read'],
 };
-
-export const authenticateUser = (req, res, next) => {
+/**
+ * AUTH USER
+ * async authentication process based on jwt and model data presence
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+export const authenticateUser = async (req, res, next) => {
   const { token } = req.cookies;
   if (!token) {
     req.user = { role: 'guestUser' }; // Keep it simple; permissions will be derived from the role
     return next();
   }
-
   try {
-    const decoded = verifyJWT(token); // Verify and decode token
-    req.user = { userID: decoded.userID, role: decoded.role };
+    const decoded = verifyJWT(token); // verifying and decode token
+    const { userID, role } = decoded; // destructuring decoded token
+
+    let user;
+
+    if (role === 'guestUser') {
+      user = await UserModel.findById(userID); //fetch guest user from UserModel
+      if (!user) {
+        req.user = { role: 'guestUser' }; //fallback to guestUser role if not found
+        return next();
+      }
+      req.user = { userID: user._id, role: user.role }; //attach guest user info
+    } else {
+      user = await UserModel.findById(userID); //fetch user from UserModel
+      if (!user) throw new UnauthenticatedError('Authentication invalid'); //handling invalid user
+      req.user = { userID: user._id, role: user.role }; // Attach user info
+    }
     next();
   } catch (error) {
     throw new UnauthenticatedError('Authentication invalid');
   }
-};
-//here
+}; //end authenticateUser
+
+/**
+ * AUTHORIZED PERMISSIONS
+ * @param {*} requiredPermission
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 export const authorizedPermissions = (requiredPermission) => {
   return (req, res, next) => {
     // Default to an empty object if req.user is undefined
-    const userRole = req.user ? req.user.role : 'guest';
+    const userRole = req.user ? req.user.role : 'guestUser';
     const userPermissions = rolePermissions[userRole] || [];
     if (!userPermissions.includes(requiredPermission)) {
       throw new UnauthorizedError('Please Create Account To Use This Feature.');
@@ -45,6 +71,12 @@ export const authorizedPermissions = (requiredPermission) => {
     next();
   };
 };
+/**
+ * AUTHORIZED ADMIN
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 export const authorizedAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     throw new UnauthorizedError('Unauthorized Access');
