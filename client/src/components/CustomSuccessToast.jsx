@@ -1,6 +1,5 @@
 import React from 'react';
-import logo from '../assets/images/logo-02.svg';
-import Container from '../assets/wrappers/CustomErrorToastContainer';
+import success from '../assets/images/trendflow-success.svg';
 /**
  * Custom Success Toast, styling is in index.css
  * @param {} param0
@@ -10,7 +9,7 @@ const CustomSuccessToast = ({ message }) => (
   <Container>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img
-        src={logo}
+        src={success}
         alt="Error"
         style={{ width: '20px', marginRight: '10px' }}
       />
@@ -18,5 +17,12 @@ const CustomSuccessToast = ({ message }) => (
     </div>
   </Container>
 );
+
+import styled from 'styled-components';
+//styling is in the index.css
+const Container = styled.div`
+  
+  
+`;
 
 export default CustomSuccessToast;

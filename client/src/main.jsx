@@ -16,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ToastContainer
       position="bottom-center"
       hideProgressBar={true}
+      closeButton={true}
       closeOnClick
       rtl={false}
       draggable

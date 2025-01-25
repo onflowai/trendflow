@@ -15,8 +15,12 @@ const Container = styled.section`
     display: flex;
     align-items: center;
   }
+.dark-mode-div{
+  margin-left: 0.7rem;
+}
 .nav-icons {
   display: none;
+  margin-right: 0.7rem;
 }
 .nav-center {
   width: 90vw;

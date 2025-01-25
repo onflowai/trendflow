@@ -1,5 +1,4 @@
 import React from 'react';
-import img from '../assets/images/test-img.jpg';
 import { tagLarge, tagSmall } from '../assets/utils/data';
 import Container from '../assets/wrappers/LandingHeroContainer';
 import HeroAnimated from './HeroAnimated';

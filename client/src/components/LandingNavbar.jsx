@@ -65,8 +65,11 @@ const LandingNavbar = () => {
                 />
               );
             })}
-            <DarkMode className="dark-mode" />
           </ul>
+          <span className="vertical-line"></span>
+          <span className="dark-mode-div">
+            <DarkMode className="dark-mode" />
+          </span>
         </div>
       </nav>
       {isOverlayOpen && <LandingOverlayMenu toggleOverlay={toggleOverlay} />}

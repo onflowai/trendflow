@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import img from '../assets/images/test-img.jpg';
 import Container from '../assets/wrappers/LandingPageContainer';
 import customFetch from '../utils/customFetch';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';

@@ -36,7 +36,9 @@ const AddInfoHubModal = ({ onClose, onAdd }) => {
         onAdd(response.data);
         onClose();
       } else {
-        toast.error('Failed to create info hub item.');
+        toast.error(
+          <CustomSuccessToast message={'Failed to create info hub item.'} />
+        );
       }
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
