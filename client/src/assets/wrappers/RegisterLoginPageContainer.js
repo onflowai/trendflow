@@ -11,7 +11,6 @@ const Container = styled.section`
   }
   .form {
     max-width: 400px;
-    border-top: 2px solid var(--primary-500);
   }
   h4 {
     text-align: center;

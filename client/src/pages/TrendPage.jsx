@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  SEOProtected,
   DangerousHTML,
   CustomErrorToast,
   FooterTrendDetails,
@@ -153,6 +154,7 @@ const TrendPage = () => {
   ];
   return (
     <Container>
+      <SEOProtected />
       <div className="trend-page-container">
         <div className="page-layout">
           <div id="Trend" className="trend">

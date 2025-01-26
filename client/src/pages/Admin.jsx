@@ -2,13 +2,14 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   Trends,
-  AddTrendModal,
   FilterTrends,
-  CustomErrorToast,
-  PaginationComponent,
+  SEOProtected,
   StatComponent,
-  ChartAdminComponent,
+  AddTrendModal,
+  CustomErrorToast,
   CustomSuccessToast,
+  PaginationComponent,
+  ChartAdminComponent,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import useLocalStorage from '../hooks/useLocalStorage';
@@ -393,6 +394,7 @@ const Admin = () => {
   };
   return (
     <Container>
+      <SEOProtected />
       <StatComponent
         user={user.name}
         stats={[

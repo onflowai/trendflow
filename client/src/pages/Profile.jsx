@@ -8,6 +8,7 @@ import {
   StatComponent,
   FormComponent,
   ProfileHeader,
+  SEOProtected,
   UserImgLarge,
   UserTrends,
 } from '../components';
@@ -238,6 +239,7 @@ const Profile = () => {
   }, []);
   return (
     <Container>
+      <SEOProtected />
       <ProfileHeader
         user={user}
         message="Here is the information about your trends"

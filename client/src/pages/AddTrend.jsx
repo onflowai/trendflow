@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  FormSelectorIcon,
   UserImgLarge,
+  SEOProtected,
   FallbackChart,
   CustomErrorToast,
+  FormSelectorIcon,
   FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
@@ -53,6 +54,11 @@ const AddTrend = () => {
       try {
         const response = await customFetch.get('trends/icon-data');
         const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+        console.log(
+          'TREND_CATEGORY, TECHNOLOGIES: ',
+          TREND_CATEGORY,
+          TECHNOLOGIES
+        );
         setTrendCategory(Object.values(TREND_CATEGORY));
         setTechnologies(Object.values(TECHNOLOGIES));
         const trendCategoryList = Object.values(TREND_CATEGORY);
@@ -74,6 +80,7 @@ const AddTrend = () => {
   }, []);
   return (
     <Container>
+      <SEOProtected />
       <div className="user-container clearfix">
         <div className="user-info">
           <div className="user-profile">

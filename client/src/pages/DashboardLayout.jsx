@@ -3,11 +3,12 @@ import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/DashboardContainer';
 import SearchProvider from '../context/SearchContext';
 import {
-  SidebarSmall,
-  Sidebar,
   Navbar,
-  CustomErrorToast,
   Footer,
+  Sidebar,
+  SEOProtected,
+  SidebarSmall,
+  CustomErrorToast,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
@@ -98,6 +99,7 @@ const DashboardLayout = () => {
         }}
       >
         <Container>
+          <SEOProtected />
           <main className="dashboard">
             <SidebarSmall />
             <Sidebar />

@@ -3,6 +3,7 @@ import {
   SelectTrends,
   UserImgSmall,
   EditMarkdown,
+  SEOProtected,
   FormComponent,
   TitleHighlighter,
   CustomErrorToast,
@@ -120,6 +121,7 @@ const AddBlog = () => {
 
   return (
     <Container>
+      <SEOProtected />
       <div className="submit-container">
         <div>
           <Form method="post" className="form">

@@ -27,10 +27,7 @@ export const authenticateUser = async (req, res, next) => {
   const { token, guestUserID } = req.cookies;
 
   if (!token && guestUserID) {
-    // Attempt to find the existing guest user
     const guestUser = await UserModel.findById(guestUserID);
-
-    console.log('Fetched guestUser:', guestUser);
 
     if (
       guestUser &&
@@ -38,7 +35,6 @@ export const authenticateUser = async (req, res, next) => {
       new Date() < guestUser.expiresAt
     ) {
       req.user = { userID: guestUser._id, role: guestUser.role };
-      console.log('Authenticated as guestUser:', req.user);
       return next();
     }
   }
@@ -49,7 +45,6 @@ export const authenticateUser = async (req, res, next) => {
   }
   try {
     const decoded = verifyJWT(token);
-    console.log('Decoded JWT:', decoded);
     req.user = { userID: decoded.userID, role: decoded.role };
     next();
   } catch (error) {

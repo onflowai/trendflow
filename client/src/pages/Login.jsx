@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Link,
   Form,
   redirect,
   useNavigation,
@@ -9,6 +8,7 @@ import {
 } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
+  SEO,
   Logo,
   FormComponent,
   CustomErrorToast,
@@ -67,6 +67,13 @@ const Login = () => {
   }, [errors]);
   return (
     <Container>
+      <SEO
+        title="TrendFlow - Find Tech Trends"
+        description="TrendFlow helps you track the latest trends in tech."
+        keywords="AI, Trends, Analytics, TrendFlow"
+        url="https://trendflowai.com/login"
+        image="https://yourdomain.com/images/og-image.jpg"
+      />
       <Form method="post" className="form">
         <Logo />
         <h4>Login</h4>

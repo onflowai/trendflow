@@ -14,24 +14,16 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
   const navigate = useNavigate();
 
   const guestUser = async () => {
-    const data = {
-      username: 'guest',
-      name: 'user',
-      email: 'user@trendflow.com',
-      role: 'guestUser',
-      password: 'dkflt!4FdsCds&',
-      lastName: 'user',
-    };
     try {
-      await customFetch.post('/auth/login', data);
-      await customFetch.post('/users/visits', { role: 'guestUser' });
-      toast.success(<CustomSuccessToast message={'Welcome to trendFlow'} />);
-      toggleOverlay(); // Close the overlay
-      navigate('/dashboard');
+      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
+      return navigate('/dashboard');
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
-  };
+  }; //guestUser signs in using guestLogin controller
 
   const handleLoginClick = () => {
     toggleOverlay(); // close the overlay
@@ -187,17 +179,19 @@ const ButtonContainer = styled.div`
 `;
 
 const LoginButton = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-500);
-  color: var(--white);
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  color: var(--btn-text-color);
+  background: var(--grey-50);
+  border: 1.5px solid var(--grey-70);
+  border-radius: var(--input-radius-rounded);
+  letter-spacing: var(--letter-spacing);
+  padding: 0.7rem 0.9rem;
+  transition: var(--transition);
+  text-transform: capitalize;
+  display: inline-block;
 
   &:hover {
-    background-color: var(--primary-600);
+    background-color: var(--primary2-500);
   }
 
   &:focus {

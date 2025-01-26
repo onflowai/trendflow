@@ -1,7 +1,7 @@
 {
   "name": "mern-trendflow-ai",
   "version": "1.0.0",
-  "description": "[TrendFlow](https://google.com)",
+  "description": "[TrendFlow](https://trendflowai.com)",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -19,6 +19,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.37.3",
+    "compression": "^1.7.5",
     "concurrently": "^8.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -45,6 +46,7 @@
     "redis": "^4.6.13",
     "sharp": "^0.32.6",
     "shell-quote": "^1.8.1",
+    "sitemap": "^8.0.0",
     "validator": "^13.12.0"
   },
   "engines": {

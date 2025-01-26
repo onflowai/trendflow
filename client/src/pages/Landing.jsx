@@ -1,16 +1,19 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import img from '../assets/images/test-img.jpg';
 import Container from '../assets/wrappers/LandingPageContainer';
 import customFetch from '../utils/customFetch';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
+import { toast } from 'react-toastify';
 import {
+  SEO,
   LandingHero,
   LandingAbout,
   LandingFooter,
   LandingNavbar,
+  StructuredData,
   LandingServices,
   CustomErrorToast,
+  CustomSuccessToast,
   PaginationFeatured,
   FeaturedTrendsMobile,
   FeaturedTrendsDesktop,
@@ -102,6 +105,18 @@ const Landing = () => {
     }
   }; //end loadMoreTrends
 
+  const guestUser = async () => {
+    try {
+      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
+      return navigate('/dashboard');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //guestUser signs in using guestLogin controller
+
   /**
    * Intersection Observer callback to trigger loadMoreTrends
    */
@@ -123,11 +138,19 @@ const Landing = () => {
 
   return (
     <Container>
+      <SEO
+        title="TrendFlow - Find Tech Trends"
+        description="TrendFlow helps you track the latest trends in tech."
+        keywords="AI, Trends, Analytics, TrendFlow"
+        url="https://trendflowai.com/"
+        image="https://yourdomain.com/images/og-image.jpg"
+      />
+      <StructuredData />
       <div className="container">
         <div>
           <LandingNavbar />
         </div>
-        <LandingHero />
+        <LandingHero guestUser={guestUser} />
         <LandingServices />
         <LandingAbout />
         <div className="featured-trends">

@@ -112,14 +112,17 @@ html {
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
   /* LIGHT MODE: */
-  /* COMPONENTS: ALL TRENDS */
+  /* BTN LIGHT */
+  --btn-text-color: #414342;
+
+  /* COMPONENTS: ALL TRENDS LIGHT */
   --card-background: var(--white);
   --card-highlight: var(--grey-50);
   --border-color: var(--grey-50);
   --small-card-bottom-row: var(--white);
   --selector-main-color: var(--white);
   --selector-dropdown-main-color: var(--white);
-  /* TREND PAGE */
+  /* TREND PAGE LIGHT */
   --select-small-color: var(--white);
   --select-small-dropdown-color: var(--white);
   --content-row-component-highlighted: var(--primary-5);
@@ -129,19 +132,19 @@ html {
   --code-box-background: var(--primary-5);
   --code-box-border-color: var(--primary-400);
   --code-box-text-color: var(--primary-600);
-  /* PROFILE */
+  /* PROFILE LIGHT */
   --dropdown-background: var(--white);
   --dropdown-background-hover: var(--grey-50);
-  /* AREA CHART */
+  /* AREA CHART LIGHT */
   --color-under-the-line1: #4541de;
   --color-under-the-line2: #e976c7;
   --line-color: #4541de;
-  /* BAR CHART */
+  /* BAR CHART LIGHT */
   --bar-chart-color1: #4541de;
   --bar-chart-color2: #e976c7;
   --bar-chart-tool-tip: #f6f6f6;
   --bar-chart-highlight: var(--primary2-50);
-  /* FLASH CHART (TrendFlashChart)*/
+  /* FLASH CHART LIGHT (TrendFlashChart)*/
   --flash-chart-color1: #4541de;
   --flash-chart-color2: #e976c7;
   --flash-chart-line-color: #4541de;
@@ -149,6 +152,10 @@ html {
   --admin-btn-icons: var(--grey-500);
   --admin-btn-icons-hover: var(--primary-500);
   --admin-btn-icons-active: var(--primary-700);
+  /* TOAST LIGHT*/
+  --toast-success-background: #f5f5f5;
+  --toast-border-color: #f5f5f5;
+  --toast-text-color: #242424;
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -185,6 +192,10 @@ html {
 }
 /* DARK MODE: */
 .dark-theme {
+  /* BTN DARK */
+  --btn-text-color: #e3e3e3;
+
+  /* GENERAL DARK */
   --text-color: var(--dark-mode-text-color);
   --background-color: var(--dark-mode-bg-color);
   --text-second-color: var(--dark-mode-text-second-color);
@@ -199,7 +210,7 @@ html {
   --small-card-bottom-row: var(--primary-400);
   --selector-main-color: var(--dark-mode-bg-color);
   --selector-dropdown-main-color: var(--primary-300);
-  /* TREND PAGE */
+  /* TREND PAGE DARK */
   --select-small-color: var(--dark-mode-bg-color);
   --select-small-dropdown-color: var(--primary-400);
   --content-row-component: var(--primary-400);
@@ -209,18 +220,18 @@ html {
   --code-box-background: #181818;
   --code-box-border-color: #323063;
   --code-box-text-color: #aeaeae;
-  /* PROFILE */
+  /* PROFILE DARK */
   --dropdown-background: #727272;
   --dropdown-background-hover: #454545;
-  /* AREA CHART */
+  /* AREA CHART DARK */
   --color-under-the-line1: #4541de;
   --color-under-the-line2: #e976c7;
   --line-color: #4541de;
-  /* BAR CHART */
+  /* BAR CHART DARK*/
   --bar-chart-color1: #4541de;
   --bar-chart-color2: #e976c7;
   --bar-chart-highlight: var(--primary2-700);
-  /* FLASH CHART (TrendFlashChart)*/
+  /* FLASH CHART DARK (TrendFlashChart)*/
   --flash-chart-color1: #4541de;
   --flash-chart-color2: #e976c7;
   --flash-chart-line-color: #4541de;
@@ -228,6 +239,10 @@ html {
   --admin-btn-icons: #babaab;
   --admin-btn-icons-hover: var(--primary2-300);
   --admin-btn-icons-active: var(--primary2-400);
+  /* TOAST DARK */
+  --toast-success-background: #343534;
+  --toast-border-color: #343534;
+  --toast-text-color: #fdfdfd;
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(
@@ -425,7 +440,7 @@ ul {
 .btn,
 .btn-color {
   cursor: pointer;
-  color: var(--grey-500);
+  color: var(--btn-text-color);
   background: var(--grey-50);
   border: 1.5px solid var(--grey-70);
   border-radius: var(--input-radius-rounded);
@@ -515,7 +530,8 @@ button:disabled {
 .btn-icon-danger:active {
   color: var(--red-light); /* Lighten color on click */
 }
-/*Toast Styling CustomToast.css */
+
+/*TOAST STYLING CustomToast.css */
 .Toastify__toast--error {
   /* content: url('./assets/images/test-logo.svg'); */
   background: var(--grey-50) !important;
@@ -536,9 +552,9 @@ button:disabled {
   top: 6px;
 }
 .Toastify__toast--success {
-  border: 1px solid #3a9ea5 !important;
-  border-radius: 50px !important;
-  background: #f0f9fa !important;
+  border: 1px solid var(--toast-border-color);
+  border-radius: var(--input-radius-rounded);
+  background: var(--toast-success-background);
 }
 .Toastify__toast--success::before {
   position: relative;
@@ -574,15 +590,19 @@ button:disabled {
   padding-top: 14px !important;
 }
 .Toastify__toast-body {
-  color: #444c63;
+  color: var(--toast-text-color);
   font-size: 16px;
   padding-left: 20px;
   line-height: 20px;
   padding: 0px;
   width: 100%;
   font-weight: 400;
-  margin-left: 25px !important;
+  margin-left: 15px !important;
 }
+.Toastify__toast {
+  box-shadow: none;
+}
+
 /* alerts */
 .alert {
   padding: 0.375rem 0.75rem;
