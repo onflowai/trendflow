@@ -1,7 +1,10 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 /**
- * SEO used in page
+ * SEO used in pages
+ * using react-helmet to inject various meta tags into the <head> section of your HTML
+ * these meta tags include the page title, description, keywords, canonical URL, Open Graph data for social media sharing
+ * NOTE: sitemap.xml and robots.txt are generated automatically in sitemapController and robotsController
  * @param {*} param0
  * @returns
  */

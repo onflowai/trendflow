@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, redirect, useNavigation, Link } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
-import { Logo, FormComponent, CustomErrorToast } from '../components';
+import { Logo, SEO, FormComponent, CustomErrorToast } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 /**
@@ -27,24 +27,31 @@ const Register = () => {
   const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
   return (
     <Container>
+      <SEO
+        title="TrendFlow - Find Tech Trends"
+        description="TrendFlow helps you track the latest trends in tech."
+        keywords="AI, Trends, Analytics, TrendFlow"
+        url="https://trendflowai.com/register"
+        image="https://yourdomain.com/images/og-image.jpg"
+      />
       <Form method="post" className="form">
         <Logo />
         <h4>Register</h4>
         {/* NAME */}
-        <FormComponent type="text" name="username" defaultValue="Steve" />
-        <FormComponent type="email" name="email" defaultValue="test@test.com" />
-        <FormComponent type="text" name="name" defaultValue="Steve" />
+        <FormComponent type="text" name="username" defaultValue="Username" />
+        <FormComponent
+          type="email"
+          name="email"
+          defaultValue="email@email.com"
+        />
+        <FormComponent type="text" name="name" defaultValue="First Name" />
         <FormComponent
           type="text"
           name="lastName"
-          defaultValue="Layden"
+          defaultValue="Last Name"
           labelText="Last Name"
         />
-        <FormComponent
-          type="password"
-          name="password"
-          defaultValue="Samuel12$"
-        />
+        <FormComponent type="password" name="password" />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>

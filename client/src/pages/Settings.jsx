@@ -3,6 +3,7 @@ import { Form, useLoaderData, useNavigation } from 'react-router-dom';
 import {
   UserTrends,
   UserSettings,
+  SEOProtected,
   UserImgLarge,
   StatComponent,
   FormComponent,
@@ -53,6 +54,7 @@ const Settings = () => {
   const { user, stats } = useOutletContext();
   return (
     <Container>
+      <SEOProtected />
       <div>
         <h4>Settings:</h4>
       </div>

@@ -16,6 +16,7 @@ const Container = styled.section`
     align-items: center;
   }
 .dark-mode-div{
+  //display: none;
   margin-left: 0.7rem;
 }
 .nav-icons {
@@ -108,6 +109,13 @@ const Container = styled.section`
     padding: 0;
     color: var(--primary-600);
     background: transparent;
+  }
+  .line-dark-mode{
+    margin-left: 0.7rem;
+  }
+  .dark-mode-div{
+    display: flex;
+    margin-left: 0.7rem;
   }
   .nav-icons {
     display: flex;

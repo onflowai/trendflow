@@ -112,6 +112,9 @@ html {
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
   /* LIGHT MODE: */
+  /* BTN LIGHT */
+  --btn-text-color: #414342;
+
   /* COMPONENTS: ALL TRENDS LIGHT */
   --card-background: var(--white);
   --card-highlight: var(--grey-50);
@@ -189,6 +192,10 @@ html {
 }
 /* DARK MODE: */
 .dark-theme {
+  /* BTN DARK */
+  --btn-text-color: #e3e3e3;
+
+  /* GENERAL DARK */
   --text-color: var(--dark-mode-text-color);
   --background-color: var(--dark-mode-bg-color);
   --text-second-color: var(--dark-mode-text-second-color);
@@ -433,7 +440,7 @@ ul {
 .btn,
 .btn-color {
   cursor: pointer;
-  color: var(--grey-500);
+  color: var(--btn-text-color);
   background: var(--grey-50);
   border: 1.5px solid var(--grey-70);
   border-radius: var(--input-radius-rounded);

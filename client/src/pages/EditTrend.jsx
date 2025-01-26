@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  SEOProtected,
   FormSelector,
   DangerousHTML,
   FallbackChart,
@@ -122,6 +123,7 @@ const EditTrend = () => {
 
   return (
     <Container>
+      <SEOProtected />
       <div id="Edit"></div>
       <div className="trend-page-container">
         <div className="page-layout">

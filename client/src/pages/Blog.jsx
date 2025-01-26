@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useLoaderData, useOutletContext, Link } from 'react-router-dom';
 import {
+  Tooltip,
+  BlogPostList,
+  SEOProtected,
   ProfileHeader,
   CarouselCards,
-  BlogPostList,
-  Tooltip,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import Container from '../assets/wrappers/BlogContainer';
@@ -67,6 +68,7 @@ const Blog = () => {
 
   return (
     <Container>
+      <SEOProtected />
       <div className="carousel-section">
         <div className="profile-header">
           <ProfileHeader user={user} message="Explore useful news and blogs" />

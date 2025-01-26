@@ -33,6 +33,18 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path, // no rewrite needed
       },
+      '/sitemap.xml': {
+        target: 'http://localhost:5100',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
+      },
+      '/robots.txt': {
+        target: 'http://localhost:5100',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
+      },
     },
   },
   // define: {

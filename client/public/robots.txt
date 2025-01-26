@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://trendflowai.com/sitemap.xml

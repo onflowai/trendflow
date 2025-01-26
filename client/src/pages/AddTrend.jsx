@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  FormSelectorIcon,
   UserImgLarge,
+  SEOProtected,
   FallbackChart,
   CustomErrorToast,
+  FormSelectorIcon,
   FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
@@ -79,6 +80,7 @@ const AddTrend = () => {
   }, []);
   return (
     <Container>
+      <SEOProtected />
       <div className="user-container clearfix">
         <div className="user-info">
           <div className="user-profile">

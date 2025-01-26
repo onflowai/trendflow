@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   Trends,
+  SEOProtected,
   FilterTrends,
   CustomErrorToast,
   PaginationComponent,
@@ -345,6 +346,7 @@ const AllTrends = () => {
 
   return (
     <CombinedProvider value={{ searchValues }}>
+      <SEOProtected />
       <FilterTrends
         onFiltersApply={onFiltersApply}
         trendCategory={trendCategory}

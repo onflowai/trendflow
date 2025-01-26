@@ -3,9 +3,10 @@ import customFetch from '../utils/customFetch';
 import CustomErrorToast from '../components/CustomErrorToast';
 import React, { useState, useEffect } from 'react';
 import {
+  SEOProtected,
+  TrendIconList,
   DangerousMarkdown,
   ScrollSpyComponent,
-  TrendIconList,
 } from '../components';
 import Container from '../assets/wrappers/BlogPageContainer';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
@@ -79,6 +80,7 @@ const BlogPage = () => {
 
   return (
     <Container>
+      <SEOProtected />
       <div className="blog-page-container">
         <div className="page-layout">
           <div id="section1" className="blog">

@@ -5,13 +5,15 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 // import { cloudinary, cloudinary2 } from './config/cloudinary.js';
 import cors from 'cors';
 import cloudinary from 'cloudinary';
 import mongoSanitize from 'express-mongo-sanitize';
 import fs from 'fs';
-//
-
+//sitemap.xml + robots.txt
+import sitemapRoute from './routes/sitemap.js';
+import robotsRoute from './routes/robots.js';
 //routers
 import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
@@ -41,8 +43,13 @@ if (result.error) {
   console.log(`Loaded environment variables from ${envPath}`);
 }
 
-// Fallback to default .env
+// fallback to default .env
 dotenv.config();
+
+// define Variables
+const PROD_URL = process.env.PROD_URL;
+const FRONT_URL = env === 'production' ? PROD_URL : process.env.DEV_URL;
+const SERVER_URL = env === 'production' ? PROD_URL : process.env.DEV_URL_SERVER;
 
 // Debug logs to confirm the values
 // console.log('NODE_ENV:', env);
@@ -65,6 +72,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express(); // initializing express app
 
+app.use(compression()); //compression middleware
+
 // app.use(
 //   cors({
 //     origin: 'http://localhost:5173',
@@ -73,8 +82,7 @@ const app = express(); // initializing express app
 
 app.use(
   cors({
-    origin:
-      env === 'production' ? process.env.PROD_URL : 'http://localhost:5173',
+    origin: FRONT_URL,
     credentials: true, // allowing credentials (cookies, authorization headers, etc.)
   })
 ); // setting up CORS to allow requests from localhost:5173
@@ -84,12 +92,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: [
-          "'self'",
-          'data:',
-          'https://trendflowai.com',
-          'http://localhost:5173',
-        ],
+        imgSrc: ["'self'", 'data:', PROD_URL, FRONT_URL],
         // Add other directives as needed
       },
     },
@@ -131,7 +134,9 @@ app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
 app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
 
-//app responding to get requests home rout with controller that handles the requests
+//
+app.use('/', sitemapRoute);
+app.use('/', robotsRoute);
 
 // API Routes
 app.use('/api/v1/trends', trendRouter); //base url
@@ -140,10 +145,9 @@ app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
-//testing proxy
 app.use('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
-});
+}); //testing proxy
 
 // Serve React App in Production
 if (env === 'production') {
