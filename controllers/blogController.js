@@ -3,6 +3,7 @@ import trendBlogModel from '../models/trendBlogModel.js';
 // import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
+import { removeDuplicateTrends } from '../utils/duplicateRemover.js';
 /**
  * CREATE BLOG
  * Create a new blog post (admin only)
@@ -29,7 +30,7 @@ export const createPost = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-};
+}; //end createPost
 /**
  * GET ALL POSTS
  * returns all posts which are in the schema currently sorted newest to oldest with page limit
@@ -41,14 +42,22 @@ export const getAllPosts = async (req, res) => {
     const posts = await trendBlogModel.find().populate('author').populate({
       path: 'trends',
       select: 'trend slug trendTech techIconUrl svg_url trendCategory',
-    }); // retrieving all blog posts, populated with the author and trends fields with selected fields
-    res.status(StatusCodes.OK).json(posts);
+    });
+    const processedPosts = posts.map((post) => {
+      const uniqueTrends = removeDuplicateTrends(post.trends); //removing duplicates
+      return {
+        ...post.toObject(), // converting mongoose document to plain object
+        trends: uniqueTrends,
+      };
+    }); // remove duplicate trends based on techIconUrl
+
+    res.status(StatusCodes.OK).json(processedPosts);
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-};
+}; //end getAllPosts
 /**
  * GET SINGLE POST
  * Get a single blog post by slug
@@ -71,13 +80,18 @@ export const getSinglePost = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Post not found' });
     }
-    res.status(StatusCodes.OK).json(post);
+    const uniqueTrends = removeDuplicateTrends(post.trends); //removing duplicates
+    const processedPost = {
+      ...post.toObject(), // converting mongoose document to plain object
+      trends: uniqueTrends,
+    };
+    res.status(StatusCodes.OK).json(processedPost);
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-};
+}; //end getSinglePost
 /**
  * UPDATE POST
  * Update a blog post by slug (admin only)
@@ -121,7 +135,7 @@ export const updatePost = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-};
+}; //end updatePost
 /**
  * DELETE POST
  * Delete a blog post by slug (admin only)
@@ -146,4 +160,4 @@ export const deletePost = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: error.message });
   }
-};
+}; //end deletePost

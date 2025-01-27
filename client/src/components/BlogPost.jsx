@@ -10,9 +10,8 @@ import { RiEdit2Fill } from 'react-icons/ri';
 
 function BlogPost({ title, content, slug, trends, author, user, updatedAt }) {
   const upDate = day(updatedAt).format('MM YYYY');
-  const truncatedContent = truncateMarkdown(content, 300);
+  const truncatedContent = truncateMarkdown(content, 200);
   const isAuthor = user?.role === 'admin' && user._id === author._id;
-
   return (
     <Container className="blog-item">
       <div className="content-wrapper">
@@ -128,6 +127,11 @@ const Container = styled.div`
     font-size: 1rem;
     color: var(--grey-700);
     margin-bottom: 3rem;
+  }
+  @media (max-width: 640px) {
+    .carousel {
+    display: none;
+  }
   }
 `;
 

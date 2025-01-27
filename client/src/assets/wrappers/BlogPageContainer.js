@@ -44,6 +44,7 @@ const Container = styled.div`
   }
 
   .blog-content {
+    margin-top: 2.4rem;
     width: 100%;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -51,6 +52,7 @@ const Container = styled.div`
     box-sizing: border-box;
   }
   .trend-icons {
+    margin-top: 0.7rem;
     display: flex;
     align-items: center;
   }

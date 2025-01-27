@@ -9,7 +9,6 @@ import {
   validateRegisterInput,
   validateLoginInput,
 } from '../middleware/validationMiddleware.js';
-import { guestLoginLimiter } from '../utils/rateLimiter.js';
 
 const router = Router();
 

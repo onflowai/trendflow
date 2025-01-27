@@ -83,7 +83,7 @@ const BlogPage = () => {
       <SEOProtected />
       <div className="blog-page-container">
         <div className="page-layout">
-          <div id="section1" className="blog">
+          <div id="blog" className="blog">
             <BlogTitle
               title={title}
               username={author.username}
@@ -101,13 +101,13 @@ const BlogPage = () => {
                 />
               ))}
             </div>
-            <div id="section2" className="blog-content">
+            <div className="blog-content">
               <DangerousMarkdown content={content} />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent sectionIds={['section1', 'section2']} />
+              <ScrollSpyComponent sectionIds={['blog', 'trends']} />
               {!isMobile && (
                 <div className="icon-trends">
                   <TrendIconList trends={trends} />
@@ -116,7 +116,7 @@ const BlogPage = () => {
             </div>
           </aside>
           {isMobile && (
-            <div className="icon-trends">
+            <div id="trends" className="icon-trends">
               <TrendIconList trends={trends} />
             </div>
           )}
