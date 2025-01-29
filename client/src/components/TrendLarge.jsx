@@ -39,25 +39,26 @@ function TrendLarge({
   slug,
   views,
   trend,
-  trendTech,
-  trendCategory,
-  trendDesc,
-  trendStatus,
-  isLoading,
   upDate,
-  interestOverTime,
+  onSave,
+  onDelete,
+  onRemove,
+  onApprove,
+  createdBy,
+  trendTech,
+  trendDesc,
+  isLoading,
+  isApproved,
+  isFeatured,
   isAdminPage,
   onUnapprove,
-  onApprove,
-  onDelete,
-  isFeatured,
-  onSave,
-  onRemove,
   savedTrends,
   techIconUrl,
   cateIconUrl,
-  createdBy,
-  isApproved,
+  trendStatus,
+  trendCategory,
+  onApproveManual,
+  interestOverTime,
 }) {
   const { isDarkTheme } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -309,7 +310,7 @@ function TrendLarge({
                             className="btn-icon action-btn"
                             onClick={(e) => {
                               handleInnerClick(e);
-                              onApprove(slug);
+                              onApproveManual(slug);
                             }}
                           >
                             <FaSquarePlus size={23} />

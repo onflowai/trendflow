@@ -1,6 +1,7 @@
 import rateLimit from 'express-rate-limit';
 /**
  * CALL rate limiter
+ * rate limiting will be handled with cloudflare
  */
 export const githubLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

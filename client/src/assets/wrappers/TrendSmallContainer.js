@@ -41,7 +41,7 @@ const Container = styled.article`
     position: relative;
     text-align: left;
     width: 100%;
-    
+
     h4, h6, p {
       position: absolute;
       width: 100%;
@@ -50,14 +50,22 @@ const Container = styled.article`
       padding: 2rem 1rem 1rem;
       border-radius: 0.25rem;
     }
+
+    .underlay-heading {
+      backdrop-filter: blur(40px);
+      width: auto;
+      border-radius: 0.25rem;
+      margin-left: 0.8rem;
+      padding: 2px 4px;
+    } 
     
     h4 {
-      top: 120px;
+      top: 149px;
       z-index: 0;
     }
 
     h6 {
-      top: 145px;
+      top: 175px;
       z-index: 0;
     }
     
@@ -66,6 +74,39 @@ const Container = styled.article`
       top: 160px;
       z-index: 0;
     }
+  }
+  .info-mini{
+    position: relative;
+    text-align: left;
+    width: 100%;
+
+    h4, h6, p {
+      position: absolute;
+      width: 100%;
+      margin: 0;
+      color: var(--text-color);
+      padding: 2rem 1rem 1rem;
+      border-radius: 0.25rem;
+    }
+
+    .underlay-heading {
+      backdrop-filter: blur(40px);
+      width: auto;
+      border-radius: 0.25rem;
+      margin-left: 0.8rem;
+      padding: 2px 4px;
+    } 
+    
+    h4 {
+      top: 60px;
+      z-index: 0;
+    }
+
+    h6 {
+      top: 90px;
+      z-index: 0;
+    }
+    
   }
 
   .bottom-row {
@@ -132,12 +173,21 @@ const Container = styled.article`
 
   @media (max-width: 500px) {
     .info {
+
+      h{
+        top: 170px;//category vertical alignment
+      }
+      h6{
+        top: 170px;//category vertical alignment
+      }
       h3 {
         font-size: 1rem;
       }
       p {
         font-size: 0.8rem;
       }
+      .mono-heading {
+    } 
     }
     .info-item {
     font-size: 0.5rem;

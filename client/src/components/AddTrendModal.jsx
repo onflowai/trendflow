@@ -224,7 +224,7 @@ const Overlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: var(--white);
+  background-color: var(--add-trend-modal-color);
   padding: 20px 30px;
   border-radius: 8px;
   width: 90%;

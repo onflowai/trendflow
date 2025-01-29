@@ -43,12 +43,14 @@ function TrendSmall({
   isFeatured,
   isGridView,
   flashChart,
+  chartHeight,
   savedTrends,
   techIconUrl,
   isAdminPage,
+  relatedFlag,
   relatedStyle,
+  featuredFlag,
   trendCategory,
-  chartHeight,
   chartMarginTop,
   onApproveManual,
   chartMarginBottom,
@@ -78,7 +80,7 @@ function TrendSmall({
     <Container style={relatedStyle} onClick={handleCardClick}>
       <header className="trend-small-card">
         <div className="overlay">
-          <div className="info">
+          <div className={featuredFlag || relatedFlag ? 'info-mini' : 'info'}>
             {isLoading && (
               <div className="loading-styling">
                 <Loading />
@@ -95,19 +97,23 @@ function TrendSmall({
               <TrendFallFlashChart />
             )}
             <div className="trend-title">
-              <h4 className="mono-heading-bold">
+              <h4 className="mono-heading-bold underlay-heading">
                 {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
               </h4>
-              <h6 className="mono-heading">{trendCategory}</h6>
-              {!isGridView && trendDesc && trendDesc.trim() && (
-                <div className="trend-desc">
-                  <p className="mono-heading-thin">
-                    {trendDesc.length > 60
-                      ? trendDesc.substring(0, 60) + '...'
-                      : trendDesc}
-                  </p>
-                </div>
-              )}
+              <div className="description-container">
+                <h6 className="mono-heading underlay-heading">
+                  {trendCategory}
+                </h6>
+                {!isGridView && trendDesc && trendDesc.trim() && (
+                  <div className="trend-desc">
+                    <p className="mono-heading-thin">
+                      {trendDesc.length > 60
+                        ? trendDesc.substring(0, 60) + '...'
+                        : trendDesc}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <footer className="bottom-row">
@@ -130,7 +136,9 @@ function TrendSmall({
                         style={{ width: '20px', marginRight: '10px' }}
                       />
                     )}
-                    <h5>{trendTech.split(' ').slice(0, 2).join(' ')}</h5>
+                    {!isGridView && (
+                      <h5>{trendTech.split(' ').slice(0, 2).join(' ')}</h5>
+                    )}
                   </span>
                 ) : (
                   <span></span>

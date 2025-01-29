@@ -26,6 +26,7 @@ const Error = () => {
   // Handle mouse enter on the link
   const handleMouseEnter = () => {
     setIsHovered(true);
+    navigate('/dashboard');
   };
 
   // Handle mouse leave on the link
@@ -64,7 +65,6 @@ const Error = () => {
             <p>The page you are looking for does not exist.</p>
             <button
               className="btn"
-              to="/dashboard"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -96,7 +96,6 @@ const Error = () => {
           <p>An unexpected error has occurred. Please try again later.</p>
           <button
             className="btn"
-            to="/dashboard"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >

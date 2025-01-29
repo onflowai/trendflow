@@ -12,6 +12,7 @@ const RelatedTrendsDesktop = ({
   onSave,
   onRemove,
 }) => {
+  const relatedFlag = true; //flag for related mobile
   //Values used to style recharts in AllTrends & Admin pages
   const chartHeight = 100;
   const chartMarginTop = 10;
@@ -43,6 +44,7 @@ const RelatedTrendsDesktop = ({
             savedTrends={savedTrends}
             onSave={onSave}
             onRemove={onRemove}
+            relatedFlag={relatedFlag}
           />
         ))}
       </div>

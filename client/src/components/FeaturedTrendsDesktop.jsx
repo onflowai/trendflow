@@ -8,6 +8,7 @@ import Container from '../assets/wrappers/FeaturedTrendsDesktop';
  * @returns
  */
 const FeaturedTrendsDesktop = ({ featuredTrends }) => {
+  const featuredFlag = true;
   //Values used to style recharts in AllTrends & Admin pages
   const isFeatured = true;
   const chartHeight = 100;
@@ -38,6 +39,7 @@ const FeaturedTrendsDesktop = ({ featuredTrends }) => {
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
             isFeatured={isFeatured}
+            featuredFlag={featuredFlag}
           />
         ))}
       </div>

@@ -132,6 +132,8 @@ html {
   --code-box-background: var(--primary-5);
   --code-box-border-color: var(--primary-400);
   --code-box-text-color: var(--primary-600);
+  /* ADD TREND MODAL LIGHT*/
+  --add-trend-modal-color: var(--white);
   /* PROFILE LIGHT */
   --dropdown-background: var(--white);
   --dropdown-background-hover: var(--grey-50);
@@ -220,6 +222,8 @@ html {
   --code-box-background: #181818;
   --code-box-border-color: #323063;
   --code-box-text-color: #aeaeae;
+  /* ADD TREND MODAL DARK*/
+  --add-trend-modal-color: #dcdcdc;
   /* PROFILE DARK */
   --dropdown-background: #727272;
   --dropdown-background-hover: #454545;
@@ -295,6 +299,12 @@ html {
 .mono-heading-thin {
   font-family: 'Roboto', monospace;
   font-weight: 400;
+}
+.mono-heading .h6 {
+  background-color: var(--white); /* White background */
+  border-radius: 0.25rem; /* Subtle rounded corners */
+  padding: 1rem 0.1rem 0.1rem; /* Minimal padding */
+  color: var(--text-color); /* Ensure it follows the text color */
 }
 .mono-font {
   font-family: 'JetBrains Mono', monospace;

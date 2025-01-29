@@ -35,12 +35,15 @@ const Container = styled.section`
     outline: none;
     font-size: 1.8rem;
     background: none;
-    margin: 0.1rem; /* Add space between buttons */
+    margin: 0.1rem; // Add space between buttons
     cursor: pointer;
+  }
+  .view-btn:hover {
+    color: var(--primary-200);
   }
 
   .view-btn.active, .grid-view-btn.active {
-    color: var(--grey-100); /* Highlight the active button */
+    color: var(--primary-400); // Highlight the active button
   }
 
   .featured-toggle-container {
