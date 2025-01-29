@@ -18,7 +18,7 @@ function Trends({
   onApproveManual,
 }) {
   //Values used to style recharts in AllTrends & Admin pages
-  const chartHeight = 240;
+  const chartHeight = 205;
   const chartMarginTop = 5;
   const chartMarginBottom = -40;
 
