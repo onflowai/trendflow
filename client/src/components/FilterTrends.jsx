@@ -31,7 +31,16 @@ function FilterTrends({
           onFiltersApply={onFiltersApply}
         />
       ) : (
-        <FilterTrendsSmall />
+        <FilterTrendsSmall
+          isAdminPage={isAdminPage}
+          trendCategory={trendCategory}
+          technologies={technologies}
+          isClosed={isClosed}
+          setIsClosed={setIsClosed}
+          saveFilters={saveFilters}
+          resetFilters={resetFilters}
+          onFiltersApply={onFiltersApply}
+        />
       )}
     </Container>
   );

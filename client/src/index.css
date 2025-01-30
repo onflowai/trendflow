@@ -300,12 +300,6 @@ html {
   font-family: 'Roboto', monospace;
   font-weight: 400;
 }
-.mono-heading .h6 {
-  background-color: var(--white); /* White background */
-  border-radius: 0.25rem; /* Subtle rounded corners */
-  padding: 1rem 0.1rem 0.1rem; /* Minimal padding */
-  color: var(--text-color); /* Ensure it follows the text color */
-}
 .mono-font {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
