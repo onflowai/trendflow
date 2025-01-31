@@ -158,6 +158,12 @@ html {
   --toast-success-background: #f5f5f5;
   --toast-border-color: #f5f5f5;
   --toast-text-color: #242424;
+  /* FILTER MOBILE LIGHT */
+  --filter-btn-color: #f7f7f7;
+  --filter-btn-border-color: #dedede;
+  --filter-btn-highlighted: var(--primary-200);
+  --filter-btn-border-highlighted: var(--primary-300);
+  --tech-item-background-color: var(--white);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -192,7 +198,7 @@ html {
     var(--primary-800)
   );
 }
-/* DARK MODE: */
+/* ----------------- DARK MODE: ----------------- */
 .dark-theme {
   /* BTN DARK */
   --btn-text-color: #e3e3e3;
@@ -247,6 +253,12 @@ html {
   --toast-success-background: #343534;
   --toast-border-color: #343534;
   --toast-text-color: #fdfdfd;
+  /* FILTER MOBILE DARK */
+  --filter-btn-color: var(--dark-mode-bg-color);
+  --filter-btn-border-color: #3f3f3f;
+  --filter-btn-highlighted: var(--primary-200);
+  --filter-btn-border-highlighted: var(--primary-300);
+  --tech-item-background-color: #cfc7ff;
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(

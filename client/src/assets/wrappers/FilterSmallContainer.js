@@ -5,7 +5,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   background: var(--white);
 
   .close-button {
@@ -15,6 +15,7 @@ const Container = styled.div`
     background: transparent;
     border: none;
     cursor: pointer;
+    color: var(--red);
   }
 
   .selected-filters {
@@ -28,40 +29,49 @@ const Container = styled.div`
   .filter-pill {
     display: flex;
     align-items: center;
-    background-color: #eee;
+    background-color: var(--filter-btn-highlighted);
+    border: 1.5px solid var(--filter-btn-border-highlighted);
     border-radius: 1rem;
-    padding: 0.3rem 0.7rem;
+    padding: 0.4rem 0.7rem;
     white-space: nowrap;
   }
 
   .filter-pill img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    //border-radius: 50%;
   }
 
   .filter-pill button {
-    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    margin-left: 0.3rem;
     border: none;
     background: none;
     cursor: pointer;
-    font-weight: bold;
   }
 
   .reset-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
     margin-left: auto;
-    padding: 0.3rem 0.8rem;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 1rem;
+    padding: 0.1rem 0.1rem;
+    background: none; /* Ensure no background */
+    border: none; /* Remove border */
     cursor: pointer;
   }
+  .reset-filter-btn svg {
+    color: var(--black); /* Set icon color */
+    display: block; /* Ensure no extra spacing */
+}
 
   .available-filters {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .basic-filters {
@@ -76,10 +86,19 @@ const Container = styled.div`
     padding: 0.5rem;
     border: none;
     border-radius: 1rem;
-    background-color: #ccc;
+    border: 1.5px solid var(--filter-btn-border-color);
+    background-color: var(--filter-btn-color);
     cursor: pointer;
     text-align: center;
+    color: var(--text-color);
   }
+  .basic-filter-btn:hover {
+  background-color: var(--filter-btn-highlighted); /* Highlight color on hover */
+  border-color: var(--filter-btn-border-highlighted);
+}
+  .basic-filter-btn:active {
+  background-color: var(--filter-btn-border-highlighted); /* Change color on click */
+}
 
   .tech-carousel-wrapper {
     position: relative;
@@ -135,7 +154,7 @@ const Container = styled.div`
   min-width: 50px;
   min-height: 50px;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: var(--tech-item-background-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,12 +178,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.search-button:hover {
-  background: rgba(255, 255, 255, 0.2);
 }
 
   .tech-select,

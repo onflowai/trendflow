@@ -3,8 +3,24 @@ import styled from 'styled-components';
 import Select from 'react-select';
 import { FaFilter } from 'react-icons/fa';
 import { AiOutlineClose } from 'react-icons/ai';
+import { IoClose } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
+import { MdOutlineFilterAltOff } from 'react-icons/md';
+import { AiFillCloseSquare } from 'react-icons/ai';
 import Container from '../assets/wrappers/FilterSmallContainer.js';
+/**
+ *
+ */
+const TOP_RATED_OPTIONS = [
+  { label: 'Top Rated Now', value: 'topRatedNow' },
+  { label: 'Top Rated Year', value: 'topRatedYear' },
+  { label: 'Top Rated Month', value: 'topRatedMonth' },
+];
+const TOP_VIEWED_OPTIONS = [
+  { label: 'Top Viewed Now', value: 'topViewedNow' },
+  { label: 'Top Viewed Year', value: 'topViewedYear' },
+  { label: 'Top Viewed Month', value: 'topViewedMonth' },
+];
 
 function FilterTrendsSmall({
   trendCategory = [],
@@ -14,34 +30,104 @@ function FilterTrendsSmall({
   onFiltersApply,
   resetFilters,
 }) {
-  const basicFilters = [
-    'rated now',
-    'rated year',
-    'rated month',
-    'views now',
-    'views year',
-    'views month',
-  ];
-
-  const [selectedBasicFilters, setSelectedBasicFilters] = useState([]);
-  const [selectedTech, setSelectedTech] = useState(null); // single tech
-  const [selectedCategory, setSelectedCategory] = useState(null); // single category
-  const [showTechSelect, setShowTechSelect] = useState(false);
+  const [topRated, setTopRated] = useState(''); //topRated only one selection each or empty string
+  const [topViewed, setTopViewed] = useState(''); //topViewed only one selection each or empty string
+  const [selectedTech, setSelectedTech] = useState(null); // single select tech
+  const [selectedCategory, setSelectedCategory] = useState(null); //single select category
+  const [showTechSelect, setShowTechSelect] = useState(false); //toggle for showing the tech <Select> search dropdown
 
   const techOptions = technologies.map((tech) => ({
     value: tech.label,
     label: tech.label,
     image: tech.image,
   }));
-
   const categoryOptions = trendCategory.map((cate) => ({
     value: cate.label,
     label: cate.label,
     image: cate.image,
   }));
 
+  const updateFilters = (newState = {}) => {
+    onFiltersApply({
+      topRated: newState.hasOwnProperty('topRated')
+        ? newState.topRated
+        : topRated,
+      topViewed: newState.hasOwnProperty('topViewed')
+        ? newState.topViewed
+        : topViewed,
+      trendTech: newState.hasOwnProperty('selectedTech')
+        ? newState.selectedTech
+          ? newState.selectedTech.value
+          : ''
+        : selectedTech
+        ? selectedTech.value
+        : '',
+      trendCategory: newState.hasOwnProperty('selectedCategory')
+        ? newState.selectedCategory
+          ? newState.selectedCategory.value
+          : ''
+        : selectedCategory
+        ? selectedCategory.value
+        : '',
+    }); // if newState has topRated/topViewed use them else fallback to current state
+  }; // helper calling to onFiltersApply with the latest states
+
+  const handleTopRatedClick = (value) => {
+    const newValue = topRated === value ? '' : value;
+    setTopRated(newValue);
+    updateFilters({ topRated: newValue });
+  }; //handle for topRated / topViewed (user clicks the same value it toggles it off)
+
+  const handleTopViewedClick = (value) => {
+    const newValue = topViewed === value ? '' : value;
+    setTopViewed(newValue);
+    updateFilters({ topViewed: newValue });
+  }; // user clicks the same value toggle it off
+
+  const handleTechChange = (option) => {
+    setSelectedTech(option);
+    updateFilters({ selectedTech: option });
+  }; //tech handler
+
+  const handleSelectTechFromCarousel = (techLabel) => {
+    const found = techOptions.find((t) => t.value === techLabel);
+    setSelectedTech(found || null);
+    updateFilters({ selectedTech: found || null });
+  };
+
+  const removeSelectedTech = () => {
+    setSelectedTech(null);
+    updateFilters({ selectedTech: null });
+  };
+
+  const handleCategoryChange = (option) => {
+    setSelectedCategory(option);
+    updateFilters({ selectedCategory: option });
+  }; //handler for category
+
+  const removeSelectedCategory = () => {
+    setSelectedCategory(null);
+    updateFilters({ selectedCategory: null });
+  };
+
+  const handleResetAll = async () => {
+    setTopRated('');
+    setTopViewed('');
+    setSelectedTech(null);
+    setSelectedCategory(null);
+
+    await resetFilters();
+
+    onFiltersApply({
+      topRated: '',
+      topViewed: '',
+      trendTech: '',
+      trendCategory: '',
+    });
+  };
+
   const hasAnySelected =
-    selectedBasicFilters.length > 0 || selectedTech || selectedCategory;
+    topRated || topViewed || selectedTech || selectedCategory;
 
   if (isClosed) {
     return (
@@ -58,16 +144,23 @@ function FilterTrendsSmall({
   return (
     <Container>
       <button className="close-button" onClick={() => setIsClosed(true)}>
-        <AiOutlineClose size={16} />
+        <AiFillCloseSquare size={22} />
       </button>
       <div className="selected-filters">
-        {/* Basic text filters */}
-        {selectedBasicFilters.map((filter) => (
-          <div key={filter} className="filter-pill">
-            <span>{filter}</span>
-            <button onClick={() => handleRemoveBasicFilter(filter)}>x</button>
+        {topRated && (
+          <div className="filter-pill">
+            <span>{topRated}</span>
+            <button onClick={() => handleTopRatedClick(topRated)}>
+              <IoClose size={16} />
+            </button>
           </div>
-        ))}
+        )}
+        {topViewed && (
+          <div className="filter-pill">
+            <span>{topViewed}</span>
+            <button onClick={() => handleTopViewedClick(topViewed)}>x</button>
+          </div>
+        )}
         {selectedTech && (
           <div className="filter-pill">
             <img src={selectedTech.image} alt={selectedTech.label} />
@@ -82,19 +175,30 @@ function FilterTrendsSmall({
         )}
         {hasAnySelected && (
           <button className="reset-filter-btn" onClick={handleResetAll}>
-            Reset Filter
+            <MdOutlineFilterAltOff size={19} />
           </button>
         )}
       </div>
       <div className="available-filters">
         <div className="basic-filters">
-          {basicFilters.map((filter) => (
+          {TOP_RATED_OPTIONS.map((option) => (
             <button
-              key={filter}
+              key={option.value}
               className="basic-filter-btn"
-              onClick={() => handleSelectBasicFilter(filter)}
+              onClick={() => handleTopRatedClick(option.value)}
             >
-              {filter}
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <div className="basic-filters">
+          {TOP_VIEWED_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              className="basic-filter-btn"
+              onClick={() => handleTopViewedClick(option.value)}
+            >
+              {option.label}
             </button>
           ))}
         </div>
@@ -111,7 +215,6 @@ function FilterTrendsSmall({
             ))}
             <div className="fade-overlay"></div>
           </div>
-
           <button
             className="search-button"
             onClick={() => setShowTechSelect(!showTechSelect)}
@@ -126,6 +229,7 @@ function FilterTrendsSmall({
               onChange={handleTechChange}
               options={techOptions}
               isClearable
+              styles={customStyles}
               placeholder="Search"
               getOptionLabel={(option) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -150,8 +254,9 @@ function FilterTrendsSmall({
             value={selectedCategory}
             onChange={handleCategoryChange}
             options={categoryOptions}
+            styles={customStyles}
             isClearable
-            placeholder="Choose Category..."
+            placeholder="Category"
             getOptionLabel={(option) => (
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
@@ -173,6 +278,7 @@ function FilterTrendsSmall({
     </Container>
   );
 }
+
 const FilterIconContainer = styled.div`
   .filter-toggle {
   border-radius: none;
@@ -203,5 +309,51 @@ const FilterIconContainer = styled.div`
   color: var(--white);
 }
 `;
+
+const customStyles = {
+  control: (styles) => ({
+    ...styles,
+    borderRadius: 'var(--input-radius-rounded)',
+    border: '1.5px solid var(--grey-70)',
+    backgroundColor: 'var(--selector-main-color)',
+  }),
+  menu: (styles) => ({
+    ...styles,
+    borderRadius: '10px',
+    marginTop: '0px', // Adjust the top margin to reduce or eliminate the gap
+    backgroundColor: 'var(--selector-dropdown-main-color)',
+  }),
+  menuList: (styles) => ({
+    ...styles,
+    paddingTop: '0px', // Reduce or eliminate padding at the top of the menu list
+    paddingBottom: '0px', // Adjust bottom padding if needed
+    // Further adjust spacing to ensure the dropdown fits snugly against the control
+  }),
+  option: (styles, { isFocused, isSelected }) => ({
+    ...styles,
+    backgroundColor: isSelected
+      ? 'var(--primary-200)'
+      : isFocused
+      ? 'var(--primary-50)'
+      : null,
+    color: isSelected
+      ? 'var(--text-color)'
+      : isFocused
+      ? 'var(--text-color)'
+      : 'var(--text-color)',
+    ':first-of-type': {
+      borderTopLeftRadius: '10px',
+      borderTopRightRadius: '10px',
+    },
+    ':last-of-type': {
+      borderBottomLeftRadius: '10px',
+      borderBottomRightRadius: '10px',
+    },
+  }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
+  }),
+};
 
 export default FilterTrendsSmall;
