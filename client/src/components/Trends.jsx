@@ -18,9 +18,10 @@ function Trends({
   onApproveManual,
 }) {
   //Values used to style recharts in AllTrends & Admin pages
-  const chartHeight = 205;
+  const chartHeight = window.innerWidth < 500 ? 140 : 205; //this modding is set up for TrendSmall mobile view
   const chartMarginTop = 5;
   const chartMarginBottom = -40;
+  const isMobileTrend = window.innerWidth < 500;
 
   // State for managing grid view with persistence
   const [isGridView, setIsGridView] = useLocalStorage('isGridView', false);
@@ -131,6 +132,7 @@ function Trends({
             chartHeight={chartHeight}
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
+            isMobileTrend={isMobileTrend}
             onApproveManual={onApproveManual}
           />
         ))}

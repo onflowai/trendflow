@@ -15,7 +15,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 const FeaturedTrendsMobile = ({ featuredTrends }) => {
   const isFeatured = true;
   //Values used to style recharts in TrendPage
-  const chartHeight = 190;
+  const chartHeight = window.innerWidth < 500 ? 140 : 190; //this modding is set up for TrendSmall mobile view
   const chartMarginTop = 5;
   const chartMarginBottom = -40;
   // State for managing grid view with persistence

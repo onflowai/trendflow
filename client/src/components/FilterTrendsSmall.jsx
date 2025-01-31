@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { FaFilter } from 'react-icons/fa';
-import { AiOutlineClose } from 'react-icons/ai';
 import { IoClose } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import { MdOutlineFilterAltOff } from 'react-icons/md';

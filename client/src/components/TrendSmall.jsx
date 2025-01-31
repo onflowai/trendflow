@@ -50,6 +50,7 @@ function TrendSmall({
   relatedFlag,
   relatedStyle,
   featuredFlag,
+  isMobileTrend,
   trendCategory,
   chartMarginTop,
   onApproveManual,
@@ -94,7 +95,11 @@ function TrendSmall({
                 chartMarginBottom={chartMarginBottom}
               />
             ) : (
-              <TrendFallFlashChart />
+              <TrendFallFlashChart
+                chartHeight={chartHeight}
+                chartMarginTop={chartMarginTop}
+                chartMarginBottom={chartMarginBottom}
+              />
             )}
             <div className="trend-title">
               <h4 className="mono-heading-bold underlay-heading">
@@ -117,12 +122,14 @@ function TrendSmall({
             </div>
           </div>
           <footer className="bottom-row">
-            <div className="user-icon">
-              <UserImgSmall
-                user_img={createdBy.profile_img}
-                githubUrl={githubUrl}
-              />
-            </div>
+            {(isApproved || !(isMobileTrend && isAdminPage && isGridView)) && (
+              <div className="user-icon">
+                <UserImgSmall
+                  user_img={createdBy.profile_img}
+                  githubUrl={githubUrl}
+                />
+              </div>
+            )}
             <div className="bottom-info">
               <span className="info-item">
                 {!(isAdminPage && isGridView) ? (
@@ -146,10 +153,12 @@ function TrendSmall({
               </span>
             </div>
             <div className="actions">
-              <div className="icon-views">
-                <PiEyeLight />
-                <span>{views}</span>
-              </div>
+              {!(isMobileTrend && isAdminPage && isGridView) && (
+                <div className="icon-views">
+                  <PiEyeLight />
+                  <span>{views}</span>
+                </div>
+              )}
               {isAdminPage ? (
                 <>
                   <Tooltip description="Edit Trend" xOffset={-90} yOffset={-65}>
