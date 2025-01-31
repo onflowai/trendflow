@@ -95,7 +95,7 @@ const Container = styled.article`
       border-radius: 0.25rem;
       margin-left: 0.8rem;
       padding: 2px 4px;
-    } 
+    }
     
     h4 {
       top: 60px;
@@ -174,16 +174,17 @@ const Container = styled.article`
   @media (max-width: 500px) {
     .info {
 
-      h{
-        top: 170px;//category vertical alignment
+      h4{
+        top: 100px;//category vertical alignment
       }
       h6{
-        top: 170px;//category vertical alignment
+        top: 120px;//category vertical alignment
       }
       h3 {
         font-size: 1rem;
       }
       p {
+        top: 105px;
         font-size: 0.8rem;
       }
       .mono-heading {

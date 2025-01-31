@@ -1,6 +1,5 @@
 import React from 'react';
 import Container from '../assets/wrappers/LandingFeaturedContainer';
-import { project1, project2, project3 } from '../assets/utils/data'; // Import your project data
 
 const ProjectBox = ({ project }) => (
   <div className="project-box">
