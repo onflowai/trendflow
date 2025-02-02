@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FormSelector,
   FallbackChart,
@@ -7,7 +7,7 @@ import {
 } from '../components';
 import { Form } from 'react-router-dom';
 import styled from 'styled-components';
-import { BsPlusLg } from 'react-icons/bs';
+import { BsPlusLg, BsCheck2 } from 'react-icons/bs';
 import { PiFileSvgFill } from 'react-icons/pi';
 import { IoLockClosed } from 'react-icons/io5';
 
@@ -18,7 +18,12 @@ const ChartEditTrendComponent = ({
   isSubmitting,
   trendCategoryList,
   trendTechList,
+  onCategoryChange,
+  handleApproveClick,
+  handleManualApprove,
+  onTechChange,
 }) => {
+  const [trend, setTrend] = useState(trendObject.trend);
   return (
     <Container>
       <Form method="post" className="">
@@ -48,10 +53,23 @@ const ChartEditTrendComponent = ({
                   />
                 </label>
               </div>
-              <div>
+              <div className="button-group">
                 <div>
-                  <button type="button" className="add-button">
-                    <BsPlusLg />
+                  <button
+                    type="button"
+                    className="circle-button"
+                    onClick={handleApproveClick}
+                  >
+                    <BsCheck2 className="circle-button-icon" />
+                  </button>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className="circle-button"
+                    onClick={handleManualApprove}
+                  >
+                    <BsPlusLg className="circle-button-icon" />
                   </button>
                 </div>
               </div>
@@ -65,7 +83,12 @@ const ChartEditTrendComponent = ({
                   </>
                 ) : (
                   <>
-                    <FormComponent type="text" value={trendObject.trend} />
+                    <FormComponent
+                      type="text"
+                      name="trend"
+                      value={trend}
+                      onChange={(e) => setTrend(e.target.value)}
+                    />
                   </>
                 )}
               </div>
@@ -92,6 +115,7 @@ const ChartEditTrendComponent = ({
                     name="trendCategory"
                     defaultValue={trendObject.trendCategory}
                     list={trendCategoryList}
+                    onChange={onCategoryChange}
                   />
                 </>
               )}
@@ -111,6 +135,7 @@ const ChartEditTrendComponent = ({
                     name="trendTech"
                     defaultValue={trendObject.trendTech}
                     list={trendTechList}
+                    onChange={onTechChange}
                   />
                 </>
               )}
@@ -136,10 +161,43 @@ const ChartEditTrendComponent = ({
 };
 
 const Container = styled.div`
-
-  .form-center {
-
+  .form-label{
+    display: none;
   }
+  .form-center {
+    display: flex;
+  align-items: center;
+  }
+  .circle-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--grey-50);
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 0.5rem; /* Optional spacing between your two buttons */
+}
+.circle-button svg {
+  color: var(--black);
+}
+
+.circle-button:hover {
+  background-color: var(--grey-50);
+}
+
+.circle-button .circle-button-icon {
+  font-size: 1.25rem;        
+  transition: color 0.3s ease;
+}
+
+.circle-button:hover .circle-button-icon {
+  color: var(--primary-900);
+}
+
   .form-edit-container {
     display: flex;
     flex-direction: column;
@@ -156,14 +214,14 @@ const Container = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.1rem;
   }
 
   .add-svg {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid var(--grey-50);
+    border: 1.5px solid var(--grey-50);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,11 +281,18 @@ const Container = styled.div`
     display: none;
   }
 
-  .trend-input-container {
-    flex: 1;            /* Allow it to grow */
-    min-width: 0;       /* Prevent overflow issues */
+  .button-group {
     display: flex;
-    align-items: center; /* Center child vertically */
+    gap: 0.1rem;
+    align-items: center;
+  }
+
+  .trend-input-container {
+    flex: 1; 
+    min-width: 0; 
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
   }
   
   .trend-input-container .form-row {
@@ -235,6 +300,10 @@ const Container = styled.div`
     display: flex;
     align-items: center;
   }
+  
+  .form-row {
+    margin-bottom: 0rem;
+  }//removing global styling
 
   .add-button {
     margin-left: auto;
@@ -257,9 +326,10 @@ const Container = styled.div`
   }
 
   .locked-input-container {
+    position: relative;
     display: flex;
     align-items: center;
-    width: 10rem;
+    width: 100%; /* Full width override */
   }
 
   .select-locked-input-container {
@@ -289,6 +359,8 @@ const Container = styled.div`
   }
 
   .submit-btn {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     display: flex;
     justify-content: flex-end;
   }

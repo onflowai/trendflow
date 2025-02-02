@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Select, { components } from 'react-select';
+import Select from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
 /**
+ * Used in TrendEdit display trends and lets you change cat or tech before submitting
+ * Does not display svg for admin simplicity
  * Component responsible for setting up selector programmatically
  * defaultValue = '' - defaultValue or a fallback of empty
  * Object.values = list
@@ -21,15 +23,20 @@ const FormSelector = ({
   // Convert defaultValue to object if it's a string
   const initialOption =
     typeof defaultValue === 'string'
-      ? list.find((option) => option.value === defaultValue) // Find option matching the string defaultValue
-      : defaultValue;
+      ? list.find((option) => option.label === defaultValue)
+      : null;
 
   // State to keep track of the selected option
   const [selectedOption, setSelectedOption] = useState(initialOption);
 
   useEffect(() => {
-    setSelectedOption(initialOption); // Update selected option to match new defaultValue
-  }, [defaultValue]); // Dependency array to re-run effect when defaultValue changes
+    if (typeof defaultValue === 'string') {
+      const matchingOption = list.find(
+        (option) => option.label === defaultValue
+      );
+      setSelectedOption(matchingOption || null);
+    }
+  }, [defaultValue, list]); // If defaultValue changes, update selectedOption
 
   // Function to handle changes in selection
   const handleChange = (option) => {
@@ -49,11 +56,16 @@ const FormSelector = ({
         <Select
           id={name} // Set the ID for the select input
           name={name} // Set the name attribute for the select input
-          value={selectedOption} // Set the selected option value
+          value={selectedOption || null} // Set the selected option value
           onChange={handleChange} // Handle changes in selection
           options={list} // Provide the list of options to the select input
           styles={customStyles} // Apply custom styles to the select component
           isClearable={isClearable} // Allow the option to clear the selection
+        />
+        <input
+          type="hidden"
+          name={name}
+          value={selectedOption ? selectedOption.label : ''}
         />
       </div>
     </Container>

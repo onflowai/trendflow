@@ -45,10 +45,11 @@ export const loader = async ({ params }) => {
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
+  console.log('DATE TO BE EDITED: ', data);
   try {
     await customFetch.patch(`/trends/edit/${params.slug}`, data);
     toast.success(<CustomSuccessToast message={'Trend Edited'} />);
-    return redirect('/dashboard');
+    return redirect('/admin');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return error;
@@ -62,7 +63,38 @@ const EditTrend = () => {
   const isSubmitting = navigation.state === 'submitting';
   const [svgFile, setSvgFile] = useState(null);
   const [svgUrl, setSvgUrl] = useState(trendObject.svg_url || '');
+  const [selectedCategory, setSelectedCategory] = useState(
+    trendObject.trendCategory
+  );
+  const [selectedTech, setSelectedTech] = useState(trendObject.trendTech);
 
+  // approve a trend
+  const approveTrend = async (slug) => {
+    try {
+      setLoadingSlug(slug); // start loading
+      await customFetch.patch(`trends/${slug}/approve`);
+      toast.success(<CustomSuccessToast message={'Trend Approved'} />);
+      fetchFilteredTrends(searchValues); // refresh the trends list
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setLoadingSlug(null); // stop loading
+    }
+  };
+  // Modify manualApproveTrend to accept JSON data
+  const manualApproveTrend = async (slug, data) => {
+    try {
+      setLoadingSlug(slug); // start loading
+      setShowAddTrendModal(false); //close modal
+      await customFetch.patch(`trends/${slug}/manual-approve`, { data });
+      toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
+      fetchFilteredTrends(searchValues); // refresh the trends list
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setLoadingSlug(null); // stop loading
+    }
+  };
   useEffect(() => {
     const fetchSVG = async () => {
       try {
@@ -122,37 +154,39 @@ const EditTrend = () => {
       <div className="trend-page-container">
         <div className="page-layout">
           <div className="trend">
-            <Form method="post" className="">
-              <div className="content">
-                <div id="Submit"></div>
-                <ChartEditTrendComponent
-                  svgUrl={svgUrl}
-                  handleSVGChange={handleSVGChange}
-                  trendObject={trendObject}
-                  isSubmitting={isSubmitting}
-                  trendCategoryList={Object.values(TREND_CATEGORY)}
-                  trendTechList={Object.values(TECHNOLOGIES)}
-                />
-                <div className="trend-use-container">
-                  <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
-                </div>
-                <div className="trend-blog-post">
-                  <DangerousHTML html={EDIT_PAGE_POST} />
-                </div>
-                <div id="Delete"></div>
+            <div className="content">
+              <div id="Submit"></div>
+              <ChartEditTrendComponent
+                svgUrl={svgUrl}
+                handleSVGChange={handleSVGChange}
+                trendObject={trendObject}
+                isSubmitting={isSubmitting}
+                trendCategoryList={Object.values(TREND_CATEGORY)}
+                trendTechList={Object.values(TECHNOLOGIES)}
+                onCategoryChange={(name, value) => setSelectedCategory(value)}
+                onTechChange={(name, value) => setSelectedTech(value)}
+                handleApproveClick={handleApproveClick}
+                handleManualApprove={handleManualApprove}
+              />
+              <div className="trend-use-container">
+                <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
               </div>
-              <div className="form-actions">
-                <div className="delete-btn">
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="btn info-btn"
-                  >
-                    Delete
-                  </button>
-                </div>
+              <div className="trend-blog-post">
+                <DangerousHTML html={EDIT_PAGE_POST} />
               </div>
-            </Form>
+              <div id="Delete"></div>
+            </div>
+            <div className="form-actions">
+              <div className="delete-btn">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="btn info-btn"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">

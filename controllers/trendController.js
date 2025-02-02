@@ -147,7 +147,7 @@ export const editTrend = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
-};
+}; //end editTrend
 
 /**
  * DELETE TREND
