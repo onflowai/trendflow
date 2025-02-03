@@ -41,7 +41,7 @@ const LinkItem = styled.a`
 const Divider = styled.hr`
   width: 100%;
   border: none;
-  border-top: 1.5px solid var(--grey-100);
+  border-top: 1.5px solid var(--grey-50);
   margin: 0.5rem 0;
 `;
 
