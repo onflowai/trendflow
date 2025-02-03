@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  ScrollToTop,
   SEOProtected,
   DangerousHTML,
   CustomErrorToast,
@@ -15,7 +16,7 @@ import { getFullIconUrl } from '../utils/urlHelper';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
-import { redirect, useLoaderData } from 'react-router-dom';
+import { redirect, useLoaderData, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import day from 'dayjs';
@@ -155,6 +156,7 @@ const TrendPage = () => {
   return (
     <Container>
       <SEOProtected />
+      <ScrollToTop />
       <div className="trend-page-container">
         <div className="page-layout">
           <div id="Trend" className="trend">

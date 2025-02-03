@@ -18,11 +18,24 @@ const ChartEditTrendComponent = ({
   isSubmitting,
   trendCategoryList,
   trendTechList,
-  onCategoryChange,
+  selectedCategory,
+  setSelectedCategory,
+  selectedTech,
+  setSelectedTech,
   handleApproveClick,
   handleManualApprove,
-  onTechChange,
 }) => {
+  // Find the full objects from your lists
+  const selectedCatObject = trendCategoryList.find(
+    (item) => item.value === selectedCategory
+  );
+  const selectedTechObject = trendTechList.find(
+    (item) => item.value === selectedTech
+  );
+
+  // Then retrieve the image property (or empty if none selected)
+  const cateIconUrl = selectedCatObject ? selectedCatObject.image : '';
+  const techIconUrl = selectedTechObject ? selectedTechObject.image : '';
   const [trend, setTrend] = useState(trendObject.trend);
   return (
     <Container>
@@ -113,9 +126,9 @@ const ChartEditTrendComponent = ({
                   <FormSelector
                     className="form-selector"
                     name="trendCategory"
-                    defaultValue={trendObject.trendCategory}
-                    list={trendCategoryList}
-                    onChange={onCategoryChange}
+                    value={selectedCategory} // parent's string state
+                    list={trendCategoryList} // e.g. an array of {label, value}
+                    onChange={(name, val) => setSelectedCategory(val)}
                   />
                 </>
               )}
@@ -133,15 +146,15 @@ const ChartEditTrendComponent = ({
                   <FormSelector
                     className="form-selector"
                     name="trendTech"
-                    defaultValue={trendObject.trendTech}
+                    value={selectedTech}
                     list={trendTechList}
-                    onChange={onTechChange}
+                    onChange={(name, val) => setSelectedTech(val)}
                   />
                 </>
               )}
             </div>
           </div>
-          <div id="Submit"></div>
+          <div id="Edit"></div>
           <div className="form-actions">
             <div className="submit-btn">
               <button
@@ -150,7 +163,7 @@ const ChartEditTrendComponent = ({
                 disabled={isSubmitting}
                 style={{ marginLeft: 'auto' }}
               >
-                {isSubmitting ? 'submitting...' : 'submit'}
+                {isSubmitting ? 'editing...' : 'edit'}
               </button>
             </div>
           </div>
@@ -356,6 +369,12 @@ const Container = styled.div`
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+  }
+  .btn{
+    background-color: var(--grey-70);
+  }
+  .btn:hover{
+    background-color: var(--grey-300);
   }
 
   .submit-btn {

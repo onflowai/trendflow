@@ -131,22 +131,35 @@ export const getSingleTrend = async (req, res) => {
  */
 export const editTrend = async (req, res) => {
   const { slug } = req.params;
-  // use Mongoose's findOneAndUpdate method to find a trend by its slug and update it with the new data provided in req.body.
-  // the option { new: true } ensures that the method returns the modified document rather than the original.
-  const updateTrend = await trendModel.findOneAndUpdate(
-    { slug: slug }, // the filter to find the document by slug.
-    req.body,
-    {
-      new: true, // option to return the updated document instead of the original document before the update.
-    }
-  );
-  if (!updateTrend) {
-    throw new NotFoundError('Trend not found');
+  const doc = await trendModel.findOne({ slug }); //finding the doc by current slug
+  if (!doc) {
+    throw new NotFoundError(`No trend found with slug ${slug}`);
   }
-  //response
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: 'trend modified', trend: updateTrend }); //returning the found trend
+  if (doc.isApproved && req.body.trend && req.body.trend !== doc.trend) {
+    throw new BadRequestError('Cannot change slug once approved');
+  } // if the trend is already approved, forbid changing the slug/trend
+  const oldSlug = doc.slug; //storing old slug to compare after save
+
+  doc.set({
+    trendCategory: req.body.trendCategory,
+    cateIconUrl: req.body.cateIconUrl,
+    trendTech: req.body.trendTech,
+    techIconUrl: req.body.techIconUrl,
+  }); //updating the doc with request body fields
+  await doc.save();
+
+  if (doc.slug !== oldSlug) {
+    return res.status(StatusCodes.OK).json({
+      msg: 'trend modified, new slug generated',
+      redirectTo: `/dashboard/edit-trend/${doc.slug}`,
+      trend: doc,
+    });
+  } //if slug changed sending redirect and return JSON
+
+  res.status(StatusCodes.OK).json({
+    msg: 'trend modified',
+    trend: doc,
+  }); //if slug didn’t change respond normally
 }; //end editTrend
 
 /**

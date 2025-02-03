@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
+  LoadingBar,
+  ScrollToTop,
   SEOProtected,
-  FormSelector,
   DangerousHTML,
-  FallbackChart,
-  FormComponent,
+  AddTrendModal,
   CustomErrorToast,
-  FormComponentLock,
   CustomSuccessToast,
   ScrollSpyComponent,
   ContentBoxHighlighted,
@@ -16,7 +15,13 @@ import Container from '../assets/wrappers/EditTrendContainer';
 // import Container from '../assets/wrappers/TrendPageContainer';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants'; //this is a problem, need to fetch this instead of importing
 import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
-import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 /**
@@ -45,12 +50,23 @@ export const loader = async ({ params }) => {
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  console.log('DATE TO BE EDITED: ', data);
+
   try {
-    await customFetch.patch(`/trends/edit/${params.slug}`, data);
-    toast.success(<CustomSuccessToast message={'Trend Edited'} />);
-    return redirect('/admin');
+    const response = await customFetch.patch(
+      `/trends/edit/${params.slug}`,
+      data
+    );
+    const result = response.data;
+    if (result.redirectTo) {
+      toast.success(<CustomSuccessToast message="Trend Edited" />);
+      //no revalidation the old slug is stale
+      return redirect(result.redirectTo);
+    } //if slug changed redirect (sent from server)
+
+    // If no slug change, do normal success + revalidate
+    toast.success(<CustomSuccessToast message="Trend Edited" />);
   } catch (error) {
+    console.error('Action error:', error);
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return error;
   }
@@ -60,6 +76,7 @@ const EditTrend = () => {
   const { trendObject } = useLoaderData();
   const navigate = useNavigate();
   const navigation = useLoaderData();
+  const { revalidate } = useRevalidator();
   const isSubmitting = navigation.state === 'submitting';
   const [svgFile, setSvgFile] = useState(null);
   const [svgUrl, setSvgUrl] = useState(trendObject.svg_url || '');
@@ -67,32 +84,36 @@ const EditTrend = () => {
     trendObject.trendCategory
   );
   const [selectedTech, setSelectedTech] = useState(trendObject.trendTech);
+  const [showAddTrendModal, setShowAddTrendModal] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState(null);
+  const [loadingSlug, setLoadingSlug] = useState(null);
+  const [isApproving, setIsApproving] = useState(false);
 
   // approve a trend
   const approveTrend = async (slug) => {
     try {
-      setLoadingSlug(slug); // start loading
+      setIsApproving(true); // start loading
       await customFetch.patch(`trends/${slug}/approve`);
       toast.success(<CustomSuccessToast message={'Trend Approved'} />);
-      fetchFilteredTrends(searchValues); // refresh the trends list
+      revalidate();
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
-      setLoadingSlug(null); // stop loading
+      setIsApproving(false); //stop loading
     }
   };
   // Modify manualApproveTrend to accept JSON data
   const manualApproveTrend = async (slug, data) => {
     try {
-      setLoadingSlug(slug); // start loading
+      setIsApproving(true); // start loading
       setShowAddTrendModal(false); //close modal
       await customFetch.patch(`trends/${slug}/manual-approve`, { data });
       toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
-      fetchFilteredTrends(searchValues); // refresh the trends list
+      revalidate();
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
-      setLoadingSlug(null); // stop loading
+      setIsApproving(false); //stop loading
     }
   };
   useEffect(() => {
@@ -147,14 +168,30 @@ const EditTrend = () => {
     }
   };
 
+  const handleApproveClick = () => {
+    approveTrend(trendObject.slug);
+  };
+
+  const handleManualApprove = () => {
+    setSelectedSlug(trendObject.slug);
+    setShowAddTrendModal(true);
+  };
+
+  const handleAddTrend = (data) => {
+    manualApproveTrend(selectedSlug, data);
+    setShowAddTrendModal(false);
+  };
+  console.log(Object.values(TREND_CATEGORY));
   return (
     <Container>
       <SEOProtected />
-      <div id="Edit"></div>
+      <ScrollToTop />
+      <div id="Approve"></div>
       <div className="trend-page-container">
         <div className="page-layout">
           <div className="trend">
             <div className="content">
+              <div className="loading-bar">{isApproving && <LoadingBar />}</div>
               <div id="Submit"></div>
               <ChartEditTrendComponent
                 svgUrl={svgUrl}
@@ -163,8 +200,10 @@ const EditTrend = () => {
                 isSubmitting={isSubmitting}
                 trendCategoryList={Object.values(TREND_CATEGORY)}
                 trendTechList={Object.values(TECHNOLOGIES)}
-                onCategoryChange={(name, value) => setSelectedCategory(value)}
-                onTechChange={(name, value) => setSelectedTech(value)}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedTech={selectedTech}
+                setSelectedTech={setSelectedTech}
                 handleApproveClick={handleApproveClick}
                 handleManualApprove={handleManualApprove}
               />
@@ -190,12 +229,20 @@ const EditTrend = () => {
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent sectionIds={['Edit', 'Submit', 'Delete']} />
+              <ScrollSpyComponent sectionIds={['Approve', 'Edit', 'Delete']} />
               <div></div>
             </div>
           </aside>
         </div>
       </div>
+      {showAddTrendModal && (
+        <AddTrendModal
+          onClose={() => setShowAddTrendModal(false)}
+          onAdd={handleAddTrend}
+          slug={selectedSlug}
+          onManualApprove={manualApproveTrend} // Not strictly required if your handleAddTrend calls it
+        />
+      )}
     </Container>
   );
 };

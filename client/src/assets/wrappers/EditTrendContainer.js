@@ -12,6 +12,9 @@ border-radius: var(--border-radius); // set border radius
     max-width: 100%; // limit width to 100%
     overflow-x: clip; // prevents horizontal overflow
   }
+  .loading-bar{
+    padding-bottom: 1rem;
+  }
 
   .trend {
     padding: 1rem 4rem 4rem; // add padding

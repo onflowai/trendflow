@@ -12,60 +12,36 @@ import Container from '../assets/wrappers/FormSelectorContainer';
  */
 //Custom option displays the icons and images for status and trendTech
 
-const FormSelector = ({
-  name,
-  labelText,
-  list,
-  defaultValue,
-  onChange,
-  isClearable = true,
-}) => {
-  // Convert defaultValue to object if it's a string
-  const initialOption =
-    typeof defaultValue === 'string'
-      ? list.find((option) => option.label === defaultValue)
-      : null;
-
-  // State to keep track of the selected option
-  const [selectedOption, setSelectedOption] = useState(initialOption);
-
-  useEffect(() => {
-    if (typeof defaultValue === 'string') {
-      const matchingOption = list.find(
-        (option) => option.label === defaultValue
-      );
-      setSelectedOption(matchingOption || null);
-    }
-  }, [defaultValue, list]); // If defaultValue changes, update selectedOption
-
-  // Function to handle changes in selection
+const FormSelector = ({ name, value, list, onChange, isClearable = true }) => {
+  const selectedOption = list.find((option) => option.value === value) || null; //converting parent's string into a react-select option
   const handleChange = (option) => {
-    setSelectedOption(option); // Update local state with the selected option
-    if (onChange) onChange(name, option ? option.value : ''); // Call the onChange prop with name and value or empty if cleared
-  };
+    if (onChange) {
+      onChange(name, option ? option.value : '');
+    } //if user clears, option == null => send empty string
+  }; //called when user picks a new option
+
+  const iconUrl = selectedOption?.image || '';
 
   return (
     <Container>
-      {' '}
-      {/* Styled container for the form group */}
       <div className="form-row">
-        {' '}
-        {/* Wrapper for the label and select elements */}
-        <label htmlFor={name}>{labelText}</label>{' '}
-        {/* Label for the select input */}
         <Select
-          id={name} // Set the ID for the select input
-          name={name} // Set the name attribute for the select input
-          value={selectedOption || null} // Set the selected option value
-          onChange={handleChange} // Handle changes in selection
-          options={list} // Provide the list of options to the select input
-          styles={customStyles} // Apply custom styles to the select component
-          isClearable={isClearable} // Allow the option to clear the selection
+          name={name}
+          value={selectedOption}
+          onChange={handleChange}
+          options={list}
+          styles={customStyles}
+          isClearable={isClearable}
         />
         <input
           type="hidden"
           name={name}
-          value={selectedOption ? selectedOption.label : ''}
+          value={selectedOption ? selectedOption.value : ''}
+        />
+        <input
+          type="hidden"
+          name={name === 'trendCategory' ? 'cateIconUrl' : 'techIconUrl'}
+          value={iconUrl}
         />
       </div>
     </Container>
