@@ -141,6 +141,7 @@ export const editTrend = async (req, res) => {
   const oldSlug = doc.slug; //storing old slug to compare after save
 
   doc.set({
+    trend: !doc.isApproved && req.body.trend ? req.body.trend : doc.trend,
     trendCategory: req.body.trendCategory,
     cateIconUrl: req.body.cateIconUrl,
     trendTech: req.body.trendTech,

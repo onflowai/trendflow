@@ -9,7 +9,7 @@ import {
   CustomSuccessToast,
   ScrollSpyComponent,
   ContentBoxHighlighted,
-  ChartEditTrendComponent,
+  EditTrendComponent,
 } from '../components';
 import Container from '../assets/wrappers/EditTrendContainer';
 // import Container from '../assets/wrappers/TrendPageContainer';
@@ -42,6 +42,7 @@ export const loader = async ({ params }) => {
     const trendResponse = await customFetch.get(`/trends/edit/${params.slug}`);
     return { user: data.user, trendObject: trendResponse.data.trendObject };
   } catch (error) {
+    console.error('Loader error:', error);
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return redirect('/dashboard');
   }
@@ -50,7 +51,6 @@ export const loader = async ({ params }) => {
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-
   try {
     const response = await customFetch.patch(
       `/trends/edit/${params.slug}`,
@@ -59,15 +59,20 @@ export const action = async ({ request, params }) => {
     const result = response.data;
     if (result.redirectTo) {
       toast.success(<CustomSuccessToast message="Trend Edited" />);
-      //no revalidation the old slug is stale
       return redirect(result.redirectTo);
-    } //if slug changed redirect (sent from server)
-
-    // If no slug change, do normal success + revalidate
+    }
     toast.success(<CustomSuccessToast message="Trend Edited" />);
+    return null; // letting react router re-run the loader normally
   } catch (error) {
-    console.error('Action error:', error);
-    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    toast.error(
+      <CustomErrorToast
+        message={
+          error?.response?.data?.msg ||
+          error?.message ||
+          'Unknown error in action'
+        }
+      />
+    );
     return error;
   }
 };
@@ -181,7 +186,6 @@ const EditTrend = () => {
     manualApproveTrend(selectedSlug, data);
     setShowAddTrendModal(false);
   };
-  console.log(Object.values(TREND_CATEGORY));
   return (
     <Container>
       <SEOProtected />
@@ -193,7 +197,7 @@ const EditTrend = () => {
             <div className="content">
               <div className="loading-bar">{isApproving && <LoadingBar />}</div>
               <div id="Submit"></div>
-              <ChartEditTrendComponent
+              <EditTrendComponent
                 svgUrl={svgUrl}
                 handleSVGChange={handleSVGChange}
                 trendObject={trendObject}

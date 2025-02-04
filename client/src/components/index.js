@@ -81,5 +81,6 @@ export { default as HeroAnimated } from './HeroAnimated';
 export { default as SEO } from './SEO';
 export { default as SEOProtected } from './SEOProtected';
 export { default as StructuredData } from './StructuredData';
+export { default as EditTrendComponent } from './EditTrendComponent';
 export { default as ChartEditTrendComponent } from './ChartEditTrendComponent';
 export { default as ScrollToTop } from './ScrollToTop';
