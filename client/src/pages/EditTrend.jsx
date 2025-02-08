@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
+  LoadingBar,
+  ScrollToTop,
   SEOProtected,
-  FormSelector,
   DangerousHTML,
-  FallbackChart,
-  FormComponent,
+  AddTrendModal,
   CustomErrorToast,
-  FormComponentLock,
   CustomSuccessToast,
   ScrollSpyComponent,
   ContentBoxHighlighted,
+  EditTrendComponent,
 } from '../components';
-import { MdEdit } from 'react-icons/md';
-import { IoLockClosed } from 'react-icons/io5';
-import { useUser } from '../context/UserContext'; // importing UserContext
-import { useOutletContext } from 'react-router-dom';
-import { useDashboardContext } from './DashboardLayout';
 import Container from '../assets/wrappers/EditTrendContainer';
-import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
-import { PiFileSvgFill } from 'react-icons/pi';
 // import Container from '../assets/wrappers/TrendPageContainer';
 import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants'; //this is a problem, need to fetch this instead of importing
 import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
-import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 /**
@@ -43,6 +42,7 @@ export const loader = async ({ params }) => {
     const trendResponse = await customFetch.get(`/trends/edit/${params.slug}`);
     return { user: data.user, trendObject: trendResponse.data.trendObject };
   } catch (error) {
+    console.error('Loader error:', error);
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     return redirect('/dashboard');
   }
@@ -52,11 +52,27 @@ export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   try {
-    await customFetch.patch(`/trends/edit/${params.slug}`, data);
-    toast.success(<CustomSuccessToast message={'Trend Edited'} />);
-    return redirect('/dashboard');
+    const response = await customFetch.patch(
+      `/trends/edit/${params.slug}`,
+      data
+    );
+    const result = response.data;
+    if (result.redirectTo) {
+      toast.success(<CustomSuccessToast message="Trend Edited" />);
+      return redirect(result.redirectTo);
+    }
+    toast.success(<CustomSuccessToast message="Trend Edited" />);
+    return null; // letting react router re-run the loader normally
   } catch (error) {
-    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    toast.error(
+      <CustomErrorToast
+        message={
+          error?.response?.data?.msg ||
+          error?.message ||
+          'Unknown error in action'
+        }
+      />
+    );
     return error;
   }
 };
@@ -65,9 +81,63 @@ const EditTrend = () => {
   const { trendObject } = useLoaderData();
   const navigate = useNavigate();
   const navigation = useLoaderData();
+  const { revalidate } = useRevalidator();
   const isSubmitting = navigation.state === 'submitting';
   const [svgFile, setSvgFile] = useState(null);
   const [svgUrl, setSvgUrl] = useState(trendObject.svg_url || '');
+  const [selectedCategory, setSelectedCategory] = useState(
+    trendObject.trendCategory
+  );
+  const [selectedTech, setSelectedTech] = useState(trendObject.trendTech);
+  const [showAddTrendModal, setShowAddTrendModal] = useState(false);
+  const [selectedSlug, setSelectedSlug] = useState(null);
+  const [loadingSlug, setLoadingSlug] = useState(null);
+  const [isApproving, setIsApproving] = useState(false);
+  const [manualMode, setManualMode] = useState('approve');
+
+  // approve a trend
+  const approveTrend = async (slug) => {
+    try {
+      setIsApproving(true); // start loading
+      await customFetch.patch(`trends/${slug}/approve`);
+      toast.success(<CustomSuccessToast message={'Trend Approved'} />);
+      revalidate();
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setIsApproving(false); //stop loading
+    }
+  };
+
+  //manualApproveTrend accepts JSON data
+  const manualApproveTrend = async (slug, data) => {
+    try {
+      setIsApproving(true); // start loading
+      setShowAddTrendModal(false); //close modal
+      await customFetch.patch(`trends/${slug}/manual-approve`, { data });
+      toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
+      revalidate();
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setIsApproving(false); //stop loading
+    }
+  };
+
+  // manualUpdateTrend accepts JSON data (c: updateTrendManual)
+  const manualUpdateTrend = async (slug, data) => {
+    try {
+      setIsApproving(true); // start loading
+      setShowAddTrendModal(false); //close modal
+      await customFetch.patch(`trends/${slug}/manual-update`, { data });
+      toast.success(<CustomSuccessToast message={'Trend Data Updated'} />);
+      revalidate();
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setIsApproving(false); //stop loading
+    }
+  };
 
   useEffect(() => {
     const fetchSVG = async () => {
@@ -121,163 +191,95 @@ const EditTrend = () => {
     }
   };
 
+  const handleApproveClick = () => {
+    approveTrend(trendObject.slug);
+  };
+
+  // When the modal is triggered for manual approve
+  const handleManualApprove = () => {
+    setSelectedSlug(trendObject.slug);
+    setManualMode('approve');
+    setShowAddTrendModal(true);
+  };
+
+  // When the modal is triggered for manual update
+  const handleManualUpdate = () => {
+    setSelectedSlug(trendObject.slug);
+    setManualMode('update');
+    setShowAddTrendModal(true);
+  };
+
+  // Unified modal submission handler
+  const handleModalSubmit = (data) => {
+    if (manualMode === 'update') {
+      manualUpdateTrend(selectedSlug, data);
+    } else {
+      manualApproveTrend(selectedSlug, data);
+    }
+  };
+
   return (
     <Container>
       <SEOProtected />
-      <div id="Edit"></div>
+      <ScrollToTop />
+      <div id="Approve"></div>
       <div className="trend-page-container">
         <div className="page-layout">
           <div className="trend">
-            <Form method="post" className="">
-              <div className="form-center">
-                <div className="edit-trend-content">
-                  <div className="edit-trend">
-                    <MdEdit className="trend-edit-icon" />
-                    <div className="add-svg">
-                      <label htmlFor="svgFile" className="svg-upload-label">
-                        {svgUrl ? (
-                          <div className="svg-display">
-                            <img
-                              src={svgUrl}
-                              alt="Uploaded SVG"
-                              className="uploaded-svg"
-                            />
-                            <PiFileSvgFill className="svg-upload-icon overlay-icon" />
-                          </div>
-                        ) : (
-                          <PiFileSvgFill className="svg-upload-icon" />
-                        )}
-                        <input
-                          type="file"
-                          id="svgFile"
-                          accept=".svg"
-                          onChange={handleSVGChange}
-                          className="svg-upload-input"
-                        />
-                      </label>
-                    </div>
-                    {trendObject.isApproved ? (
-                      <>
-                        <FormComponentLock
-                          type="text"
-                          defaultValue={trendObject.trend}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <MdEdit className="trend-edit-icon" />
-                        <FormComponent
-                          type="text"
-                          defaultValue={trendObject.trend}
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className="dummy-chart-controls">
-                    <div className="date-selector">
-                      <div className="circle"></div>
-                      {new Date().getFullYear() - 1}
-                      <div className="circle"></div>
-                      {new Date().getFullYear()}
-                      <div className="circle"></div>
-                      <div>
-                        <p>Forecast</p>
-                      </div>
-                      <FormSelector
-                        name="timePeriod"
-                        defaultValue="Select"
-                        list={['Daily', 'Weekly', 'Monthly']}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <FallbackChart />
-                <div className="content">
-                  <div className="content-selectors">
-                    <div className="selector">
-                      {trendObject.isApproved ? (
-                        <div className="select-locked-input-container">
-                          <IoLockClosed className="select-lock-icon" />
-                          <div className="locked-input">
-                            <p>{trendObject.trendCategory}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <MdEdit className="edit-icon" />
-                          <FormSelector
-                            className="form-selector"
-                            name="trendCategory"
-                            defaultValue={trendObject.trendCategory}
-                            list={Object.values(TREND_CATEGORY)}
-                          />
-                        </>
-                      )}
-                    </div>
-                    <div className="selector">
-                      {trendObject.isApproved ? (
-                        <div className="select-locked-input-container">
-                          <IoLockClosed className="select-lock-icon" />
-                          <div className="locked-input">
-                            <p>{trendObject.trendTech}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <MdEdit className="edit-icon" />
-                          <FormSelector
-                            className="form-selector"
-                            name="trendTech"
-                            defaultValue={trendObject.trendTech}
-                            list={Object.values(TECHNOLOGIES)}
-                          />
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div id="Submit"></div>
-                  <div className="form-actions">
-                    <div className="submit-btn">
-                      <button
-                        type="submit"
-                        className="btn btn-block from-btn"
-                        disabled={isSubmitting}
-                        style={{ marginLeft: 'auto' }} // Ensure button is glued to the right
-                      >
-                        {isSubmitting ? 'submitting...' : 'submit'}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="trend-use-container">
-                    <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
-                  </div>
-                  <div className="trend-blog-post">
-                    <DangerousHTML html={EDIT_PAGE_POST} />
-                  </div>
-                  <div id="Delete"></div>
-                </div>
-                <div className="form-actions">
-                  <div className="delete-btn">
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      className="btn info-btn"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+            <div className="content">
+              <div className="loading-bar">{isApproving && <LoadingBar />}</div>
+              <div id="Submit"></div>
+              <EditTrendComponent
+                svgUrl={svgUrl}
+                handleSVGChange={handleSVGChange}
+                trendObject={trendObject}
+                isSubmitting={isSubmitting}
+                trendCategoryList={Object.values(TREND_CATEGORY)}
+                trendTechList={Object.values(TECHNOLOGIES)}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedTech={selectedTech}
+                setSelectedTech={setSelectedTech}
+                handleApproveClick={handleApproveClick}
+                handleManualApprove={handleManualApprove}
+                handleManualUpdate={handleManualUpdate}
+              />
+              <div className="trend-use-container">
+                <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
               </div>
-            </Form>
+              <div className="trend-blog-post">
+                <DangerousHTML html={EDIT_PAGE_POST} />
+              </div>
+              <div id="Delete"></div>
+            </div>
+            <div className="form-actions">
+              <div className="delete-btn">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="btn info-btn"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent sectionIds={['Edit', 'Submit', 'Delete']} />
+              <ScrollSpyComponent sectionIds={['Approve', 'Edit', 'Delete']} />
               <div></div>
             </div>
           </aside>
         </div>
       </div>
+      {showAddTrendModal && (
+        <AddTrendModal
+          onClose={() => setShowAddTrendModal(false)}
+          onAdd={handleModalSubmit}
+          slug={selectedSlug}
+          onManualApprove={manualApproveTrend} // Not strictly required if your handleAddTrend calls it
+        />
+      )}
     </Container>
   );
 };

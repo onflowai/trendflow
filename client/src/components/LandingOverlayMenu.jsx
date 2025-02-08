@@ -31,23 +31,24 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
   };
 
   return (
-    <OverlayContainer>
-      <Header>
+    <Container>
+      <div className="header">
         <Logo />
-        <DarkModeContainer>
+        <div className="dark-mode-container">
           <DarkMode size={20} />
-        </DarkModeContainer>
-        <CloseButton
+        </div>
+        <button
           type="button"
           onClick={toggleOverlay}
           aria-label="Close menu"
+          className="close-btn"
         >
           <IoIosClose />
-        </CloseButton>
-      </Header>
-      <OverlayContent>
+        </button>
+      </div>
+      <div className="overlay-content">
         {/* LINKS */}
-        <NavLinks>
+        <div className="overlay-nav-links">
           {landingLinks.map((link, index) => (
             <LandingMenuLink
               key={link.id}
@@ -56,7 +57,7 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
               showDivider={index < landingLinks.length - 1}
             />
           ))}
-          <CallsDivider />
+          <hr className="calls-divider" />
           <LandingMenuLink
             link={{
               id: 'start-using',
@@ -66,28 +67,33 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
             onClick={guestUser}
             showDivider={true}
           />
-        </NavLinks>
+        </div>
         {/* SOCIAL LINKS */}
-        <SocialLinks>
+        <div className="social-links">
           {socialLinks.map((link) => (
             <LandingNavbarSocials
               {...link}
               key={link.id}
-              itemClass="overlay-icon"
+              itemClass="nav-icon overlay-icon"
               onClick={toggleOverlay}
             />
           ))}
-        </SocialLinks>
-        <ButtonContainer>
-          <LoginButton onClick={handleLoginClick}>Login</LoginButton>
-        </ButtonContainer>
-      </OverlayContent>
-    </OverlayContainer>
+        </div>
+
+        <div className="button-container">
+          <button onClick={handleLoginClick} className="login-button">
+            Login
+          </button>
+        </div>
+      </div>
+    </Container>
   );
 };
 
-const OverlayContainer = styled.div`
-@media (min-width: 992px) {
+export default LandingOverlayMenu;
+
+const Container = styled.div`
+  @media (min-width: 992px) {
     display: none;
   }
   position: fixed;
@@ -101,103 +107,103 @@ const OverlayContainer = styled.div`
   flex-direction: column;
   animation: fadeIn 0.3s ease-in-out;
   padding: 1rem;
-`;
 
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const DarkModeContainer = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  font-size: 2rem;
-  color: var(--grey-600);
-  cursor: pointer;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    color: var(--primary-500);
-  }
-`;
-
-const OverlayContent = styled.div`
-  margin-top: 5rem; /* Adjust as needed */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-`;
-
-const NavLinks = styled.div`
-  width: 80%;
-  max-width: 400px;
-  margin: 1rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  list-style: none;
-`;
-
-const CallsDivider = styled.hr`
-  width: 100%;
-  border: none;
-  border-top: 1.5px solid var(--grey-100);
-  margin: 0.5rem 0;
-`;
-//border-top: 1.5px solid var(--grey-100);
-const DividerLine = styled.hr`
-  width: 100%;
-  border: none;
-  border-top: 1px solid var(--grey-300);
-  margin: 0.5rem 0;
-`;
-
-const ButtonContainer = styled.div`
-  width: 80%;
-  max-width: 400px;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const LoginButton = styled.button`
-  cursor: pointer;
-  color: var(--btn-text-color);
-  background: var(--grey-50);
-  border: 1.5px solid var(--grey-70);
-  border-radius: var(--input-radius-rounded);
-  letter-spacing: var(--letter-spacing);
-  padding: 0.7rem 0.9rem;
-  transition: var(--transition);
-  text-transform: capitalize;
-  display: inline-block;
-
-  &:hover {
-    background-color: var(--primary2-500);
+  .header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--primary-300);
+  .dark-mode-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: var(--grey-600);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: var(--primary-500);
+    }
+  }
+
+  .overlay-content {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .overlay-nav-links {
+    width: 80%;
+    max-width: 400px;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1.3rem;
+    margin-top: 1rem;
+    list-style: none;
+    font-size: 1.3rem;
+  }
+  .social-links .overlay-icon i {
+    color: var(--primary-600);
+    transition: color 0.3s;
+  }
+
+  .social-links .overlay-icon i:hover {
+    color: var(--primary-600);
+  }
+
+  .calls-divider {
+    width: 100%;
+    border: none;
+    border-top: 1.5px solid var(--grey-50);
+    margin: 0.5rem 0;
+  }
+
+  .button-container {
+    width: 80%;
+    max-width: 400px;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .login-button {
+    cursor: pointer;
+    color: var(--btn-text-color);
+    background: var(--grey-50);
+    border: 1.5px solid var(--grey-70);
+    border-radius: var(--input-radius-rounded);
+    letter-spacing: var(--letter-spacing);
+    padding: 0.7rem 0.9rem;
+    transition: var(--transition);
+    text-transform: capitalize;
+    display: inline-block;
+
+    &:hover {
+      background-color: var(--primary2-500);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-300);
+    }
   }
 `;
-
-export default LandingOverlayMenu;

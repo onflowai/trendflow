@@ -103,7 +103,9 @@ function TrendSmall({
             )}
             <div className="trend-title">
               <h4 className="mono-heading-bold underlay-heading">
-                {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
+                {trend.length > (isMobileTrend ? 18 : 21)
+                  ? trend.substring(0, isMobileTrend ? 11 : 21) + '...'
+                  : trend}
               </h4>
               <div className="description-container">
                 <h6 className="mono-heading underlay-heading">

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Container = styled.section`
+const Container = styled.div`
   
 border-radius: var(--border-radius); // set border radius
   background: var(--background-secondary-color); // set background color
@@ -12,6 +12,9 @@ border-radius: var(--border-radius); // set border radius
     max-width: 100%; // limit width to 100%
     overflow-x: clip; // prevents horizontal overflow
   }
+  .loading-bar{
+    padding-bottom: 1rem;
+  }
 
   .trend {
     padding: 1rem 4rem 4rem; // add padding
@@ -20,135 +23,12 @@ border-radius: var(--border-radius); // set border radius
     margin: 0 auto 2rem auto; // center the trend container
   }
 
-  .trend-edit-icon {
-    margin-bottom: 0.5rem;
-    font-size: 1.5rem;
-  }
-  /* SVG UPLOAD SECTION  */
-    .add-svg {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--grey-50);
-    background-color: none; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  .add-svg:hover {
-    background-color: var(--grey-50); /* Darker gray color */
-  }
-  .svg-upload-label {
-    display: inline-block;
-    cursor: pointer;
-    position: relative;
-  }
-  .uploaded-svg {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  margin: auto; /* Center the SVG inside the container */
-}
-  .overlay-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 16px;
-    height: 16px;
-    color: rgba(0, 0, 0, 0); /* Slightly transparent */
-    pointer-events: none; /* Prevent pointer events to make sure the input is clickable */
-  }
-  .svg-upload-icon {
-    width: 24px;
-    height: 24px;
-    transition: color 0.3s ease;
-  }
-  .add-svg:hover .svg-upload-icon {
-    color: var(--primary-900);
-  }
-  .svg-display {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  overflow: hidden;
-}
-  .svg-upload-input {
-    display: none;
-  }
-  .svg-upload-button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  .svg-upload-button:hover {
-    background-color: red;
-  }
-/* EDIT ICONS SECTION */
-  .edit-icon {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-  }
-  .edit-trend-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    
-  }
-
-  .edit-trend {
-    display: flex; // using flex layout
-    align-items: center; // vertically center items
-    gap: 0.5rem; // space between icon and input
-  }
-  /* LOCKED SELECTOR SECTION */
-
-  .locked-input-container {
-    display: flex;
-    align-items: center;
-    width: 10rem;
-  }
-
-  .select-locked-input-container {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--grey-50);
-    border-radius: var(--input-radius);
-    padding: 0.5rem;
-    background: var(--background-color);
-    width: 100%;
-  }
-
-.select-lock-icon {
-  margin-right: 0.5rem;
-  color: var(--grey-400);
-}
-
-/* .locked-input {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding-left: 0.5rem;
-} */
-
-.locked-input p {
-  margin: 0;
-  color: var(--text-color);
-}
-
-  .form-center {
+  .form-edit-container {
     display: flex;
     flex-direction: column;
+    align-items: left;
     gap: 1rem;
-  }
+  }//overriding global styling
 
   .dummy-chart-controls {
     display: flex;
@@ -183,17 +63,13 @@ border-radius: var(--border-radius); // set border radius
     gap: 0.5rem;
   }
   .selector{
-    display: flex; // using flex layout
+    flex: 1;
     align-items: center; // vertically center items
     gap: 0.5rem; // space between icon and input
     flex-grow: 1;
   }
-  .form-selector {
-  width: 100%;
-  }
 
   .content {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -253,6 +129,18 @@ border-radius: var(--border-radius); // set border radius
       align-items: stretch;
     }
   }
+
+  @media (min-width: 992px) {
+  .form-edit-container {
+    align-items: left;
+    column-gap: 1rem;
+  }
+}
+
+@media (min-width: 1120px) {
+  .form-edit-container {
+  }
+}
 
   @media (min-width: 992px) {
     .page-layout {

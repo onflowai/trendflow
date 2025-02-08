@@ -155,6 +155,10 @@ TrendSchema.index({ views: -1 }); // sorting by views (top viewed)
 TrendSchema.index({ trendStatus: 1 }); // status-based filters
 TrendSchema.index({ createdAt: -1 }); // sorting by creation date
 
+/**
+ * doc-based middleware runs on doc.save() or doc.validate()
+ * but NOT on findOneAndUpdate
+ */
 TrendSchema.pre('validate', async function (next) {
   //Only generate a slug if the trend is new or the trend name has changed
   //This is important to avoid unnecessary slug generation on every save operation

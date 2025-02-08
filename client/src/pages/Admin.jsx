@@ -71,8 +71,8 @@ export const loader = async ({ request }) => {
       trends: {
         trends: trendsData.trends,
         totalTrends: trendsData.totalTrends,
-        pagesNumber: trendsData.pagesNumber,
-        currentPage: trendsData.currentPage,
+        // pagesNumber: trendsData.pagesNumber,
+        // currentPage: trendsData.currentPage,
         nextCursor: trendsData.nextCursor,
         hasNextPage: trendsData.hasNextPage,
       },
@@ -98,35 +98,34 @@ const Admin = () => {
     searchValues: initialSearchValues,
   } = useLoaderData();
 
-  const [searchValues, setSearchValues] = useState(initialSearchValues);
-  const [trends, setTrends] = useState(initialTrendsData.trends || []);
+  const [searchValues, setSearchValues] = useState(initialSearchValues); // filter state
+  const [trends, setTrends] = useState(initialTrendsData.trends || []); // storing the trends
+
   const [pagination, setPagination] = useState({
     totalTrends: initialTrendsData.totalTrends,
-    pagesNumber: initialTrendsData.pagesNumber,
-    currentPage: initialTrendsData.currentPage,
-    nextCursor: initialTrendsData.nextCursor,
+    nextCursor: initialTrendsData.nextCursor, // can be null if no more pages
     hasNextPage: initialTrendsData.hasNextPage,
   });
-  const [isLoading, setIsLoading] = useState(false); // State to track loading
-  const [preloadedTrends, setPreloadedTrends] = useState(null); // State for preloaded trends
+  const [isLoading, setIsLoading] = useState(false);
+  const [preloadedTrends, setPreloadedTrends] = useState(null);
   const [preloadedPagination, setPreloadedPagination] = useState(null);
   const observer = useRef(); // Ref for the Intersection Observer
-  const { searchValue } = useSearchContext();
 
+  const { searchValue } = useSearchContext();
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [isClosed, setIsClosed] = useLocalStorage('isClosed', true); // state to track if the filter is closed in FilterTrends
 
   const [showAddTrendModal, setShowAddTrendModal] = useState(false);
-  const [selectedSlug, setSelectedSlug] = useState(''); // HERE: State to hold selected slug
-  const [jsonData, setJsonData] = useState(null); // HERE: State to hold JSON data from CSV
+  const [selectedSlug, setSelectedSlug] = useState('');
+  const [jsonData, setJsonData] = useState(null);
 
-  // function to update search values and navigate
+  // function to update search values and also push to URL
   const updateSearchValues = (newValues) => {
     const updatedSearchValues = { ...searchValues, ...newValues };
     setSearchValues(updatedSearchValues);
-    // Update the URL to reflect new search or sort parameters
+    // Update the URL to reflect new search or sort parameters (reflect in url)
     const searchParams = new URLSearchParams(updatedSearchValues);
     navigate(`/dashboard/admin?${searchParams.toString()}`, { replace: true });
   };
@@ -158,15 +157,22 @@ const Admin = () => {
         },
       });
 
-      const { trends: filteredTrends, ...newPagination } = response.data;
-      setTrends(filteredTrends); // replace trends with filtered results
-      setPagination((prev) => ({ ...prev, ...newPagination }));
+      // response.data = { trends, totalTrends, nextCursor, hasNextPage }
+      const { trends: newTrends, ...newPagination } = response.data;
+
+      // replace existing trends
+      setTrends(newTrends);
+      setPagination({
+        totalTrends: newPagination.totalTrends,
+        nextCursor: newPagination.nextCursor,
+        hasNextPage: newPagination.hasNextPage,
+      });
     } catch (error) {
       console.error('Error fetching filtered trends:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }; //end fetchFilteredTrends
 
   // debounced version of fetchFilteredTrends to prevent excessive calls
   const debouncedFetchFilteredTrends = useCallback(
@@ -190,43 +196,74 @@ const Admin = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
-  // load more trends when the user scrolls to the bottom
+  // infinite Scroll: load more trends when the user scrolls to the bottom
   const loadMoreTrends = async () => {
     if (!pagination.hasNextPage || isLoading) return;
 
     if (preloadedTrends) {
       applyPreloadedTrends();
       return;
-    }
+    } // if preloaded the next page apply it now
 
     try {
       setIsLoading(true);
       const response = await customFetch.get('trends/admin/all-trends', {
         params: {
           ...searchValues, // Use updated search and sort params
-          cursor: pagination.nextCursor,
           limit: trendsPerPage,
+          cursor: pagination.nextCursor, // THIS is the key for cursor-based
         },
       });
 
       const { trends: newTrends, ...newPagination } = response.data;
-      setTrends((prevTrends) => [...prevTrends, ...newTrends]);
-      setPagination((prev) => ({ ...prev, ...newPagination }));
+
+      setTrends((prev) => [...prev, ...newTrends]);
+      setPagination((prev) => ({
+        ...prev,
+        // keep totalTrends if you want
+        totalTrends: newPagination.totalTrends,
+        nextCursor: newPagination.nextCursor,
+        hasNextPage: newPagination.hasNextPage,
+      }));
     } catch (error) {
       console.error('Error loading more trends:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }; //end loadMoreTrends
+
+  // optional: preloading the next page in the background
+  const preloadNextPage = async () => {
+    if (!pagination.hasNextPage || preloadedTrends) return;
+
+    try {
+      const response = await customFetch.get('trends/admin/all-trends', {
+        params: {
+          ...searchValues,
+          limit: trendsPerPage,
+          cursor: pagination.nextCursor,
+        },
+      });
+
+      setPreloadedTrends(response.data.trends);
+      setPreloadedPagination({
+        totalTrends: response.data.totalTrends,
+        nextCursor: response.data.nextCursor,
+        hasNextPage: response.data.hasNextPage,
+      });
+    } catch (error) {
+      console.error('Error preloading next trends:', error);
+    }
+  }; //end preloadNextPage
 
   // apply preloaded trends when available
   const applyPreloadedTrends = () => {
-    setTrends((prevTrends) => [...prevTrends, ...preloadedTrends]);
+    setTrends((prev) => [...prev, ...preloadedTrends]);
 
     // update pagination state based on the preloaded data
     setPagination((prev) => ({
       ...prev,
-      currentPage: prev.currentPage + 1,
+      totalTrends: preloadedPagination.totalTrends,
       nextCursor: preloadedPagination.nextCursor,
       hasNextPage: preloadedPagination.hasNextPage,
     }));
@@ -235,15 +272,23 @@ const Admin = () => {
     setPreloadedTrends(null);
     setPreloadedPagination(null);
 
-    // start preloading the next page
-    preloadNextPage();
-  };
+    preloadNextPage(); //load the next batch in the background
+  }; //end applyPreloadedTrends
+
+  // trigger preloading when pagination changes
+  useEffect(() => {
+    if (pagination.hasNextPage) {
+      preloadNextPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.nextCursor]);
 
   // intersection Observer callback for infinite scrolling
   const lastTrendElementRef = useCallback(
     (node) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
+
       observer.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting && pagination.hasNextPage) {
@@ -259,40 +304,8 @@ const Admin = () => {
       if (node) observer.current.observe(node);
     },
     [isLoading, pagination.hasNextPage, preloadedTrends]
-  );
+  ); //end lastTrendElementRef
 
-  // preload the next page of trends
-  const preloadNextPage = async () => {
-    if (!pagination.hasNextPage || preloadedTrends) return;
-
-    try {
-      const response = await customFetch.get('trends/admin/all-trends', {
-        params: {
-          ...searchValues,
-          cursor: pagination.nextCursor,
-          limit: trendsPerPage,
-        },
-      });
-
-      setPreloadedTrends(response.data.trends);
-      setPreloadedPagination({
-        nextCursor: response.data.nextCursor,
-        hasNextPage: response.data.hasNextPage,
-      });
-    } catch (error) {
-      console.error('Error preloading next trends:', error);
-    }
-  };
-
-  // trigger preloading when pagination changes
-  useEffect(() => {
-    if (pagination.hasNextPage) {
-      preloadNextPage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.nextCursor]);
-
-  // fetching the icon data from the server
   useEffect(() => {
     const fetchData = async () => {
       if (!isClosed) {
@@ -314,47 +327,49 @@ const Admin = () => {
     try {
       setLoadingSlug(slug); // start loading
       await customFetch.patch(`trends/${slug}/approve`);
-      toast.success(<CustomSuccessToast message={'Trend Approved'} />);
-      fetchFilteredTrends(searchValues); // refresh the trends list
+      toast.success(<CustomSuccessToast message="Trend Approved" />);
+      fetchFilteredTrends(searchValues); // refresh the trends
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
       setLoadingSlug(null); // stop loading
     }
-  };
+  }; //end approveTrend
+
   // Modify manualApproveTrend to accept JSON data
   const manualApproveTrend = async (slug, data) => {
     try {
       setLoadingSlug(slug); // start loading
       setShowAddTrendModal(false); //close modal
       await customFetch.patch(`trends/${slug}/manual-approve`, { data });
-      toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
+      toast.success(<CustomSuccessToast message="Trend Manually Approved" />);
       fetchFilteredTrends(searchValues); // refresh the trends list
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error approving trend');
     } finally {
       setLoadingSlug(null); // stop loading
     }
-  };
+  }; //end manualApproveTrend
+
   // remove a trend
   const removeTrend = async (slug) => {
     try {
-      setLoadingSlug(slug); // start loading
+      setLoadingSlug(slug);
       await customFetch.delete(`/trends/edit/${slug}`);
       toast.success('Trend deleted successfully!');
 
-      // Reset preloaded data
+      // reset preloaded data
       setPreloadedTrends(null);
       setPreloadedPagination(null);
 
-      // Refresh the trends list
+      // refresh the trends list
       fetchFilteredTrends(searchValues);
     } catch (error) {
       toast.error(error?.response?.data?.msg || 'Error deleting trend');
     } finally {
       setLoadingSlug(null); //stop loading
     }
-  };
+  }; //end removeTrend
 
   // save current filter parameters to user's model
   const saveFilters = async (filters) => {
@@ -380,18 +395,17 @@ const Admin = () => {
     }
   };
 
-  // Function to handle manual approve and open modal
+  // function to handle manual approve and open modal
   const handleApproveManual = (slug) => {
-    // HERE: Function to handle manual approve
-    setSelectedSlug(slug); // HERE: Set the selected slug
-    setShowAddTrendModal(true); // HERE: Open the modal
+    setSelectedSlug(slug); //set the selected slug
+    setShowAddTrendModal(true); //open the modal
   };
 
-  // Function to handle adding trend after manual approval
+  // function to handle adding trend after manual approval
   const handleAddTrend = () => {
-    // HERE: Function to handle after adding trend
-    fetchFilteredTrends(searchValues); // Refresh the trends list
+    fetchFilteredTrends(searchValues); // refresh the trends list
   };
+
   return (
     <Container>
       <SEOProtected />
@@ -420,9 +434,11 @@ const Admin = () => {
           },
         ]}
       />
+
       {charts.monthTrends?.length > 1 && (
         <ChartAdminComponent data={charts} title="Stats:" />
       )}
+
       <CombinedProvider value={{ trends, searchValues }}>
         <FilterTrends
           isAdminPage={isAdminPage}
@@ -442,7 +458,7 @@ const Admin = () => {
           loadingSlug={loadingSlug}
           onApproveManual={handleApproveManual}
         />
-        <div ref={lastTrendElementRef}></div>
+        <div ref={lastTrendElementRef} style={{ height: '1px' }} />
         <PaginationComponent
           isLoading={isLoading}
           hasNextPage={pagination.hasNextPage}

@@ -30,19 +30,10 @@ import {
 export const loader = async () => {
   try {
     const response = await customFetch.get('/trends/top-viewed');
-    const {
-      trends,
-      totalTrends,
-      pagesNumber,
-      currentPage,
-      nextCursor,
-      hasNextPage,
-    } = response.data;
+    const { trends, totalTrends, nextCursor, hasNextPage } = response.data;
     return {
       trends,
       totalTrends,
-      pagesNumber,
-      currentPage,
       nextCursor,
       hasNextPage,
     };
@@ -58,18 +49,37 @@ const Landing = () => {
   const navigate = useNavigate();
   const {
     trends: initialTrendsData,
-    hasNextPage,
-    nextCursor,
+    hasNextPage: initialHasNextPage,
+    nextCursor: initialNextCursor,
   } = useLoaderData();
 
   const [trends, setTrends] = useState(initialTrendsData || []);
   const [pagination, setPagination] = useState({
-    nextCursor: nextCursor || null,
-    hasNextPage: hasNextPage || false,
+    nextCursor: initialNextCursor || null,
+    hasNextPage: initialHasNextPage || false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef();
   const isMobile = useWindowSize();
+
+  /**
+   * Intersection Observer callback to trigger loadMoreTrends
+   */
+  const lastTrendElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && pagination.hasNextPage) {
+          loadMoreTrends();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, pagination.hasNextPage]
+  );
 
   /**
    * Function to load more trends when the user scrolls to the bottom
@@ -79,10 +89,10 @@ const Landing = () => {
 
     try {
       setIsLoading(true);
+      // Pass the current nextCursor so the server can fetch the next chunk
       const response = await customFetch.get('/trends/top-viewed', {
         params: {
           cursor: pagination.nextCursor,
-          //limit: trendsPerPage,
         },
       });
 
@@ -92,7 +102,7 @@ const Landing = () => {
         hasNextPage: newHasNextPage,
       } = response.data;
 
-      setTrends((prevTrends) => [...prevTrends, ...newTrends]);
+      setTrends((prev) => [...prev, ...newTrends]);
       setPagination({
         nextCursor: newNextCursor,
         hasNextPage: newHasNextPage,
@@ -116,25 +126,6 @@ const Landing = () => {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
   }; //guestUser signs in using guestLogin controller
-
-  /**
-   * Intersection Observer callback to trigger loadMoreTrends
-   */
-  const lastTrendElementRef = useCallback(
-    (node) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && pagination.hasNextPage) {
-          loadMoreTrends();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, pagination.hasNextPage]
-  );
 
   return (
     <Container>

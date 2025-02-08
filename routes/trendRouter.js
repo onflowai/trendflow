@@ -15,6 +15,7 @@ import {
   uploadTrendSVG,
   getSelectIconData,
   getApprovedTrends,
+  updateTrendManual,
   getTopViewedTrends,
   approveTrendManual,
 } from '../controllers/trendController.js';
@@ -97,6 +98,12 @@ router.patch(
   authenticateUser,
   authorizedPermissions('write'),
   approveTrend
+);
+router.patch(
+  '/:slug/manual-update',
+  authenticateUser,
+  authorizedPermissions('write'),
+  updateTrendManual
 );
 router.patch(
   '/:slug/manual-approve',
