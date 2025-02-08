@@ -6,7 +6,7 @@ import {
   FormComponentLock,
   ChartEditTrendComponent,
 } from '.';
-import { Form } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsPlusLg, BsCheck2 } from 'react-icons/bs';
 import { PiFileSvgFill } from 'react-icons/pi';
@@ -23,11 +23,15 @@ const EditTrendComponent = ({
   handleSVGChange,
   selectedCategory,
   trendCategoryList,
-  handleUpdateClick,
+  handleManualUpdate,
   handleApproveClick,
   setSelectedCategory,
   handleManualApprove,
 }) => {
+  const navigate = useNavigate();
+  const navigateToTrend = () => {
+    navigate(`/dashboard/trend/${trendObject.slug}`);
+  };
   console.log('trendObject', trendObject);
   const [trend, setTrend] = useState(trendObject.trend);
   return (
@@ -64,7 +68,7 @@ const EditTrendComponent = ({
                   <button
                     type="button"
                     className="circle-button"
-                    onClick={handleUpdateClick}
+                    onClick={handleManualUpdate}
                   >
                     <RxUpdate className="circle-button-icon" />
                   </button>
@@ -169,14 +173,24 @@ const EditTrendComponent = ({
           <div id="Edit"></div>
           <div className="form-actions">
             <div className="submit-btn">
-              <button
-                type="submit"
-                className="btn btn-block from-btn"
-                disabled={isSubmitting}
-                style={{ marginLeft: 'auto' }}
-              >
-                {isSubmitting ? 'editing...' : 'edit'}
-              </button>
+              {trendObject.isApproved ? (
+                <button
+                  onClick={navigateToTrend}
+                  className="btn btn-block from-btn"
+                  style={{ marginLeft: 'auto' }}
+                >
+                  View Trend
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="btn btn-block from-btn"
+                  disabled={isSubmitting}
+                  style={{ marginLeft: 'auto' }}
+                >
+                  {isSubmitting ? 'editing...' : 'edit'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -314,8 +328,7 @@ const Container = styled.div`
 
   .trend-input-container {
     flex: 1; 
-    min-width: 0; 
-    display: flex;
+    min-width: 0;
     align-items: center;
     margin-left: 0.5rem;
   }
@@ -356,12 +369,12 @@ const Container = styled.div`
     align-items: center;
     width: 100%; /* Full width override */
   }
-
+  
   .select-locked-input-container {
     display: flex;
     align-items: center;
-    border: 1px solid var(--grey-50);
-    border-radius: var(--input-radius);
+    border: 1.5px solid var(--grey-50);
+    border-radius: var(--input-radius-rounded);
     padding: 0.5rem;
     background: var(--background-color);
     width: 100%;

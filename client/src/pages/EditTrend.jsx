@@ -93,6 +93,7 @@ const EditTrend = () => {
   const [selectedSlug, setSelectedSlug] = useState(null);
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
+  const [manualMode, setManualMode] = useState('approve');
 
   // approve a trend
   const approveTrend = async (slug) => {
@@ -107,7 +108,8 @@ const EditTrend = () => {
       setIsApproving(false); //stop loading
     }
   };
-  // Modify manualApproveTrend to accept JSON data
+
+  //manualApproveTrend accepts JSON data
   const manualApproveTrend = async (slug, data) => {
     try {
       setIsApproving(true); // start loading
@@ -121,6 +123,22 @@ const EditTrend = () => {
       setIsApproving(false); //stop loading
     }
   };
+
+  // manualUpdateTrend accepts JSON data (c: updateTrendManual)
+  const manualUpdateTrend = async (slug, data) => {
+    try {
+      setIsApproving(true); // start loading
+      setShowAddTrendModal(false); //close modal
+      await customFetch.patch(`trends/${slug}/manual-update`, { data });
+      toast.success(<CustomSuccessToast message={'Trend Data Updated'} />);
+      revalidate();
+    } catch (error) {
+      toast.error(error?.response?.data?.msg || 'Error approving trend');
+    } finally {
+      setIsApproving(false); //stop loading
+    }
+  };
+
   useEffect(() => {
     const fetchSVG = async () => {
       try {
@@ -177,15 +195,29 @@ const EditTrend = () => {
     approveTrend(trendObject.slug);
   };
 
+  // When the modal is triggered for manual approve
   const handleManualApprove = () => {
     setSelectedSlug(trendObject.slug);
+    setManualMode('approve');
     setShowAddTrendModal(true);
   };
 
-  const handleAddTrend = (data) => {
-    manualApproveTrend(selectedSlug, data);
-    setShowAddTrendModal(false);
+  // When the modal is triggered for manual update
+  const handleManualUpdate = () => {
+    setSelectedSlug(trendObject.slug);
+    setManualMode('update');
+    setShowAddTrendModal(true);
   };
+
+  // Unified modal submission handler
+  const handleModalSubmit = (data) => {
+    if (manualMode === 'update') {
+      manualUpdateTrend(selectedSlug, data);
+    } else {
+      manualApproveTrend(selectedSlug, data);
+    }
+  };
+
   return (
     <Container>
       <SEOProtected />
@@ -210,6 +242,7 @@ const EditTrend = () => {
                 setSelectedTech={setSelectedTech}
                 handleApproveClick={handleApproveClick}
                 handleManualApprove={handleManualApprove}
+                handleManualUpdate={handleManualUpdate}
               />
               <div className="trend-use-container">
                 <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
@@ -242,7 +275,7 @@ const EditTrend = () => {
       {showAddTrendModal && (
         <AddTrendModal
           onClose={() => setShowAddTrendModal(false)}
-          onAdd={handleAddTrend}
+          onAdd={handleModalSubmit}
           slug={selectedSlug}
           onManualApprove={manualApproveTrend} // Not strictly required if your handleAddTrend calls it
         />

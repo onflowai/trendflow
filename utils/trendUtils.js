@@ -50,7 +50,7 @@ export const constructQueryObject = (
   //   queryObject.trendStatus = status;
   // }
   return queryObject; // return the constructed query object
-}; //END CONSTRUCT QUERY OBJECT
+}; //end constructQueryObject
 
 /**
  * CONSTRUCT SORT KEY
@@ -92,80 +92,7 @@ export const constructSortKey = (topRated, topViewed, updated) => {
   // Default to sorting by 'newest' if no valid sort key is provided
   return Object.keys(sortKey).length > 0 ? sortKey : { updatedAt: -1 };
   // return sortingOptions[sort] || null; // return the corresponding sort key or null if not found
-}; //END CONSTRUCT SORT KEY
-
-/**
- * PAGINATE AND SORT TRENDS
- * Handles the sorting
- * @param {*} queryObject
- * @param {*} sortKey
- * @param {*} page
- * @param {*} limit
- * @param {*} cursor
- * @returns
- */
-export const paginateAndSortTrends = async (
-  queryObject,
-  sortKey,
-  page,
-  limit,
-  trendLimit,
-  cursor
-) => {
-  //let skip = 0;
-  const sortFields = { ...sortKey, _id: 1 }; // add _id as a tie-breaker
-  if (cursor) {
-    const [updatedAtCursor, idCursor] = cursor.split('|'); // split the cursor into updatedAt and _id
-    queryObject.$or = [
-      { updatedAt: { $lt: updatedAtCursor } }, // fetch records with earlier updatedAt
-      {
-        updatedAt: updatedAtCursor, // handle tie-breaking for trends with the same updatedAt
-        _id: { $gt: idCursor },
-      },
-    ];
-  }
-
-  const adjustedLimit = trendLimit
-    ? Math.min(limit + 1, trendLimit)
-    : limit + 1; // adjust the query limit only if trendLimit is provided
-
-  // cursor-based pagination: no need for skip
-  const trendsQuery = trendModel
-    .find(queryObject)
-    .select('-generatedBlogPost -trendUse') // exclude unnecessary fields
-    .populate('createdBy', 'username githubUsername profile_img privacy -_id')
-    .sort(sortFields) // sort the trends based on the sortKey
-    .limit(adjustedLimit); // limit trends fetched overall
-  //.limit(limit + 1) //query trends with pagination fetch one extra to determine if there’s a next page
-
-  const [trends, totalTrends] = await Promise.all([
-    trendsQuery,
-    trendModel.countDocuments(queryObject),
-  ]); //getting total trends based on query
-
-  const cappedTotalTrends = trendLimit
-    ? Math.min(totalTrends, trendLimit)
-    : totalTrends; // capping total trends count for certain controllers
-
-  const hasNextPage = trends.length > limit; // check if there is a next page
-  if (hasNextPage) {
-    trends.pop(); // remove the extra document from results
-  }
-
-  const nextCursor = hasNextPage
-    ? `${trends[trends.length - 1].updatedAt}|${trends[trends.length - 1]._id}`
-    : null; // generate the nextCursor using updatedAt and _id of the last document
-
-  const pagesNumber = Math.ceil(cappedTotalTrends / limit); //calculating the page
-
-  return {
-    totalTrends: cappedTotalTrends,
-    pagesNumber,
-    trends,
-    nextCursor,
-    hasNextPage,
-  };
-}; //END PAGINATE AND SORT TRENDS
+}; //end constructSortKey
 
 /**
  * CALCULATE SCORE
@@ -210,4 +137,182 @@ export const calculateCombinedScore = (
     return combinedScore + statusValue * weights.trendStatus;
   }
   return combinedScore;
-};
+}; //end calculateCombinedScore
+
+/**
+ * PAGINATE AND SORT TRENDS SKIP BASED
+ * Handles the sorting
+ * @param {Object} queryObject - the Mongoose query filters
+ * @param {Object} sortKey     - the Mongoose sort fields
+ * @param {number} page        - which page (1-based)
+ * @param {number} limit       - how many items per page
+ * @param {number} trendLimit  - optional cap on totalTrends
+ * @returns
+ */
+export const paginateAndSortSkip = async (
+  queryObject,
+  sortKey,
+  page,
+  limit,
+  trendLimit,
+  cursor
+) => {
+  //let skip = 0;
+  const skip = (page - 1) * limit; //computing how many docs to skip
+
+  // skip-based pagination: no need for skip
+  const trendsQuery = trendModel
+    .find(queryObject)
+    .select('-generatedBlogPost -trendUse') // exclude unnecessary fields
+    .populate('createdBy', 'username githubUsername profile_img privacy -_id')
+    .sort(sortKey) // sort the trends based on the sortKey
+    .skip(skip)
+    .limit(adjustedLimit) // limit trends fetched overall
+    .limit(limit); //query trends with pagination fetch one extra to determine if there’s a next page
+
+  const [trends, totalTrendsCount] = await Promise.all([
+    trendsQuery,
+    trendModel.countDocuments(queryObject),
+  ]); //getting total trends based on query
+
+  const cappedTotalTrends = trendLimit
+    ? Math.min(totalTrendsCount, trendLimit)
+    : totalTrendsCount; //totalTrends to a `trendLimit`
+
+  const pagesNumber = Math.ceil(cappedTotalTrends / limit); // computing how many pages in total
+
+  const hasNextPage = page < pagesNumber;
+  return {
+    totalTrends: cappedTotalTrends,
+    pagesNumber,
+    currentPage: page,
+    trends,
+    hasNextPage,
+  }; //return the pages + hasNextPage
+}; //end paginateAndSortSkip
+
+/**
+ * PAGINATE AND SORT TRENDS CURSOR BASED
+ * Handles the cursor based sorting
+ * @param {*} queryObject
+ * @param {*} sortKey
+ * @param {*} page
+ * @param {*} limit
+ * @param {*} cursor
+ * @returns
+ */
+export const paginateAndSortCursor = async (
+  queryObject,
+  sortKey,
+  limit,
+  cursor,
+  trendLimit // optional
+) => {
+  const sortFields = { ...sortKey, _id: 1 }; // sort by chosen fields + tie-break by _id
+
+  if (cursor) {
+    const [updatedAtCursor, idCursor] = cursor.split('|');
+    queryObject.$or = [
+      { updatedAt: { $lt: updatedAtCursor } },
+      {
+        updatedAt: updatedAtCursor,
+        _id: { $gt: idCursor },
+      },
+    ];
+  } //if a cursor is provided, parse it into [updatedAtCursor, idCursor]
+  const findLimit = limit + 1; //always fetch (limit + 1) to detect if theres another page
+
+  //cursor-based pagination: no need for skip
+  const trendsQuery = trendModel
+    .find(queryObject)
+    .select('-generatedBlogPost -trendUse')
+    .populate('createdBy', 'username githubUsername profile_img privacy -_id')
+    .sort(sortFields)
+    .limit(findLimit);
+  const [trends, totalTrends] = await Promise.all([
+    trendsQuery,
+    trendModel.countDocuments(queryObject),
+  ]); // compute totalTrends for info if needed
+  const hasNextPage = trends.length > limit;
+  if (hasNextPage) {
+    trends.pop(); // removing the extra doc only return “limit” docs
+  } //if we limit+1 docs next page
+  let nextCursorValue = null;
+  if (hasNextPage && trends.length > 0) {
+    const lastTrend = trends[trends.length - 1];
+    nextCursorValue = `${lastTrend.updatedAt.toISOString()}|${lastTrend._id}`;
+  } // building nextCursor from the last doc’s updatedAt + _id if next page
+
+  return {
+    totalTrends,
+    trends,
+    nextCursor: nextCursorValue,
+    hasNextPage,
+  };
+}; //end paginateAndSortCursor
+
+/**
+ * PAGINATE AND SORT TRENDS CURSOR BASED
+ * cursor-based pagination by descending views with a global trendLimit cap
+ * if totalTrendsCount in the DB is over trendLimit we refuse to paginate more
+ * @param {*} queryObject
+ * @param {*} sortKey
+ * @param {*} limit
+ * @param {*} cursor
+ * @param {*} trendLimit
+ * @returns
+ */
+export const paginateAndSortCursorViews = async (
+  queryObject,
+  sortKey,
+  limit,
+  cursor,
+  trendLimit
+) => {
+  const sortFields = { ...sortKey, _id: -1 }; //descending on sortKey plus _id: -1 for tie-break
+  if (cursor) {
+    const [viewsCursor, idCursor] = cursor.split('|');
+    queryObject.$or = [
+      { views: { $lt: Number(viewsCursor) } },
+      {
+        views: Number(viewsCursor),
+        _id: { $lt: idCursor },
+      },
+    ]; //next chunk is docs with strictly fewer views (views: -1)
+  } //if there is a cursor parse it [viewsCursor, idCursor]
+  const findLimit = limit + 1; //fetching limit+1 docs to see if there's another page
+  const trendsQuery = trendModel
+    .find(queryObject)
+    .select('-generatedBlogPost -trendUse')
+    .populate('createdBy', 'username githubUsername profile_img privacy -_id')
+    .sort(sortFields)
+    .limit(findLimit);
+
+  const [trends, totalTrendsCount] = await Promise.all([
+    trendsQuery,
+    trendModel.countDocuments(queryObject),
+  ]);
+  let hasNextPage = trends.length > limit;
+  if (hasNextPage) {
+    trends.pop(); // remove extra doc only 'limit' remain
+  } // basic hasNextPage check
+  let nextCursorValue = null;
+  if (hasNextPage && trends.length > 0) {
+    const lastTrend = trends[trends.length - 1];
+    nextCursorValue = `${lastTrend.views}|${lastTrend._id}`;
+  } //building nextCursor from the last doc if we still have a next page
+  const usedLimit = trendLimit || Infinity; //enforcing a global trendLimit cap
+  const hasReachedCap = totalTrendsCount > usedLimit; //first page if totalTrendsCount > usedLimit
+  if (hasReachedCap) {
+    hasNextPage = false;
+    nextCursorValue = null;
+  } // ff actual DB total is > trendLimit set "no next page"
+  const cappedTotalTrends = hasReachedCap ? usedLimit : totalTrendsCount; // changes the reported totalTrends
+
+  return {
+    totalTrends: cappedTotalTrends,
+    trends,
+    nextCursor: nextCursorValue,
+    hasNextPage,
+  };
+}; //end paginateAndSortCursorViews

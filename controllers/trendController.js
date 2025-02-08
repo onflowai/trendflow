@@ -13,8 +13,9 @@ import fs from 'fs/promises'; //allows to remove the image
 import {
   constructSortKey,
   constructQueryObject,
-  paginateAndSortTrends,
+  paginateAndSortCursor,
   calculateCombinedScore,
+  paginateAndSortCursorViews,
 } from '../utils/trendUtils.js';
 import {
   BadRequestError,
@@ -245,7 +246,7 @@ export const approveTrend = async (req, res) => {
     console.error(error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-}; //end APPROVE TREND
+}; //end approveTrend
 
 /**
  * MANUAL APPROVE TREND
@@ -332,7 +333,78 @@ export const approveTrendManual = async (req, res) => {
       .status(statusCode)
       .json({ msg: error.message || 'Internal Server Error' });
   }
-}; //end MANUAL APPROVE TREND
+}; //end approveTrendManual
+
+/**
+ * MANUAL UPDATE TREND
+ * @param {Object} req - express request object
+ * @param {Object} res - express response object
+ * @returns {Object} - JSON response with status and message
+ */
+export const updateTrendManual = async (req, res) => {
+  const { slug } = req.params;
+  let { data } = req.body;
+
+  try {
+    const sanitizedData = validateAndSanitizeCSVData(data); // validating and sanitize the incoming CSV data
+    const trend = await trendModel.findOne({ slug: slug });
+    if (!trend) {
+      throw new NotFoundError('Trend not found');
+    } // finding the trend document by slug
+
+    const trendflowPyApiResponse = await trendflowPyManualApi(
+      slug,
+      sanitizedData
+    ); // call the manual API to process the CSV data
+    if (!trendflowPyApiResponse.success) {
+      throw new Error(
+        trendflowPyApiResponse.error || 'trendflowPyManualApi returned an error'
+      );
+    }
+    const processedData = trendflowPyApiResponse.trends_data; //extracting processed data from the API response
+    const combinedScore = calculateCombinedScore(
+      processedData.t_score,
+      0,
+      processedData.status,
+      processedData.f_score
+    ); // calculate the combined score
+    const updatedTrend = await trendModel.findOneAndUpdate(
+      { slug: slug },
+      {
+        $set: {
+          interestOverTime: processedData.trends_data,
+          trendStatus: processedData.status,
+          flashChart: processedData.flashChart,
+          isApproved: true, //remain approved
+          forecast: processedData.forecast,
+          t_score: processedData.t_score,
+          f_score: processedData.f_score,
+          combinedScore: combinedScore,
+        },
+      },
+      { new: true } // return the updated document
+    ); // updating the trend document with the fresh data
+
+    // Respond with success
+    res.status(StatusCodes.OK).json({
+      msg: 'Trend manually updated',
+      trend: updatedTrend,
+    });
+  } catch (error) {
+    console.error('Error in updateTrendManual:', error.message);
+
+    const statusCode =
+      error instanceof NotFoundError
+        ? StatusCodes.NOT_FOUND
+        : error.message.startsWith('Invalid')
+        ? StatusCodes.BAD_REQUEST
+        : StatusCodes.INTERNAL_SERVER_ERROR;
+
+    res.status(statusCode).json({
+      msg: error.message || 'Internal Server Error',
+    });
+  }
+}; // end updateTrendManual
 
 /**
  * GET ALL TRENDS (only for ADMIN)
@@ -346,7 +418,6 @@ export const getAllTrends = async (req, res) => {
     trendTech,
     trendCategory,
     sort,
-    page,
     limit,
     topRated,
     topViewed,
@@ -355,7 +426,11 @@ export const getAllTrends = async (req, res) => {
     cursor,
   } = req.query; // destructuring query parameters from the request
 
-  // constructing the query object based on provided filters
+  // set default values for page and limit if not provided
+  limit = Number(limit) || 8; // set default values for page and limit if not provided
+  if (limit < 1) limit = 8; // fallback if negative or zero
+
+  //constructing the query object based on provided filters
   const queryObject = constructQueryObject(
     search,
     trendTech,
@@ -366,10 +441,6 @@ export const getAllTrends = async (req, res) => {
 
   // building the sort key based on sorting parameters
   const sortKey = constructSortKey(topRated, topViewed, updated);
-
-  // set default values for page and limit if not provided
-  page = Number(page) || 1;
-  limit = Number(limit) || 36;
 
   // getting the current date components
   const currentYear = new Date().getFullYear();
@@ -394,12 +465,13 @@ export const getAllTrends = async (req, res) => {
   }
 
   try {
-    let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
-      await paginateAndSortTrends(queryObject, sortKey, page, limit, cursor); // fetch trends using pagination, sorting, and optional cursor
+    // helper that does the actual find() with cursor-based logic
+    const { totalTrends, trends, nextCursor, hasNextPage } =
+      await paginateAndSortCursor(queryObject, sortKey, limit, cursor); // fetch trends using pagination, sorting, and optional cursor
 
     //privacy logic if necessary (e.g., hide GitHub username if privacy is enabled)
-    trends = trends.map((trend) => {
-      if (trend.createdBy && trend.createdBy.privacy) {
+    const safeTrends = trends.map((trend) => {
+      if (trend.createdBy?.privacy) {
         trend.createdBy.githubUsername = '';
       }
       return trend;
@@ -410,9 +482,7 @@ export const getAllTrends = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
       totalTrends,
-      pagesNumber,
-      currentPage: page,
-      trends,
+      trends: safeTrends,
       nextCursor,
       hasNextPage,
     }); // sending the response with trends data and pagination info
@@ -441,6 +511,9 @@ export const getApprovedTrends = async (req, res) => {
     status,
     cursor,
   } = req.query; //destructuring the values coming from query which sent from the users search and dropdowns
+
+  limit = Number(limit) || 8; //limit will be provided, defaulting to 36 trends initially
+
   const queryObject = constructQueryObject(
     search,
     trendTech,
@@ -449,8 +522,6 @@ export const getApprovedTrends = async (req, res) => {
     status
   ); // adding hardcoded isApproved: true, constructQueryObject will create query parameters as an object
   const sortKey = constructSortKey(topRated, topViewed, updated);
-  page = Number(page) || 1; //value page will be provided in the req
-  limit = Number(limit) || 36; //limit will be provided, defaulting to 36 trends initially
 
   const currentYear = new Date().getFullYear(); //this is the full year of the current date '2024'
   const currentMonth = new Date().getMonth(); //month of the current date, represented as an index from 0 (January) to 11 (December)
@@ -477,14 +548,7 @@ export const getApprovedTrends = async (req, res) => {
   try {
     // query the database for trends where isApproved is true (return without: generatedBlogPost, trendUse)
     let { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
-      await paginateAndSortTrends(
-        queryObject,
-        sortKey,
-        page,
-        limit,
-        undefined,
-        cursor
-      ); //undefined is set so that all trends will be pulled from the controller
+      await paginateAndSortCursor(queryObject, sortKey, limit, cursor); //undefined is set so that all trends will be pulled from the controller
     // privacy logic
     trends = trends.map((trend) => {
       if (trend.createdBy && trend.createdBy.privacy) {
@@ -500,16 +564,15 @@ export const getApprovedTrends = async (req, res) => {
     res.status(StatusCodes.OK).json({
       totalTrends,
       pagesNumber,
-      currentPage: page,
       trends,
       nextCursor,
       hasNextPage,
-    }); // Directly respond with the list of approved trends (could be an empty array)
+    }); // directly respond with the list of approved trends (could be an empty array)
   } catch (error) {
-    // Handle any potential errors during the database query
+    // handle any potential errors during the database query
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
-}; //end GET APPROVED TRENDS
+}; //end getApprovedTrends
 
 /**
  * GET TREND_CATEGORY & TECHNOLOGIES
@@ -626,7 +689,7 @@ export const searchTrends = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-};
+}; //end searchTrends
 
 /**
  * GET TOP VIEWED TRENDS
@@ -639,25 +702,22 @@ export const searchTrends = async (req, res, next) => {
  */
 export const getTopViewedTrends = async (req, res, next) => {
   const topViewed = 'topViewedNow'; // Enforce internally
-  const page = 1; // page
-  const limit = 12; // fixed limit per page
-  const trendLimit = 10; //fixed limit of trends for this controller
+  const limit = 8; // fixed limit per page
+  const trendLimit = 24; //fixed limit of trends for this controller
+  const cursor = req.query.cursor || null;
 
-  const queryObject = { isApproved: true };
+  const queryObject = { isApproved: true }; //only approved trends
 
-  const sortKey = { views: -1 };
-
-  const cursor = req.query.cursor;
+  const sortKey = { views: -1 }; //highest views first
 
   try {
-    const { totalTrends, pagesNumber, trends, nextCursor, hasNextPage } =
-      await paginateAndSortTrends(
+    const { totalTrends, trends, nextCursor, hasNextPage } =
+      await paginateAndSortCursorViews(
         queryObject,
         sortKey,
-        page,
         limit,
-        trendLimit,
-        cursor
+        cursor,
+        trendLimit
       );
 
     const sanitizedTrends = trends.map((trend) => {
@@ -669,8 +729,6 @@ export const getTopViewedTrends = async (req, res, next) => {
 
     return res.status(StatusCodes.OK).json({
       totalTrends,
-      pagesNumber,
-      currentPage: page,
       trends: sanitizedTrends,
       nextCursor,
       hasNextPage,
@@ -681,4 +739,4 @@ export const getTopViewedTrends = async (req, res, next) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: error.message });
   }
-};
+}; //end getTopViewedTrends
