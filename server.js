@@ -1,24 +1,25 @@
-import 'express-async-errors';
-import helmet from 'helmet';
 import * as dotenv from 'dotenv';
-import express from 'express';
-import morgan from 'morgan';
-import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-// import { cloudinary, cloudinary2 } from './config/cloudinary.js';
-import cors from 'cors';
-import cloudinary from 'cloudinary';
-import mongoSanitize from 'express-mongo-sanitize';
+dotenv.config(); //dotenv configuration
+
 import fs from 'fs';
-//sitemap.xml + robots.txt
-import sitemapRoute from './routes/sitemap.js';
+import cors from 'cors';
+import csurf from 'csurf';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import express from 'express';
+import 'express-async-errors';
+import mongoose from 'mongoose';
+import cloudinary from 'cloudinary';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import robotsRoute from './routes/robots.js';
+import sitemapRoute from './routes/sitemap.js';
+import mongoSanitize from 'express-mongo-sanitize';
 //routers
-import trendRouter from './routes/trendRouter.js';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
 import blogRouter from './routes/blogRouter.js';
+import trendRouter from './routes/trendRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
@@ -42,9 +43,6 @@ if (result.error) {
 } else {
   console.log(`Loaded environment variables from ${envPath}`);
 }
-
-// fallback to default .env
-dotenv.config();
 
 // define Variables
 const PROD_URL = process.env.PROD_URL;
@@ -133,6 +131,27 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'))); 
 app.use(express.json()); //setting up middleware json
 app.use(cookieParser()); //cookie parser
 app.use(express.urlencoded({ extended: true })); //parses URL-encoded payloads (not yet used)
+
+const csrfProtection = csurf({
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  },
+}); // initializing csurf middleware instance (we’re using cookie-based tokens)
+app.use((req, res, next) => {
+  const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
+  if (safeMethods.includes(req.method)) {
+    return next();
+  }
+  return csrfProtection(req, res, next);
+}); // for all state-changing requests, enforce CSRF protection.
+app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
+app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+}); // exposing a route to fetch the CSRF token.
 
 //
 app.use('/', sitemapRoute);
