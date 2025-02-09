@@ -1,5 +1,7 @@
 #### Complete App
 
+'According to Kerckhoffs's principle, security should rely on the strength of your cryptographic algorithms and key management—not on keeping your business logic secret.'
+
 [TrendFlow](https://google.com)
 
 #### Create React APP

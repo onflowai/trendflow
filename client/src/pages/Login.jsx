@@ -5,6 +5,7 @@ import {
   useNavigation,
   useActionData,
   useNavigate,
+  Link,
 } from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
@@ -21,6 +22,16 @@ import { toast } from 'react-toastify';
  * Login page uses react Form with method='post' to collect data in formData and using custom axios API posted to backend
  * @returns
  */
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
+
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -30,7 +41,14 @@ export const action = async ({ request }) => {
     return errors;
   }
   try {
-    const response = await customFetch.post('/auth/login', data);
+    const csrfToken = await getCsrfToken();
+
+    // Then, include the token in the headers of your POST request.
+    const response = await customFetch.post('/auth/login', data, {
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+    });
     toast.success(<CustomSuccessToast message={'Login Successful'} />);
     // No need to store the token manually since it's handled via HTTP Only cookies
     return redirect('/dashboard');
@@ -44,7 +62,16 @@ const Login = () => {
   const navigate = useNavigate();
   const guestUser = async () => {
     try {
-      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      const csrfToken = await getCsrfToken();
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      ); // calling guest login endpoint
       toast.success(
         <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
       );
@@ -94,6 +121,12 @@ const Login = () => {
         >
           Create Account Later
         </button>
+        <p>
+          Don't have an Account?
+          <Link to="/register" className="member-btn">
+            Create
+          </Link>
+        </p>
       </Form>
     </Container>
   );
