@@ -44,7 +44,7 @@ const Register = () => {
   const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
   //if the navigation state is 'submitting', isSubmitting is true; otherwise, it's false.
   const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
-  const [isModalOpen, setModalOpen] = useState(true); //modal visibility
+  const [isModalOpen, setModalOpen] = useState(false); //modal visibility
   const [userEmail, setUserEmail] = useState(''); //user’s email
   return (
     <Container>
