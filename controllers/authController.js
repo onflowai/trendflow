@@ -1,9 +1,11 @@
-import { StatusCodes } from 'http-status-codes';
 import UserModel from '../models/userModel.js';
+import { StatusCodes } from 'http-status-codes';
 import visitModel from '../models/visitModel.js';
-import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
-import { UnauthenticatedError } from '../errors/customErrors.js';
 import { createJWT } from '../utils/tokenUtils.js';
+import { generateVerificationData } from '../utils/authUtils.js';
+import { UnauthenticatedError } from '../errors/customErrors.js';
+import { sendVerificationEmail } from '../services/emailService.js';
+import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
 /**
  * Frontend receives the token, it then sends back the token on the server the token is decoded and looks at the user and the role
  * JWT also automatically create expiration data. All this is done with HTTP Only Cookie which is
@@ -11,20 +13,52 @@ import { createJWT } from '../utils/tokenUtils.js';
 
 /**
  * REGISTER
- * used when user in Landing registers
+ *    creates the user, generates verification data, and calls the email service to send the verification email.
+ * - hashes the password
+ * - assigns the role first two accounts become admin (tempt)
+ * - generates verification data code, token, expiration
+ * - creates the user and sends a verification email
  * @param {*} req
  * @param {*} res
+ * @param {*} next
  * @returns
  */
-export const register = async (req, res) => {
-  const numberOfAccounts = await UserModel.countDocuments();
-  const isFirstOrSecondAccount = numberOfAccounts < 2; // Check if there are less than two accounts
-  req.body.role = isFirstOrSecondAccount ? 'admin' : 'user'; // Assign 'admin' role if it's the first or second account
-  const hashedPassword = await hashPassword(req.body.password); //replacing password with hashed password
-  req.body.password = hashedPassword;
-  const user = await UserModel.create(req.body);
-  res.status(StatusCodes.CREATED).json({ msg: 'user created' });
+export const register = async (req, res, next) => {
+  try {
+    // determining role: first two accounts become admin, all others are user
+    const numberOfAccounts = await UserModel.countDocuments();
+    const isFirstOrSecondAccount = numberOfAccounts < 2;
+    req.body.role = isFirstOrSecondAccount ? 'admin' : 'user';
+
+    const hashedPassword = await hashPassword(req.body.password); //hashing the user's password.
+    req.body.password = hashedPassword;
+
+    const { verificationCode, verificationToken, verificationExpires } =
+      generateVerificationData(); // generating verification data
+    req.body.verificationCode = verificationCode;
+    req.body.verificationToken = verificationToken;
+    req.body.verificationExpires = verificationExpires;
+    req.body.verified = false; // initially not verified
+
+    req.body.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); //one day (shelf life for unverified user)
+
+    const user = await UserModel.create(req.body); // create the user in the database
+
+    await sendVerificationEmail({
+      email: user.email,
+      verificationCode, // verificationCode in the email body
+      verificationToken, // used to generate the verification link
+      // Add more data if needed
+    }); // sending the verification email
+
+    res.status(StatusCodes.CREATED).json({
+      msg: 'User created. Please check your email to verify your account.',
+    });
+  } catch (error) {
+    next(error);
+  }
 }; //end register
+
 /**
  * LOGIN
  * Login and JWT verification of existing user
@@ -54,9 +88,10 @@ export const login = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ msg: 'user logged in' }); //just a message this is not where the token is sent
 }; //end login
+
 /**
  * LOGOUT
- * logout
+ * logout ()
  * @param {*} req
  * @param {*} res
  * @returns
@@ -68,6 +103,7 @@ export const logout = (req, res) => {
   });
   res.status(StatusCodes.OK).json({ msg: 'user logged out' });
 }; //end logout
+
 /**
  * GUEST LOGIN
  * used in Landing 'Create Account Later' stored in user model deleted after set time
@@ -127,6 +163,7 @@ export const guestLogin = async (req, res) => {
     });
   }
 }; //end guestLogin
+
 /**
  * GUEST LOGIN
  * used in Landing 'Create Account Later' stored in user model deleted after set time
@@ -154,6 +191,7 @@ export const guestCreateSession = async (req, res) => {
   await guestUser.save(); // saving the guest user to the database
   return guestUser;
 }; //end guestCreateSession
+
 /**
  * TODO: UPGRADE ACCOUNT
  * upgrade guestUser or a user
@@ -210,3 +248,144 @@ export const upgradeAccount = async (req, res) => {
     });
   }
 }; //end upgradeAccount
+
+/**
+ * validates the token from the query updates user’s verified status
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const { token } = req.query; ///verify-email?token=...
+    if (!token) {
+      return next(new BadRequestError('Verification token is required.'));
+    }
+
+    const user = await UserModel.findOne({
+      verificationToken: token,
+      verificationExpires: { $gt: new Date() }, // Only consider non-expired tokens
+    }); // finding the user with the provided token
+
+    if (!user) {
+      return next(
+        new BadRequestError('Invalid or expired verification token.')
+      );
+    }
+
+    user.verified = true; // marking the user as verified
+    user.verificationToken = undefined;
+    user.verificationCode = undefined;
+    user.verificationExpires = undefined;
+
+    user.expiresAt = null; //clearing expiresAt so the TTL index won't delete verified user
+
+    await user.save();
+
+    res.status(200).json({ message: 'Email successfully verified.' });
+  } catch (error) {
+    next(new BadRequestError(error.message));
+  }
+}; //end verifyEmail
+
+/**
+ * VERIFY CODE verifies a user based on a code (manual verification)
+ *  - email: user's email address
+ *  - code: 6-digit verification code the user received
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+export const verifyCode = async (req, res, next) => {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return next(
+        new BadRequestError('Email and verification code are required.')
+      );
+    }
+
+    const user = await UserModel.findOne({
+      email,
+      verificationCode: code,
+      verificationExpires: { $gt: new Date() },
+    }); // finding the user with the matching email and code ensuring the code has not expired
+
+    if (!user) {
+      return next(new BadRequestError('Invalid or expired verification code.'));
+    }
+
+    user.verified = true; // marking the user as verified
+    user.verificationToken = undefined; //clearing the verification fields
+    user.verificationCode = undefined; //clearing the verification fields
+    user.verificationExpires = undefined; //clearing the verification fields
+
+    user.expiresAt = null; //clearing expiresAt so the TTL index won't delete verified user
+
+    await user.save();
+
+    res.status(200).json({ message: 'Email successfully verified.' });
+  } catch (error) {
+    next(new BadRequestError(error.message));
+  }
+}; //end verifyCode
+
+/**
+ * letting user resend email this endpoint regenerates or reuses the verification data
+ * updates the user record if needed, and calls the email service again
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const resendEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      throw new BadRequestError('Email is required');
+    }
+
+    const user = await UserModel.findOne({ email }); // finding user by email
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    if (user.verified) {
+      throw new BadRequestError('User is already verified');
+    }
+
+    const FIFTEEN_MINUTES = 15 * 60 * 1000;
+    const canResend =
+      !user.lastVerificationEmailSentAt ||
+      Date.now() - user.lastVerificationEmailSentAt.getTime() > FIFTEEN_MINUTES;
+
+    if (!canResend) {
+      throw new TooManyRequestsError(
+        'Too many requests. Please wait before sending another verification email.'
+      );
+    } // checking rate limit
+
+    const { verificationToken, verificationCode, verificationExpires } =
+      generateVerificationData(); //regenerate token/code or re-use existing one
+    user.verificationToken = verificationToken;
+    user.verificationCode = verificationCode;
+    user.verificationExpires = verificationExpires;
+    await user.save();
+
+    user.lastVerificationEmailSentAt = new Date();
+    await user.save(); //updating lastVerificationEmailSentAt
+
+    await sendVerificationEmail({
+      email: user.email,
+      verificationToken,
+      verificationCode,
+    }); // sending new verification email
+
+    res.status(StatusCodes.OK).json({
+      message: 'Verification email resent. Check your inbox or spam folder.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

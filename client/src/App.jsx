@@ -17,6 +17,7 @@ import {
   AddBlog,
   BlogPage,
   Settings,
+  LandingEmailVerify,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
 import PublicLayout from './layouts/PublicLayout'; // layout for public routes
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
         element: <Login />,
         action: loginAction,
       },
+      { path: 'verify-email', element: <LandingEmailVerify /> },
     ],
   },
   {

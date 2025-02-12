@@ -54,6 +54,11 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: null, //only set for guest users
     },
+    verified: { type: Boolean, default: false },
+    verificationCode: { type: String },
+    verificationToken: { type: String },
+    verificationExpires: { type: Date },
+    lastVerificationEmailSentAt: { type: Date },
   },
   {
     timestamps: true,

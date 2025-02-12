@@ -16,3 +16,4 @@ export { default as Blog } from './Blog';
 export { default as AddBlog } from './AddBlog';
 export { default as BlogPage } from './BlogPage';
 export { default as Settings } from './Settings';
+export { default as LandingEmailVerify } from './LandingEmailVerify';

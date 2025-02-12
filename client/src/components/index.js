@@ -84,3 +84,5 @@ export { default as StructuredData } from './StructuredData';
 export { default as EditTrendComponent } from './EditTrendComponent';
 export { default as ChartEditTrendComponent } from './ChartEditTrendComponent';
 export { default as ScrollToTop } from './ScrollToTop';
+export { default as VerifyCode } from './VerifyCode';
+export { default as LandingModal } from './LandingModal';

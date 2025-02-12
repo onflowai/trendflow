@@ -83,38 +83,3 @@ export const authorizedAdmin = (req, res, next) => {
   }
   next();
 };
-
-// export const authenticateUser = (req, res, next) => {
-//   // console.log('token: ', req.cookies);
-//   // next();
-//   const { token } = req.cookies; //accessing the cookies called 'token' generated in authController
-//   console.log('Token:', token);
-//   if (!token) throw new UnauthenticatedError('authentication invalid');
-//   try {
-//     // const user = verifyJWT(token);
-//     // console.log(user);
-//     const { userID, role } = verifyJWT(token); //destructuring user from the token data which has userID and role
-//     const testUser = userID === '65f1116e6acee7cf85c0cc87'; //manually passing the testUser id from mongo
-//     req.user = { userID, role, testUser }; //creating new object 'user' with userID and role to pass to a controller
-//     next(); //next passes to next middleware
-//   } catch (error) {
-//     throw new UnauthenticatedError('authentication invalid');
-//   }
-// };
-// //
-// export const authorizedRole = (...roles) => {
-//   return (req, res, next) => {
-//     if (!roles.includes(req.user.role)) {
-//       throw new UnauthorizedError('Unauthorized to access this page');
-//     }
-//     next();
-//   };
-// };
-// //this only throws bad request if testUser is trying to access the route with this middleware
-// export const testUserUnauthorized = (req, res, next) => {
-//   if (req.user.testUser)
-//     throw new BadRequestError(
-//       'trendFlow test user, create account for full features.'
-//     );
-//   next();
-// };
