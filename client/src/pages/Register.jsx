@@ -1,7 +1,20 @@
-import React from 'react';
-import { Form, redirect, useNavigation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import {
+  Form,
+  redirect,
+  useNavigation,
+  Link,
+  useActionData,
+} from 'react-router-dom';
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
-import { Logo, SEO, FormComponent, CustomErrorToast } from '../components';
+import {
+  SEO,
+  Logo,
+  VerifyCode,
+  LandingModal,
+  FormComponent,
+  CustomErrorToast,
+} from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 /**
@@ -14,17 +27,25 @@ export const action = async ({ request }) => {
   const data = Object.fromEntries(formData); //turn array of the arrays into the object
   try {
     await customFetch.post('/auth/register', data); //POST call with data payload
-    toast.success(<CustomErrorToast message={'Registration Successful'} />);
-    return redirect('/login'); //function has to return something in this case a redirect
+    return { success: true, email: data.email, msg: 'Registration Successful' };
+    // toast.success(<CustomErrorToast message={'Registration Successful'} />);
+    // return redirect('/login'); //function has to return something in this case a redirect
   } catch (error) {
-    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    toast.error(
+      <CustomErrorToast
+        message={error?.response?.data?.msg || 'Registration failed.'}
+      />
+    );
     return error;
   }
 };
 const Register = () => {
+  const actionData = useActionData(); // access the response from our `action`
   const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
   //if the navigation state is 'submitting', isSubmitting is true; otherwise, it's false.
   const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
+  const [isModalOpen, setModalOpen] = useState(true); //modal visibility
+  const [userEmail, setUserEmail] = useState(''); //user’s email
   return (
     <Container>
       <SEO
@@ -32,7 +53,7 @@ const Register = () => {
         description="TrendFlow helps you track the latest trends in tech."
         keywords="AI, Trends, Analytics, TrendFlow"
         url="https://trendflowai.com/register"
-        image="https://yourdomain.com/images/og-image.jpg"
+        image="https://trendflowai.com/public/og-image.jpg"
       />
       <Form method="post" className="form">
         <Logo />
@@ -53,7 +74,7 @@ const Register = () => {
         />
         <FormComponent type="password" name="password" />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit'}
+          {isSubmitting ? 'Creating...' : 'Register'}
         </button>
         <p>
           Already have an Account?
@@ -62,6 +83,9 @@ const Register = () => {
           </Link>
         </p>
       </Form>
+      <LandingModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <VerifyCode initialEmail={userEmail} />
+      </LandingModal>
     </Container>
   );
 };

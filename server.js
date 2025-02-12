@@ -21,6 +21,8 @@ import userRouter from './routes/userRouter.js';
 import blogRouter from './routes/blogRouter.js';
 import trendRouter from './routes/trendRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
+
+import devRouter from './routes/devRouter.js';
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 //schedulers (using redis and node-cron to limit number of calls for stats)
@@ -156,6 +158,9 @@ app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
 //
 app.use('/', sitemapRoute);
 app.use('/', robotsRoute);
+
+//devRoutes
+// app.use('/', devRouter);
 
 // API Routes
 app.use('/api/v1/trends', trendRouter); //base url
