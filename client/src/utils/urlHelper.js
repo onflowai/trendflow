@@ -10,7 +10,7 @@ export const getFullIconUrl = (iconUrl) => {
   if (import.meta.env.DEV) {
     return `${iconUrl}`; // relative path in development
   } else {
-    return `${API_BASE_URL}${iconUrl}`; // relative path for production
+    return `${VITE_DEV_BASE_URL}${iconUrl}`; // relative path for production
   }
 };
 //FRONTEND URL
