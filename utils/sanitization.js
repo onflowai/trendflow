@@ -12,7 +12,7 @@ const DOMPurify = createDOMPurify(window);
  */
 export const sanitizeHTML = (html) => {
   return DOMPurify.sanitize(html);
-};
+}; //end sanitizeHTML
 
 /**
  * Validates and sanitizes a string input.
@@ -28,4 +28,33 @@ export const validateAndSanitize = (input) => {
     return sanitizeHTML(input);
   }
   return null;
-};
+}; //end validateAndSanitize
+
+/**
+ * Validates a token ensuring it is a string containing only alphanumeric characters and hyphens.
+ * Throws a BadRequestError if invalid.
+ * @param {any} token The token to validate.
+ * @returns {string} The validated token.
+ * @throws {BadRequestError} If the token format is invalid.
+ */
+export const validateToken = (token) => {
+  const isValidToken =
+    typeof token === 'string' && /^[a-zA-Z0-9-]+$/.test(token);
+  if (!isValidToken) {
+    throw new BadRequestError('Invalid token format.');
+  }
+  return token;
+}; //end validateToken
+
+/**
+ * validates that the provided email is in a proper format
+ * @param {any} email email to validate
+ * @returns {string} validated email
+ * @throws {BadRequestError} if the email format is invalid
+ */
+export const validateEmail = (email) => {
+  if (!validator.isEmail(email)) {
+    throw new BadRequestError('Invalid email format.');
+  }
+  return email;
+}; //end validateEmail

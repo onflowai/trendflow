@@ -21,8 +21,8 @@ import userRouter from './routes/userRouter.js';
 import blogRouter from './routes/blogRouter.js';
 import trendRouter from './routes/trendRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
-
-import devRouter from './routes/devRouter.js';
+//dev routes
+//import devRouter from './routes/devRouter.js';//
 //middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 //schedulers (using redis and node-cron to limit number of calls for stats)

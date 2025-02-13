@@ -18,6 +18,7 @@ import {
   FeaturedTrendsMobile,
   FeaturedTrendsDesktop,
 } from '../components';
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 /**
  *
  * @returns
@@ -132,9 +133,8 @@ const Landing = () => {
       <SEO
         title="TrendFlow - Find Tech Trends"
         description="TrendFlow helps you track the latest trends in tech."
-        keywords="AI, Trends, Analytics, TrendFlow"
-        url="https://trendflowai.com/"
-        image="https://yourdomain.com/images/og-image.jpg"
+        url={FRONTEND_BASE_URL}
+        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
       />
       <StructuredData />
       <div className="container">

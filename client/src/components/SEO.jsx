@@ -3,17 +3,16 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 /**
  * SEO used in pages
  * using react-helmet to inject various meta tags into the <head> section of your HTML
- * these meta tags include the page title, description, keywords, canonical URL, Open Graph data for social media sharing
+ * these meta tags include the page title, description, canonical URL, Open Graph data for social media sharing
  * NOTE: sitemap.xml and robots.txt are generated automatically in sitemapController and robotsController
  * @param {*} param0
  * @returns
  */
-const SEO = ({ title, description, keywords, url, image }) => {
+const SEO = ({ title, description, url, image }) => {
   return (
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
       <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}

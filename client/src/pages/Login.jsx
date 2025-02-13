@@ -17,6 +17,7 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
 /**
  * Login page uses react Form with method='post' to collect data in formData and using custom axios API posted to backend
@@ -97,9 +98,8 @@ const Login = () => {
       <SEO
         title="TrendFlow - Find Tech Trends"
         description="TrendFlow helps you track the latest trends in tech."
-        keywords="AI, Trends, Analytics, TrendFlow"
-        url="https://trendflowai.com/login"
-        image="https://yourdomain.com/images/og-image.jpg"
+        url={`${FRONTEND_BASE_URL}/login`}
+        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
       />
       <Form method="post" className="form">
         <Logo />

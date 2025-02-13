@@ -5,6 +5,7 @@ import { createJWT } from '../utils/tokenUtils.js';
 import { generateVerificationData } from '../utils/authUtils.js';
 import { UnauthenticatedError } from '../errors/customErrors.js';
 import { sendVerificationEmail } from '../services/emailService.js';
+import { validateToken, validateEmail } from '../utils/sanitization.js';
 import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
 /**
  * Frontend receives the token, it then sends back the token on the server the token is decoded and looks at the user and the role
@@ -13,7 +14,7 @@ import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
 
 /**
  * REGISTER
- *    creates the user, generates verification data, and calls the email service to send the verification email.
+ *   creates the user, generates verification data, and calls the email service to send the verification email
  * - hashes the password
  * - assigns the role first two accounts become admin (tempt)
  * - generates verification data code, token, expiration
@@ -48,7 +49,6 @@ export const register = async (req, res, next) => {
       email: user.email,
       verificationCode, // verificationCode in the email body
       verificationToken, // used to generate the verification link
-      // Add more data if needed
     }); // sending the verification email
 
     res.status(StatusCodes.CREATED).json({
@@ -115,23 +115,18 @@ export const guestLogin = async (req, res) => {
   try {
     let guestUser;
 
-    // Check if the guestUserID cookie exists
-    const { guestUserID } = req.cookies;
+    const { guestUserID } = req.cookies; // check if the guestUserID cookie exists
 
     if (guestUserID) {
-      // Attempt to find the existing guest user
-      guestUser = await UserModel.findById(guestUserID);
+      guestUser = await UserModel.findById(guestUserID); // attempt to find the existing guest user
 
-      // Check if the guestUser exists and hasn't expired
       if (guestUser && new Date() < guestUser.expiresAt) {
         console.log('Reusing existing guestUser.');
       } else {
-        // If guestUser doesn't exist or has expired, create a new one
-        guestUser = await guestCreateSession();
-      }
+        guestUser = await guestCreateSession(); // if guestUser doesn't exist or has expired, create a new one
+      } // check if the guestUser exists and hasn't expired
     } else {
-      // If no guestUserID cookie, create a new guestUser
-      guestUser = await guestCreateSession();
+      guestUser = await guestCreateSession(); // if no guestUserID cookie, create a new guestUser
     }
 
     const expiresIn = process.env.JWT_GUEST_EXPIRES_IN;
@@ -140,7 +135,7 @@ export const guestLogin = async (req, res) => {
       expiresIn
     ); // JWT token for the guest user
 
-    const oneDay = 86400000; // One day in milliseconds
+    const oneDay = 86400000; // one day in milliseconds
     res.cookie('token', token, {
       httpOnly: true,
       expires: new Date(Date.now() + oneDay),
@@ -258,13 +253,13 @@ export const upgradeAccount = async (req, res) => {
  */
 export const verifyEmail = async (req, res, next) => {
   try {
-    const { token } = req.query; ///verify-email?token=...
+    const token = validateToken(req.query.token); ///verify-email?token=...
     if (!token) {
       return next(new BadRequestError('Verification token is required.'));
     }
 
     const user = await UserModel.findOne({
-      verificationToken: token,
+      verificationToken: { $eq: token },
       verificationExpires: { $gt: new Date() }, // Only consider non-expired tokens
     }); // finding the user with the provided token
 
@@ -300,7 +295,8 @@ export const verifyEmail = async (req, res, next) => {
  */
 export const verifyCode = async (req, res, next) => {
   try {
-    const { email, code } = req.body;
+    const email = validateEmail(req.body.email);
+    const code = req.body.code;
     if (!email || !code) {
       return next(
         new BadRequestError('Email and verification code are required.')
@@ -308,8 +304,8 @@ export const verifyCode = async (req, res, next) => {
     }
 
     const user = await UserModel.findOne({
-      email,
-      verificationCode: code,
+      email: { $eq: email },
+      verificationCode: { $eq: code },
       verificationExpires: { $gt: new Date() },
     }); // finding the user with the matching email and code ensuring the code has not expired
 
@@ -341,7 +337,7 @@ export const verifyCode = async (req, res, next) => {
  */
 export const resendEmail = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const email = validateEmail(req.body.email);
     if (!email) {
       throw new BadRequestError('Email is required');
     }

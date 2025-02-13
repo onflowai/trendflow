@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 /**
  * StructuredData
  * injects structured data into your webpage using JSON-LD
@@ -12,10 +13,10 @@ const StructuredData = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'TrendFlow',
-    url: 'https://yourdomain.com',
+    url: FRONTEND_BASE_URL,
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://yourdomain.com/search?q={search_term_string}',
+      target: `${FRONTEND_BASE_URL}/search?q={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   };

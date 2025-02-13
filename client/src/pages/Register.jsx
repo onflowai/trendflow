@@ -17,6 +17,7 @@ import {
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 /**
  * Register page will have a registration form for the user should they choose to have an account
  * Using From component with 'action' post
@@ -51,9 +52,8 @@ const Register = () => {
       <SEO
         title="TrendFlow - Find Tech Trends"
         description="TrendFlow helps you track the latest trends in tech."
-        keywords="AI, Trends, Analytics, TrendFlow"
-        url="https://trendflowai.com/register"
-        image="https://trendflowai.com/public/og-image.jpg"
+        url={`${FRONTEND_BASE_URL}/register`}
+        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
       />
       <Form method="post" className="form">
         <Logo />

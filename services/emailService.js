@@ -32,7 +32,7 @@ export const sendVerificationEmail = async (user) => {
   });
 
   const mailOptions = {
-    from: '"TrendFlow" <no-reply@yourdomain.com>',
+    from: 'no-reply@trendflowai.com',
     to: user.email,
     subject,
     html: emailHtml,
