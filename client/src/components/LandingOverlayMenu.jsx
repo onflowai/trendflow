@@ -10,12 +10,31 @@ import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 import { CustomErrorToast, CustomSuccessToast, Logo } from '../components';
 
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
+
 const LandingOverlayMenu = ({ toggleOverlay }) => {
   const navigate = useNavigate();
 
   const guestUser = async () => {
     try {
-      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      );
       toast.success(
         <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
       );
@@ -23,7 +42,7 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
-  }; //guestUser signs in using guestLogin controller
+  }; //guestUser signs in using guestLogin controller //guestUser signs in using guestLogin controller
 
   const handleLoginClick = () => {
     toggleOverlay(); // close the overlay

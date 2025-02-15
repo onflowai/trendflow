@@ -40,7 +40,7 @@ const Container = styled.section`
 
   @media (min-width: 1740px) {
     .featured-trends-desktop {
-      grid-template-columns: repeat(4, 1fr); // maintaining 4 cards per row on extra-large screens
+      grid-template-columns: repeat(4, minmax(0, 1fr)); // maintaining 4 cards per row on extra-large screens
       gap: 1rem;
     }
   }

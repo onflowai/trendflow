@@ -20,10 +20,19 @@ import {
 } from '../components';
 const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 /**
- *
+ * Landing displays the featured trends
  * @returns
  */
 
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
 /**
  * Loader function to fetch top viewed trends for the Landing page
  * @returns {Object} data for top viewed trends
@@ -118,7 +127,16 @@ const Landing = () => {
 
   const guestUser = async () => {
     try {
-      await customFetch.post('/auth/guest-login'); // calling guest login endpoint
+      const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      );
       toast.success(
         <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
       );

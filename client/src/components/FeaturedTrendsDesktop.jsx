@@ -1,5 +1,5 @@
 import React from 'react';
-import TrendSmall from './TrendSmall';
+import { TrendMini } from '../components';
 import Container from '../assets/wrappers/FeaturedTrendsDesktop';
 /**
  * Featured Trends mirrors Trends Related Trends Desktop takes on data from Landing
@@ -31,7 +31,7 @@ const FeaturedTrendsDesktop = ({ featuredTrends }) => {
     <Container>
       <div className="featured-trends-desktop">
         {featuredTrends.map(({ trendDesc, ...trend }) => (
-          <TrendSmall
+          <TrendMini
             key={trend._id}
             {...trend}
             relatedStyle={relatedStyle}

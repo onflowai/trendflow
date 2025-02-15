@@ -1,21 +1,22 @@
 // HeroAnimated.jsx
 import React from 'react';
+import { useTheme } from '../context/ThemeContext';
 import styled, { keyframes } from 'styled-components';
-import CleanedSVG from '../assets/images/logo-05-temp-trans.svg?react'; // Ensure correct suffix
+import CleanedSVG from '../assets/images/logo-hero-03.svg?react'; // Ensure correct suffix
+import CleanedSVGDark from '../assets/images/logo-hero-03-dark.svg?react';
 
 const HeroAnimated = () => {
+  const { isDarkTheme } = useTheme();
   return (
     <Container>
       {/* Underlay Gradient */}
       <UnderlayGradient />
-
       {/* SVG Container */}
       <div className="svg-container">
         <StyledSVGWrapper>
-          <StyledSVG />
+          {isDarkTheme ? <CleanedSVGDark /> : <CleanedSVG />}
         </StyledSVGWrapper>
       </div>
-
       {/* Overlay Gradient */}
       <OverlayGradient />
     </Container>

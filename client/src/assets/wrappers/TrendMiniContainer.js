@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-const Container = styled.article`
+const Container = styled.div`
+  width: 100%;
   position: relative;
   cursor: pointer;
   transition: background-color 0.2s ease; // Smooth transition for background color
@@ -98,12 +99,12 @@ const Container = styled.article`
     }
     
     h4 {
-      top: 20px;
+      top: 60px;
       z-index: 0;
     }
 
     h6 {
-      top: 10px;
+      top: 90px;
       z-index: 0;
     }
     
