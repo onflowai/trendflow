@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Form,
   redirect,
@@ -23,11 +23,27 @@ const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
  * Using From component with 'action' post
  * @returns
  */
+
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
+
 export const action = async ({ request }) => {
   const formData = await request.formData(); //react router interface for garbing the data from the form
   const data = Object.fromEntries(formData); //turn array of the arrays into the object
   try {
-    await customFetch.post('/auth/register', data); //POST call with data payload
+    const csrfToken = await getCsrfToken(); //getting token
+    await customFetch.post('/auth/register', data, {
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+    }); //POST call with data payload
     return { success: true, email: data.email, msg: 'Registration Successful' };
     // toast.success(<CustomErrorToast message={'Registration Successful'} />);
     // return redirect('/login'); //function has to return something in this case a redirect
@@ -40,6 +56,7 @@ export const action = async ({ request }) => {
     return error;
   }
 };
+
 const Register = () => {
   const actionData = useActionData(); // access the response from our `action`
   const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
@@ -47,6 +64,15 @@ const Register = () => {
   const isSubmitting = navigation.state === 'submitting'; //variable isSubmitting and set its value based on the navigation state.
   const [isModalOpen, setModalOpen] = useState(false); //modal visibility
   const [userEmail, setUserEmail] = useState(''); //user’s email
+
+  useEffect(() => {
+    // if actionData indicates success, open modal and set email
+    if (actionData?.success) {
+      setModalOpen(true);
+      setUserEmail(actionData.email);
+    }
+  }, [actionData]);
+
   return (
     <Container>
       <SEO
