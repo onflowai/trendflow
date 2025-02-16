@@ -25,19 +25,22 @@ export const sendEmail = async (mailOptions) => {
  * Sends a verification email to the user
  * @param {Object} user - The user object should include email and verificationCode
  */
-export const sendVerificationEmail = async (user) => {
-  const { subject, html } = verificationEmailBuild({
+export const sendVerificationEmail = async ({
+  email,
+  verificationToken,
+  verificationCode,
+}) => {
+  const { subject, html } = await verificationEmailBuild({
     verificationToken,
     verificationCode,
   });
 
   const mailOptions = {
     from: 'no-reply@trendflowai.com',
-    to: user.email,
+    to: email,
     subject,
-    html: emailHtml,
+    html,
   };
-  console.log(html);
 
   return sendEmail(mailOptions);
 };

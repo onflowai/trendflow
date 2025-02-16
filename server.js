@@ -150,9 +150,6 @@ app.use((req, res, next) => {
 }); // for all state-changing requests, enforce CSRF protection.
 app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
-});
-app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
 }); // exposing a route to fetch the CSRF token.
 
 //
