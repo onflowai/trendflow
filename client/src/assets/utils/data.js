@@ -1,5 +1,5 @@
 export const majorUpdates =
-  'Secure guest sessions with implemented CSRF protection. Featured top trends in Landing.';
+  'Secure guest sessions with implemented CSRF protection. Featured top trends in landing.';
 
 export const version = '0.0.1';
 
@@ -71,8 +71,8 @@ export const dashboardAllLinks = [
 //social links for the Navbar
 export const socialLinks = [
   { id: 1, href: 'https://www.twitter.com', icon: 'fab fa-facebook' },
-  { id: 2, href: 'https://www.twitter.com', icon: 'fab fa-twitter' },
-  { id: 3, href: 'https://www.twitter.com', icon: 'fab fa-squarespace' },
+  { id: 2, href: 'https://www.twitter.com', icon: 'fab fa-discord' },
+  { id: 3, href: 'https://github.com/onflowai', icon: 'fab fa-github' },
 ];
 
 export const tagLarge = 'Find New Dev Tech Trends';
@@ -91,7 +91,7 @@ export const services = [
     id: 2,
     icon: '🪐',
     title: 'Endless Tech Trends',
-    text: 'Use platform and community to spot the latest tech, libraries, frameworks, and innovations..',
+    text: 'Use platform and community to spot the latest tech, libraries, frameworks, and innovations.',
   },
   {
     id: 3,

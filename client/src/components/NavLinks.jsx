@@ -3,7 +3,7 @@ import { useDashboardContext } from '../pages/DashboardLayout';
 import { dashboardAllLinks } from '../assets/utils/data';
 import { NavLink } from 'react-router-dom';
 /**
- * This component is used in both SidebarSmall and Sidebar to show links
+ * This component is used in both SidebarOverlay and Sidebar to show links
  * Because of the 'end' prop in <NavLink> to use toggle the active class
  * isSidebar is passed from Sidebar.jsx in NavLinks if it is true
  * @param {*} param0
