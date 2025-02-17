@@ -16,7 +16,7 @@ export { default as FeaturedTrends } from './FeaturedTrends';
 export { default as FeaturedTrendsDesktop } from './FeaturedTrendsDesktop';
 export { default as FeaturedTrendsMobile } from './FeaturedTrendsMobile';
 export { default as Sidebar } from './Sidebar';
-export { default as SidebarSmall } from './SidebarSmall';
+export { default as SidebarOverlay } from './SidebarOverlay';
 export { default as Navbar } from './Navbar';
 export { default as FormSelector } from './FormSelector';
 export { default as FormSelectorIconLocal } from './FormSelectorIconLocal';

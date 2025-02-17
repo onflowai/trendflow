@@ -94,6 +94,26 @@ const Container = styled.section`
     border-radius: var(--border-radius);
   }
 
+  @media (max-width: 768px) {
+    padding: 1rem 1rem 2rem;
+
+    .form {
+      padding: 1rem
+    }
+    .submit-container {
+      gap: 1rem; // Gap between rows or columns
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* width: 4rem;
+    height: 4rem; */
+  }
+  svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
 `;
 
 export default Container;

@@ -7,7 +7,7 @@ import {
   Footer,
   Sidebar,
   SEOProtected,
-  SidebarSmall,
+  SidebarOverlay,
   CustomErrorToast,
 } from '../components';
 import customFetch from '../utils/customFetch';
@@ -30,7 +30,7 @@ export const loader = async () => {
   }
 }; //this is where data which you want to be preloaded is passed
 
-const DashboardContext = createContext(); // setting up context for SidebarSmall and Sidebar
+const DashboardContext = createContext(); // setting up context for SidebarOverlay and Sidebar
 
 const DashboardLayout = () => {
   const { user: initialUser, stats } = useLoaderData(); //passing the user data from loader
@@ -101,7 +101,7 @@ const DashboardLayout = () => {
         <Container>
           <SEOProtected />
           <main className="dashboard">
-            <SidebarSmall />
+            <SidebarOverlay />
             <Sidebar />
             <div>
               <Navbar />
