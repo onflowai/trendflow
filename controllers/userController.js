@@ -350,3 +350,19 @@ export const deleteUserSavedFilters = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
+
+export const deleteAccount = async (req, res) => {
+  const userId = req.user.userID;
+  const user = await userModel.findByIdAndDelete(userId);
+  if (!user) {
+    return res.status(404).json({ msg: 'User not found' });
+  }
+  cloudinary.v2.uploader.destroy(user.profile_img_id); //removing user’s images from cloudinary
+  res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  }); // clearing cookies
+
+  res.status(200).json({ msg: 'User account deleted' });
+};

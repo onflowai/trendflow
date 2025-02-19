@@ -5,6 +5,7 @@ import { UploadLogo } from '../components';
 import { FiDownload, FiUpload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { parseCSV } from '../utils/csvProcessor';
+import { IoIosClose } from 'react-icons/io';
 
 const trendsLabel = import.meta.env.VITE_TRENDS_LABEL_BASE_1;
 const trendsBase = import.meta.env.VITE_TRENDS_LINK_BASE_1;
@@ -138,7 +139,7 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
           onClick={onClose}
           aria-label="Close Modal"
         >
-          &times;
+          <IoIosClose />
         </button>
         <h2>Add Trend Data:</h2>
 

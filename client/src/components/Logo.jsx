@@ -1,7 +1,7 @@
 import logo from '../assets/images/logo-02.svg';
 import styled from 'styled-components';
 
-const Logo = () => {
+const Logo = ({ size }) => {
   return (
     <Container>
       <img src={logo} alt="Tech Trend Flow Logo" className="logo" />
@@ -12,7 +12,6 @@ const Logo = () => {
 const Container = styled.section`
   .logo{
     width: 30px;
-    
   }
 `;
 

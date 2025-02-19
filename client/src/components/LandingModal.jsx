@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { IoIosClose } from 'react-icons/io';
 
 const LandingModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -13,7 +14,7 @@ const LandingModal = ({ isOpen, onClose, children }) => {
             onClick={onClose}
             aria-label="Close Modal"
           >
-            &times;
+            <IoIosClose />
           </button>
           {/* RENDERING CHILDREN */}
           {children}
