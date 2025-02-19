@@ -61,7 +61,7 @@ const Container = styled.div`
 }
 
 .status-box.not-verified {
-  background-color: var(--red-light);
+  background-color: var(--grey-50);
   color: var(--red-dark);
   border: 1px solid var(--red);
 }

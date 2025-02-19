@@ -70,8 +70,8 @@ export const dashboardAllLinks = [
 
 //social links for the Navbar
 export const socialLinks = [
-  { id: 1, href: 'https://www.twitter.com', icon: 'fab fa-facebook' },
-  { id: 2, href: 'https://www.twitter.com', icon: 'fab fa-discord' },
+  // { id: 1, href: 'https://www.twitter.com', icon: 'fab fa-facebook' },
+  { id: 2, href: 'https://discord.gg/MGvgFsWxne', icon: 'fab fa-discord' },
   { id: 3, href: 'https://github.com/onflowai', icon: 'fab fa-github' },
 ];
 

@@ -79,6 +79,7 @@ export { default as RelatedTrendsDesktop } from './RelatedTrendsDesktop';
 export { default as PaginationComponent } from './PaginationComponent';
 export { default as PaginationFeatured } from './PaginationFeatured';
 export { default as HeroAnimated } from './HeroAnimated';
+export { default as CustomIconLink } from './CustomIconLink';
 export { default as SEO } from './SEO';
 export { default as SEOProtected } from './SEOProtected';
 export { default as StructuredData } from './StructuredData';

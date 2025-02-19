@@ -66,7 +66,6 @@ export const action = async ({ request }) => {
 };
 
 const Profile = () => {
-  const isVerified = true; //TEMPORARY
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
@@ -80,12 +79,15 @@ const Profile = () => {
     email,
     githubUsername: gitUsername,
     privacy,
+    verified,
   } = user;
+  console.log('USER: ', user);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [githubUsername, setGithubUsername] = useState(gitUsername || '');
   const dropdownRef = useRef(null);
+  const isVerified = verified;
   const handleEditClick = () => {
     setIsDropdownVisible(!isDropdownVisible); // toggles dropdown visibility
   };

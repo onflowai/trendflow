@@ -16,13 +16,13 @@ import useClickOutside from '../hooks/useClickOutside';
  */
 const UserSettings = ({
   email,
-  githubUsername,
+  privacy,
   isVerified,
   onUpdateEmail,
-  onTogglePrivacy,
   onOptionClick,
+  githubUsername,
+  onTogglePrivacy,
   onUpdateGithubUsername,
-  privacy,
 }) => {
   //EMAIL UPDATE
   const handleUpdateEmail = (e) => {
@@ -85,7 +85,7 @@ const UserSettings = ({
           <div
             className={`status-box ${isVerified ? 'verified' : 'not-verified'}`}
           >
-            {isVerified ? 'Verified' : 'Not Verified'}
+            {isVerified ? 'Verified' : 'Unverified'}
           </div>
         </div>
         <div className="settings-item privacy-switch">
