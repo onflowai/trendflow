@@ -43,15 +43,13 @@ export const action = async ({ request }) => {
   }
   try {
     const csrfToken = await getCsrfToken();
-
-    // Then, include the token in the headers of your POST request.
     const response = await customFetch.post('/auth/login', data, {
       headers: {
         'X-CSRF-Token': csrfToken,
       },
-    });
+    }); //including token in the headers of your POST request
     toast.success(<CustomSuccessToast message={'Login Successful'} />);
-    // No need to store the token manually since it's handled via HTTP Only cookies
+    //no need to store the token manually since it's handled via HTTP Only cookies
     return redirect('/dashboard');
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);

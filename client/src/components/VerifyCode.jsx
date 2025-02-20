@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import { Logo } from '../components';
 
-const VerifyCode = ({ initialEmail = '' }) => {
+const VerifyCode = ({ initialEmail = '', onVerify, onResend }) => {
   const [email, setEmail] = useState(initialEmail);
   const [digits, setDigits] = useState(Array(6).fill('')); // storing each digit in an array of length 6
   const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ const VerifyCode = ({ initialEmail = '' }) => {
     }
   }; //end handlePasteFromClipboard
 
-  //submitting the entire code + email to verifyCode controller
+  // Now we call the parent's `onVerify` for the actual request
   const handleVerifySubmit = async (e) => {
     e.preventDefault();
     if (code.length < 6) {
@@ -73,35 +73,31 @@ const VerifyCode = ({ initialEmail = '' }) => {
     }
     setLoading(true);
     try {
-      const response = await customFetch.post('/auth/verify-code', {
+      await onVerify({
         email,
         code,
+        onResult: (msg) => setMessage(msg),
       });
-      setMessage(response.data.message);
-      toast.success(response.data.message);
-    } catch (error) {
-      const errMsg = error?.response?.data?.msg || 'Verification failed.';
-      setMessage(errMsg);
-      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
-  }; //end handleVerifySubmit
+  };
 
-  //resend handler if your backend has a /auth/resend-email endpoint:
+  // Similarly for resending email
   const handleResendEmail = async () => {
-    if (!email) return toast.error('Email is required');
+    if (!email) {
+      return toast.error('Email is required');
+    }
     setLoading(true);
     try {
-      const response = await customFetch.post('/auth/resend-email', { email });
-      toast.success(response.data.message || 'Verification email resent.');
-    } catch (error) {
-      const errMsg = error?.response?.data?.msg || 'Resend failed.';
-      toast.error(errMsg);
+      await onResend({
+        email,
+        onResult: (msg) => setMessage(msg),
+      });
     } finally {
       setLoading(false);
     }
-  }; //end handleResendEmail
+  };
 
   return (
     <Container>
@@ -150,7 +146,7 @@ const VerifyCode = ({ initialEmail = '' }) => {
           ))}
         </div>
 
-        <button type="submit" className=" btn" disabled={loading}>
+        <button type="submit" className="btn" disabled={loading}>
           {loading ? 'Verifying...' : 'Verify'}
         </button>
       </form>
@@ -285,6 +281,12 @@ const Container = styled.div`
     font-weight: 500;
     color: var(--grey-700);
   }
+  .btn{
+    background-color: var(--primary-200);
+  }
+  .btn:hover{
+    background-color: var(--primary-300);
+  }
 
   .resend-section {
     display: flex;
@@ -298,11 +300,11 @@ const Container = styled.div`
       padding: 0.5rem 0.75rem;
       border: none;
       border-radius: var(--input-radius-rounded);
-      background-color: var(--primary-400);
-      color: #fff;
+      color: var(--white);
       cursor: pointer;
       transition: background-color 0.3s ease;
       font-size: 0.95rem;
+      background-color: var(--grey-70);
 
       &:hover {
         background-color: var(--primary-700);

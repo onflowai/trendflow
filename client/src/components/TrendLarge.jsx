@@ -66,6 +66,7 @@ function TrendLarge({
   const handleMouseLeave = () => setIsHovered(false);
   const navigate = useNavigate(); // Use navigate for navigation
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id)); // checking if the current trend is saved
+  const isDeleted = createdBy.isDeleted; //for deleted user
   const githubUrl = createdBy.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
@@ -215,10 +216,13 @@ function TrendLarge({
             <footer className="actions">
               <div className="user-section">
                 <UserImgSmall
+                  isDeleted={isDeleted}
                   user_img={createdBy.profile_img}
                   githubUrl={githubUrl}
                 />
-                <span className="username">{createdBy.username}</span>
+                <span className={`username ${isDeleted ? 'deleted-user' : ''}`}>
+                  {createdBy.username}
+                </span>
               </div>
               <div className="admin-buttons">
                 {isAdminPage ? (

@@ -353,16 +353,56 @@ export const deleteUserSavedFilters = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
   const userId = req.user.userID;
-  const user = await userModel.findByIdAndDelete(userId);
-  if (!user) {
-    return res.status(404).json({ msg: 'User not found' });
+  const trendsCount = await trendModel.countDocuments({ createdBy: userId }); //checking how many trends this user created
+
+  if (trendsCount === 0) {
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    } // user has never submitted any trends full delete
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    }); // clearing cookie
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Account deleted successfully.' });
   }
-  cloudinary.v2.uploader.destroy(user.profile_img_id); //removing user’s images from cloudinary
+
+  const updates = {
+    isDeleted: true,
+    email: null,
+    password: null,
+    name: null,
+    lastName: null,
+    verified: false,
+    githubUsername: '',
+    lastVerificationEmailSentAt: null,
+    verificationToken: null,
+    verificationCode: null,
+    verificationExpires: null,
+    savedTrends: [],
+    savedFilters: {},
+  }; //user has at least 1 trend submitted soft delete
+
+  const updatedUser = await userModel.findByIdAndUpdate(userId, updates, {
+    new: true,
+  });
+
+  if (!updatedUser) {
+    return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+  }
+
   res.clearCookie('token', {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-  }); // clearing cookies
+  }); // clearing auth cookie
 
-  res.status(200).json({ msg: 'User account deleted' });
+  return res
+    .status(StatusCodes.OK)
+    .json({ msg: 'Account deleted successfully.' });
 };

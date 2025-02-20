@@ -175,7 +175,7 @@ const Profile = () => {
   //call to delete profile
   const handleDeleteProfile = async () => {
     try {
-      await customFetch.get('/users/delete-account');
+      await customFetch.delete('/users/delete-account');
       toast.success('Account deleted successfully');
       // HERE redirect to landing
       window.location.href = '/';

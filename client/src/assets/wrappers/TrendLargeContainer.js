@@ -13,6 +13,10 @@ transition: background-color 0.2s ease; // Smooth transition for background colo
   
 }
 
+.deleted-user {
+    opacity: 0.6; 
+    filter: grayscale(80%);
+  }
 
 .trend-large-link {
   display: block;
