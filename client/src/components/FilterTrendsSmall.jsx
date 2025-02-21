@@ -59,15 +59,15 @@ function FilterTrendsSmall({
           ? newState.selectedTech.value
           : ''
         : selectedTech
-        ? selectedTech.value
-        : '',
+          ? selectedTech.value
+          : '',
       trendCategory: newState.hasOwnProperty('selectedCategory')
         ? newState.selectedCategory
           ? newState.selectedCategory.value
           : ''
         : selectedCategory
-        ? selectedCategory.value
-        : '',
+          ? selectedCategory.value
+          : '',
     }); // if newState has topRated/topViewed use them else fallback to current state
   }; // helper calling to onFiltersApply with the latest states
 
@@ -333,13 +333,13 @@ const customStyles = {
     backgroundColor: isSelected
       ? 'var(--primary-200)'
       : isFocused
-      ? 'var(--primary-50)'
-      : null,
+        ? 'var(--primary-50)'
+        : null,
     color: isSelected
       ? 'var(--text-color)'
       : isFocused
-      ? 'var(--text-color)'
-      : 'var(--text-color)',
+        ? 'var(--text-color)'
+        : 'var(--text-color)',
     ':first-of-type': {
       borderTopLeftRadius: '10px',
       borderTopRightRadius: '10px',

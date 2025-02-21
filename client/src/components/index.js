@@ -64,6 +64,7 @@ export { default as Checkbox } from './Checkbox';
 export { default as CarouselCards } from './CarouselCards';
 export { default as BlogPostList } from './BlogPostList';
 export { default as CardLarge } from './CardLarge';
+export { default as CardSmall } from './CardSmall';
 export { default as AddInfoHubModal } from './AddInfoHubModal';
 export { default as AddTrendModal } from './AddTrendModal';
 export { default as UploadLogo } from './UploadLogo';

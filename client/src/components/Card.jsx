@@ -1,6 +1,7 @@
 import React from 'react';
-import { CardLarge } from '../components';
+import { CardLarge, CardSmall } from '../components';
 import Container from '../assets/wrappers/CardContainer'; // general layout, color and loading
+import useWindowSize from '../hooks/useWindowSize';
 
 /**
  * Card component used in CarouselCard and displays each card
@@ -16,7 +17,10 @@ function Card({
   onDelete,
   isAdmin,
 }) {
-  const largeProps = {
+  // 768px is a common breakpoint for tablets/mobile
+  const isMobile = useWindowSize();
+
+  const sharedProps = {
     _id,
     svg_img,
     title,
@@ -26,9 +30,14 @@ function Card({
     onDelete,
     isAdmin,
   };
+
   return (
     <Container>
-      <CardLarge {...largeProps} />
+      {isMobile ? (
+        <CardSmall {...sharedProps} />
+      ) : (
+        <CardLarge {...sharedProps} />
+      )}
     </Container>
   );
 }
