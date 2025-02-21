@@ -8,5 +8,10 @@ cursor: pointer; // Apply pointer cursor to the entire container
 .recharts-surface{
   cursor: pointer;
 }
+
+ -webkit-tap-highlight-color: transparent;
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 `;
 export default Container;

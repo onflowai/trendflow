@@ -35,7 +35,6 @@ function CustomizedAxisTick(props) {
   );
 }
 function AreaChartComponent({ data, forecastData = [] }) {
-  // const chartData = forecastData.length ? [...data, ...forecastData] : data;
   const allData = [...data, ...forecastData];
   return (
     <Container>
@@ -57,6 +56,18 @@ function AreaChartComponent({ data, forecastData = [] }) {
                 stopOpacity={0}
               />
             </linearGradient>
+            <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="5%"
+                stopColor="var(--color-under-the-line1)"
+                stopOpacity={1}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--color-under-the-line2)"
+                stopOpacity={0}
+              />
+            </linearGradient>
           </defs>
           <CartesianGrid
             strokeDasharray="4 2"
@@ -65,14 +76,12 @@ function AreaChartComponent({ data, forecastData = [] }) {
           />
           <XAxis
             axisLine={false}
-            // axisLine={{ stroke: '#b3b3b3' }}
             dataKey="date"
             height={60}
             tickLine={{ stroke: '#b3b3b3' }}
             tick={<CustomizedAxisTick />}
           />
           <YAxis
-            // axisLine={false}
             axisLine={{ stroke: '#b3b3b3' }}
             allowDecimals={false}
             tickLine={{ stroke: '#b3b3b3' }}
