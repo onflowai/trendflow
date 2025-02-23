@@ -59,6 +59,10 @@ const UserSchema = new mongoose.Schema(
     verificationToken: { type: String },
     verificationExpires: { type: Date },
     lastVerificationEmailSentAt: { type: Date },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -141,13 +141,13 @@ const csrfProtection = csurf({
     sameSite: 'lax',
   },
 }); // initializing csurf middleware instance (we’re using cookie-based tokens)
-app.use((req, res, next) => {
-  const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
-  if (safeMethods.includes(req.method)) {
-    return next();
-  }
-  return csrfProtection(req, res, next);
-}); // for all state-changing requests, enforce CSRF protection.
+// app.use((req, res, next) => {
+//   const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
+//   if (safeMethods.includes(req.method)) {
+//     return next();
+//   }
+//   return csrfProtection(req, res, next);
+// }); // CSRF for all routes
 app.get('/api/v1/csrf-token', csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 }); // exposing a route to fetch the CSRF token.
@@ -161,7 +161,7 @@ app.use('/', devRouter);
 
 // API Routes
 app.use('/api/v1/trends', trendRouter); //base url
-app.use('/api/v1/auth', authRouter); //authentication
+app.use('/api/v1/auth', csrfProtection, authRouter); //authentication
 app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)

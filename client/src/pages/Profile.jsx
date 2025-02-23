@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, useLoaderData, useNavigation } from 'react-router-dom';
 import {
-  CustomSuccessToast,
-  FormComponentLock,
-  CustomErrorToast,
+  Logo,
+  UserTrends,
   UserSettings,
+  SEOProtected,
+  UserImgLarge,
   StatComponent,
   FormComponent,
   ProfileHeader,
-  SEOProtected,
-  UserImgLarge,
-  UserTrends,
+  CustomErrorToast,
+  UserConfirmModal,
+  FormComponentLock,
+  CustomSuccessToast,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import { useOutletContext } from 'react-router-dom';
@@ -24,6 +26,8 @@ import {
   IoArrowUp,
   IoAlbumsOutline,
 } from 'react-icons/io5';
+import { FaUserLargeSlash } from 'react-icons/fa6';
+import { FaArrowRightLong } from 'react-icons/fa6';
 
 /**
  * Profile utilizes few components it uses From with encType='multipart/form-data' to pass data with files in this case
@@ -66,7 +70,6 @@ export const action = async ({ request }) => {
 };
 
 const Profile = () => {
-  const isVerified = true; //TEMPORARY
   const { trends, savedTrendIds } = useLoaderData(); //bookmarked trends from loader
   const [localSavedTrends, setLocalSavedTrends] = useState(trends);
   const { user, stats } = useOutletContext(); //hook is part of React Router which is set up in DashboardLayout
@@ -80,12 +83,16 @@ const Profile = () => {
     email,
     githubUsername: gitUsername,
     privacy,
+    verified,
   } = user;
+  console.log('USER: ', user);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [githubUsername, setGithubUsername] = useState(gitUsername || '');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const isVerified = verified;
   const handleEditClick = () => {
     setIsDropdownVisible(!isDropdownVisible); // toggles dropdown visibility
   };
@@ -165,6 +172,19 @@ const Profile = () => {
       toast.error('Something went wrong. Please try again.');
     }
   };
+  //call to delete profile
+  const handleDeleteProfile = async () => {
+    try {
+      await customFetch.delete('/users/delete-account');
+      toast.success('Account deleted successfully');
+      // HERE redirect to landing
+      window.location.href = '/';
+    } catch (error) {
+      toast.error('Failed to delete account');
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  };
   // action to perform Dropdown.jsx actions
   const handleOptionClick = (action) => {
     switch (action) {
@@ -176,6 +196,7 @@ const Profile = () => {
         break;
       case 'delete':
         // Perform delete profile action
+        setIsDeleteModalOpen(true);
         console.log('Delete profile action triggered');
         // Example: API call to delete profile
         break;
@@ -350,6 +371,20 @@ const Profile = () => {
           </Form>
         </div>
       </div>
+      <UserConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteProfile}
+        userImg={user.profile_img}
+        userName={`${name} ${lastName}`}
+        icons={[
+          <Logo size={36} color="red" />,
+          <FaArrowRightLong size={36} color="var(--grey-400)" />,
+          <FaUserLargeSlash size={36} color="var(--primary-500)" />,
+        ]}
+        confirmMessage="Delete Account?"
+        subMessage="Note you will not be able to recover your account."
+      />
     </Container>
   );
 };

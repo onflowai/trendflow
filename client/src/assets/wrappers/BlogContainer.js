@@ -38,23 +38,7 @@ const Container = styled.main`
     scrollbar-width: none;
   }
 
-  .card-all {
-    cursor: pointer;
-    flex: 0 0 auto;
-    width: 210px;
-    height: 280px; /* Ensure consistent height with other cards */
-    background-color: var(--white);
-    border-radius: var(--border-radius);
-    border: 1.5px solid var(--grey-50);
-    display: flex;
-    justify-content: center; /* Center the plus icon horizontally */
-    align-items: center; /* Center the plus icon vertically */
-    transition: background-color 0.3s ease;
-  }
 
-  .card-all:hover {
-    background-color: var(--grey-50); /* Change color on hover */
-  }
 
   .plus-icon {
     font-size: 2rem;
@@ -66,18 +50,14 @@ const Container = styled.main`
     .cards {
       gap: 15px;
     }
-    .card-all {
-      width: 180px; /* Adjust card width for smaller screens */
-    }
+    
   }
 
   @media (max-width: 800px) {
     .cards {
       gap: 10px;
     }
-    .card-all {
-      width: 150px; /* Adjust card width for smaller screens */
-    }
+    
   }
 
   .blog-container {

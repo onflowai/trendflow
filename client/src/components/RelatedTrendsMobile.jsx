@@ -18,7 +18,7 @@ const RelatedTrendsMobile = ({
   onRemove,
 }) => {
   //Values used to style recharts in TrendPage
-  const chartHeight = 190;
+  const chartHeight = window.innerWidth < 500 ? 140 : 190;
   const chartMarginTop = 5;
   const chartMarginBottom = -40;
   // State for managing grid view with persistence

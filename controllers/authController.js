@@ -171,8 +171,8 @@ export const guestCreateSession = async (req, res) => {
   const uniqueUsername = `guest_${randomStr}`; // example: guest_3df
   const uniqueEmail = `guest_${randomStr}@trendflow.com`; // example: guest_3df@trendflow.com
 
-  const name = 'Trend';
-  const lastName = 'Flow';
+  const name = 'Guest';
+  const lastName = 'User';
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration of guest user
   const guestUser = new UserModel({

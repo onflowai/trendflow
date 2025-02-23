@@ -350,3 +350,59 @@ export const deleteUserSavedFilters = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
   }
 };
+
+export const deleteAccount = async (req, res) => {
+  const userId = req.user.userID;
+  const trendsCount = await trendModel.countDocuments({ createdBy: userId }); //checking how many trends this user created
+
+  if (trendsCount === 0) {
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+    } // user has never submitted any trends full delete
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    }); // clearing cookie
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Account deleted successfully.' });
+  }
+
+  const updates = {
+    isDeleted: true,
+    email: null,
+    password: null,
+    name: null,
+    lastName: null,
+    verified: false,
+    githubUsername: '',
+    lastVerificationEmailSentAt: null,
+    verificationToken: null,
+    verificationCode: null,
+    verificationExpires: null,
+    savedTrends: [],
+    savedFilters: {},
+  }; //user has at least 1 trend submitted soft delete
+
+  const updatedUser = await userModel.findByIdAndUpdate(userId, updates, {
+    new: true,
+  });
+
+  if (!updatedUser) {
+    return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+  }
+
+  res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  }); // clearing auth cookie
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ msg: 'Account deleted successfully.' });
+};

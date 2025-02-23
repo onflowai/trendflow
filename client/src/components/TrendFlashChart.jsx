@@ -29,23 +29,19 @@ function AreaChartComponent({
             <linearGradient id="colorCountTwo" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor="var(--flash-chart-color1)"
+                stopColor="var(--flash-chart-color1, #9AD0F5)" // fallback color
                 stopOpacity={1}
               />
               <stop
                 offset="95%"
-                stopColor="var(--flash-chart-color2)"
+                stopColor="var(--flash-chart-color2, #EFEEF0)" // fallback color
                 stopOpacity={0}
               />
             </linearGradient>
           </defs>
 
           <XAxis axisLine={false} dataKey="date" height={60} tick={false} />
-          <YAxis
-            axisLine={false}
-            allowDecimals={false}
-            tick={false} // Keeps Y-axis ticks hidden
-          />
+          <YAxis axisLine={false} allowDecimals={false} tick={false} />
           <Area
             style={{ cursor: 'pointer' }}
             type="monotone"

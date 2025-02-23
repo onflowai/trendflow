@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { socialLinks } from '../assets/utils/data';
 import { Link } from 'react-router-dom';
+import { CustomIconLink } from '../components';
 import LandingNavbarLinks from './LandingNavbarLinks';
 import LandingNavbarSocials from './LandingNavbarSocials';
 import Container from '../assets/wrappers/LandingNavbarContainer';
@@ -56,6 +57,9 @@ const LandingNavbar = () => {
           </div>
           <span className="vertical-line"></span>
           <ul className="nav-icons">
+            <li className="nav-icon">
+              <CustomIconLink size={18} />
+            </li>
             {socialLinks.map((link) => {
               return (
                 <LandingNavbarSocials

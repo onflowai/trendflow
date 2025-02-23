@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { FaUser } from 'react-icons/fa6';
 
-const UserImgSmall = ({ user_img, githubUrl }) => {
+const UserImgSmall = ({ user_img, githubUrl, isDeleted = false }) => {
   const handleClick = (e) => {
     if (githubUrl) {
-      e.stopPropagation(); // Prevent the card click event from being triggered
+      e.stopPropagation(); // prevent the card click event from being triggered
     }
   };
   return (
@@ -16,6 +16,7 @@ const UserImgSmall = ({ user_img, githubUrl }) => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleClick}
+          isDeleted={isDeleted}
         >
           {user_img ? (
             <img src={user_img} alt="user image" className="img" />
@@ -24,7 +25,7 @@ const UserImgSmall = ({ user_img, githubUrl }) => {
           )}
         </LinkContainer>
       ) : (
-        <ImageContainer>
+        <ImageContainer isDeleted={isDeleted}>
           {user_img ? (
             <img src={user_img} alt="user image" className="img" />
           ) : (
@@ -45,24 +46,28 @@ const ImageContainer = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;  // This will clip any content that exceeds the container boundaries
+  overflow: hidden;
 
+  ${(props) =>
+    props.isDeleted &&
+    `
+      opacity: 0.6;
+      filter: grayscale(80%);
+    `}
 
   img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    object-fit: cover; // Ensures the image covers the area without distorting aspect ratio
+    object-fit: cover;
   }
 
-  svg {
-    color: white; // Optional: change the color of the FaUser icon if needed
-  }
   .icon {
-    transform: translateY(2px); // Adjust this value to move the icon down
+    transform: translateY(2px);
     color: var(--grey-70);
   }
 `;
+
 const LinkContainer = styled.a`
   width: 20px;
   height: 20px;
@@ -75,6 +80,13 @@ const LinkContainer = styled.a`
   position: relative;
   overflow: hidden;
   cursor: pointer;
+
+  ${(props) =>
+    props.isDeleted &&
+    `
+      opacity: 0.6;
+      filter: grayscale(80%);
+    `}
 
   img {
     width: 100%;

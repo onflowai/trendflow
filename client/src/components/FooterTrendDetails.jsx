@@ -4,6 +4,7 @@ import { UserImgSmall } from '../components';
 import { githubFullUrl } from '../utils/urlHelper';
 
 function FooterTrendDetails({ lastUpDate, createdBy }) {
+  const isDeleted = createdBy.isDeleted; //for deleted user
   const githubUrl = createdBy.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
@@ -12,11 +13,14 @@ function FooterTrendDetails({ lastUpDate, createdBy }) {
       <div className="left-section">
         <div className="label">Submitted by:</div>
         <UserImgSmall
+          isDeleted={isDeleted}
           className="img"
           user_img={createdBy.profile_img}
           githubUrl={githubUrl}
         />
-        <div className="username">{createdBy.username}</div>
+        <div className={`username ${isDeleted ? 'deleted-user' : ''}`}>
+          {createdBy.username}
+        </div>
       </div>
       <div className="right-section">
         <div className="label">Last updated:</div>
@@ -35,7 +39,7 @@ const Container = styled.div`
   .left-section {
     display: flex;
     align-items: center;
-    gap: 0.5rem; // Closer spacing between label and image
+    gap: 0.5rem;
   }
 
   .right-section {
@@ -54,11 +58,15 @@ const Container = styled.div`
     color: var(--grey-900); // text color
     }
   }
-
   .label {
     color: #888; // Lighter gray color for labels
   }
 
+  .deleted-user {
+    opacity: 0.6; 
+    filter: grayscale(80%);
+  }
+  
   @media (max-width: 991px) {
     flex-direction: column;
     align-items: flex-start;
@@ -76,7 +84,7 @@ const Container = styled.div`
     }
 
     .left-section .username {
-      margin-left: 0.5rem; // Adjust margin for small screens if needed
+      margin-left: 0.5rem;
     }
   }
 `;

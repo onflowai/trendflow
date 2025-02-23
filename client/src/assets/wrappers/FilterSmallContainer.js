@@ -11,11 +11,12 @@ const Container = styled.div`
   .close-button {
     position: absolute;
     top: 0.5rem;
-    right: 0.5rem;
+    left: 0.5rem;
     background: transparent;
     border: none;
     cursor: pointer;
     color: var(--red);
+    margin-bottom: 0.5rem;
   }
 
   .selected-filters {

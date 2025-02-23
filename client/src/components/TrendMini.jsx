@@ -59,6 +59,7 @@ function TrendMini({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
+  const isDeleted = createdBy.isDeleted; //for deleted user
   const githubUrl = createdBy.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
@@ -127,6 +128,7 @@ function TrendMini({
             {(isApproved || !(isMobileTrend && isAdminPage && isGridView)) && (
               <div className="user-icon">
                 <UserImgSmall
+                  isDeleted={isDeleted}
                   user_img={createdBy.profile_img}
                   githubUrl={githubUrl}
                 />

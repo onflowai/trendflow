@@ -25,7 +25,11 @@ const LogoBrand = ({ link }) => {
       role="button"
       aria-label="Navigate to Dashboard"
     >
-      <img src={logo} alt="Tech Trend Flow Logo" className="logo" />
+      <img
+        src="https://cdn.trendflowai.com/content/logo.svg"
+        alt="Tech Trend Flow Logo"
+        className="logo"
+      />
       <span className="logo-text">trendflow</span>
     </Container>
   );

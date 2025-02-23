@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { logVisit } from '../controllers/visitController.js';
 import {
   updateUser,
+  deleteAccount,
   togglePrivacy,
   saveUserTrend,
   getCurrentUser,
@@ -61,6 +62,7 @@ router.patch('/toggle-privacy', authenticateUser, togglePrivacy);
 router.post('/save-filters', authenticateUser, saveUserFilters);
 router.get('/get-saved-filters', authenticateUser, getUserSavedFilters);
 router.delete('/delete-filters', authenticateUser, deleteUserSavedFilters);
+router.delete('/delete-account', authenticateUser, deleteAccount);
 //router.patch('/upgrade-account', authenticateUser, upgradeAccount);
 
 export default router;

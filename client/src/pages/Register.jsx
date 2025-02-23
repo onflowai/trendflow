@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Form,
   redirect,
+  useNavigate,
   useNavigation,
   Link,
   useActionData,
@@ -23,7 +24,7 @@ const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
  * Using From component with 'action' post
  * @returns
  */
-
+//helper to fetch CSRF token hits /api/v1/csrf-token route
 const getCsrfToken = async () => {
   try {
     const response = await customFetch.get('/csrf-token');
@@ -58,6 +59,7 @@ export const action = async ({ request }) => {
 };
 
 const Register = () => {
+  const navigate = useNavigate();
   const actionData = useActionData(); // access the response from our `action`
   const navigation = useNavigation(); //navigation hook allows you to interact with the navigation stack in a React
   //if the navigation state is 'submitting', isSubmitting is true; otherwise, it's false.
@@ -72,6 +74,48 @@ const Register = () => {
       setUserEmail(actionData.email);
     }
   }, [actionData]);
+
+  //function handles code verification
+  const handleVerifyCode = async ({ email, code, onResult }) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await customFetch.post(
+        '/auth/verify-code',
+        { email, code },
+        { headers: { 'X-CSRF-Token': csrfToken } }
+      );
+      toast.success(response.data.message);
+      onResult(response.data.message); // optional callback to update child
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } catch (error) {
+      const errMsg = error?.response?.data?.msg || 'Verification failed.';
+      toast.error(errMsg);
+      onResult(errMsg);
+    }
+  }; //end handleVerifyCode
+
+  //resending email
+  const handleResendEmail = async ({ email, onResult }) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await customFetch.post(
+        '/auth/resend-email',
+        { email },
+        { headers: { 'X-CSRF-Token': csrfToken } }
+      );
+      toast.success(response.data.message || 'Verification email resent.');
+      onResult(response.data.message);
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } catch (error) {
+      const errMsg = error?.response?.data?.msg || 'Resend failed.';
+      toast.error(errMsg);
+      onResult(errMsg);
+    }
+  };
 
   return (
     <Container>
@@ -110,7 +154,11 @@ const Register = () => {
         </p>
       </Form>
       <LandingModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-        <VerifyCode initialEmail={userEmail} />
+        <VerifyCode
+          initialEmail={userEmail}
+          onVerify={handleVerifyCode}
+          onResend={handleResendEmail}
+        />
       </LandingModal>
     </Container>
   );

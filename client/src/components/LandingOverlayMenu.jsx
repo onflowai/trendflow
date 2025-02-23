@@ -8,7 +8,12 @@ import DarkMode from './DarkMode';
 import { useNavigate } from 'react-router-dom';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
-import { CustomErrorToast, CustomSuccessToast, Logo } from '../components';
+import {
+  CustomErrorToast,
+  CustomSuccessToast,
+  Logo,
+  CustomIconLink,
+} from '../components';
 
 const getCsrfToken = async () => {
   try {
@@ -88,7 +93,10 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
           />
         </div>
         {/* SOCIAL LINKS */}
-        <div className="social-links">
+        <ul className="social-links">
+          <li className="nav-icon">
+            <CustomIconLink size={20} />
+          </li>
           {socialLinks.map((link) => (
             <LandingNavbarSocials
               {...link}
@@ -97,7 +105,7 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
               onClick={toggleOverlay}
             />
           ))}
-        </div>
+        </ul>
 
         <div className="button-container">
           <button onClick={handleLoginClick} className="login-button">
@@ -181,12 +189,12 @@ const Container = styled.div`
     font-size: 1.3rem;
   }
   .social-links .overlay-icon i {
-    color: var(--primary-600);
+    color: var(--grey-500);
     transition: color 0.3s;
   }
 
   .social-links .overlay-icon i:hover {
-    color: var(--primary-600);
+    color: var(--grey-400);
   }
 
   .calls-divider {
