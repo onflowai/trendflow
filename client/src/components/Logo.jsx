@@ -4,7 +4,11 @@ import styled from 'styled-components';
 const Logo = ({ size }) => {
   return (
     <Container>
-      <img src={logo} alt="Tech Trend Flow Logo" className="logo" />
+      <img
+        src="https://cdn.trendflowai.com/content/logo.svg"
+        alt="Tech Trend Flow Logo"
+        className="logo"
+      />
     </Container>
   );
 };

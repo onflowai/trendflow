@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   UserImgLarge,
   SEOProtected,
@@ -39,6 +39,9 @@ const AddTrend = () => {
   const isSubmitting = navigation.state === 'submitting';
   const { isDarkTheme } = useDashboardContext();
 
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
+
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [defaultTrendCategory, setDefaultTrendCategory] = useState(null);
@@ -77,17 +80,109 @@ const AddTrend = () => {
     };
 
     fetchData();
+  }, []); //end fetch svg useEffect
+
+  const handleEditClick = () => {
+    setIsDropdownVisible((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownVisible(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Optional file-size check:
+    if (file.size > 50000000) {
+      toast.error('Image size too large.');
+      return;
+    }
+
+    // Prepare FormData
+    const uploadFormData = new FormData();
+    uploadFormData.append('profile_img', file);
+
+    try {
+      const response = await customFetch.patch(
+        '/users/upload-user-image',
+        uploadFormData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      if (response.status === 200) {
+        const updatedUser = response.data.user;
+        toast.success(
+          <CustomSuccessToast message={'Profile Image Updated Successfully'} />
+        );
+        // updating user context or dashboard context so the new image re-renders
+        updateUserImage(updatedUser.profile_img, updatedUser.profile_img_id);
+        //TODO: set up ie: updateUserGlobal(updatedUser.profile_img, updatedUser.profile_img_id);
+      } else {
+        toast.error('Failed to update profile image.');
+      }
+    } catch (error) {
+      toast.error(
+        <CustomErrorToast
+          message={error?.response?.data?.msg || error.message}
+        />
+      );
+    }
+  }; //end handleFileChange
+
   return (
     <Container>
       <SEOProtected />
       <div className="user-container clearfix">
         <div className="user-info">
-          <div className="user-profile">
-            <UserImgLarge user_img={user.profile_img} />
-          </div>
+          {!user?.profile_img ? (
+            <div className="user-image no-image">
+              <div className="user-profile">
+                <UserImgLarge user_img={user.profile_img} />
+              </div>
+              <div className="edit-button-wrapper">
+                <button
+                  className="edit-button"
+                  type="button"
+                  onClick={handleEditClick}
+                >
+                  Edit
+                </button>
+                {isDropdownVisible && (
+                  <div className="dropdown" ref={dropdownRef}>
+                    <label htmlFor="profile_img" className="dropdown-option">
+                      Upload
+                    </label>
+                    <input
+                      type="file"
+                      name="profile_img"
+                      id="profile_img"
+                      className="form-input"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    <button className="dropdown-option" type="button">
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="user-image">
+              <UserImgLarge user_img={user.profile_img} />
+            </div>
+          )}
           <div className="username">
-            <h5>{user.username}</h5>
+            <h5>{user?.username}</h5>
           </div>
         </div>
       </div>
@@ -101,6 +196,7 @@ const AddTrend = () => {
                 type="text"
                 name="trend"
                 placeholder="Any tech on your mind?"
+                className="form-input"
               />
               {/* CATEGORY SELECTOR */}
               <FormSelectorIcon

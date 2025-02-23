@@ -43,6 +43,10 @@ const Container = styled.div`
     width: 23px;
     overflow: hidden;
   }
+    @media (max-width: 768px) {
+      margin-bottom: 1rem;
+  }
+
 `;
 
 export default FormComponentLogos;
