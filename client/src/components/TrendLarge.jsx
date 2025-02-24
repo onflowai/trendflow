@@ -125,7 +125,7 @@ function TrendLarge({
               isApproved={isApproved}
             />
             <div className="trend-title-container">
-              <h3 className="mono-heading-bold">
+              <h3 className="">
                 {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
               </h3>
               <div
@@ -156,7 +156,7 @@ function TrendLarge({
                     }}
                   />
                 )}
-                <h6 className="mono-heading">{trendCategory}</h6>
+                <h6 className="">{trendCategory}</h6>
               </div>
             </div>
             <div className="description-container">

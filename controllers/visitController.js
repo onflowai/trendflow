@@ -3,7 +3,7 @@ import trendModel from '../models/trendModel.js';
 import visitModel from '../models/visitModel.js';
 import userModel from '../models/userModel.js';
 import mongoose from 'mongoose';
-import day from 'dayjs';
+import dayjs from 'dayjs';
 /**
  * In this controller we use a visit count which logs visits of guest users and other metrics for
  * @param {*} req
@@ -48,7 +48,7 @@ export const adminStats = async (req, res) => {
   ]); //end monthTrends
   monthTrends = monthTrends.map((trend) => {
     const { count, year, month } = trend;
-    const date = day()
+    const date = dayjs()
       .month(month - 1)
       .year(year)
       .format('MMM YYYY')
@@ -77,13 +77,21 @@ export const adminStats = async (req, res) => {
       $sort: { year: 1, month: 1 }, // Sorting results by year and month
     },
   ]);
-  let guestUserVisit = await visitModel.aggregate([
+  monthUsers = monthUsers.map(({ count, year, month }) => {
+    const date = dayjs()
+      .year(year)
+      .month(month - 1)
+      .format('MMM YYYY')
+      .toUpperCase();
+    return { date, count };
+  });
+  let guestUserVisit = await userModel.aggregate([
     { $match: { role: 'guestUser' } },
     {
       $group: {
         _id: {
-          year: { $year: '$timestamp' },
-          month: { $month: '$timestamp' },
+          year: { $year: '$createdAt' },
+          month: { $month: '$createdAt' },
         },
         count: { $sum: 1 },
       },
@@ -96,13 +104,20 @@ export const adminStats = async (req, res) => {
         count: 1,
       },
     },
-    {
-      $sort: { year: 1, month: 1 },
-    },
+    { $sort: { year: 1, month: 1 } },
   ]);
 
+  guestUserVisit = guestUserVisit.map(({ count, year, month }) => {
+    const date = dayjs()
+      .year(year)
+      .month(month - 1) // dayjs is 0-based for months
+      .format('MMM YYYY')
+      .toUpperCase();
+    return { date, count };
+  });
   res.status(StatusCodes.OK).json({ monthUsers, monthTrends, guestUserVisit });
 }; //end adminStats
+
 //APP STATS: returns count of monthly approved-trend
 export const appTrendStats = async (req, res) => {
   try {
@@ -134,7 +149,7 @@ export const appTrendStats = async (req, res) => {
     // Formatting the date
     monthTrends = monthTrends.map((trend) => {
       const { count, year, month } = trend;
-      const date = day()
+      const date = dayjs()
         .month(month - 1)
         .year(year)
         .format('MMM YYYY')

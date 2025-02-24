@@ -1,7 +1,7 @@
 export const majorUpdates =
   'Secure guest sessions with implemented CSRF protection. Featured top trends in landing.';
 
-export const version = '0.0.1';
+export const version = '1.0.1';
 
 //link used only on the Landing Page
 export const landingLinks = [

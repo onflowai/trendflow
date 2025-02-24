@@ -103,18 +103,16 @@ function TrendMini({
               />
             )}
             <div className="trend-title">
-              <h4 className="mono-heading-bold underlay-heading">
+              <h4 className="trend-heading-bold underlay-heading">
                 {trend.length > (isMobileTrend ? 18 : 21)
                   ? trend.substring(0, isMobileTrend ? 11 : 21) + '...'
                   : trend}
               </h4>
               <div className="description-container">
-                <h6 className="mono-heading underlay-heading">
-                  {trendCategory}
-                </h6>
+                <h6 className="underlay-heading">{trendCategory}</h6>
                 {!isGridView && trendDesc && trendDesc.trim() && (
                   <div className="trend-desc">
-                    <p className="mono-heading-thin">
+                    <p className="">
                       {trendDesc.length > 60
                         ? trendDesc.substring(0, 60) + '...'
                         : trendDesc}

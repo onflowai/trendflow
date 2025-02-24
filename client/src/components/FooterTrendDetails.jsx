@@ -52,10 +52,10 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     gap: 0.6rem; // space between icon and text
-    padding: 0.6rem 1rem; // internal padding
+    padding: 0.3rem 0.6rem; // internal padding
     border-radius: var(--round-radius); // rounded corners
-    background: var(--grey-50); // gray box background
-    color: var(--grey-900); // text color
+    background: var(--grey-300); // gray box background
+    color: var(--white); // text color
     }
   }
   .label {
@@ -77,6 +77,7 @@ const Container = styled.div`
       justify-content: flex-start;
       align-items: center;
       gap: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .right-section {

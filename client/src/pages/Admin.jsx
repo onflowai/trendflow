@@ -59,7 +59,6 @@ export const loader = async ({ request }) => {
 
     const chartsResponse = await customFetch.get('/trends/admin/stats');
     const chartsData = chartsResponse.data;
-
     // Fetch saved filters
     const { data: savedFiltersData } = await customFetch.get(
       '/users/get-saved-filters'

@@ -58,7 +58,7 @@ const LandingNavbar = () => {
           <span className="vertical-line"></span>
           <ul className="nav-icons">
             <li className="nav-icon">
-              <CustomIconLink size={18} />
+              <CustomIconLink size={17} />
             </li>
             {socialLinks.map((link) => {
               return (

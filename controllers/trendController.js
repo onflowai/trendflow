@@ -325,8 +325,8 @@ export const approveTrendManual = async (req, res) => {
       error instanceof NotFoundError
         ? StatusCodes.NOT_FOUND
         : error.message.startsWith('Invalid')
-        ? StatusCodes.BAD_REQUEST
-        : StatusCodes.INTERNAL_SERVER_ERROR;
+          ? StatusCodes.BAD_REQUEST
+          : StatusCodes.INTERNAL_SERVER_ERROR;
 
     // respond with error message
     res
@@ -397,8 +397,8 @@ export const updateTrendManual = async (req, res) => {
       error instanceof NotFoundError
         ? StatusCodes.NOT_FOUND
         : error.message.startsWith('Invalid')
-        ? StatusCodes.BAD_REQUEST
-        : StatusCodes.INTERNAL_SERVER_ERROR;
+          ? StatusCodes.BAD_REQUEST
+          : StatusCodes.INTERNAL_SERVER_ERROR;
 
     res.status(statusCode).json({
       msg: error.message || 'Internal Server Error',
@@ -557,10 +557,6 @@ export const getApprovedTrends = async (req, res) => {
       return trend;
     });
 
-    // console.log(
-    //   'Trends fetched after applying cursor:',
-    //   trends.map((trend) => trend.trend)
-    // );
     res.status(StatusCodes.OK).json({
       totalTrends,
       pagesNumber,
