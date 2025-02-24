@@ -95,10 +95,11 @@ export const validateRegisterInput = withValidationErrors([
     .matches(/^[A-Za-z]/)
     .withMessage('Username must start with a letter.')
     .custom(async (username) => {
-      const user = await UserModel.findOne({ username }); //search the user based on the username if present throw error
-      if (user) {
+      const user = await UserModel.findOne({ username });
+      if (user && user.verified) {
         throw new BadRequestError('username already exists');
       }
+      // if user exists but is unverified do nothing
     }),
   body('email')
     .notEmpty()
@@ -106,10 +107,11 @@ export const validateRegisterInput = withValidationErrors([
     .isEmail()
     .withMessage('invalid email format')
     .custom(async (email) => {
-      const user = await UserModel.findOne({ email }); //search the user based on the email if present throw error
-      if (user) {
+      const user = await UserModel.findOne({ email });
+      if (user && user.verified) {
         throw new BadRequestError('email already exists');
-      }
+      } // if the user is verified, block
+      //allowing to continue register to controller
     }),
   body('password')
     .notEmpty()

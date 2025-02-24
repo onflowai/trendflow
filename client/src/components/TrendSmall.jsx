@@ -59,8 +59,8 @@ function TrendSmall({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
-  const isDeleted = createdBy.isDeleted; //for deleted user
-  const githubUrl = createdBy.githubUsername
+  const isDeleted = createdBy?.isDeleted; //for deleted user
+  const githubUrl = createdBy?.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
 

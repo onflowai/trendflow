@@ -8,6 +8,7 @@ import {
   FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
+import { useUser } from '../context/UserContext';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
@@ -34,7 +35,8 @@ export const action = async ({ request }) => {
   }
 };
 const AddTrend = () => {
-  const { user } = useOutletContext(); //getting the user from DashboardLayout
+  const { user, updateUserImage } = useUser();
+  //const { user } = useOutletContext(); //getting the user from DashboardLayout
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const { isDarkTheme } = useDashboardContext();
@@ -146,7 +148,7 @@ const AddTrend = () => {
           {!user?.profile_img ? (
             <div className="user-image no-image">
               <div className="user-profile">
-                <UserImgLarge user_img={user.profile_img} />
+                <UserImgLarge user_img={user?.profile_img} />
               </div>
               <div className="edit-button-wrapper">
                 <button

@@ -26,30 +26,59 @@ import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
  */
 export const register = async (req, res, next) => {
   try {
-    // determining role: first two accounts become admin, all others are user
-    const numberOfAccounts = await UserModel.countDocuments();
-    const isFirstOrSecondAccount = numberOfAccounts < 2;
-    req.body.role = isFirstOrSecondAccount ? 'admin' : 'user';
+    const { email, password, name, lastName, username } = req.body;
+    const existingUser = await UserModel.findOne({ email }); //checking if user already exists
+    if (existingUser) {
+      if (existingUser.verified) {
+        throw new BadRequestError('Email is already taken. Please log in.'); //already verified (email in use)
+      } else {
+        const { verificationCode, verificationToken, verificationExpires } =
+          generateVerificationData();
+        existingUser.verificationCode = verificationCode;
+        existingUser.verificationToken = verificationToken;
+        existingUser.verificationExpires = verificationExpires;
+        existingUser.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await existingUser.save();
+        await sendVerificationEmail({
+          email: existingUser.email,
+          verificationCode,
+          verificationToken,
+        }); // unverified user re-generate code re-send email
 
-    const hashedPassword = await hashPassword(req.body.password); //hashing the user's password.
-    req.body.password = hashedPassword;
+        return res.status(StatusCodes.OK).json({
+          msg: 'A verification email was re-sent. Please check your inbox.',
+        });
+      }
+    }
+    const numberOfAccounts = await UserModel.countDocuments(); //if user does not exist create
+    const isFirstOrSecondAccount = numberOfAccounts < 2;
+    const role = isFirstOrSecondAccount ? 'admin' : 'user';
+    const hashedPassword = await hashPassword(password); // sash password
 
     const { verificationCode, verificationToken, verificationExpires } =
       generateVerificationData(); // generating verification data
-    req.body.verificationCode = verificationCode;
-    req.body.verificationToken = verificationToken;
-    req.body.verificationExpires = verificationExpires;
-    req.body.verified = false; // initially not verified
 
-    req.body.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); //one day (shelf life for unverified user)
+    const userData = {
+      email,
+      password: hashedPassword,
+      name,
+      lastName,
+      username,
+      role,
+      verified: false,
+      verificationCode,
+      verificationToken,
+      verificationExpires,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hrs
+    }; // create the user object
 
-    const user = await UserModel.create(req.body); // create the user in the database
+    const newUser = await UserModel.create(userData);
 
     await sendVerificationEmail({
-      email: user.email,
-      verificationCode, // verificationCode in the email body
-      verificationToken, // used to generate the verification link
-    }); // sending the verification email
+      email: newUser.email,
+      verificationCode,
+      verificationToken,
+    });
 
     res.status(StatusCodes.CREATED).json({
       msg: 'User created. Please check your email to verify your account.',
