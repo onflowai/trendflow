@@ -4,12 +4,8 @@ import {
   NotFoundError,
   UnauthenticatedError,
 } from '../errors/customErrors.js';
-import {
-  TREND_CATEGORY,
-  TECHNOLOGIES,
-  trendCategoryValues,
-  technologiesValues,
-} from '../utils/constants.js';
+import { trendCategoryValues, technologiesValues } from '../utils/constants.js';
+import { B_LIST } from '../utils/blacklisted.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
 import mongoose from 'mongoose';
@@ -95,11 +91,17 @@ export const validateRegisterInput = withValidationErrors([
     .matches(/^[A-Za-z]/)
     .withMessage('Username must start with a letter.')
     .custom(async (username) => {
+      const lowerUsername = username.toLowerCase();
+      const expression = B_LIST.find((word) => lowerUsername.includes(word));
+      if (expression) {
+        throw new BadRequestError('Username contains prohibited characters');
+      }
       const user = await UserModel.findOne({ username });
       if (user && user.verified) {
-        throw new BadRequestError('username already exists');
-      }
+        throw new BadRequestError('Username already exists');
+      } // checking if username already exists (if verified)
       // if user exists but is unverified do nothing
+      return true;
     }),
   body('email')
     .notEmpty()
