@@ -27,7 +27,7 @@ import { authenticatePassword, hashPassword } from '../utils/passwordUtils.js';
 export const register = async (req, res, next) => {
   try {
     const { email, password, name, lastName, username } = req.body;
-    const existingUser = await UserModel.findOne({ email }); //checking if user already exists
+    const existingUser = await UserModel.findOne({ email: { $eq: email } }); //checking if user already exists (prev injection)
     if (existingUser) {
       if (existingUser.verified) {
         throw new BadRequestError('Email is already taken. Please log in.'); //already verified (email in use)
