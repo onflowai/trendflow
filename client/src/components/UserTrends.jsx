@@ -27,7 +27,7 @@ function UserTrends({ trends, savedTrends, onRemove }) {
   }
   return (
     <Container>
-      <h3>Bookmarked:</h3>
+      <div className="user-bookmarked">Bookmarked:</div>
       <div className="trends">
         {trends.map((trend) => {
           return (

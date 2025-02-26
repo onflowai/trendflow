@@ -1,5 +1,6 @@
 /* global css */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap');
 *,
 ::after,
 ::before {
@@ -164,6 +165,10 @@ html {
   --filter-btn-highlighted: var(--primary-200);
   --filter-btn-border-highlighted: var(--primary-300);
   --tech-item-background-color: var(--white);
+  /* INPUTS */
+  --input-highlighted-focus: var(--primary-100);
+  --input-highlighted-valid: var(--white);
+  --input-border-highlighted-valid: var(--primary-100);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -259,6 +264,10 @@ html {
   --filter-btn-highlighted: var(--primary-200);
   --filter-btn-border-highlighted: var(--primary-300);
   --tech-item-background-color: #cfc7ff;
+  /* INPUTS */
+  --input-highlighted-focus: var(--primary-400);
+  --input-highlighted-valid: #1d1d1d;
+  --input-border-highlighted-valid: var(--primary-500);
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(
@@ -309,22 +318,26 @@ html {
   }
 }
 /* FONTS */
-.mono-heading-thin {
-  font-family: 'Roboto', monospace;
-  font-weight: 400;
+.trend-heading-thin {
+  font-family: 'Mona Sans', sans-serif;
+  font-weight: 300;
 }
-.mono-font {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 500;
-}
-.mono-heading-bold {
-  font-family: 'Roboto', monospace;
+
+.trend-heading-bold {
+  font-family: 'Mona Sans', sans-serif;
   font-weight: 700;
+}
+
+/* If you want to keep JetBrains Mono for code or "trend-font": */
+.trend-font {
+  font-weight: 500;
 }
 body {
   background: var(--background-color);
   color: var(--text-color);
+
   font-family:
+    'Mona Sans',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -336,8 +349,8 @@ body {
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
+
   font-weight: 400;
-  /* line-height: 1; */
 }
 p {
   margin: 0;
@@ -680,6 +693,24 @@ button:disabled {
   background: var(--background-color);
   border: 1.5px solid var(--grey-50); /* Changed to match better styling */
   color: var(--text-color);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--input-highlighted-focus);
+}
+
+.form-input:valid {
+  background-color: var(--input-highlighted-valid);
+  border-color: var(--input-border-highlighted-valid);
+}
+
+.form-input:focus {
+  background-color: var(--input-highlighted-valid);
+}
+
+.form-input:-webkit-autofill {
+  background-color: var(--input-highlighted-valid) !important;
 }
 
 .form-input,

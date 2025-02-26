@@ -59,13 +59,13 @@ function ChartAdminComponent({ data, title }) {
       backgroundColor: state.isSelected
         ? 'var(--primary-100)' // custom selected background color
         : state.isFocused
-        ? 'var(--primary-300)' // custom hover background color
-        : 'transparent', // default background
+          ? 'var(--primary-300)' // custom hover background color
+          : 'transparent', // default background
       color: state.isSelected
         ? 'var(--text-color)' // Text color for selected option
         : state.isFocused
-        ? 'var(--text-color)' // Text color for focused (hovered) option
-        : 'var(--text-color)', // Text color for default options
+          ? 'var(--text-color)' // Text color for focused (hovered) option
+          : 'var(--text-color)', // Text color for default options
       '&:hover': {
         backgroundColor: 'var(--primary-200)',
       },

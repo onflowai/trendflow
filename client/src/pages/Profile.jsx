@@ -82,15 +82,14 @@ const Profile = () => {
     lastName,
     email,
     githubUsername: gitUsername,
-    privacy,
     verified,
   } = user;
-  console.log('USER: ', user);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [githubUsername, setGithubUsername] = useState(gitUsername || '');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [privacy, setPrivacy] = useState(user.privacy);
   const dropdownRef = useRef(null);
   const isVerified = verified;
   const handleEditClick = () => {
@@ -189,16 +188,11 @@ const Profile = () => {
   const handleOptionClick = (action) => {
     switch (action) {
       case 'verify':
-        //HERE
-        // Perform verify profile action
-        console.log('Verify profile action triggered');
-        // Example: API call to verify profile
+        //TODO: perform verify profile action
+        //console.log('Verify profile action triggered');
         break;
       case 'delete':
-        // Perform delete profile action
-        setIsDeleteModalOpen(true);
-        console.log('Delete profile action triggered');
-        // Example: API call to delete profile
+        setIsDeleteModalOpen(true); // delete profile action
         break;
       default:
         break;

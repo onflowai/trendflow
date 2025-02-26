@@ -32,7 +32,6 @@ const EditTrendComponent = ({
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${trendObject.slug}`);
   };
-  console.log('trendObject', trendObject);
   const [trend, setTrend] = useState(trendObject.trend);
   return (
     <Container>

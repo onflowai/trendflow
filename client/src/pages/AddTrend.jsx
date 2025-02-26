@@ -8,6 +8,7 @@ import {
   FormComponentLogos,
   CustomSuccessToast,
 } from '../components';
+import { useUser } from '../context/UserContext';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import Container from '../assets/wrappers/SubmitFormContainer';
 import { useOutletContext } from 'react-router-dom';
@@ -34,7 +35,8 @@ export const action = async ({ request }) => {
   }
 };
 const AddTrend = () => {
-  const { user } = useOutletContext(); //getting the user from DashboardLayout
+  const { user, updateUserImage } = useUser();
+  //const { user } = useOutletContext(); //getting the user from DashboardLayout
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
   const { isDarkTheme } = useDashboardContext();
@@ -57,11 +59,6 @@ const AddTrend = () => {
       try {
         const response = await customFetch.get('trends/icon-data');
         const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
-        console.log(
-          'TREND_CATEGORY, TECHNOLOGIES: ',
-          TREND_CATEGORY,
-          TECHNOLOGIES
-        );
         setTrendCategory(Object.values(TREND_CATEGORY));
         setTechnologies(Object.values(TECHNOLOGIES));
         const trendCategoryList = Object.values(TREND_CATEGORY);
@@ -146,7 +143,7 @@ const AddTrend = () => {
           {!user?.profile_img ? (
             <div className="user-image no-image">
               <div className="user-profile">
-                <UserImgLarge user_img={user.profile_img} />
+                <UserImgLarge user_img={user?.profile_img} />
               </div>
               <div className="edit-button-wrapper">
                 <button
@@ -209,9 +206,9 @@ const AddTrend = () => {
                   label: cate.label,
                   image: cate.image,
                 }))}
-                onChange={(name, value) => {
-                  setCateLabel(value ? value.label : '');
-                  setCateIconUrl(value ? value.value : '');
+                onChange={(name, selectedOption) => {
+                  setCateLabel(selectedOption?.label || '');
+                  setCateIconUrl(selectedOption?.fullImageUrl || '');
                 }}
                 isDarkTheme={isDarkTheme}
               />
@@ -238,9 +235,9 @@ const AddTrend = () => {
                   label: tech.label,
                   image: tech.image,
                 }))}
-                onChange={(name, value) => {
-                  setTechLabel(value ? value.label : '');
-                  setTechIconUrl(value ? value.value : '');
+                onChange={(name, selectedOption) => {
+                  setTechLabel(selectedOption?.label || '');
+                  setTechIconUrl(selectedOption?.fullImageUrl || '');
                 }}
                 isDarkTheme={isDarkTheme}
               />

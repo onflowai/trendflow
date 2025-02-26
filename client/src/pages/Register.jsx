@@ -40,14 +40,16 @@ export const action = async ({ request }) => {
   const data = Object.fromEntries(formData); //turn array of the arrays into the object
   try {
     const csrfToken = await getCsrfToken(); //getting token
-    await customFetch.post('/auth/register', data, {
+    const response = await customFetch.post('/auth/register', data, {
       headers: {
         'X-CSRF-Token': csrfToken,
       },
-    }); //POST call with data payload
-    return { success: true, email: data.email, msg: 'Registration Successful' };
-    // toast.success(<CustomErrorToast message={'Registration Successful'} />);
-    // return redirect('/login'); //function has to return something in this case a redirect
+    }); // attempt register
+
+    const { msg } = response.data;
+    toast.success(msg);
+
+    return { success: true, email: data.email, msg };
   } catch (error) {
     toast.error(
       <CustomErrorToast
