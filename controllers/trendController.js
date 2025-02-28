@@ -698,7 +698,7 @@ export const searchTrends = async (req, res, next) => {
  */
 export const getTopViewedTrends = async (req, res, next) => {
   const topViewed = 'topViewedNow'; // Enforce internally
-  const limit = 8; // fixed limit per page
+  const limit = 16; // fixed limit per page
   const trendLimit = 24; //fixed limit of trends for this controller
   const cursor = req.query.cursor || null;
 
