@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ['main']
+    types: ['closed']
     paths:
       - client/**
 
@@ -15,6 +16,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
 
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +28,8 @@ jobs:
         working-directory: ./client
       - name: Prep SSH keys
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.DO_SSH_KEY_TRENDFLOW }}" > ${{ env.SSH_KEY_PATH }}
-          ls -lah ~/.ssh/
           chmod 600 ${{ env.SSH_KEY_PATH }}
       - name: copy files
         run: rsync -r --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${{ env.SSH_KEY_PATH }}" client/dist trendflow@${{ secrets.DO_SERVER_IP }}:${{ env.DEST_PATH }}
