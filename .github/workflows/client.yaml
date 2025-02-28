@@ -1,0 +1,30 @@
+name: Trendflow Client CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ['main']
+    paths:
+      - client/**
+
+env:
+  SSH_KEY_PATH: ~/.ssh/id_rsa
+  # The path which contains the client code on the server
+  DEST_PATH: /var/www/trendflow/client
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: npm install
+        run: npm install
+      - name: npm run build
+        run: npm run build
+      - name: Prep SSH keys
+        run: |
+          echo ${{ secrets.DO_SSH_KEY_TRENDFLOW }} > ${{ env.SSH_KEY_PATH }}
+          chmod 600 ${{ env.SSH_KEY_PATH }}
+      - name: copy files
+        run: scp -ri ${{ env.SSH_KEY_PATH }} client/dist/ trendflow@${{ env.DO_SERVER_IP }}:${{ env.DEST_PATH }}
