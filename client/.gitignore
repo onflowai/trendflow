@@ -29,7 +29,6 @@ dist-ssr
 .env.production
 
 #utils
-constants.js
 dangerous_keywords.js
 
 #assets
