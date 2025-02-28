@@ -11,10 +11,9 @@ import {
   ContentBoxHighlighted,
   EditTrendComponent,
 } from '../components';
+import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
 import Container from '../assets/wrappers/EditTrendContainer';
 // import Container from '../assets/wrappers/TrendPageContainer';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../../../utils/constants'; //this is a problem, need to fetch this instead of importing
-import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
 import {
   Form,
   redirect,
@@ -94,6 +93,24 @@ const EditTrend = () => {
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
   const [manualMode, setManualMode] = useState('approve');
+
+  const [trendCategoryList, setTrendCategoryList] = useState([]);
+  const [trendTechList, setTrendTechList] = useState([]);
+
+  useEffect(() => {
+    const fetchIconData = async () => {
+      try {
+        const response = await customFetch.get('trends/icon-data');
+        const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
+        setTrendCategoryList(Object.values(TREND_CATEGORY));
+        setTrendTechList(Object.values(TECHNOLOGIES));
+      } catch (error) {
+        console.error('Error fetching trend icon-data:', error);
+      }
+    };
+
+    fetchIconData();
+  }, []);
 
   // approve a trend
   const approveTrend = async (slug) => {
@@ -234,8 +251,8 @@ const EditTrend = () => {
                 handleSVGChange={handleSVGChange}
                 trendObject={trendObject}
                 isSubmitting={isSubmitting}
-                trendCategoryList={Object.values(TREND_CATEGORY)}
-                trendTechList={Object.values(TECHNOLOGIES)}
+                trendCategoryList={trendCategoryList}
+                trendTechList={trendTechList}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
                 selectedTech={selectedTech}
