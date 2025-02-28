@@ -8,7 +8,7 @@ on:
       - client/**
 
 env:
-  SSH_KEY_PATH: ~/.ssh/id_rsa
+  SSH_KEY_PATH: .ssh/id_rsa
   # The path which contains the client code on the server
   DEST_PATH: /var/www/trendflow/client
 
@@ -26,8 +26,7 @@ jobs:
         working-directory: ./client
       - name: Prep SSH keys
         run: |
-          echo "${{ secrets.DO_SSH_KEY_TRENDFLOW }}" > ${{ env.SSH_KEY_PATH }}
-          ls -lah ~/.ssh/
-          chmod 600 ${{ env.SSH_KEY_PATH }}
+          echo "${{ secrets.DO_SSH_KEY_TRENDFLOW }}" > ${{ runner.temp }}/${{ env.SSH_KEY_PATH}}
+          chmod 600 ${{ runner.temp }}/${{ env.SSH_KEY_PATH }}
       - name: copy files
-        run: rsync -r --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${{ env.SSH_KEY_PATH }}" client/dist trendflow@${{ secrets.DO_SERVER_IP }}:${{ env.DEST_PATH }}
+        run: rsync -r --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${{ runner.temp }}/${{ env.SSH_KEY_PATH }}" client/dist trendflow@${{ secrets.DO_SERVER_IP }}:${{ env.DEST_PATH }}
