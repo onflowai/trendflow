@@ -26,7 +26,7 @@ jobs:
         working-directory: ./client
       - name: Prep SSH keys
         run: |
-          echo ${{ secrets.DO_SSH_KEY_TRENDFLOW }} > ${{ env.SSH_KEY_PATH }}
+          echo "${{ secrets.DO_SSH_KEY_TRENDFLOW }}" > ${{ env.SSH_KEY_PATH }}
           chmod 600 ${{ env.SSH_KEY_PATH }}
       - name: copy files
         run: rsync -r --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${{ env.SSH_KEY_PATH }}" client/dist trendflow@${{ env.DO_SERVER_IP }}:${{ env.DEST_PATH }}
