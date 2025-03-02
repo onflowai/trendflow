@@ -10,9 +10,12 @@ import { IoIosClose } from 'react-icons/io';
 const trendsLabel = import.meta.env.VITE_TRENDS_LABEL_BASE_1;
 const trendsBase = import.meta.env.VITE_TRENDS_LINK_BASE_1;
 const trendsGeo = import.meta.env.VITE_TRENDS_LINK_GEO_1;
+const trendsLang = import.meta.env.VITE_TRENDS_LINK_LANG_1;
+
 const trendsLabel2 = import.meta.env.VITE_TRENDS_LABEL_BASE_2;
 const trendsBase2 = import.meta.env.VITE_TRENDS_LINK_BASE_2;
 const trendsGeo2 = import.meta.env.VITE_TRENDS_LINK_GEO_2;
+const trendsLang2 = import.meta.env.VITE_TRENDS_LINK_LANG_2;
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const validMimeTypes = [
@@ -115,13 +118,12 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
 
     reader.readAsText(file);
   };
+  function formatSlug(slug) {
+    return encodeURIComponent(slug.replace(/-/g, ' '));
+  }
 
-  const trendsLink1 = `${trendsBase}${encodeURIComponent(
-    slug
-  )}&geo=${trendsGeo}`;
-  const trendsLink2 = `${trendsBase2}${encodeURIComponent(
-    slug
-  )}&geo=${trendsGeo2}`;
+  const trendsLink1 = `${trendsBase}?geo=${trendsGeo}&q=${formatSlug(slug)}&hl=${trendsLang}`;
+  const trendsLink2 = `${trendsBase2}?geo=${trendsGeo2}&q=${formatSlug(slug)}&hl=${trendsLang2}`;
 
   const links = [
     { label: trendsLabel, href: trendsLink1 },
