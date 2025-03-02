@@ -146,7 +146,15 @@ function TrendMini({
                       />
                     )}
                     {!isGridView && (
-                      <h5>{trendTech.split(' ').slice(0, 2).join(' ')}</h5>
+                      <h5>
+                        {(() => {
+                          const words = trendTech.split(' ');
+                          if (words[1]) {
+                            words[1] = words[1].slice(0, 3) + '...'; // limit second word to 6 characters
+                          }
+                          return words.slice(0, 2).join(' ');
+                        })()}
+                      </h5>
                     )}
                   </span>
                 ) : (

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../assets/images/logo-02.svg';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const LogoBrand = ({ link }) => {
+  const [hasError, setHasError] = useState(false);
   const navigate = useNavigate();
+  const cdnLogo = 'https://cdn.trendflowai.com/content/logo.svg';
+  const imageSrc = hasError ? logo : cdnLogo;
 
   const handleClick = () => {
     navigate(link);
@@ -13,6 +16,13 @@ const LogoBrand = ({ link }) => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       navigate('/dashboard');
+    }
+  };
+
+  const handleImageError = (e) => {
+    if (!hasError) {
+      setHasError(true);
+      e.target.src = logo;
     }
   };
 
@@ -26,9 +36,10 @@ const LogoBrand = ({ link }) => {
       aria-label="Navigate to Dashboard"
     >
       <img
-        src="https://cdn.trendflowai.com/content/logo.svg"
+        src={imageSrc}
         alt="Tech Trend Flow Logo"
         className="logo"
+        onError={handleImageError}
       />
       <span className="logo-text">trendflow</span>
     </Container>

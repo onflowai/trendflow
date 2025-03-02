@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useRouteError, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/ErrorPageContainer';
 import styled from 'styled-components';
-import error01 from '../assets/images/error01.png';
-import error02 from '../assets/images/error02.png';
+// import error01 from '../assets/images/error01.png';
+// import error02 from '../assets/images/error02.png';
 import errorLogo from '../assets/images/trendflow-error.svg';
 import { IoIosClose } from 'react-icons/io';
 import { SEOProtected } from '../components';
@@ -15,26 +15,35 @@ import { SEOProtected } from '../components';
  *
  * @returns {JSX.Element}
  */
+const error01 = 'https://cdn.trendflowai.com/content/error01.png';
+const error02 = 'https://cdn.trendflowai.com/content/error02.png';
 const Error = () => {
   const error = useRouteError();
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-  // Determine which image to display based on hover state
+  // Change displayed image based on hover state
   const displayedImage = isHovered ? error02 : error01;
 
-  // Handle mouse enter on the link
-  const handleMouseEnter = () => {
+  // Image event handlers
+  const handleImageMouseEnter = () => {
     setIsHovered(true);
-    navigate('/dashboard');
   };
 
-  // Handle mouse leave on the link
-  const handleMouseLeave = () => {
+  const handleImageMouseLeave = () => {
     setIsHovered(false);
   };
 
-  // Handle close button click
+  const handleImageClick = () => {
+    navigate('/dashboard');
+  };
+
+  // Button click handler
+  const handleButtonClick = () => {
+    navigate('/dashboard');
+  };
+
+  // Close button handler
   const handleClose = () => {
     navigate('/dashboard');
   };
@@ -58,16 +67,20 @@ const Error = () => {
           </div>
 
           <div className="image-wrapper">
-            <img src={displayedImage} alt="404 Error" className="error-emoji" />
+            <img
+              src={displayedImage}
+              alt="404 Error"
+              className="error-emoji"
+              onMouseEnter={handleImageMouseEnter}
+              onMouseLeave={handleImageMouseLeave}
+              onClick={handleImageClick}
+              style={{ cursor: 'pointer' }}
+            />
           </div>
           <div className="text-wrapper">
             <h3>Something Went Wrong</h3>
             <p>The page you are looking for does not exist.</p>
-            <button
-              className="btn"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
+            <button className="btn" onClick={handleButtonClick}>
               Go Back Home
             </button>
           </div>
@@ -94,11 +107,7 @@ const Error = () => {
         <div className="text-wrapper">
           <h3>Something Went Wrong</h3>
           <p>An unexpected error has occurred. Please try again later.</p>
-          <button
-            className="btn"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
+          <button className="btn" onClick={handleButtonClick}>
             Go Back Home
           </button>
         </div>

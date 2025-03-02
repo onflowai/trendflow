@@ -1,12 +1,26 @@
 // HeroAnimated.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import styled, { keyframes } from 'styled-components';
-import CleanedSVG from '../assets/images/logo-hero-03.svg?react'; // Ensure correct suffix
-import CleanedSVGDark from '../assets/images/logo-hero-03-dark.svg?react';
+import LocalCleanedSVG from '../assets/images/logo-hero-03.svg?react'; // Ensure correct suffix
+import LocalCleanedSVGDark from '../assets/images/logo-hero-03-dark.svg?react';
+
+const cdnCleanedSVG = 'https://cdn.trendflowai.com/content/logo-hero-03.svg';
+const cdnCleanedSVGDark =
+  'https://cdn.trendflowai.com/content/logo-hero-03-dark.svg';
 
 const HeroAnimated = () => {
   const { isDarkTheme } = useTheme();
+  const [hasError, setHasError] = useState(false);
+
+  // Determine which CDN URL to use based on the theme
+  const cdnSrc = isDarkTheme ? cdnCleanedSVGDark : cdnCleanedSVG;
+
+  // Dedicated error handler function for the image
+  const handleImageError = () => {
+    setHasError(true);
+  };
+
   return (
     <Container>
       {/* Underlay Gradient */}
@@ -14,7 +28,15 @@ const HeroAnimated = () => {
       {/* SVG Container */}
       <div className="svg-container">
         <StyledSVGWrapper>
-          {isDarkTheme ? <CleanedSVGDark /> : <CleanedSVG />}
+          {hasError ? (
+            isDarkTheme ? (
+              <LocalCleanedSVGDark />
+            ) : (
+              <LocalCleanedSVG />
+            )
+          ) : (
+            <img src={cdnSrc} alt="Logo Hero" onError={handleImageError} />
+          )}
         </StyledSVGWrapper>
       </div>
       {/* Overlay Gradient */}
@@ -86,13 +108,13 @@ const UnderlayGradient = styled.div`
 //   height: 100%;
 //   background: radial-gradient(
 //     135deg,
-//     rgba(255, 126, 95, 0.01), /* Orange with 20% opacity */
-//     rgba(254, 180, 123, 0.08), /* Light orange with 60% opacity */
-//     rgba(255, 126, 95, 0.2), /* Orange with 40% opacity */
-//     rgba(254, 180, 123, 0.1), /* Light orange with 80% opacity */
-//     rgba(95, 159, 255, 0.1)  /* Orange with 30% opacity */
+//     rgba(255, 126, 95, 0.01),
+//     rgba(254, 180, 123, 0.08),
+//     rgba(255, 126, 95, 0.2),
+//     rgba(254, 180, 123, 0.1),
+//     rgba(95, 159, 255, 0.1)
 //   );
-//   background-size: 100% 300% ;
+//   background-size: 100% 300%;
 //   z-index: 1;
 //   animation: ${gradientAnimation} 20s infinite ease-in-out;
 `;
@@ -105,24 +127,15 @@ const OverlayGradient = styled.div`
 //   height: 100%;
 //   background: radial-gradient(
 //     circle,
-//     rgba(106, 17, 203, 0.1), /* Purple with 50% opacity */
-//     rgba(37, 117, 252, 0.1), /* Blue with 70% opacity */
-//     rgba(106, 17, 203, 0.1), /* Purple with 40% opacity */
-//     rgba(37, 117, 252, 0.1), /* Blue with 90% opacity */
-//     rgba(106, 17, 203, 0.3)  /* Purple with 30% opacity */
+//     rgba(106, 17, 203, 0.1),
+//     rgba(37, 117, 252, 0.1),
+//     rgba(106, 17, 203, 0.1),
+//     rgba(37, 117, 252, 0.1),
+//     rgba(106, 17, 203, 0.3)
 //   );
-//   background-size: 200% 200%; /* Allows smooth animation */
+//   background-size: 200% 200%;
 //   z-index: 3;
-//   animation: ${gradientAnimation} 15s infinite ease-in-out; /* Different speed for variety */
-`;
-
-const StyledSVG = styled(CleanedSVG)`
-   width: 100%; /* Scale to the wrapper's width */
-  height: auto; /* Maintain the aspect ratio */
-
-  .wave-path {
-    /* animation: ${waveAnimation} 5s infinite linear; */
-  }
+//   animation: ${gradientAnimation} 15s infinite ease-in-out;
 `;
 
 export default HeroAnimated;
