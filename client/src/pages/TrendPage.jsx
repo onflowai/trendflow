@@ -99,6 +99,25 @@ const TrendPage = () => {
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();
   const setSidebarVisibility = dashboardContext?.setSidebarVisibility; // Fallback
+  const isValidUrl = (url) =>
+    url && url !== 'undefined' && url !== 'null' && url.trim() !== '';
+
+  const moddingTrendSvg = () => {
+    if (isValidUrl(svg_url)) {
+      return svg_url;
+    } // if svg_url is valid return
+    const trendLower = trend?.toLowerCase() || ''; // trend to lower case
+    const trendTechLower = trendTech?.toLowerCase() || ''; //tech to lower case
+    if (
+      techIconUrl &&
+      (trendLower === trendTechLower ||
+        trendLower.includes(trendTechLower) ||
+        trendTechLower.includes(trendLower))
+    ) {
+      return getFullIconUrl(techIconUrl);
+    } // if trend and tech match return techURL
+    return svg_url; //fallback
+  };
 
   const handleBookmarkClick = async (e) => {
     e.stopPropagation();
@@ -119,7 +138,7 @@ const TrendPage = () => {
       };
     }
   }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
-  var boys = undefined;
+
   //list of items used in the row under the chart takes on label, icon, and link and styling
   const items = [
     {
@@ -165,7 +184,7 @@ const TrendPage = () => {
                 data={interestOverTime}
                 forecast={forecast}
                 trend={trend}
-                trendLogo={svg_url}
+                trendLogo={moddingTrendSvg()}
               />
             </div>
             <h4 className="trend-title" id="Guide"></h4>
