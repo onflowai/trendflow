@@ -1,8 +1,10 @@
-#### Complete App
+### <center> trendflow </center>
 
-'According to Kerckhoffs's principle, security should rely on the strength of your cryptographic algorithms and key management—not on keeping your business logic secret.'
+<p align="center">
+  <img src="client/src/assets/images/logo-02.svg" alt="Alt Text" width="100"/>
+</p>
 
-[TrendFlow](https://google.com)
+TrendFlow started as my personal quest to make discovering tech easier for fellow developers. It’s a place where you can stumble upon new tools, frameworks, and open source projects etc. without the usual hassle. I built it with a community-driven approach to help everyone form seasoned devs to beginner devs find exactly what they need or discovering something they did not know existed. With this project the most important thing for me is facilitating open community by providing easy access to dev tools and learning. [trendflow](https://trendflowai.com)
 
 #### Create React APP
 
@@ -130,6 +132,10 @@ export default App;
 # Application Description:
 
 All calls are made in pages, except following components: AddInfoHubModal(hub submit), PaginationComponent(fetch next pagination), SelectTrends (fetch for adding trends to a blog).
+
+# Application Security:
+
+'According to Kerckhoffs's principle, security should rely on the strength of your cryptographic algorithms and key management—not on keeping your business logic secret.'
 
 # Sorting
 
