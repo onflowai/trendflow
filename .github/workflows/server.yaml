@@ -22,7 +22,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: Install Babel CLI
-        run: npm install --save-dev @babel/core @babel/cli
+        run: npm install --global @babel/core @babel/cli
       - name: Build email templates
         run: babel emails --out-dir dist/emails --extensions ".js,.jsx"
       - name: Configure SSH
