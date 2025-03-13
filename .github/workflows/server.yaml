@@ -44,4 +44,4 @@ jobs:
       - name: copy files
         run: rsync -r --delete --exclude=client/** --exclude=.github/** --exclude=.git/ . production:${{ env.DEST_PATH }}
       - name: Restart pm2
-        run: ssh production 'pm2 restart ${DEST_PATH}/ecosystem.config.cjs --env production --update-env'
+        run: ssh production 'pm2 restart ${{ env.DEST_PATH }}/ecosystem.config.cjs --env production --update-env'
