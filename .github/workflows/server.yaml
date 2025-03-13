@@ -42,6 +42,6 @@ jobs:
           SSH_KEY: ${{ secrets.DO_SSH_KEY_TRENDFLOW }}
           SSH_HOST: ${{ secrets.DO_SERVER_IP }}
       - name: copy files
-        run: rsync -r --delete -e "ssh production" --exclude=client/** --exclude=.github/** production:${{ env.DEST_PATH }}
+        run: rsync -r --delete -e "ssh production" --exclude=client/** --exclude=.github/** ./ production:${{ env.DEST_PATH }}
       - name: Restart pm2
         run: ssh production 'pm2 restart ${DEST_PATH}/ecosystem.config.cjs --env production --update-env'
