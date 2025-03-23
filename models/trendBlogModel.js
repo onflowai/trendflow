@@ -43,6 +43,10 @@ const TrendBlogSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

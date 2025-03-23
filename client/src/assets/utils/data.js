@@ -109,7 +109,7 @@ export const services = [
     id: 5,
     icon: '🤍',
     title: 'Safe and Secure',
-    text: 'Built with transparency. TrendFlow is developed by developers and for developers. Visit onflowai github for more.',
+    text: 'Built with transparency. TrendFlow is developed by developers for developers. Visit github.com/onflowai for more.',
   },
   {
     id: 6,

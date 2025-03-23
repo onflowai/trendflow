@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import {
+  updatePost,
+  deletePost,
   createPost,
   getAllPosts,
   getSinglePost,
-  updatePost,
-  deletePost,
+  getPublicPosts,
 } from '../controllers/blogController.js';
 import {
   authenticateUser,
@@ -37,5 +38,5 @@ router.delete(
   authorizedPermissions('delete'),
   deletePost
 ); // Delete a blog post by slug (admin only)
-
+router.get('/public-post', getPublicPosts);
 export default router;

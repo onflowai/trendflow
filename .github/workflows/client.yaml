@@ -3,10 +3,10 @@ name: Trendflow Client CI
 on:
   workflow_dispatch:
   pull_request:
-    branches: ['main']
-    types: ['closed']
-    paths:
-      - client/**
+    # branches: ['main']
+    # types: ['closed']
+    # paths:
+    #   - client/**
 
 env:
   SSH_KEY_PATH: ~/.ssh/id_rsa
