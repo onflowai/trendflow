@@ -23,6 +23,7 @@ router.post(
   createPost
 ); // Create a new blog post (admin only)
 router.get('/', getAllPosts); // Get all blog posts
+router.get('/public', getPublicPosts);
 router.get('/:slug', getSinglePost); // Get a single blog post by slug
 router.patch(
   '/edit/:slug',
@@ -38,5 +39,4 @@ router.delete(
   authorizedPermissions('delete'),
   deletePost
 ); // Delete a blog post by slug (admin only)
-router.get('/public-post', getPublicPosts);
 export default router;

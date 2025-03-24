@@ -3,6 +3,7 @@ import {
   createInfoHub,
   getAllInfoHub,
   deleteInfoHub,
+  getPublicInfoHub,
 } from '../controllers/infoHubController.js';
 import {
   authenticateUser,
@@ -21,6 +22,7 @@ router.post(
   processSVG,
   createInfoHub
 ); //same route can be used as long as it is a different fetch
+router.get('/public', getPublicInfoHub);
 router.get('/', getAllInfoHub);
 router.delete('/delete/:id', authenticateUser, authorizedAdmin, deleteInfoHub);
 

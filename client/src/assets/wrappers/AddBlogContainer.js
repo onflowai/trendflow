@@ -99,6 +99,14 @@ const Container = styled.div`
       flex: 0 0 auto;
     }
 
+    /* .privacy-container > *:not(.privacy-container) {
+      flex: 1 1 auto;
+    } */
+
+    .privacy-container{
+      flex: 0 0 auto;
+    }
+
     .form-btn {
       width: 100px;
       font-size: 0.9rem;

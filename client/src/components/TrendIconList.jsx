@@ -2,10 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
+import { BsCircleFill } from 'react-icons/bs';
 
 const TrendIconList = ({ trends }) => {
   return (
     <Container>
+      {/* Hidden SVG definition for the gradient fill */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <linearGradient id="gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="var(--primary2-300)" />
+            <stop offset="100%" stopColor="var(--primary-300)" />
+          </linearGradient>
+        </defs>
+      </svg>
       {trends.map((trend, index) => (
         <Link
           key={index}
@@ -13,7 +23,23 @@ const TrendIconList = ({ trends }) => {
           className="trend-link"
         >
           <div className="trend-item">
-            <img src={trend.svg_url} alt={trend.trend} className="trend-icon" />
+            {trend.svg_url ? (
+              <img
+                src={trend.svg_url}
+                alt={trend.trend}
+                className="trend-icon"
+              />
+            ) : (
+              <BsCircleFill
+                className="trend-icon"
+                style={{
+                  fill: 'url(#gradient)',
+                  width: '50px',
+                  height: '50px',
+                  marginRight: '1rem',
+                }}
+              />
+            )}
             <div className="trend-title">{trend.trend}</div>
           </div>
         </Link>

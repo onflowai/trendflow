@@ -12,7 +12,7 @@ import { removeDuplicateTrends } from '../utils/duplicateRemover.js';
  */
 export const createPost = async (req, res) => {
   try {
-    let { title, content, trends } = req.body;
+    let { title, content, trends, isPublic } = req.body;
     title = sanitizeHTML(title);
     content = sanitizeHTML(content);
 
@@ -108,7 +108,7 @@ export const getSinglePost = async (req, res) => {
  */
 export const updatePost = async (req, res) => {
   const { slug } = req.params;
-  const { content, trends } = req.body;
+  const { content, trends, isPublic } = req.body;
 
   try {
     if (trends) {
@@ -120,6 +120,7 @@ export const updatePost = async (req, res) => {
       }
     } //validating the trends
     const updateFields = {};
+    if (typeof isPublic === 'boolean') updateFields.isPublic = isPublic;
     if (content) updateFields.content = content;
     if (trends) updateFields.trends = trends;
 
@@ -169,6 +170,13 @@ export const deletePost = async (req, res) => {
   }
 }; //end deletePost
 
+/**
+ * GET PUBLIC POST
+ * fetching posts tagged as public
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const getPublicPosts = async (req, res) => {
   try {
     const publicPosts = await trendBlogModel

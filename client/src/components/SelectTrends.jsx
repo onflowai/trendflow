@@ -3,6 +3,7 @@ import AsyncSelect from 'react-select/async';
 import customFetch from '../utils/customFetch';
 import styled from 'styled-components';
 import { getFullTrendUrl } from '../utils/urlHelper';
+import { BsCircleFill } from 'react-icons/bs';
 /**
  * Used In AddBlog to select trends which will be part of the blog that admin is creating
  * @param {*} param0
@@ -30,6 +31,9 @@ const SelectTrends = ({
         svg_url: trend.svg_url,
         slug: trend.slug,
       }));
+      console.log('trendOptions', trendOptions);
+      console.log('trend', trendOptions.trend);
+      console.log('slug', trendOptions.slug);
       callback(trendOptions);
     } catch (error) {
       console.error('Error fetching trends:', error);
@@ -62,8 +66,8 @@ const SelectTrends = ({
       backgroundColor: state.isSelected
         ? 'lightblue'
         : state.isFocused
-        ? 'lightgray'
-        : provided.backgroundColor,
+          ? 'lightgray'
+          : provided.backgroundColor,
       cursor: 'pointer',
       '&:hover': {
         backgroundColor: 'var(--primary-200)',
@@ -105,11 +109,22 @@ const SelectTrends = ({
           cursor: 'pointer',
         }}
       >
-        <img
-          src={data.svg_url}
-          alt={data.label}
-          style={{ width: '20px', height: '20px', marginRight: '10px' }}
-        />
+        {data.svg_url ? (
+          <img
+            src={data.svg_url}
+            alt={data.label}
+            style={{ width: '20px', height: '20px', marginRight: '10px' }}
+          />
+        ) : (
+          <BsCircleFill
+            style={{
+              width: '20px',
+              height: '20px',
+              marginRight: '10px',
+              fill: 'url(#gradient)',
+            }}
+          />
+        )}
         <span>{data.label}</span>
       </div>
     );
@@ -132,6 +147,14 @@ const SelectTrends = ({
   };
   return (
     <Container>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <linearGradient id="gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="var(--primary2-600)" />
+            <stop offset="100%" stopColor="var(--primary-600)" />
+          </linearGradient>
+        </defs>
+      </svg>
       {labelText && <div className="form-label">{labelText}</div>}
       <AsyncSelect
         className="basic-multi-select"
@@ -143,11 +166,22 @@ const SelectTrends = ({
         onChange={handleChange}
         getOptionLabel={(e) => (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <img
-              src={e.svg_url}
-              alt={e.label}
-              style={{ width: '20px', height: '20px', marginRight: '10px' }}
-            />
+            {e.svg_url ? (
+              <img
+                src={e.svg_url}
+                alt={e.label}
+                style={{ width: '20px', height: '20px', marginRight: '10px' }}
+              />
+            ) : (
+              <BsCircleFill
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  marginRight: '10px',
+                  fill: 'url(#gradient)',
+                }}
+              />
+            )}
             {e.label}
           </div>
         )}

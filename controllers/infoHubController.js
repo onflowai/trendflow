@@ -10,7 +10,7 @@ import cloudinary2 from 'cloudinary';
  * @returns
  */
 export const createInfoHub = async (req, res) => {
-  const { title, description, link } = req.body;
+  const { title, description, link, isPublic } = req.body;
 
   if (!req.file) {
     return res
@@ -33,6 +33,7 @@ export const createInfoHub = async (req, res) => {
       description,
       link,
       svg_img: response.secure_url, // Store the URL of the SVG
+      isPublic: !!isPublic,
     });
 
     await infoHubItem.save(); // Create new InfoHub entry
@@ -76,6 +77,22 @@ export const deleteInfoHub = async (req, res) => {
         .json({ message: 'Info card not found' });
     }
     res.status(StatusCodes.OK).json({ message: 'Info card deleted' });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * GET ALL HUB CARDS
+ * @param {*} req
+ * @param {*} res
+ */
+export const getPublicInfoHub = async (req, res) => {
+  try {
+    const infoHubItems = await infoHubModel.find({ isPublic: true });
+    res.status(StatusCodes.OK).json(infoHubItems);
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

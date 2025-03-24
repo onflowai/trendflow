@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { IoIosClose } from 'react-icons/io';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
-import { CustomErrorToast } from '../components';
+import { CustomErrorToast, ToggleSwitch } from '../components';
 
 const AddInfoHubModal = ({ onClose, onAdd }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [link, setLink] = useState('');
   const [file, setFile] = useState(null);
+  const [isPublic, setIsPublic] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ const AddInfoHubModal = ({ onClose, onAdd }) => {
     formData.append('description', description);
     formData.append('link', link);
     formData.append('file', file);
+    formData.append('isPublic', isPublic ? 'true' : 'false');
 
     try {
       const response = await customFetch.post('/infohub', formData, {
@@ -43,6 +45,10 @@ const AddInfoHubModal = ({ onClose, onAdd }) => {
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
+  };
+
+  const handleToggle = (newValue) => {
+    setIsPublic(newValue);
   };
 
   return (
@@ -88,6 +94,21 @@ const AddInfoHubModal = ({ onClose, onAdd }) => {
                 onChange={(e) => setFile(e.target.files[0])}
                 required
               />
+            </label>
+            <label>
+              <div className="privacy-container">
+                <div className="privacy-toggle">
+                  <p>
+                    {isPublic ? 'Info Hub is Public:' : 'Info Hub is Private:'}
+                  </p>
+                  <ToggleSwitch onToggle={handleToggle} privacy={isPublic} />
+                </div>
+                <input
+                  type="hidden"
+                  name="isPublic"
+                  value={isPublic ? 'true' : 'false'}
+                />
+              </div>
             </label>
             <button className="btn" type="submit">
               Add
