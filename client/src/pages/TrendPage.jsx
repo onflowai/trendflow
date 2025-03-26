@@ -139,6 +139,13 @@ const TrendPage = () => {
     }
   }, [isMobile, setSidebarVisibility]); // ensure this only runs on mount and unmount
 
+  // utility function to build a link with a query param
+  function buildDashboardLink(paramName, paramValue) {
+    const baseURL = '/dashboard';
+    const encodedValue = encodeURIComponent(paramValue);
+    return `${baseURL}?${paramName}=${encodedValue}`;
+  }
+
   //list of items used in the row under the chart takes on label, icon, and link and styling
   const items = [
     {
@@ -152,7 +159,7 @@ const TrendPage = () => {
       ) : (
         <PiHashDuotone />
       ),
-      link: '/dashboard',
+      link: buildDashboardLink('trendTech', trendTech),
       styled: true,
     },
     {
@@ -166,7 +173,7 @@ const TrendPage = () => {
       ) : (
         <PiHashDuotone />
       ),
-      link: '/dashboard',
+      link: buildDashboardLink('trendCategory', trendCategory),
       styled: true,
     },
     { label: trendStatus, icon: <PiTrendUp />, styled: true },

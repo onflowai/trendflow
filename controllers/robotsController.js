@@ -16,7 +16,6 @@ export const serveRobotsTxt = (req, res) => {
 User-agent: *
 Allow: /
 Disallow: /dashboard
-Disallow: /blog
 Disallow: /create-blog
 Disallow: /edit-blog
 Disallow: /submit

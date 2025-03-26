@@ -1,4 +1,5 @@
 import { SitemapStream, streamToPromise } from 'sitemap';
+import trendBlogModel from '../models/trendBlogModel.js';
 import { Readable } from 'stream';
 
 /**
@@ -15,20 +16,20 @@ export const generateSitemap = async (req, res) => {
 
     const links = [
       { url: '/', changefreq: 'monthly', priority: 1.0 },
+      { url: '/blog', changefreq: 'weekly', priority: 0.9 },
       // Add more static URLs here
     ];
 
-    // TODO: Fetch dynamic URLs from your database
-    /*
-    const blogs = await Blog.find({});
-    blogs.forEach(blog => {
+    const publicPosts = await trendBlogModel.find({ isPublic: true }); // query DB for public blog posts
+
+    // fetch dynamic URLs from your database
+    publicPosts.forEach((post) => {
       links.push({
-        url: `/blogs/${blog.slug}`,
+        url: `/blog/${post.slug}`,
         changefreq: 'weekly',
         priority: 0.8,
-      });
+      }); // "url" matches the *front-end* route (ex "/blog/my-post-slug")
     });
-    */
 
     // Create a stream to write to
     const stream = new SitemapStream({

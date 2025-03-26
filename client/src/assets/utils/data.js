@@ -5,10 +5,10 @@ export const version = '1.0.1';
 
 //link used only on the Landing Page
 export const landingLinks = [
-  { id: 1, href: '#home', text: 'home' },
-  { id: 2, href: '#about', text: 'about' },
-  { id: 3, href: '#services', text: 'services' },
-  { id: 4, href: '#trends', text: 'trends' },
+  { id: 1, href: '/blog', text: 'blog' },
+  { id: 2, href: '/#about', text: 'about' },
+  { id: 3, href: '/#services', text: 'services' },
+  { id: 4, href: '/#trends', text: 'trends' },
 ];
 //links used in the SIDEBAR of the dashboard
 export const dashboardLinks = [
@@ -109,7 +109,7 @@ export const services = [
     id: 5,
     icon: '🤍',
     title: 'Safe and Secure',
-    text: 'Built with transparency. TrendFlow is developed by developers and for developers. Visit onflowai github for more.',
+    text: 'Built with transparency. TrendFlow is developed by developers for developers. Visit github.com/onflowai for more.',
   },
   {
     id: 6,

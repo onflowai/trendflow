@@ -4,9 +4,10 @@ import {
   UserImgSmall,
   EditMarkdown,
   SEOProtected,
+  ToggleSwitch,
   FormComponent,
-  TitleHighlighter,
   CustomErrorToast,
+  TitleHighlighter,
   CustomSuccessToast,
 } from '../components';
 import Container from '../assets/wrappers/AddBlogContainer';
@@ -95,6 +96,7 @@ const AddBlog = () => {
   const [content, setContent] = useState(blog ? blog.content : '');
   const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
+  const [isPublic, setIsPublic] = useState(blog ? blog.isPublic : false);
 
   useEffect(() => {
     if (blog) {
@@ -117,6 +119,10 @@ const AddBlog = () => {
     } catch (error) {
       toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
     }
+  };
+
+  const handleToggle = (newValue) => {
+    setIsPublic(newValue);
   };
 
   return (
@@ -179,6 +185,17 @@ const AddBlog = () => {
                   }}
                   placeholder="Search"
                 />
+                <div className="privacy-container">
+                  <div className="privacy-toggle">
+                    <p>{isPublic ? 'Blog is Public:' : 'Blog is Private:'}</p>
+                    <ToggleSwitch onToggle={handleToggle} privacy={isPublic} />
+                  </div>
+                  <input
+                    type="hidden"
+                    name="isPublic"
+                    value={isPublic ? 'true' : 'false'}
+                  />
+                </div>
                 <div className="submit-btn-container">
                   <button
                     type="submit"

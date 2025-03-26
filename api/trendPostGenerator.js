@@ -32,7 +32,7 @@ export const generatePostContent = async (trend, trendCategory, trendTech) => {
   // Generate the Startup/How-To Blog Post using using gpt with newest training data gpt-3.5-turbo
   try {
     const blogPostResponse = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-turbo',
       temperature: 0.7,
       max_tokens: MAX_TOKENS_POST,
       messages: [

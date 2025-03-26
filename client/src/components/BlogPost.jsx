@@ -8,10 +8,20 @@ import DangerousMarkdown from './DangerousMarkdown';
 import { truncateMarkdown } from '../utils/helpers';
 import { RiEdit2Fill } from 'react-icons/ri';
 
-function BlogPost({ title, content, slug, trends, author, user, updatedAt }) {
+function BlogPost({
+  title,
+  content,
+  slug,
+  trends,
+  author,
+  user,
+  updatedAt,
+  isPublic = false,
+}) {
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 200);
   const isAuthor = user?.role === 'admin' && user._id === author._id;
+  const linkBase = isPublic ? '/blog' : '/dashboard/blog';
   return (
     <Container className="blog-item">
       <div className="content-wrapper">
@@ -24,7 +34,7 @@ function BlogPost({ title, content, slug, trends, author, user, updatedAt }) {
               </Link>
             )}
             {/* BLOG LINK */}
-            <Link to={`/dashboard/blog/${slug}`} className="blog-link">
+            <Link to={`${linkBase}/${slug}`} className="blog-link">
               <div className="blog-title">{title}</div>
             </Link>
           </div>

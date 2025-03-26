@@ -113,7 +113,7 @@ const Blog = () => {
           )}
         </div>
         <div className="blog-content">
-          <BlogPostList posts={posts} user={user} />
+          <BlogPostList posts={posts} user={user} isPublic={false} />
         </div>
       </div>
     </Container>

@@ -1,23 +1,25 @@
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import {
-  HomeLayout,
+  Blog,
+  Admin,
+  Error,
+  Login,
+  Profile,
+  AddBlog,
   Landing,
   Register,
-  Login,
-  DashboardLayout,
-  EditTrend,
-  TrendPage,
-  Error,
   AddTrend,
-  AllTrends,
-  Profile,
-  Admin,
-  Blog,
-  AddBlog,
   BlogPage,
   Settings,
+  EditTrend,
+  TrendPage,
+  AllTrends,
+  LandingBlog,
+  LandingBlogPage,
+  DashboardLayout,
   LandingEmailVerify,
+  HomeLayout,
 } from './pages';
 import { UserProvider } from './context/UserContext.jsx';
 import PublicLayout from './layouts/PublicLayout'; // layout for public routes
@@ -56,6 +58,8 @@ import { action as createBlogAction } from './pages/AddBlog';
 import { action as editBlogAction } from './pages/AddBlog';
 import { loader as allStatsLoader } from './pages/Settings';
 import { loader as landingLoader } from './pages/Landing';
+import { loader as landingBlogLoader } from './pages/LandingBlog';
+import { loader as landingBlogPageLoader } from './pages/LandingBlogPage';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -81,10 +85,20 @@ const router = createBrowserRouter([
         action: loginAction,
       },
       { path: 'verify-email', element: <LandingEmailVerify /> },
+      {
+        path: 'blog',
+        element: <LandingBlog />,
+        loader: landingBlogLoader,
+      },
+      {
+        path: 'blog/:slug',
+        element: <LandingBlogPage />,
+        loader: landingBlogPageLoader,
+      },
     ],
   },
   {
-    path: '/',
+    path: '/dashboard',
     element: (
       <UserProvider>
         <ProtectedLayout />
@@ -93,7 +107,7 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       {
-        path: 'dashboard',
+        path: '',
         element: <DashboardLayout />,
         loader: dashboardLoader,
         children: [

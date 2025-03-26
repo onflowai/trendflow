@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import {
+  updatePost,
+  deletePost,
   createPost,
   getAllPosts,
   getSinglePost,
-  updatePost,
-  deletePost,
+  getPublicPosts,
+  getSinglePublicBlog,
 } from '../controllers/blogController.js';
 import {
   authenticateUser,
@@ -22,7 +24,9 @@ router.post(
   createPost
 ); // Create a new blog post (admin only)
 router.get('/', getAllPosts); // Get all blog posts
-router.get('/:slug', getSinglePost); // Get a single blog post by slug
+router.get('/public', getPublicPosts);
+router.get('/public/:slug', getSinglePublicBlog);
+router.get('/:slug', authenticateUser, getSinglePost); // Get a single blog post by slug
 router.patch(
   '/edit/:slug',
   authenticateUser,
@@ -37,5 +41,4 @@ router.delete(
   authorizedPermissions('delete'),
   deletePost
 ); // Delete a blog post by slug (admin only)
-
 export default router;

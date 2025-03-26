@@ -12,9 +12,10 @@ import { removeDuplicateTrends } from '../utils/duplicateRemover.js';
  */
 export const createPost = async (req, res) => {
   try {
-    let { title, content, trends } = req.body;
+    let { title, content, trends, isPublic } = req.body;
     title = sanitizeHTML(title);
     content = sanitizeHTML(content);
+
     const author = req.user.userID; // populating author with userID from the authenticated user
     const validTrends = await trendModel.find({ _id: { $in: trends } });
     if (validTrends.length !== trends.length) {
@@ -22,7 +23,13 @@ export const createPost = async (req, res) => {
         message: 'One or more trends are invalid.',
       }); // validating trends
     }
-    const newPost = new trendBlogModel({ title, content, author, trends });
+    const newPost = new trendBlogModel({
+      title,
+      content,
+      author,
+      trends,
+      isPublic: !!isPublic,
+    });
     await newPost.save();
     res.status(StatusCodes.CREATED).json(newPost);
   } catch (error) {
@@ -92,6 +99,42 @@ export const getSinglePost = async (req, res) => {
       .json({ message: error.message });
   }
 }; //end getSinglePost
+
+/**
+ * GET PUBLIC SINGLE POST
+ * Get a single blog post by slug
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const getSinglePublicBlog = async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const post = await trendBlogModel
+      .findOne({ slug, isPublic: true })
+      .populate('author')
+      .populate({
+        path: 'trends',
+        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+      });
+    if (!post) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Post not found or not public' });
+    }
+    const uniqueTrends = removeDuplicateTrends(post.trends);
+    const processedPost = {
+      ...post.toObject(),
+      trends: uniqueTrends,
+    };
+    res.status(StatusCodes.OK).json(processedPost);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+}; //end getSinglePublicBlog
+
 /**
  * UPDATE POST
  * Update a blog post by slug (admin only)
@@ -101,7 +144,7 @@ export const getSinglePost = async (req, res) => {
  */
 export const updatePost = async (req, res) => {
   const { slug } = req.params;
-  const { content, trends } = req.body;
+  const { content, trends, isPublic } = req.body;
 
   try {
     if (trends) {
@@ -112,9 +155,18 @@ export const updatePost = async (req, res) => {
         });
       }
     } //validating the trends
+
     const updateFields = {};
-    if (content) updateFields.content = content;
-    if (trends) updateFields.trends = trends;
+    if (typeof isPublic === 'boolean') {
+      updateFields.isPublic = isPublic;
+    }
+    if (content) {
+      content = sanitizeHTML(content);
+      updateFields.content = content;
+    }
+    if (trends) {
+      updateFields.trends = trends;
+    }
 
     const updatedPost = await trendBlogModel
       .findOneAndUpdate({ slug }, updateFields, { new: true })
@@ -161,3 +213,33 @@ export const deletePost = async (req, res) => {
       .json({ message: error.message });
   }
 }; //end deletePost
+
+/**
+ * GET PUBLIC POST
+ * fetching posts tagged as public
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const getPublicPosts = async (req, res) => {
+  try {
+    const publicPosts = await trendBlogModel
+      .find({ isPublic: true })
+      .populate('author')
+      .populate({
+        path: 'trends',
+        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+      }); // only fetching posts where isPublic = true
+
+    const processedPosts = publicPosts.map((post) => {
+      const uniqueTrends = removeDuplicateTrends(post.trends);
+      return { ...post.toObject(), trends: uniqueTrends };
+    });
+
+    res.status(StatusCodes.OK).json(processedPosts);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+};
