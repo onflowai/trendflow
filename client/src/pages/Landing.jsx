@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Container from '../assets/wrappers/LandingPageContainer';
 import customFetch from '../utils/customFetch';
-import { Link, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
 import { toast } from 'react-toastify';
 import {
@@ -55,7 +60,36 @@ export const loader = async () => {
     );
   }
 };
+
+const scrollToHash = (hash) => {
+  const element = document.getElementById(hash);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
+const useScrollToHash = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const hash = location.hash.substring(1); // remove the '#'
+      const interval = setInterval(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          scrollToHash(hash);
+          clearInterval(interval);
+        }
+      }, 100);
+
+      // stop polling after 3s just in case
+      setTimeout(() => clearInterval(interval), 3000);
+    }
+  }, [location]);
+};
+
 const Landing = () => {
+  useScrollToHash();
   const navigate = useNavigate();
   const {
     trends: initialTrendsData,
@@ -162,6 +196,7 @@ const Landing = () => {
         <LandingHero guestUser={guestUser} />
         <LandingServices />
         <LandingAbout />
+        <section id="trends"></section>
         <div className="featured-trends">
           {isMobile ? (
             <FeaturedTrendsMobile featuredTrends={trends} />

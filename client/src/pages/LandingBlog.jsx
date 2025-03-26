@@ -5,7 +5,16 @@ import styled from 'styled-components';
 
 import Container from '../assets/wrappers/BlogContainer';
 import customFetch from '../utils/customFetch';
-import { CarouselCards, BlogPostList } from '../components';
+import {
+  SEO,
+  CarouselCards,
+  BlogPostList,
+  LandingNavbar,
+  LandingFooter,
+  StructuredData,
+} from '../components';
+
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
 export const loader = async () => {
   try {
@@ -16,13 +25,12 @@ export const loader = async () => {
 
     const posts = postsResponse.data;
     const infoHubItems = infoHubResponse.data;
-
     return { posts, infoHubItems };
   } catch (error) {
     toast.error('Failed to load blog posts or infoHub items');
     return { error: error.message };
   }
-};
+}; // loader fetches public blogs + public info hub items
 
 const LandingBlog = () => {
   const { posts, infoHubItems, error } = useLoaderData();
@@ -38,52 +46,74 @@ const LandingBlog = () => {
           (author, idx, arr) =>
             author && arr.findIndex((a) => a._id === author._id) === idx
         )
-    : [];
+    : []; // unique authors if you want a “Contributors” section
+
+  const currentDate = new Date().toLocaleDateString();
 
   return (
-    <Container>
+    <LandingContainer>
+      <SEO
+        title="TrendFlow - Public Blog"
+        description="Explore the latest tech news, info hubs, and developer updates."
+        url={`${FRONTEND_BASE_URL}/blog`}
+        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
+      />
+      <StructuredData />
+      <div className="container">
+        <LandingNavbar />
+      </div>
       <div className="carousel-section">
-        <CarouselCards infoHubItems={infoHubItems} />
+        <div className="carousel-container">
+          <CarouselCards infoHubItems={infoHubItems} />
+        </div>
       </div>
-
       <div className="blog-container">
-        {authors.length > 0 && (
-          <div className="contributors">
-            <h3>Contributors</h3>
-            <div className="author-list">
-              {authors.map((author) => (
-                <img
-                  key={author._id}
-                  src={author.profile_img}
-                  alt={author.username}
-                  className="author-img"
-                />
-              ))}
-            </div>
+        <div className="admin-section">
+          <div className="contributors">Contributors:</div>
+          <div className="author-list">
+            {authors.map((author) => (
+              <img
+                key={author._id}
+                src={author.profile_img}
+                alt={author.username}
+                className="author-img"
+              />
+            ))}
           </div>
-        )}
-
-        <BlogPostList posts={posts} />
+          <div className="line" />
+          <div className="current-date">{currentDate}</div>
+        </div>
+        <div className="blog-content">
+          <BlogPostList posts={posts} isPublic={true} />
+        </div>
       </div>
-    </Container>
+      <LandingFooter />
+    </LandingContainer>
   );
 };
 
 export default LandingBlog;
 
 const LandingContainer = styled(Container)`
+  .container {
+
+  }
+
   .carousel-section {
-    margin-bottom: 2rem;
+    margin-top: 5rem;
+    margin: 2rem 0;
   }
 
   .contributors {
-    margin-bottom: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
   }
 
   .author-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .author-img {
@@ -92,4 +122,5 @@ const LandingContainer = styled(Container)`
     border-radius: 50%;
     object-fit: cover;
   }
+
 `;

@@ -99,6 +99,42 @@ export const getSinglePost = async (req, res) => {
       .json({ message: error.message });
   }
 }; //end getSinglePost
+
+/**
+ * GET PUBLIC SINGLE POST
+ * Get a single blog post by slug
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const getSinglePublicBlog = async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const post = await trendBlogModel
+      .findOne({ slug, isPublic: true })
+      .populate('author')
+      .populate({
+        path: 'trends',
+        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+      });
+    if (!post) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'Post not found or not public' });
+    }
+    const uniqueTrends = removeDuplicateTrends(post.trends);
+    const processedPost = {
+      ...post.toObject(),
+      trends: uniqueTrends,
+    };
+    res.status(StatusCodes.OK).json(processedPost);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: error.message });
+  }
+}; //end getSinglePublicBlog
+
 /**
  * UPDATE POST
  * Update a blog post by slug (admin only)

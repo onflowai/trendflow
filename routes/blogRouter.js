@@ -6,6 +6,7 @@ import {
   getAllPosts,
   getSinglePost,
   getPublicPosts,
+  getSinglePublicBlog,
 } from '../controllers/blogController.js';
 import {
   authenticateUser,
@@ -24,7 +25,8 @@ router.post(
 ); // Create a new blog post (admin only)
 router.get('/', getAllPosts); // Get all blog posts
 router.get('/public', getPublicPosts);
-router.get('/:slug', getSinglePost); // Get a single blog post by slug
+router.get('/public/:slug', getSinglePublicBlog);
+router.get('/:slug', authenticateUser, getSinglePost); // Get a single blog post by slug
 router.patch(
   '/edit/:slug',
   authenticateUser,

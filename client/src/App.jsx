@@ -16,6 +16,7 @@ import {
   TrendPage,
   AllTrends,
   LandingBlog,
+  LandingBlogPage,
   DashboardLayout,
   LandingEmailVerify,
   HomeLayout,
@@ -58,6 +59,7 @@ import { action as editBlogAction } from './pages/AddBlog';
 import { loader as allStatsLoader } from './pages/Settings';
 import { loader as landingLoader } from './pages/Landing';
 import { loader as landingBlogLoader } from './pages/LandingBlog';
+import { loader as landingBlogPageLoader } from './pages/LandingBlogPage';
 
 //Route function (provided by react) contains routs as objects in an array
 //which displays what is shown in the url of the page ("/" is a home page)
@@ -88,10 +90,15 @@ const router = createBrowserRouter([
         element: <LandingBlog />,
         loader: landingBlogLoader,
       },
+      {
+        path: 'blog/:slug',
+        element: <LandingBlogPage />,
+        loader: landingBlogPageLoader,
+      },
     ],
   },
   {
-    path: '/',
+    path: '/dashboard',
     element: (
       <UserProvider>
         <ProtectedLayout />
@@ -100,7 +107,7 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       {
-        path: 'dashboard',
+        path: '',
         element: <DashboardLayout />,
         loader: dashboardLoader,
         children: [
