@@ -155,10 +155,18 @@ export const updatePost = async (req, res) => {
         });
       }
     } //validating the trends
+
     const updateFields = {};
-    if (typeof isPublic === 'boolean') updateFields.isPublic = isPublic;
-    if (content) updateFields.content = content;
-    if (trends) updateFields.trends = trends;
+    if (typeof isPublic === 'boolean') {
+      updateFields.isPublic = isPublic;
+    }
+    if (content) {
+      content = sanitizeHTML(content);
+      updateFields.content = content;
+    }
+    if (trends) {
+      updateFields.trends = trends;
+    }
 
     const updatedPost = await trendBlogModel
       .findOneAndUpdate({ slug }, updateFields, { new: true })
