@@ -7,11 +7,9 @@ WORKDIR /app
 
 RUN npm install
 
-WORKDIR /app/client
+RUN cd client && npm install && NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
-RUN npm install && NODE_OPTIONS="--max-old-space-size=4096" npm run build
-
-ENTRYPOINT npm run dev --host
+ENTRYPOINT npm run preview
 
 EXPOSE 5100
 
