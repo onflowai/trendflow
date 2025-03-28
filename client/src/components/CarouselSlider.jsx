@@ -8,8 +8,42 @@ import { BsCircleFill } from 'react-icons/bs';
 /**
  * CarouselSlider takes on Trend object takes the url_svg which is in the object puts it into
  * slider with slider controls and adds the slug as a link to the respective trend page
+ * NOTE: if svg_url present it uses it if `trend` matches `trendTech` (ignoring case), use `techIconUrl`
+ * otherwise CarouselSlider returns `null`
  * @param {*} param0
  * @returns
+ */
+
+const isValidUrl = (url) =>
+  url && url !== 'undefined' && url !== 'null' && url.trim() !== '';
+
+function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
+  const trendLower = trend?.toLowerCase() || '';
+  const trendTechLower = trendTech?.toLowerCase() || '';
+
+  // 1) If `svg_url` is valid, use it
+  if (isValidUrl(svg_url)) {
+    return svg_url;
+  }
+
+  // 2) If `trend` matches or includes `trendTech`, use `techIconUrl` if valid
+  if (
+    isValidUrl(techIconUrl) &&
+    (trendLower === trendTechLower ||
+      trendLower.includes(trendTechLower) ||
+      trendTechLower.includes(trendLower))
+  ) {
+    return getFullIconUrl(techIconUrl);
+  }
+
+  // 3) Otherwise, fallback to `null` so we display the circle icon
+  return null;
+}
+
+/**
+ * CarouselSlider:
+ * Renders a slider of `trends`, each with a link to its trend page
+ * and logic for determining which icon (svg_url, techIconUrl, or fallback) to display.
  */
 const CarouselSlider = ({ trends }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,10 +59,10 @@ const CarouselSlider = ({ trends }) => {
   };
 
   const currentTrend = trends[currentIndex];
+  const iconUrl = getTrendIconUrl(currentTrend); // pick the correct icon
 
   return (
     <SliderContainer>
-      {/* Hidden SVG definition for the gradient fill */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
         <defs>
           <linearGradient id="gradient" x1="100%" y1="100%" x2="0%" y2="0%">
@@ -41,9 +75,9 @@ const CarouselSlider = ({ trends }) => {
       <div className="slider">
         <Tooltip description={currentTrend.trend} xOffset={-35} yOffset={-90}>
           <Link to={getFullTrendUrl(currentTrend.slug)}>
-            {currentTrend.svg_url ? (
+            {iconUrl ? (
               <img
-                src={currentTrend.svg_url}
+                src={iconUrl}
                 alt={currentTrend.trend}
                 className="trend-icon"
               />
@@ -79,7 +113,7 @@ const SliderContainer = styled.div`
   .trend-icon {
     width: 50px;
     height: 50px;
-    transition: transform 0.3s ease-in-out; /* Quick slide animation */
+    transition: transform 0.3s ease-in-out;
   }
 
   .arrow {

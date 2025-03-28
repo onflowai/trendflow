@@ -4,6 +4,31 @@ import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
 import { BsCircleFill } from 'react-icons/bs';
 
+const isValidUrl = (url) =>
+  url && url !== 'undefined' && url !== 'null' && url.trim() !== '';
+
+function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
+  // 1) svg_url
+  if (isValidUrl(svg_url)) {
+    return svg_url;
+  }
+
+  // 2) If the trend name matches or includes trendTech
+  const trendLower = trend?.toLowerCase() || '';
+  const trendTechLower = trendTech?.toLowerCase() || '';
+  if (
+    isValidUrl(techIconUrl) &&
+    (trendLower === trendTechLower ||
+      trendLower.includes(trendTechLower) ||
+      trendTechLower.includes(trendLower))
+  ) {
+    return getFullIconUrl(techIconUrl);
+  }
+
+  // 3) Fallback (null => gradient circle)
+  return null;
+}
+
 const TrendIconList = ({ trends }) => {
   return (
     <Container>
@@ -16,34 +41,38 @@ const TrendIconList = ({ trends }) => {
           </linearGradient>
         </defs>
       </svg>
-      {trends.map((trend, index) => (
-        <Link
-          key={index}
-          to={getFullTrendUrl(trend.slug)}
-          className="trend-link"
-        >
-          <div className="trend-item">
-            {trend.svg_url ? (
-              <img
-                src={trend.svg_url}
-                alt={trend.trend}
-                className="trend-icon"
-              />
-            ) : (
-              <BsCircleFill
-                className="trend-icon"
-                style={{
-                  fill: 'url(#gradient)',
-                  width: '50px',
-                  height: '50px',
-                  marginRight: '1rem',
-                }}
-              />
-            )}
-            <div className="trend-title">{trend.trend}</div>
-          </div>
-        </Link>
-      ))}
+      {trends.map((trendItem, index) => {
+        const iconUrl = getTrendIconUrl(trendItem);
+
+        return (
+          <Link
+            key={index}
+            to={getFullTrendUrl(trendItem.slug)}
+            className="trend-link"
+          >
+            <div className="trend-item">
+              {iconUrl ? (
+                <img
+                  src={iconUrl}
+                  alt={trendItem.trend}
+                  className="trend-icon"
+                />
+              ) : (
+                <BsCircleFill
+                  className="trend-icon"
+                  style={{
+                    fill: 'url(#gradient)',
+                    width: '50px',
+                    height: '50px',
+                    marginRight: '1rem',
+                  }}
+                />
+              )}
+              <div className="trend-title">{trendItem.trend}</div>
+            </div>
+          </Link>
+        );
+      })}
     </Container>
   );
 };

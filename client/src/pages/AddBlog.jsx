@@ -97,6 +97,7 @@ const AddBlog = () => {
   const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
   const [isPublic, setIsPublic] = useState(blog ? blog.isPublic : false);
+  console.log('isPublic', isPublic);
 
   useEffect(() => {
     if (blog) {
@@ -190,11 +191,7 @@ const AddBlog = () => {
                     <p>{isPublic ? 'Blog is Public:' : 'Blog is Private:'}</p>
                     <ToggleSwitch onToggle={handleToggle} privacy={isPublic} />
                   </div>
-                  <input
-                    type="hidden"
-                    name="isPublic"
-                    value={isPublic ? 'true' : 'false'}
-                  />
+                  <input type="hidden" name="isPublic" value={isPublic} />
                 </div>
                 <div className="submit-btn-container">
                   <button
