@@ -186,7 +186,8 @@ const Landing = () => {
         title="TrendFlow - Find Tech Trends"
         description="TrendFlow helps you track the latest trends in tech."
         url={FRONTEND_BASE_URL}
-        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/public/og-image-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">
