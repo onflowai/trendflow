@@ -46,10 +46,14 @@ export const createPost = async (req, res) => {
  */
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await trendBlogModel.find().populate('author').populate({
-      path: 'trends',
-      select: 'trend slug trendTech techIconUrl svg_url trendCategory',
-    });
+    const posts = await trendBlogModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate('author')
+      .populate({
+        path: 'trends',
+        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+      });
     const processedPosts = posts.map((post) => {
       const uniqueTrends = removeDuplicateTrends(post.trends); //removing duplicates
       return {
@@ -225,6 +229,7 @@ export const getPublicPosts = async (req, res) => {
   try {
     const publicPosts = await trendBlogModel
       .find({ isPublic: true })
+      .sort({ createdAt: -1 })
       .populate('author')
       .populate({
         path: 'trends',

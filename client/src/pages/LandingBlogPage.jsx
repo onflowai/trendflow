@@ -22,6 +22,7 @@ import { getFullIconUrl } from '../utils/urlHelper';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 day.extend(advancedFormat);
+const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
 export const loader = async ({ params }) => {
   const { slug } = params;
@@ -72,8 +73,11 @@ const LandingBlogPage = () => {
   return (
     <LandingContainer>
       <SEO
-        title={title || 'Public Blog'}
+        title={title || 'trendflow blog'}
         description={`trendflow blog: ${title}`}
+        url={`${FRONTEND_BASE_URL}/${title}`}
+        img_large={`${FRONTEND_BASE_URL}/public/og-image-blog-page.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/public/og-image-blog-page-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">
