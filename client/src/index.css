@@ -169,6 +169,10 @@ html {
   --input-highlighted-focus: var(--primary-100);
   --input-highlighted-valid: var(--white);
   --input-border-highlighted-valid: var(--primary-100);
+  /* BLOG LIGHT */
+  --blog-code-block-background: var(--grey-50);
+  --blog-text-heading-h1-color: var(--primary-800);
+  --blog-text-headings-color: var(--primary-300);
 
   /* DARK MODE */
   --dark-mode-bg-color: #151515;
@@ -268,6 +272,10 @@ html {
   --input-highlighted-focus: var(--primary-400);
   --input-highlighted-valid: #1d1d1d;
   --input-border-highlighted-valid: var(--primary-500);
+  /* BLOG DARK */
+  --blog-code-block-background: var(--primary3-200);
+  --blog-text-heading-h1-color: var(--primary-100);
+  --blog-text-headings-color: var(--primary3-500);
 
   /* LOGO HOVER (Dark Mode) */
   --logo-text-gradient: linear-gradient(
