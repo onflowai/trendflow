@@ -28,7 +28,7 @@ export const createPost = async (req, res) => {
       content,
       author,
       trends,
-      isPublic: !!isPublic,
+      isPublic: isPublic,
     });
     await newPost.save();
     res.status(StatusCodes.CREATED).json(newPost);
