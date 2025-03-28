@@ -122,10 +122,11 @@ const Register = () => {
   return (
     <Container>
       <SEO
-        title="TrendFlow - Find Tech Trends"
-        description="TrendFlow helps you track the latest trends in tech."
+        title="TrendFlow - Create Account"
+        description="Register: TrendFlow and track the latest trends in tech."
         url={`${FRONTEND_BASE_URL}/register`}
-        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/public/og-image-register.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/public/og-image-register-twitter.jpg`}
       />
       <Form method="post" className="form">
         <Logo />

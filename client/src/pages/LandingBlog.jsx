@@ -53,10 +53,11 @@ const LandingBlog = () => {
   return (
     <LandingContainer>
       <SEO
-        title="TrendFlow - Public Blog"
-        description="Explore the latest tech news, info hubs, and developer updates."
+        title="TrendFlow - Blog"
+        description="Explore the latest tech news, and developer updates."
         url={`${FRONTEND_BASE_URL}/blog`}
-        image={`${FRONTEND_BASE_URL}/public/og-image.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/public/og-image-blog.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/public/og-image-login-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">
