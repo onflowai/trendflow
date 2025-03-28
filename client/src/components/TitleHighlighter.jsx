@@ -11,7 +11,7 @@ const TitleHighlighter = ({ title }) => {
   const isMobile = useWindowSize();
 
   useEffect(() => {
-    const maxLength = isMobile ? 60 : 80;
+    const maxLength = isMobile ? 55 : 70;
     const truncatedTitle =
       title.length > maxLength ? title.slice(0, maxLength) + '...' : title;
     const containerWidth = containerRef.current.offsetWidth;
