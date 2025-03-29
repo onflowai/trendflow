@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "setup-project": "npm install && cd client && npm install",
-    "server": "nodemon --legacy-watch server.js",
+    "server": "nodemon server.js",
     "start-server": "NODE_ENV=production node server.js",
     "client": "cd client && npm run dev",
     "dev": "NODE_ENV=development concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
