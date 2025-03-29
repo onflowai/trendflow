@@ -4,12 +4,22 @@
   "description": "[TrendFlow](https://trendflowai.com)",
   "main": "server.js",
   "type": "module",
+  "os": [
+    "linux",
+    "darwin"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "scripts": {
     "setup-project": "npm install && cd client && npm install",
     "server": "nodemon server.js",
     "start-server": "NODE_ENV=production node server.js",
     "client": "cd client && npm run dev",
+    "client-preview": "cd client && npm run preview",
     "dev": "NODE_ENV=development concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "preview": "NODE_ENV=development concurrently --kill-others-on-fail \"npm run start-server\" \"npm run client-preview\"",
     "build": "npm run client",
     "build:emails": "babel emails --out-dir dist/emails --extensions \".js,.jsx\"",
     "start": "npm run build && npm run start-server",
