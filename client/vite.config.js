@@ -24,23 +24,23 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5100/api',
+        target: 'http://server:5100/api',
         changeOrigin: true, //CORS policy temporary fix
         rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
       },
       '/assets': {
-        target: 'http://localhost:5100',
+        target: 'http://server:5100',
         changeOrigin: true,
         rewrite: (path) => path, // no rewrite needed
       },
       '/sitemap.xml': {
-        target: 'http://localhost:5100',
+        target: 'http://server:5100',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
       },
       '/robots.txt': {
-        target: 'http://localhost:5100',
+        target: 'http://server:5100',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
