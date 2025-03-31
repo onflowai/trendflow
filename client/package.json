@@ -4,12 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
-    "build:dev": "vite build --mode development",
-    "build": "vite build --mode production",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite --mode development --host",
-    "docker:build": "NODE_OPTIONS='--max-old-space-size=4096' vite build --mode production"
+    "start": "vite --mode ${ENVIRONMENT:-development} --host",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build --mode ${ENVIRONMENT:-development}",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",

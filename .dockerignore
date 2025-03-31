@@ -3,3 +3,5 @@
 *docker-compose*
 node_modules
 dist
+py_scripts
+lightning_logs

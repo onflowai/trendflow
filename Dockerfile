@@ -5,11 +5,17 @@ COPY . /app
 
 WORKDIR /app
 
+# Install server dependencies
 RUN npm install && npm run build:emails
 
+# Install client dependencies
 RUN cd client && npm install && NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
-ENTRYPOINT npm run preview
+ENV ENVIRONMENT ""
+
+USER 1000
+
+ENTRYPOINT npm run start
 
 EXPOSE 5100
 
