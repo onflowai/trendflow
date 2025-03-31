@@ -14,7 +14,7 @@ import svgr from 'vite-plugin-svgr';
 
 // This doesn't seem to be working. I think we need to follow this to allow the variable to be set in the Vite config
 // https://vite.dev/config/#using-environment-variables-in-config
-const SERVER_URL = process.env.VITE_SERVER_URL || 'http://server:5100';
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:5100';
 
 export default defineConfig({
   plugins: [
