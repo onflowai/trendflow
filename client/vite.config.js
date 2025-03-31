@@ -10,6 +10,12 @@ import svgr from 'vite-plugin-svgr';
  * Lazy Loading: Implement lazy loading for non-critical SVGs and images to defer their loading until they are needed.
  */
 // https://vitejs.dev/config/
+
+
+// This doesn't seem to be working. I think we need to follow this to allow the variable to be set in the Vite config
+// https://vite.dev/config/#using-environment-variables-in-config
+const SERVER_URL = process.env.VITE_SERVER_URL || 'http://server:5100';
+
 export default defineConfig({
   plugins: [
     react(),
@@ -24,23 +30,23 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://server:5100/api',
+        target: `${SERVER_URL}/api`,
         changeOrigin: true, //CORS policy temporary fix
         rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
       },
       '/assets': {
-        target: 'http://server:5100',
+        target: SERVER_URL,
         changeOrigin: true,
         rewrite: (path) => path, // no rewrite needed
       },
       '/sitemap.xml': {
-        target: 'http://server:5100',
+        target: SERVER_URL,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
       },
       '/robots.txt': {
-        target: 'http://server:5100',
+        target: SERVER_URL,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
