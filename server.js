@@ -118,11 +118,7 @@ if (env === 'development') {
   app.use(morgan('dev'));
 } // HTTP request logger middleware for development
 if (env === 'production') {
-  const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, 'access.log'),
-    { flags: 'a' }
-  );
-  app.use(morgan('combined', { stream: accessLogStream }));
+  app.use(morgan('combined', { stream: process.stdout }));
 } //logging and monitoring
 
 app.use('/assets', express.static(path.join(__dirname, 'assets'))); //serving static assets from the assets folder

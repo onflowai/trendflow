@@ -1,7 +1,6 @@
 version: "3.9"
 services:
   client:
-    user: root
     image: trendflowai-client:latest
     container_name: trendflowai-client
     build:
@@ -18,7 +17,6 @@ services:
       - trendflow
 
   server:
-    user: root
     image: trendflowai-server:latest
     container_name: trendflowai-server
     build:
