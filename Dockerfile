@@ -12,6 +12,6 @@ ENV ENVIRONMENT ""
 
 USER 1000
 
-ENTRYPOINT npm run start:server
+CMD npm run start:server
 
 EXPOSE 5100
