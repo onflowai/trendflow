@@ -168,15 +168,59 @@ app.use('/api/v1/test', (req, res) => {
 
 // Serve React App in Production
 if (env === 'production') {
-  // Serve static files from the React app
-  app.use(express.static(path.join(__dirname, 'client', 'dist')));
+  app.use(express.static(path.join(__dirname, 'client', 'dist', 'client'))); // serving static files from the React app's build directory
+  // handling all GET requests:
+  app.get('*', async (req, res) => {
+    // checking if the request is for a non-public route: "/dashboard" is non-public
+    if (req.originalUrl.startsWith('/dashboard')) {
+      res.sendFile(
+        path.join(__dirname, 'client', 'dist', 'client', 'index.html')
+      ); // for non-public routes serve the static client bundle
+    } else {
+      // public SSR
+      try {
+        // for public routes using SSR:
+        //const { render } = await import('./client/dist/server/entry-server.js'); //NOTE: must build the SSR bundle first 'npm run build:ssr'
+        const { render } = await import(
+          path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
+        );
 
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+        const { appHtml, helmetContext } = await render(req.originalUrl);
+        const html = `<!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            ${helmetContext.helmet.title.toString()}
+            ${helmetContext.helmet.meta.toString()}
+            <!-- additional links to stylesheets here: -->
+            <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+            <link rel="shortcut icon" href="/favicon.ico">
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css"
+            integrity="sha512-c93ifPoTvMdEJH/rKIcBx//AL1znq9+4/RmMGafI/vnTFe/dKwnn1uoeszE2zJBQTS1Ck5CqSBE+34ng2PthJg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+            />
+            <link rel="stylesheet" href="/assets/index.css" />
+          </head>
+          <body>
+            <div id="root">${appHtml}</div>
+            <script type="module" src="/entry-client.js"></script>
+          </body>
+        </html>`; // constructing the HTML document
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      } catch (error) {
+        console.error('SSR Error:', error);
+        res.status(500).send('Server Error');
+      }
+    }
   });
 } else {
-  // Development route
+  // simple route for development:
   app.get('/', (req, res) => {
     res.send('hello world');
   });

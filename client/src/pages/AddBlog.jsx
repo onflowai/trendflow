@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   SelectTrends,
   UserImgSmall,
-  EditMarkdown,
   SEOProtected,
   ToggleSwitch,
   FormComponent,
@@ -10,6 +9,7 @@ import {
   TitleHighlighter,
   CustomSuccessToast,
 } from '../components';
+import EditMarkdown from '../components/EditMarkdown.client';
 import Container from '../assets/wrappers/AddBlogContainer';
 import { RiDeleteBack2Fill } from 'react-icons/ri';
 import {

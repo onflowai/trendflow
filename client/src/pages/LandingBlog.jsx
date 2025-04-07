@@ -56,8 +56,8 @@ const LandingBlog = () => {
         title="TrendFlow - Blog"
         description="Explore the latest tech news, and developer updates."
         url={`${FRONTEND_BASE_URL}/blog`}
-        img_large={`${FRONTEND_BASE_URL}/public/og-image-blog.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/public/og-image-login-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-blog.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-login-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">

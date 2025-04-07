@@ -4,9 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "start": "vite --mode ${ENVIRONMENT:-development} --host",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build --mode ${ENVIRONMENT:-development}",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+=======
+    "dev": "vite --mode development",
+    "build:dev": "vite build --mode development",
+    "build": "vite build --mode production",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview --mode production",
+    "build:client": "vite build --mode production --outDir dist/client",
+    "build:ssr": "vite build --ssr src/entry-server.jsx --mode production --outDir dist/server"
+>>>>>>> bf596c4 (initial ssr implementation)
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -23,17 +33,18 @@
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^5.0.1",
-    "react-markdown": "^9.0.1",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.10.0",
     "react-select": "^5.8.0",
     "react-toastify": "^9.1.2",
     "recharts": "^2.12.3",
-    "styled-components": "^5.3.10"
+    "styled-components": "^6.1.16"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",

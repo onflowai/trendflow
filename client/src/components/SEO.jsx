@@ -1,5 +1,6 @@
 import React from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import * as ReactHelmetAsync from 'react-helmet-async';
+const { Helmet, HelmetProvider } = ReactHelmetAsync;
 /**
  * SEO used in pages
  * using react-helmet to inject various meta tags into the <head> section of your HTML
@@ -13,8 +14,8 @@ const SEO = ({
   title = 'TrendFlow - Find Tech Trends',
   description = 'TrendFlow helps you track the latest trends in tech.',
   url = `${FRONTEND_BASE_URL}`,
-  img_small = `${FRONTEND_BASE_URL}/public/og-image-twitter.jpg`,
-  img_large = `${FRONTEND_BASE_URL}/public/og-image.jpg`,
+  img_small = `${FRONTEND_BASE_URL}/og-image-twitter.jpg`,
+  img_large = `${FRONTEND_BASE_URL}/og-image.jpg`,
   twitterCardType = 'summary_large_image',
 }) => {
   return (

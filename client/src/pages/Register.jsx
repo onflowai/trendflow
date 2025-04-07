@@ -125,8 +125,8 @@ const Register = () => {
         title="TrendFlow - Create Account"
         description="Register: TrendFlow and track the latest trends in tech."
         url={`${FRONTEND_BASE_URL}/register`}
-        img_large={`${FRONTEND_BASE_URL}/public/og-image-register.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/public/og-image-register-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-register.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-register-twitter.jpg`}
       />
       <Form method="post" className="form">
         <Logo />

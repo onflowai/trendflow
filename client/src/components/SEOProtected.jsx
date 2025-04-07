@@ -1,5 +1,6 @@
 import React from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import * as ReactHelmetAsync from 'react-helmet-async';
+const { Helmet, HelmetProvider } = ReactHelmetAsync;
 /**
  * SEOProtected component to prevent indexing of protected pages.
  * @returns {JSX.Element}
