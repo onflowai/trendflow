@@ -76,8 +76,8 @@ const LandingBlogPage = () => {
         title={title || 'trendflow blog'}
         description={`trendflow blog: ${title}`}
         url={`${FRONTEND_BASE_URL}/${title}`}
-        img_large={`${FRONTEND_BASE_URL}/public/og-image-blog-page.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/public/og-image-blog-page-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-blog-page.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-blog-page-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">
@@ -104,7 +104,7 @@ const LandingBlogPage = () => {
               ))}
             </div>
             <div className="blog-content">
-              <DangerousMarkdown content={content} />
+              <DangerousMarkdown content={content} small={isMobile} />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">

@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // Choose the GitHub style
 import styled, { css } from 'styled-components';
 
 const DangerousMarkdown = ({ content, small }) => {
-  useEffect(() => {
-    // Initialize highlight.js to highlight code blocks
-    hljs.highlightAll();
-  }, [content]); // Re-run effect when content changes
+  useLayoutEffect(() => {
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach((block) => {
+      block.removeAttribute('data-highlighted');
+      hljs.highlightElement(block);
+    }); // use useLayoutEffect so highlighting runs immediately after DOM mutations.
+  }, [content, small]); // re-run if either the content or the layout changes
 
   return (
     <Container small={small}>
       <ReactMarkdown
+        key={`markdown-${small ? 'small' : 'large'}`}
         components={{
           code({ node, inline, className, children, ...props }) {
             return !inline ? (
@@ -34,7 +38,7 @@ const DangerousMarkdown = ({ content, small }) => {
     </Container>
   );
 };
-//Small Prop is passed when used in the
+
 const Container = styled.div`
   ${(props) =>
     props.small

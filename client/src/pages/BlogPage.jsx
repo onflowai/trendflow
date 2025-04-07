@@ -102,7 +102,7 @@ const BlogPage = () => {
               ))}
             </div>
             <div className="blog-content">
-              <DangerousMarkdown content={content} />
+              <DangerousMarkdown content={content} small={isMobile} />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">

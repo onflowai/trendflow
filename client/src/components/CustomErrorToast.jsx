@@ -30,7 +30,7 @@ const CustomErrorToast = ({ message }) => {
 };
 
 const Container = styled.div`
-  /* Your existing styling, if any */
+   display: flex; /* or any trivial style */
 `;
 
 export default CustomErrorToast;
