@@ -22,7 +22,7 @@
     "build:emails": "babel emails --out-dir dist/emails --extensions \".js,.jsx\"",
     "start": "npm run start:client && npm run start:server",
     "start:client": "cd client && npm run start",
-    "start:server": "NODE_ENV=production node server.js",
+    "start:server": "node server.js",
     "start:server:nodmemon": "nodemon server.js",
     "test": "jest"
   },

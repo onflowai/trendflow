@@ -1,19 +1,18 @@
 services:
-  client:
-    image: trendflowai-client:latest
-    container_name: trendflowai-client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      tags:
-      - "trendflowai-client:latest"
-    ports:
-      - "5173:5173"
-    environment:
-      - SERVER_URL=http://server:5100
-    #   - NODE_ENV=development
-    networks:
-      - trendflow
+  # client:
+  #   image: trendflowai-client:latest
+  #   container_name: trendflowai-client
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #     tags:
+  #     - "trendflowai-client:latest"
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     - SERVER_URL=http://server:5100
+  #   networks:
+  #     - trendflow
 
   server:
     image: trendflowai-server:latest
@@ -23,10 +22,10 @@ services:
       dockerfile: Dockerfile
       tags:
       - "trendflowai-server:latest"
+    environment:
+      - NODE_ENV=production
     ports:
       - "5100:5100"
-    # environment:
-    #   - NODE_ENV=development
     networks:
       - trendflow
 
