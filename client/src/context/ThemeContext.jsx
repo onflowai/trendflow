@@ -9,18 +9,22 @@ export const ThemeProvider = ({ children }) => {
 
   // Initialize theme based on localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem('darkTheme') === 'true';
-    setIsDarkTheme(savedTheme);
-    document.body.classList.toggle('dark-theme', savedTheme);
-  }, []);
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('darkTheme') === 'true';
+      setIsDarkTheme(savedTheme);
+      document.body.classList.toggle('dark-theme', savedTheme);
+    }
+  }, []); // only run in the browser
 
   const toggleDarkTheme = () => {
-    setIsDarkTheme((prev) => {
-      const newTheme = !prev;
-      document.body.classList.toggle('dark-theme', newTheme);
-      localStorage.setItem('darkTheme', newTheme);
-      return newTheme;
-    });
+    if (typeof window !== 'undefined') {
+      setIsDarkTheme((prev) => {
+        const newTheme = !prev;
+        document.body.classList.toggle('dark-theme', newTheme);
+        localStorage.setItem('darkTheme', newTheme);
+        return newTheme;
+      });
+    }
   };
 
   return (

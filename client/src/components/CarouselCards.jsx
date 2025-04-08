@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { GoPlus } from 'react-icons/go';
 
 function CarouselCards({ infoHubItems, isAdmin, onAdd, onDelete }) {
+  const items = Array.isArray(infoHubItems) ? infoHubItems : []; // if infoHubItems not an array define fallback
   const [showModal, setShowModal] = useState(false);
 
   const handleAddClick = () => {
@@ -28,7 +29,7 @@ function CarouselCards({ infoHubItems, isAdmin, onAdd, onDelete }) {
             <GoPlus className="plus-icon" />
           </div>
         )}
-        {infoHubItems.map((item) => (
+        {items.map((item) => (
           <Card
             key={item._id}
             {...item}

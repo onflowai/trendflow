@@ -51,19 +51,21 @@ export default defineConfig(({ ssrBuild }) => {
           __dirname,
           'stubs/micromark-core-commonmark-attention.js'
         ),
+        'react-helmet-async': 'react-helmet-async/lib/index.esm.js',
       },
     },
 
     ssr: {
       format: 'esm',
-      entry: 'src/entry-server.jsx',
+      entry: 'ssr/entry-server.jsx',
       noExternal: [
         /^micromark-core-commonmark(\/|$)/,
         'styled-components',
         'stylis',
+        'react-helmet-async',
+        'react-toastify',
       ],
       external: [
-        'react-helmet-async',
         '@uiw/react-markdown-editor',
         '@uiw/react-codemirror',
         '@uiw/codemirror-extensions-basic-setup',
