@@ -57,10 +57,7 @@ const routes = [
         index: true,
         element: <Landing />,
         loader: landingLoader,
-<<<<<<< HEAD
-=======
         //_serverLoader: landingLoader,
->>>>>>> dev-ssr-implementation
       },
       {
         path: 'register',
@@ -77,19 +74,13 @@ const routes = [
         path: 'blog',
         element: <LandingBlog />,
         loader: landingBlogLoader,
-<<<<<<< HEAD
-=======
         //_serverLoader: landingBlogLoader,
->>>>>>> dev-ssr-implementation
       },
       {
         path: 'blog/:slug',
         element: <LandingBlogPage />,
         loader: landingBlogPageLoader,
-<<<<<<< HEAD
-=======
         //_serverLoader: landingBlogPageLoader,
->>>>>>> dev-ssr-implementation
       },
     ],
   },
