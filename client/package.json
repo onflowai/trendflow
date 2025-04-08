@@ -11,7 +11,7 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview --mode production",
     "build:client": "vite build --mode ${ENVIRONMENT:-development} --outDir dist/client",
-    "build:ssr": "vite build --ssr src/entry-server.jsx --mode ${ENVIRONMENT:-development} --outDir dist/server"
+    "build:ssr": "vite build --ssr ssr/entry-server.jsx --mode ${ENVIRONMENT:-development} --outDir dist/server"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
