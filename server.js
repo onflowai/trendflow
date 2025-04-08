@@ -92,10 +92,18 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', PROD_URL, FRONT_URL],
-        // Add other directives as needed
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com", "https://cdn.trendflowai.com"],
+        fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+        connectSrc: ["'self'", FRONT_URL, SERVER_URL],
+        objectSrc: ["'none'"],
+        frameSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
       },
     },
+    crossOriginEmbedderPolicy: false, // Disable COEP if not needed
   })
 ); // helmet security helps secure express apps by setting various HTTP headers
 app.use(mongoSanitize());
@@ -254,6 +262,7 @@ const port = process.env.PORT || 5100;
 //listener on port 5100
 // app.listen(port, () => {
 // });
+
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
