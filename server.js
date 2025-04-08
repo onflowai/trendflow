@@ -180,23 +180,26 @@ if (env === 'production') {
       res.sendFile(
         path.join(__dirname, 'client', 'dist', 'client', 'index.html')
       ); // for non-public routes serve the static client bundle
-    } else {
-      // public SSR
-      try {
-        // for public routes using SSR:
-        //const { render } = await import('./client/dist/server/entry-server.js'); //NOTE: must build the SSR bundle first 'npm run build:ssr'
-        const { render } = await import(
-          path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
-        );
+    }
+    // public SSR
+    try {
+      // for public routes using SSR:
+      //const { render } = await import('./client/dist/server/entry-server.js'); //NOTE: must build the SSR bundle first 'npm run build:ssr'
+      const { render } = await import(
+        path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
+      );
 
-        const { appHtml, helmetContext } = await render(req.originalUrl);
-        const html = `<!DOCTYPE html>
+      const { appHtml, helmetContext } = await render(req.originalUrl);
+      const helmet = helmetContext.helmet || {};
+      const title = helmet.title?.toString() || '';
+      const meta = helmet.meta?.toString() || '';
+      const html = `<!DOCTYPE html>
         <html lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            ${helmetContext.helmet.title.toString()}
-            ${helmetContext.helmet.meta.toString()}
+            ${title}
+            ${meta}
             <!-- additional links to stylesheets here: -->
             <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
             <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -216,11 +219,11 @@ if (env === 'production') {
             <script type="module" src="/entry-client.js"></script>
           </body>
         </html>`; // constructing the HTML document
-        res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
-      } catch (error) {
-        console.error('SSR Error:', error);
-        res.status(500).send('Server Error');
-      }
+      console.log('html from server: ', html);
+      res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+    } catch (error) {
+      console.error('SSR Error:', error);
+      res.status(500).send('Server Error');
     }
   });
 } else {

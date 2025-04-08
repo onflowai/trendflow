@@ -5,13 +5,17 @@ import {
   createMemoryRouter,
   RouterProvider,
 } from 'react-router-dom';
-import routes from './routes.jsx';
-import { ThemeProvider } from './context/ThemeContext.jsx';
+import routes from '../src/routes.jsx';
+import { ThemeProvider } from '../src/context/ThemeContext.jsx';
+//import ServerDataContext from '../src/context/ServerDataContext.js';
 
-import * as HelmetAsync from 'react-helmet-async'; // react-helmet-async (CJS in SSR):
-const { HelmetProvider } = HelmetAsync.default; //import the "react-helmet-async" default because its CJS in SSR
+import { HelmetProvider } from 'react-helmet-async';
+//import * as HelmetAsync from 'react-helmet-async'; // react-helmet-async (CJS in SSR):
+//const { HelmetProvider } = HelmetAsync.default; //import the "react-helmet-async" default because its CJS in SSR
+// import helmetPkg from 'react-helmet-async';
+// const { HelmetProvider } = helmetPkg;
 
-export const ServerDataContext = createContext({}); //context to hold the server-loaded data
+//export const ServerDataContext = createContext({}); //context to hold the server-loaded data
 /**
  * entry-server is only used by Node server for SSRot manually calls loaders for each route in SSR
  * then uses a special data context so route components can read that data
@@ -26,52 +30,28 @@ export const ServerDataContext = createContext({}); //context to hold the server
  */
 export async function render(url) {
   const matches = matchRoutes(routes, url);
-  if (!matches) {
+  if (!matches || matches.length === 0) {
     // no matching route => empty
     return { appHtml: '', helmetContext: {} };
   } //find matching routes
 
-  const routeData = {};
-  for (const match of matches) {
-    if (match.route._serverLoader) {
-      //store the data under some key (like route path or "id")
-      const loaded = await match.route._serverLoader({
-        params: match.params,
-        //can pass more context if needed
-      });
-      routeData[match.route.path || 'root'] = loaded;
-    }
-  }
-
   // create a memory-based router for SSR
-  const memoryRouter = createMemoryRouter(
-    routes.map((r) => {
-      const { _serverLoader, loader, ...rest } = r;
-      return { ...rest };
-    }),
-    {
-      initialEntries: [url],
-    }
-  ); //"SSR-friendly" version of the route objects that doesn't have "loader" but does "element"
+  const memoryRouter = createMemoryRouter(routes, {
+    initialEntries: [url],
+  }); //"SSR-friendly" version of the route objects that doesn't have "loader" but does "element"
 
   const helmetContext = {}; // creating a helmetContext to gather <Helmet> tags
 
-  // Render your app to string
   const appHtml = renderToString(
     <HelmetProvider context={helmetContext}>
       <ThemeProvider>
-        <ServerDataContext.Provider value={routeData}>
-          <RouterProvider router={memoryRouter} />
-        </ServerDataContext.Provider>
+        <RouterProvider router={memoryRouter} />
       </ThemeProvider>
     </HelmetProvider>
   );
 
-  // // extract the helmet data
-  // const { helmet } = helmetContext;
-
   return {
     appHtml,
-    helmetContext, // we return the entire context
+    helmetContext,
   };
 }

@@ -57,6 +57,7 @@ const routes = [
         index: true,
         element: <Landing />,
         loader: landingLoader,
+        //_serverLoader: landingLoader,
       },
       {
         path: 'register',
@@ -73,11 +74,13 @@ const routes = [
         path: 'blog',
         element: <LandingBlog />,
         loader: landingBlogLoader,
+        //_serverLoader: landingBlogLoader,
       },
       {
         path: 'blog/:slug',
         element: <LandingBlogPage />,
         loader: landingBlogPageLoader,
+        //_serverLoader: landingBlogPageLoader,
       },
     ],
   },

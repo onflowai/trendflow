@@ -1,6 +1,5 @@
 import React from 'react';
-import * as ReactHelmetAsync from 'react-helmet-async';
-const { Helmet, HelmetProvider } = ReactHelmetAsync;
+import { Helmet } from 'react-helmet-async';
 /**
  * SEO used in pages
  * using react-helmet to inject various meta tags into the <head> section of your HTML

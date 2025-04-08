@@ -10,7 +10,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --mode production",
     "build:client": "vite build --mode production --outDir dist/client",
-    "build:ssr": "vite build --ssr src/entry-server.jsx --mode production --outDir dist/server"
+    "build:ssr": "vite build --ssr ssr/entry-server.jsx --mode production --outDir dist/server"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
