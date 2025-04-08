@@ -11,48 +11,6 @@ import path from 'path';
  * Lazy Loading: Implement lazy loading for non-critical SVGs and images to defer their loading until they are needed.
  */
 // https://vitejs.dev/config/
-<<<<<<< HEAD
-
-
-// This doesn't seem to be working. I think we need to follow this to allow the variable to be set in the Vite config
-// https://vite.dev/config/#using-environment-variables-in-config
-const SERVER_URL = process.env.SERVER_URL || 'http://localhost:5100';
-
-export default defineConfig({
-  plugins: [
-    react(),
-    svgr({
-      exportAsDefault: false, // Enables named exports like ReactComponent
-      svgrOptions: {
-        // Optional: Customize SVGR options if needed
-      },
-    }),
-  ],
-
-  server: {
-    proxy: {
-      '/api': {
-        target: `${SERVER_URL}/api`,
-        changeOrigin: true, //CORS policy temporary fix
-        rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
-      },
-      '/assets': {
-        target: SERVER_URL,
-        changeOrigin: true,
-        rewrite: (path) => path, // no rewrite needed
-      },
-      '/sitemap.xml': {
-        target: SERVER_URL,
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
-      },
-      '/robots.txt': {
-        target: SERVER_URL,
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
-=======
 export default defineConfig(({ ssrBuild }) => {
   // custom filenames for the client build only
   const isClient = !ssrBuild;
@@ -93,7 +51,6 @@ export default defineConfig(({ ssrBuild }) => {
           __dirname,
           'stubs/micromark-core-commonmark-attention.js'
         ),
->>>>>>> bf596c4 (initial ssr implementation)
       },
     },
 

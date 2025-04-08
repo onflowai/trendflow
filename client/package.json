@@ -4,19 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
     "start": "vite --mode ${ENVIRONMENT:-development} --host",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build --mode ${ENVIRONMENT:-development}",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
-=======
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "dev": "vite --mode development",
     "build:dev": "vite build --mode development",
-    "build": "vite build --mode production",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --mode production",
-    "build:client": "vite build --mode production --outDir dist/client",
-    "build:ssr": "vite build --ssr src/entry-server.jsx --mode production --outDir dist/server"
->>>>>>> bf596c4 (initial ssr implementation)
+    "build:client": "vite build --mode ${ENVIRONMENT:-development} --outDir dist/client",
+    "build:ssr": "vite build --ssr src/entry-server.jsx --mode ${ENVIRONMENT:-development} --outDir dist/server"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",

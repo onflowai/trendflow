@@ -6,7 +6,7 @@ COPY . /app
 WORKDIR /app
 
 # Install client dependencies
-RUN npm install && NODE_OPTIONS="--max-old-space-size=4096" npm run build && chown -R 1000:1000 /app
+RUN npm install && NODE_OPTIONS="--max-old-space-size=4096" npm run build:client && npm run build:ssr && chown -R 1000:1000 /app
 
 ENV ENVIRONMENT ""
 
