@@ -13,6 +13,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
  * @returns
  */
 const FeaturedTrendsMobile = ({ featuredTrends }) => {
+  const featTrends = Array.isArray(featuredTrends) ? featuredTrends : [];
   const isFeatured = true;
   //Values used to style recharts in TrendPage
   const chartHeight = window.innerWidth < 500 ? 140 : 190; //this modding is set up for TrendSmall mobile view
@@ -59,7 +60,7 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
       setIsLargeTrendView(true); // Set large view on
     }
   };
-  if (!featuredTrends || featuredTrends.length === 0) {
+  if (!featTrends || featTrends.length === 0) {
     return (
       <Container>
         <h2>No Featured Trends</h2>
@@ -96,7 +97,7 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
         </div>
       </div>
       <div className="featured-trends-mobile">
-        {featuredTrends.map((trend) => (
+        {featTrends.map((trend) => (
           <Trend
             key={trend._id} // Ensure unique key for each trend
             {...trend} // Spread the trend data as props to the Trend component

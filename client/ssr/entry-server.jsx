@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import routes from '../src/routes.jsx';
 import { ThemeProvider } from '../src/context/ThemeContext.jsx';
+import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 //import ServerDataContext from '../src/context/ServerDataContext.js';
 
 import { HelmetProvider } from 'react-helmet-async';
@@ -29,29 +30,56 @@ import { HelmetProvider } from 'react-helmet-async';
  * @returns
  */
 export async function render(url) {
+  const helmetContext = {};
+
   const matches = matchRoutes(routes, url);
   if (!matches || matches.length === 0) {
-    // no matching route => empty
     return { appHtml: '', helmetContext: {} };
-  } //find matching routes
+  }
 
-  // create a memory-based router for SSR
+  const loaderData = {};
+  await Promise.all(
+    matches.map(async (match) => {
+      if (match.route.loader) {
+        try {
+          loaderData[match.route.id || match.route.path] =
+            await match.route.loader();
+        } catch (err) {
+          console.error(`Loader error on route ${match.route.path}`, err);
+        }
+      }
+    })
+  ); // run all loaders for the matched routes
+
   const memoryRouter = createMemoryRouter(routes, {
     initialEntries: [url],
-  }); //"SSR-friendly" version of the route objects that doesn't have "loader" but does "element"
+    hydrationData: loaderData, // Pass loader data here
+  }); // providing data to the router
 
-  const helmetContext = {}; // creating a helmetContext to gather <Helmet> tags
+  const sheet = new ServerStyleSheet();
 
-  const appHtml = renderToString(
-    <HelmetProvider context={helmetContext}>
-      <ThemeProvider>
-        <RouterProvider router={memoryRouter} />
-      </ThemeProvider>
-    </HelmetProvider>
-  );
+  try {
+    const appHtml = renderToString(
+      sheet.collectStyles(
+        // <-- Collect Styled Components CSS
+        <HelmetProvider context={helmetContext}>
+          <ThemeProvider>
+            <RouterProvider router={memoryRouter} />
+          </ThemeProvider>
+        </HelmetProvider>
+      )
+    );
 
-  return {
-    appHtml,
-    helmetContext,
-  };
+    const styleTags = sheet.getStyleTags();
+
+    return {
+      appHtml,
+      helmetContext,
+      styleTags,
+    };
+  } catch (error) {
+    console.error('SSR Styled-Components Error:', error);
+  } finally {
+    sheet.seal();
+  }
 }

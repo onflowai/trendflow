@@ -8,6 +8,7 @@ import Container from '../assets/wrappers/FeaturedTrendsDesktop';
  * @returns
  */
 const FeaturedTrendsDesktop = ({ featuredTrends }) => {
+  const featTrends = Array.isArray(featuredTrends) ? featuredTrends : [];
   const featuredFlag = true;
   //Values used to style recharts in AllTrends & Admin pages
   const isFeatured = true;
@@ -15,7 +16,7 @@ const FeaturedTrendsDesktop = ({ featuredTrends }) => {
   const chartMarginTop = 10;
   const chartMarginBottom = -60;
 
-  if (!featuredTrends || featuredTrends.length === 0) {
+  if (!featTrends || featTrends.length === 0) {
     return (
       <Container>
         <h2>No Featured Trends</h2>
@@ -30,7 +31,7 @@ const FeaturedTrendsDesktop = ({ featuredTrends }) => {
   return (
     <Container>
       <div className="featured-trends-desktop">
-        {featuredTrends.map(({ trendDesc, ...trend }) => (
+        {featTrends.map(({ trendDesc, ...trend }) => (
           <TrendMini
             key={trend._id}
             {...trend}
