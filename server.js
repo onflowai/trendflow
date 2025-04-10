@@ -170,22 +170,40 @@ app.use('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
 }); //testing proxy
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Serve React App in Production
 if (env === 'production') {
-  app.use(express.static(path.join(__dirname, 'client', 'dist', 'client')));
+  app.use(
+    express.static(path.join(__dirname, 'client', 'dist', 'client'), {
+      index: false,
+    })
+  );
+
   app.get('/favicon.ico', (req, res) => {
     res.sendFile(
       path.join(__dirname, 'client', 'dist', 'client', 'favicon.ico')
     );
   }); // explicitly serve favicon from client assets folder
+
   app.use(
     '/assets',
     express.static(path.join(__dirname, 'client', 'dist', 'client', 'assets'))
   ); // explicitly serve static assets for assets and images
+
   app.use(
     '/images',
     express.static(path.join(__dirname, 'client', 'dist', 'client', 'images'))
   );
+
+  app.get('/dashboard*', (req, res) => {
+    res.sendFile(
+      path.join(__dirname, 'client', 'dist', 'client', 'index.html')
+    );
+  }); // dashboard route explicitly serves client-side app without SSR
 
   app.get('*', async (req, res) => {
     if (
@@ -204,15 +222,19 @@ if (env === 'production') {
 
     // public SSR
     try {
-      // Import the SSR render function from your server bundle
       const { render } = await import(
         path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
-      );
-      //console.log('SSR => requested URL:', req.originalUrl);//debug passed urls
-      const { appHtml, helmetContext, styleTags } = await render(
-        req.originalUrl
-      );
-      // console.log("SSR debug => matched routes:", matches.map(m => m.route.path));//debug matched routes
+      ); //importing SSR render function from server bundle
+
+      const rendered = await render(req.originalUrl);
+
+      if (!rendered || !rendered.appHtml) {
+        console.error('SSR Render failed, no appHtml returned');
+        return res.status(500).send('Server Error');
+      }
+
+      const { appHtml, helmetContext, styleTags } = rendered;
+
       const helmet = helmetContext.helmet || {};
       const title = helmet.title?.toString() || '';
       const meta = helmet.meta?.toString() || '';
@@ -244,8 +266,6 @@ if (env === 'production') {
           <script type="module" src="/entry-client.js"></script>
         </body>
       </html>`;
-
-      //console.log('SSR => final HTML:', html);//debugging
 
       // Return the rendered page
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);

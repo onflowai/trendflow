@@ -128,7 +128,7 @@ const Landing = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef();
-  const isMobile = useWindowSize();
+  const isMobile = typeof window !== 'undefined' ? useWindowSize() : false;
 
   /**
    * Intersection Observer callback to trigger loadMoreTrends
