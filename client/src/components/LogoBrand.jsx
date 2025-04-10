@@ -39,6 +39,9 @@ const LogoBrand = ({ link }) => {
         src={imageSrc}
         alt="Tech Trend Flow Logo"
         className="logo"
+        width="28"
+        height="28"
+        style={{ width: '28px', height: '28px' }}
         onError={handleImageError}
       />
       <span className="logo-text">trendflow</span>

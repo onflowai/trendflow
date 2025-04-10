@@ -174,56 +174,104 @@ app.use('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
 }); //testing proxy
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Serve React App in Production
 if (env === 'production') {
-  app.use(express.static(path.join(__dirname, 'client', 'dist', 'client'))); // serving static files from the React app's build directory
-  // handling all GET requests:
+  app.use(
+    express.static(path.join(__dirname, 'client', 'dist', 'client'), {
+      index: false,
+    })
+  );
+
+  app.get('/favicon.ico', (req, res) => {
+    res.sendFile(
+      path.join(__dirname, 'client', 'dist', 'client', 'favicon.ico')
+    );
+  }); // explicitly serve favicon from client assets folder
+
+  app.use(
+    '/assets',
+    express.static(path.join(__dirname, 'client', 'dist', 'client', 'assets'))
+  ); // explicitly serve static assets for assets and images
+
+  app.use(
+    '/images',
+    express.static(path.join(__dirname, 'client', 'dist', 'client', 'images'))
+  );
+
+  app.get('/dashboard*', (req, res) => {
+    res.sendFile(
+      path.join(__dirname, 'client', 'dist', 'client', 'index.html')
+    );
+  }); // dashboard route explicitly serves client-side app without SSR
+
   app.get('*', async (req, res) => {
-    // checking if the request is for a non-public route: "/dashboard" is non-public
+    if (
+      req.url.match(
+        /\.(ico|png|jpg|jpeg|svg|gif|webp|txt|xml|json|css|js|map)$/
+      )
+    ) {
+      return res.status(404).end();
+    } // if route '/dashboard' skip SSR and serve index.html from dist/client
+
     if (req.originalUrl.startsWith('/dashboard')) {
-      res.sendFile(
+      return res.sendFile(
         path.join(__dirname, 'client', 'dist', 'client', 'index.html')
-      ); // for non-public routes serve the static client bundle
-    }
+      );
+    } // checking if the request is for a non-public route: "/dashboard" is non-public
+
     // public SSR
     try {
-      // for public routes using SSR:
-      //const { render } = await import('./client/dist/server/entry-server.js'); //NOTE: must build the SSR bundle first 'npm run build:ssr'
       const { render } = await import(
         path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
-      );
+      ); //importing SSR render function from server bundle
 
-      const { appHtml, helmetContext } = await render(req.originalUrl);
+      const rendered = await render(req.originalUrl);
+
+      if (!rendered || !rendered.appHtml) {
+        console.error('SSR Render failed, no appHtml returned');
+        return res.status(500).send('Server Error');
+      }
+
+      const { appHtml, helmetContext, styleTags } = rendered;
+
       const helmet = helmetContext.helmet || {};
       const title = helmet.title?.toString() || '';
       const meta = helmet.meta?.toString() || '';
+
       const html = `<!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            ${title}
-            ${meta}
-            <!-- additional links to stylesheets here: -->
-            <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-            <link rel="shortcut icon" href="/favicon.ico">
-            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-            <link
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          ${title}
+          ${meta}
+          ${styleTags} 
+          <link rel="stylesheet" href="/assets/index.css" />
+          <!-- additional links to stylesheets here: -->
+          <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+          <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+          <link rel="shortcut icon" href="/favicon.ico">
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+          <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css"
             integrity="sha512-c93ifPoTvMdEJH/rKIcBx//AL1znq9+4/RmMGafI/vnTFe/dKwnn1uoeszE2zJBQTS1Ck5CqSBE+34ng2PthJg=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
-            />
-            <link rel="stylesheet" href="/assets/index.css" />
-          </head>
-          <body>
-            <div id="root">${appHtml}</div>
-            <script type="module" src="/entry-client.js"></script>
-          </body>
-        </html>`; // constructing the HTML document
-      console.log('html from server: ', html);
+          />
+        </head>
+        <body>
+          <div id="root">${appHtml}</div>
+          <script type="module" src="/entry-client.js"></script>
+        </body>
+      </html>`;
+
+      // Return the rendered page
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (error) {
       console.error('SSR Error:', error);
@@ -231,11 +279,11 @@ if (env === 'production') {
     }
   });
 } else {
-  // simple route for development:
+  // For development, just serve "hello world"
   app.get('/', (req, res) => {
     res.send('hello world');
   });
-} //automated client dist serve
+}
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.resolve(__dirname, ''));

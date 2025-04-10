@@ -47,17 +47,33 @@ export const loader = async () => {
     const response = await customFetch.get('/trends/top-viewed');
     const { trends, totalTrends, nextCursor, hasNextPage } = response.data;
     return {
-      trends,
-      totalTrends,
-      nextCursor,
-      hasNextPage,
+      trends: Array.isArray(trends) ? trends : [],
+      totalTrends: totalTrends || 0,
+      nextCursor: nextCursor || null,
+      hasNextPage: !!hasNextPage,
     };
   } catch (error) {
-    toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    throw (
-      error?.response?.data?.msg ||
-      'An error occurred while fetching top viewed trends.'
-    );
+    if (typeof window !== 'undefined') {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    } else {
+      console.error(
+        'SSR Loader Error:',
+        error?.response?.data?.msg || error.message
+      );
+    }
+    const fallbackData = {
+      trends: [],
+      totalTrends: 0,
+      nextCursor: null,
+      hasNextPage: false,
+      error:
+        error?.response?.data?.msg ||
+        'An error occurred while fetching top viewed trends.',
+    };
+    if (typeof window !== 'undefined') {
+      throw fallbackData.error;
+    }
+    return fallbackData;
   }
 };
 
@@ -91,11 +107,19 @@ const useScrollToHash = () => {
 const Landing = () => {
   useScrollToHash();
   const navigate = useNavigate();
+  const data = useLoaderData() || {};
   const {
-    trends: initialTrendsData,
-    hasNextPage: initialHasNextPage,
-    nextCursor: initialNextCursor,
-  } = useLoaderData();
+    trends: initialTrendsData = [],
+    hasNextPage: initialHasNextPage = false,
+    nextCursor: initialNextCursor = null,
+    error,
+  } = data;
+
+  useEffect(() => {
+    if (error) {
+      toast.error(<CustomErrorToast message={error} />);
+    }
+  }, [error]);
 
   const [trends, setTrends] = useState(initialTrendsData || []);
   const [pagination, setPagination] = useState({
@@ -104,7 +128,7 @@ const Landing = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef();
-  const isMobile = useWindowSize();
+  const isMobile = typeof window !== 'undefined' ? useWindowSize() : false;
 
   /**
    * Intersection Observer callback to trigger loadMoreTrends
