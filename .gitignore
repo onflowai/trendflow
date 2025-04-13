@@ -36,13 +36,9 @@ ecosystem.config.cjs
 py_scripts/
 
 #utils
-utils/constants.js
-utils/constants_comp.js
-utils/openaiPromptData.js
 utils/script_data_sample.json
 utils/trend_traning_data.txt
 utils/script_controller_test.js
-utils/blacklisted.js
 
 #dev
 /routes/devRouter.js
