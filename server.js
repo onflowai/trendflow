@@ -36,7 +36,8 @@ import path from 'path'; //
 // Determine the environment
 const env = process.env.NODE_ENV || 'development';
 
-require('dotenv').config({
+
+dotenv.config({
   path: process.env.NODE_ENV_FILE ? process.env.NODE_ENV_FILE : `${process.cwd()}/.env.${process.env.NODE_ENV}`,
 });
 
