@@ -36,29 +36,14 @@ import path from 'path'; //
 // Determine the environment
 const env = process.env.NODE_ENV || 'development';
 
-// Explicitly load .env.<environment> first
-const envPath = path.resolve(process.cwd(), `.env.${env}`);
-const result = dotenv.config({ path: envPath });
-
-if (result.error) {
-  console.error(`Failed to load ${envPath}:`, result.error);
-} else {
-  console.log(`Loaded environment variables from ${envPath}`);
-}
+require('dotenv').config({
+  path: process.env.NODE_ENV_FILE ? process.env.NODE_ENV_FILE : `${process.cwd()}/.env.${process.env.NODE_ENV}`,
+});
 
 // define Variables
 const PROD_URL = process.env.PROD_URL;
 const FRONT_URL = env === 'production' ? PROD_URL : process.env.DEV_URL;
 const SERVER_URL = env === 'production' ? PROD_URL : process.env.DEV_URL_SERVER;
-
-// Debug logs to confirm the values
-// console.log('NODE_ENV:', env);
-// console.log('MONGODB_URL:', process.env.MONGODB_URL);
-
-//setting up access to .env and loading the corresponding .env file
-dotenv.config({
-  path: path.resolve(process.cwd(), `.env.${env}`),
-}); // loading environment variables
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
