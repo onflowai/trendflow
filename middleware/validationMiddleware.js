@@ -5,15 +5,14 @@ import {
   UnauthenticatedError,
 } from '../errors/customErrors.js';
 import { trendCategoryValues, technologiesValues } from '../utils/constants.js';
-import { B_LIST } from '../utils/blacklisted.js';
+// Import the new getter function instead of B_LIST
+import { getBlacklist } from '../utils/blacklisted.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
 import mongoose from 'mongoose';
-/**
- * VALIDATION LAYER test and error response
- * @param {*} validateValues
- * @returns
- */
+
+// ... (withValidationErrors function remains the same) ...
+
 //validateValues array and the validation response returns an array
 const withValidationErrors = (validateValues) => {
   //grouping the
@@ -33,23 +32,8 @@ const withValidationErrors = (validateValues) => {
     },
   ];
 };
-//
-// export const validateTest = withValidationErrors([
-//   body('name')
-//     .notEmpty()
-//     .withMessage('name is required')
-//     .isLength({ min: 4, max: 50 })
-//     .withMessage('name must be at least 50 characters')
-//     .trim(),
-// ]);
-// export const adminOnly = (req, res, next) => {
-//   if (req.user && req.user.role === 'admin') {
-//     next();
-//   } else {
-//     throw new UnauthenticatedError('Unauthorized to access this page');
-//   }
-// };
-//Custom validation
+
+// ... (validateTrendInput, validateSlugParam remain the same) ...
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),
   body('trendCategory')
@@ -58,17 +42,7 @@ export const validateTrendInput = withValidationErrors([
   body('trendTech').isIn(technologiesValues).withMessage('invalid trend stack'),
   body('role').not().exists().withMessage('Cannot change role'),
 ]);
-//Async trend ID validation set up as true and false with mongoose
-// export const validateIdParam = withValidationErrors([
-//   param('slug').custom(async (value) => {
-//     const isValidId = mongoose.Types.ObjectId.isValid(value); //isValidId returns true or false
-//     if (!isValidId) throw new BadRequestError('invalid mongodb id'); //condition for the error
-//     const trendObject = await trendModel.findById(value); //retrieve the trend if it equals the id in the data
-//     if (!trendObject)
-//       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
-//   }),
-// ]);
-//validateSlugParam middleware validates that a provided slug exists in the database
+
 export const validateSlugParam = withValidationErrors([
   param('slug').custom(async (value) => {
     const trendObject = await trendModel.findOne({ slug: value }); // Retrieve the trend by slug instead of ID
@@ -76,6 +50,7 @@ export const validateSlugParam = withValidationErrors([
       throw new NotFoundError(`No trend found with slug ${value}`); // If the trend does not exist, throw NotFoundError
   }),
 ]);
+
 
 //Create user validation
 export const validateRegisterInput = withValidationErrors([
@@ -90,11 +65,16 @@ export const validateRegisterInput = withValidationErrors([
     )
     .matches(/^[A-Za-z]/)
     .withMessage('Username must start with a letter.')
+    // Update the custom validator to use the async getBlacklist function
     .custom(async (username) => {
       const lowerUsername = username.toLowerCase();
-      const expression = B_LIST.find((word) => lowerUsername.includes(word));
+      // Fetch the blacklist (will return cached version after first successful fetch)
+      const blacklist = await getBlacklist();
+      const expression = blacklist.find((word) => lowerUsername.includes(word));
       if (expression) {
-        throw new BadRequestError('Username contains prohibited characters');
+        throw new BadRequestError(
+          `Username contains prohibited characters ('${expression}')` // Optionally show the matched word for debugging/clarity
+        );
       }
       const user = await UserModel.findOne({ username });
       if (user && user.verified) {
@@ -124,6 +104,7 @@ export const validateRegisterInput = withValidationErrors([
   body('lastName').notEmpty().withMessage('last name is required'),
 ]);
 
+// ... (validateLoginInput, validateUserUpdate remain the same) ...
 export const validateLoginInput = withValidationErrors([
   body('email')
     .notEmpty()
