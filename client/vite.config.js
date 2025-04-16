@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import path from 'path';
 
 /**
  * This is where configurations can be made like a proxy
@@ -10,60 +11,110 @@ import svgr from 'vite-plugin-svgr';
  * Lazy Loading: Implement lazy loading for non-critical SVGs and images to defer their loading until they are needed.
  */
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    svgr({
-      exportAsDefault: false, // Enables named exports like ReactComponent
-      svgrOptions: {
-        // Optional: Customize SVGR options if needed
-      },
-    }),
-  ],
+export default defineConfig(({ ssrBuild }) => {
+  // custom filenames for the client build only
+  const isClient = !ssrBuild;
 
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5100/api',
-        changeOrigin: true, //CORS policy temporary fix
-        rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
+  return {
+    plugins: [
+      react({
+        babel: {
+          plugins: [
+            [
+              'babel-plugin-styled-components',
+              { ssr: true, displayName: true },
+            ],
+          ],
+        },
+      }),
+      svgr({ exportAsDefault: false }),
+      {
+        name: 'stub-micromark-attention',
+        resolveId(source) {
+          if (source === 'micromark-core-commonmark/lib/attention.js') {
+            return source;
+          }
+          return null;
+        },
+        load(id) {
+          if (id === 'micromark-core-commonmark/lib/attention.js') {
+            return 'export default {}';
+          }
+          return null;
+        },
       },
-      '/assets': {
-        target: 'http://localhost:5100',
-        changeOrigin: true,
-        rewrite: (path) => path, // no rewrite needed
-      },
-      '/sitemap.xml': {
-        target: 'http://localhost:5100',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
-      },
-      '/robots.txt': {
-        target: 'http://localhost:5100',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
+    ],
+
+    resolve: {
+      alias: {
+        'micromark-core-commonmark/lib/attention.js': path.resolve(
+          __dirname,
+          'stubs/micromark-core-commonmark-attention.js'
+        ),
+        'react-helmet-async': 'react-helmet-async/lib/index.esm.js',
       },
     },
-  },
-  // define: {
-  //   'process.env': {},
-  // },
-  // build: {
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks: {
-  //         vendor: ['react', 'react-dom'], // splitting React libraries into a separate chunk
-  //         icons: [
-  //           'src/assets/icons', // example: Splitting icons into a separate chunk
-  //           'path/to/another/icons/directory',
-  //         ],
-  //         utils: ['src/utils'], // Splitting utility functions into a separate chunk
-  //         largeLib: ['some-large-library'], // Example: Any large library you want to separate
-  //       },
-  //     },
-  //   },
-  //   chunkSizeWarningLimit: 1000, // Increase the limit to suppress warnings (adjust as necessary)
-  // },
+
+    ssr: {
+      format: 'esm',
+      entry: 'ssr/entry-server.jsx',
+      noExternal: [
+        /^micromark-core-commonmark(\/|$)/,
+        'styled-components',
+        'stylis',
+        'react-helmet-async',
+        'react-toastify',
+      ],
+      external: [
+        '@uiw/react-markdown-editor',
+        '@uiw/react-codemirror',
+        '@uiw/codemirror-extensions-basic-setup',
+      ],
+    },
+
+    build: {
+      // SSR build bo file naming, client build will check if isClient here
+      rollupOptions: {
+        output: isClient
+          ? {
+              //client build produce a stable file
+              entryFileNames: 'entry-client.js',
+              chunkFileNames: 'chunk-[name].js',
+              assetFileNames: 'assets/[name].[ext]',
+              interop: 'auto',
+              format: 'esm',
+            }
+          : {
+              // SSR build
+              interop: 'auto',
+              format: 'esm',
+            },
+      },
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5100/api',
+          changeOrigin: true, //CORS policy temporary fix
+          rewrite: (path) => path.replace(/^\/api/, ''), //removing the api prefix
+        },
+        '/assets': {
+          target: 'http://localhost:5100',
+          changeOrigin: true,
+        },
+        '/sitemap.xml': {
+          target: 'http://localhost:5100',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/sitemap\.xml$/, '/sitemap.xml'),
+        },
+        '/robots.txt': {
+          target: 'http://localhost:5100',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/robots\.txt$/, '/robots.txt'),
+        },
+      },
+    },
+  };
 });

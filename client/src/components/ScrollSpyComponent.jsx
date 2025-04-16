@@ -4,13 +4,17 @@ import useWindowSize from '../hooks/useWindowSize';
 
 const ScrollSpyComponent = ({ sectionIds }) => {
   const [activeSection, setActiveSection] = useState('');
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
 
   const onScroll = () => {
     let currentSection = '';
-    const offset = 200; // adjusting this value based on other CSS styling
+    const offset = 200;
+
     sectionIds.forEach((sectionId) => {
       const section = document.getElementById(sectionId);
+      if (!section) {
+        return; // skipping iteration if the element is not found
+      }
       const sectionTop = section.getBoundingClientRect().top + window.scrollY;
       const scrollPosition = window.scrollY + offset;
       if (sectionTop <= scrollPosition) {

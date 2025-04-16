@@ -30,6 +30,7 @@ function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
 }
 
 const TrendIconList = ({ trends }) => {
+  const trendsArray = Array.isArray(trends) ? trends : [];
   return (
     <Container>
       {/* Hidden SVG definition for the gradient fill */}
@@ -41,7 +42,7 @@ const TrendIconList = ({ trends }) => {
           </linearGradient>
         </defs>
       </svg>
-      {trends.map((trendItem, index) => {
+      {trendsArray.map((trendItem, index) => {
         const iconUrl = getTrendIconUrl(trendItem);
 
         return (

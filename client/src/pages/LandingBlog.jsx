@@ -22,10 +22,10 @@ export const loader = async () => {
       customFetch.get('/blogs/public'),
       customFetch.get('/infohub/public'),
     ]);
-
-    const posts = postsResponse.data;
-    const infoHubItems = infoHubResponse.data;
-    return { posts, infoHubItems };
+    return {
+      posts: postsResponse.data, // array
+      infoHubItems: infoHubResponse.data, // array
+    };
   } catch (error) {
     toast.error('Failed to load blog posts or infoHub items');
     return { error: error.message };
@@ -33,11 +33,14 @@ export const loader = async () => {
 }; // loader fetches public blogs + public info hub items
 
 const LandingBlog = () => {
-  const { posts, infoHubItems, error } = useLoaderData();
-
-  if (error) {
-    return <div>Error loading blogs: {error}</div>;
+  const data = useLoaderData() || {};
+  if (data.error) {
+    return <div>Error loading blogs: {data.error}</div>;
   }
+  const posts = Array.isArray(data.posts) ? data.posts : [];
+  const infoHubItems = Array.isArray(data.infoHubItems)
+    ? data.infoHubItems
+    : [];
 
   const authors = posts
     ? posts
@@ -56,8 +59,8 @@ const LandingBlog = () => {
         title="TrendFlow - Blog"
         description="Explore the latest tech news, and developer updates."
         url={`${FRONTEND_BASE_URL}/blog`}
-        img_large={`${FRONTEND_BASE_URL}/public/og-image-blog.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/public/og-image-login-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-blog.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-login-twitter.jpg`}
       />
       <StructuredData />
       <div className="container">

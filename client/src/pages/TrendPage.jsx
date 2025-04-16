@@ -95,7 +95,7 @@ const TrendPage = () => {
     cateIconUrl,
     createdBy,
   } = trendObject;
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();
   const setSidebarVisibility = dashboardContext?.setSidebarVisibility; // Fallback

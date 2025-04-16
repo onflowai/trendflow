@@ -18,7 +18,7 @@ function Card({
   isAdmin,
 }) {
   // 768px is a common breakpoint for tablets/mobile
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
 
   const sharedProps = {
     _id,

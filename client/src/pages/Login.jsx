@@ -97,8 +97,8 @@ const Login = () => {
         title="TrendFlow - Login"
         description="Login: TrendFlow and track the latest trends in tech."
         url={`${FRONTEND_BASE_URL}/login`}
-        img_large={`${FRONTEND_BASE_URL}/public/og-image-login.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/public/og-image-login-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-login.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-login-twitter.jpg`}
       />
       <Form method="post" className="form">
         <Logo />

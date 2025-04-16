@@ -1,40 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import styled from 'styled-components';
-import MarkdownEditor from '@uiw/react-markdown-editor';
-// import '@uiw/react-markdown-editor/dist/markdown-editor.css';
 
-const EditMarkdown = ({ initialContent, onContentChange }) => {
-  const [content, setContent] = useState(initialContent || ''); // initializing state for content with initialContent or an empty string if not provided
+/**
+ * EditMarkdown Lazy-load the UIW editor on the client only
+ */
+const MarkdownEditor = lazy(() => import('@uiw/react-markdown-editor'));
+
+export default function EditMarkdown({ initialContent, onContentChange }) {
+  const [content, setContent] = useState(initialContent || '');
 
   useEffect(() => {
     setContent(initialContent);
   }, [initialContent]);
 
-  const handleChange = (editor, data, value) => {
-    const newValue = editor; // using the first argument as the content
-    setContent(newValue);
-    onContentChange(newValue);
-  }; // useEffect hook to update content state whenever initialContent changes
+  const handleChange = (editorValue) => {
+    setContent(editorValue);
+    onContentChange(editorValue);
+  };
 
   return (
     <Outline>
       <Container>
         <div className="edit-markdown">
-          <MarkdownEditor
-            value={content} // set the value of the editor to the content state
-            onChange={handleChange}
-            visible={true} /* automatically show preview */
-            toolbars={false} /* remove toolbar */
-            enableScroll={true} /* enable scrolling */
-            height="700px"
-          />
+          {/* Suspense fallback is rendered while the UIW editor chunk loads in the browser */}
+          <Suspense fallback={<div>Loading Editor…</div>}>
+            <MarkdownEditor
+              value={content}
+              onChange={handleChange}
+              visible={true}
+              toolbars={false}
+              enableScroll={true}
+              height="700px"
+            />
+          </Suspense>
           <div className="bottom-bar"></div>
         </div>
       </Container>
     </Outline>
   );
-};
+}
 
+// The same styled-components from your original code:
 const Outline = styled.div`
   padding: 4px; /* Space between the outer border and the editor */
   border: 1.5px solid var(--grey-50); /* Border around the editor */
@@ -111,5 +117,3 @@ const Container = styled.div`
     }
   }
 `;
-
-export default EditMarkdown;

@@ -50,7 +50,7 @@ const BlogPage = () => {
   const { blogObject } = useLoaderData();
   const { title, content, author, updatedAt, trends } = blogObject;
   const upDate = day(updatedAt).format('MM YYYY');
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
   const dashboardContext = useDashboardContext();
   const setSidebarVisibility = dashboardContext?.setSidebarVisibility;
   const [storedColor, setStoredColor] = useLocalStorage(
@@ -102,7 +102,7 @@ const BlogPage = () => {
               ))}
             </div>
             <div className="blog-content">
-              <DangerousMarkdown content={content} />
+              <DangerousMarkdown content={content} small={isMobile} />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">
