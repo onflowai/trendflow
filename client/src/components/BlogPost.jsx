@@ -7,6 +7,7 @@ import CarouselSlider from './CarouselSlider';
 import DangerousMarkdown from './DangerousMarkdown';
 import { truncateMarkdown } from '../utils/helpers';
 import { RiEdit2Fill } from 'react-icons/ri';
+import useWindowSize from '../hooks/useWindowSize';
 
 function BlogPost({
   title,
@@ -18,6 +19,7 @@ function BlogPost({
   updatedAt,
   isPublic = false,
 }) {
+  const { width, height, isMobile } = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 200);
   const isAuthor = user?.role === 'admin' && user._id === author._id;
@@ -50,7 +52,11 @@ function BlogPost({
             ))}
           </div>
           <div className="blog-content-short">
-            <DangerousMarkdown content={truncatedContent} small />
+            <DangerousMarkdown
+              content={truncatedContent}
+              small={isMobile}
+              blogPage
+            />
           </div>
         </div>
         <div className="carousel">

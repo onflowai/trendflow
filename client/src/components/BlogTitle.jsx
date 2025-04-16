@@ -6,7 +6,7 @@ import { TitleHighlighter } from '../components';
 
 const BlogTitle = ({ title, username, profileImg, date, bgColor }) => {
   return (
-    <Container bgColor={bgColor}>
+    <Container $bgColor={bgColor}>
       <div className="title-container">
         <div className="blog-title">
           <TitleHighlighter title={title} size="3em" />
@@ -51,7 +51,7 @@ const Container = styled.div`
 
   .content-box {
     height: 15rem;
-    background-color: ${({ bgColor }) => bgColor};
+    background-color: ${({ $bgColor }) => $bgColor};
     border-radius: 15px;
     padding: 10px;
     display: flex;

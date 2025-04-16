@@ -33,7 +33,7 @@ const LandingNavbar = () => {
   };
 
   return (
-    <Container hasScrolled={hasScrolled}>
+    <Container $hasScrolled={hasScrolled}>
       <nav className="navbar">
         <div className="nav-center">
           <div className="nav-header">

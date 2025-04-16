@@ -19,6 +19,13 @@ import { HelmetProvider } from 'react-helmet-async';
  *  - ToastContainer for react-toastify
  *  - React.StrictMode for additional checks
  */
+
+// const router = createBrowserRouter(routes, {
+//   future: {
+//     v7_startTransition: true,
+//     v7_relativeSplatPath: true,
+//   },
+// });
 const router = createBrowserRouter(routes); //creating the browser router from universal routes
 
 ReactDOM.createRoot(document.getElementById('root')).render(

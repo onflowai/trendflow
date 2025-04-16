@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useLoaderData, useParams, redirect } from 'react-router-dom';
+import {
+  useLoaderData,
+  useNavigation,
+  useParams,
+  redirect,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
+import useWindowSize from '../hooks/useWindowSize';
 import customFetch from '../utils/customFetch';
 import Container from '../assets/wrappers/BlogPageContainer';
 import {
@@ -15,7 +20,6 @@ import {
   ScrollSpyComponent,
 } from '../components';
 import BlogTitle from '../components/BlogTitle';
-
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { getFullIconUrl } from '../utils/urlHelper';
@@ -25,44 +29,63 @@ day.extend(advancedFormat);
 const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
 export const loader = async ({ params }) => {
-  const { slug } = params;
+  const slug = params?.slug;
+  const isSSR = typeof window === 'undefined';
+
+  if (!slug) {
+    const message = 'No slug provided for blog page';
+    if (isSSR) {
+      console.error('SSR Blog loader error:', message);
+      return { blogObject: null, error: message };
+    } else {
+      toast.error(message);
+      return redirect('/');
+    }
+  }
+
   try {
-    const { data } = await customFetch.get(`/blogs/public/${slug}`);
-    // data is your single public blog post
-    return { blogObject: data };
+    const apiBaseUrl = isSSR
+      ? import.meta.env.VITE_DEV_API_BASE_URL || 'http://localhost:5000/api'
+      : '';
+    const { data } = await customFetch.get(
+      `${apiBaseUrl}/blogs/public/${slug}`
+    );
+    return { blogObject: data, error: null };
   } catch (error) {
-    // If no post found or error, handle it
-    toast.error(error?.response?.data?.message || 'Cannot load public blog');
-    // redirect to a public route or home if you want
-    return redirect('/');
+    const message = error?.response?.data?.message || 'Cannot load public blog';
+    if (isSSR) {
+      console.error('SSR Blog loader error:', message);
+      return { blogObject: null, error: message };
+    } else {
+      toast.error(message);
+      return redirect('/');
+    }
   }
 };
 
 const LandingBlogPage = () => {
   const { slug } = useParams();
-  const { blogObject } = useLoaderData();
-  const { title, content, author, updatedAt, trends } = blogObject; // destructuring your blog fields
-  const formattedDate = day(updatedAt).format('MMMM YYYY'); // formatting date using day.js
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const data = useLoaderData() || {};
+  const { blogObject, error } = data;
+  const navigation = useNavigation();
+  const isLoading = navigation.state === 'loading';
+
+  // Fallback flag for client hydration
+  const [clientReady, setClientReady] = useState(false);
   useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 992);
-    }
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []); // hook to check if window is mobile (replicates your code)
+    setClientReady(true);
+  }, []);
 
-  const getRandomColor = () => {
-    const colors = ['#f6f3e7', '#f9dbf0', '#dfdefc'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
-
+  const { isMobile } = useWindowSize();
   const [storedColor, setStoredColor] = useLocalStorage(
     `bgColor-${slug}`,
     null
   );
+  const getRandomColor = () => {
+    const colors = ['#f6f3e7', '#f9dbf0', '#dfdefc'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
   const [bgColor, setBgColor] = useState(storedColor || getRandomColor());
-
   useEffect(() => {
     if (!storedColor) {
       const newColor = getRandomColor();
@@ -70,6 +93,36 @@ const LandingBlogPage = () => {
       setStoredColor(newColor);
     }
   }, [storedColor, setStoredColor, slug]);
+
+  if (isLoading || !clientReady) {
+    return (
+      <LandingContainer>
+        <div className="container">
+          <LandingNavbar />
+          <h2 style={{ padding: '2rem' }}>Loading blog...</h2>
+        </div>
+        <LandingFooter />
+      </LandingContainer>
+    );
+  }
+
+  if (error || !blogObject) {
+    return (
+      <LandingContainer>
+        <div className="container">
+          <LandingNavbar />
+          <h2 style={{ padding: '2rem' }}>{error || 'Blog not found'}</h2>
+        </div>
+        <LandingFooter />
+      </LandingContainer>
+    );
+  }
+
+  const { title, content, author, updatedAt, trends: rawTrends } = blogObject;
+  console.log('title', title);
+  const trends = Array.isArray(rawTrends) ? rawTrends : [];
+  const formattedDate = day(updatedAt).format('MMMM YYYY');
+
   return (
     <LandingContainer>
       <SEO

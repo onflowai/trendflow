@@ -4,7 +4,7 @@ import useWindowSize from '../hooks/useWindowSize';
 
 const ScrollSpyComponent = ({ sectionIds }) => {
   const [activeSection, setActiveSection] = useState('');
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
 
   const onScroll = () => {
     let currentSection = '';

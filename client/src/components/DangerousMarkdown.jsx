@@ -4,17 +4,17 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // Choose the GitHub style
 import styled, { css } from 'styled-components';
 
-const DangerousMarkdown = ({ content, small }) => {
+const DangerousMarkdown = ({ content, small, blogPage }) => {
   useLayoutEffect(() => {
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach((block) => {
       block.removeAttribute('data-highlighted');
       hljs.highlightElement(block);
     }); // use useLayoutEffect so highlighting runs immediately after DOM mutations.
-  }, [content, small]); // re-run if either the content or the layout changes
+  }, [content, small, blogPage]); // re-run if either the content or the layout changes
 
   return (
-    <Container small={small}>
+    <Container $small={small ? true : undefined} $blogPage={blogPage}>
       <ReactMarkdown
         key={`markdown-${small ? 'small' : 'large'}`}
         components={{
@@ -40,21 +40,13 @@ const DangerousMarkdown = ({ content, small }) => {
 };
 
 const Container = styled.div`
-  ${(props) =>
-    props.small
+  ${({ $small }) =>
+    $small
       ? css`
           p {
             font-size: 0.875rem;
             line-height: 1.25;
             color: var(--grey-700);
-          }
-          h1,
-          h2,
-          h3,
-          h4,
-          h5,
-          h6 {
-            display: none; /* Hide all header tags when small is true */
           }
         `
       : css`
@@ -62,9 +54,56 @@ const Container = styled.div`
             font-size: 1rem;
             line-height: 1.5;
             color: var(--grey-700);
-            margin-bottom: 1rem
+            margin-bottom: 1rem;
           }
         `}
+
+  ${({ $blogPage }) =>
+    $blogPage &&
+    css`
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      ul,
+      ol,
+      blockquote,
+      pre,
+      code {
+        display: inline;
+        font-size: inherit;
+        background: none;
+        padding: 0;
+        margin: 0;
+        border: none;
+        color: inherit;
+        font-family: inherit;
+      }
+
+      p {
+        display: inline;
+        font-size: inherit;
+        line-height: inherit;
+        margin: 0;
+        color: inherit;
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+      pre,
+        code {
+          display: none;
+        }
+    `}
+
   h1 {
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -72,15 +111,20 @@ const Container = styled.div`
     color: var(--blog-text-heading-h1-color);
   }
 
-  h2, h3, h4, h5, h6 {
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin-top: 1rem;
     margin-bottom: 0.5rem;
     line-height: 1.3;
     color: var(--blog-text-headings-color);
   }
 
-  ul, ol {
-    padding-left: 2rem;
+  ul,
+  ol {
+    padding-left: 1rem;
     margin-bottom: 1rem;
   }
 
@@ -88,21 +132,20 @@ const Container = styled.div`
     margin-bottom: 0.5rem;
     line-height: 1.5;
   }
-  
+
   code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+    background-color: var(--blog-code-block-background);
+    border-radius: 5px;
+    padding: 15px;
+    display: block;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 10px 0;
+    overflow-x: auto;
   }
-  code {
-      background-color: var(--blog-code-block-background); // background moded dark / light mode
-      border-radius: 5px; // Rounded corners
-      padding: 15px; // Padding inside the code box
-      display: block; // Ensure block-level display
-      white-space: pre-wrap; // Maintains whitespace formatting
-      word-wrap: break-word; // Ensures long lines do not overflow
-      margin: 10px 0; // Space above and below the code block
-      overflow-x: auto; // Allow horizontal scrolling for long code lines
-    }
-  
+
   blockquote {
     border-left: 4px solid var(--grey-300);
     padding-left: 1rem;
@@ -111,10 +154,12 @@ const Container = styled.div`
     font-style: italic;
     background-color: var(--grey-50);
   }
+
   a {
     color: var(--primary);
     text-decoration: none;
   }
+
   a:hover {
     text-decoration: underline;
   }

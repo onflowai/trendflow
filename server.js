@@ -224,7 +224,7 @@ if (env === 'production') {
     try {
       const { render } = await import(
         path.join(__dirname, 'client', 'dist', 'server', 'entry-server.js')
-      ); //importing SSR render function from server bundle
+      );
 
       const rendered = await render(req.originalUrl);
 

@@ -1,26 +1,45 @@
 import { useState, useEffect } from 'react';
 
-const useWindowSize = () => {
-  const isClient = typeof window !== 'undefined'; //ssr safe check
+const getInitialSize = () => {
+  if (typeof window === 'undefined') {
+    return {
+      width: 0,
+      height: 0,
+      isMobile: false,
+      isClient: false,
+    };
+  }
 
-  const getIsMobile = () => {
-    return isClient ? window.innerWidth < 992 : false;
+  const width = window.innerWidth;
+  return {
+    width,
+    height: window.innerHeight,
+    isMobile: width < 992,
+    isClient: true,
   };
+};
 
-  const [isMobile, setIsMobile] = useState(getIsMobile); //initial value
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState(getInitialSize);
 
   useEffect(() => {
-    if (!isClient) return;
+    if (typeof window === 'undefined') return;
 
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 992);
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        isMobile: window.innerWidth < 992,
+        isClient: true,
+      });
     };
 
+    handleResize(); // initial
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [isClient]);
+  }, []);
 
-  return isMobile;
+  return windowSize;
 };
 
 export default useWindowSize;

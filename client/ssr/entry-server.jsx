@@ -34,19 +34,25 @@ export async function render(url) {
 
   const matches = matchRoutes(routes, url);
   if (!matches || matches.length === 0) {
+    const matches = matchRoutes(routes, url);
     return { appHtml: '', helmetContext: {} };
   }
 
   const loaderData = {};
+  console.log('SSR loaderData:', loaderData);
   await Promise.all(
     matches.map(async (match) => {
-      if (match.route.loader) {
-        try {
-          loaderData[match.route.id || match.route.path] =
-            await match.route.loader();
-        } catch (err) {
-          console.error(`Loader error on route ${match.route.path}`, err);
+      const routeId = match.route.id || match.route.path;
+
+      try {
+        if (match.route.loader) {
+          loaderData[routeId] = await match.route.loader({
+            params: match.params || {},
+            request: { url },
+          });
         }
+      } catch (err) {
+        console.error(`Loader error on route ${routeId}`, err);
       }
     })
   ); // run all loaders for the matched routes

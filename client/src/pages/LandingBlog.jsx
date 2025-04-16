@@ -33,7 +33,6 @@ export const loader = async () => {
 }; // loader fetches public blogs + public info hub items
 
 const LandingBlog = () => {
-  //console.log('SSR Debug => LandingBlog rendered');
   const data = useLoaderData() || {};
   if (data.error) {
     return <div>Error loading blogs: {data.error}</div>;

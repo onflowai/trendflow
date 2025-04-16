@@ -8,7 +8,7 @@ import useWindowSize from '../hooks/useWindowSize';
 const TitleHighlighter = ({ title }) => {
   const [chunks, setChunks] = useState([]);
   const containerRef = useRef(null);
-  const isMobile = useWindowSize();
+  const { isMobile } = useWindowSize();
 
   useEffect(() => {
     const maxLength = isMobile ? 55 : 70;
