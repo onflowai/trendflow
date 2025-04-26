@@ -5,7 +5,7 @@ import {
   UnauthenticatedError,
 } from '../errors/customErrors.js';
 import { trendCategoryValues, technologiesValues } from '../utils/constants.js';
-import { B_LIST } from '../utils/blacklisted.js';
+import { getBlacklist } from '../utils/blacklisted.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
 import mongoose from 'mongoose';
@@ -92,9 +92,10 @@ export const validateRegisterInput = withValidationErrors([
     .withMessage('Username must start with a letter.')
     .custom(async (username) => {
       const lowerUsername = username.toLowerCase();
-      const expression = B_LIST.find((word) => lowerUsername.includes(word));
-      if (expression) {
-        throw new BadRequestError('Username contains prohibited characters');
+      const blacklist = await getBlacklist();
+      const matched = blacklist.find((word) => lowerUsername.includes(word));
+      if (matched) {
+        throw new BadRequestError('Username contains prohibited words');
       }
       const user = await UserModel.findOne({ username });
       if (user && user.verified) {
