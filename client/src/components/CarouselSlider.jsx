@@ -119,7 +119,7 @@ const SliderContainer = styled.div`
   .arrow {
     cursor: pointer;
     font-size: 1.5rem;
-    color: black;
+    color: var(--black);
     user-select: none;
   }
 

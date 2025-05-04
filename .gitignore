@@ -32,6 +32,11 @@ ecosystem.config.cjs
 #assests
 /assets
 
+#config files
+/config/categories.json
+/config/prompts.json
+/config/technologies.json
+
 #py_scripts
 py_scripts/
 

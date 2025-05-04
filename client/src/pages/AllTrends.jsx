@@ -72,7 +72,18 @@ export const loader = async ({ request, searchValue }) => {
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    return { error: error?.response?.data?.msg || 'An error occurred' };
+    const msg = error?.response?.data?.msg ?? 'An error occurred';
+    return {
+      trends: {
+        trends: [], // empty fallback
+        totalTrends: 0,
+        nextCursor: null,
+        hasNextPage: false,
+      },
+      savedTrendIds: [],
+      searchValues: {}, // or whatever default
+      error: msg, // your error message
+    };
   }
 }; //end loader
 

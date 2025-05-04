@@ -121,8 +121,11 @@ html {
   --card-highlight: var(--grey-50);
   --border-color: var(--grey-50);
   --small-card-bottom-row: var(--white);
+  /* SELECTOR */
   --selector-main-color: var(--white);
   --selector-dropdown-main-color: var(--white);
+  --selector-dropdown-selected-color: var(--primary-200);
+  --selector-dropdown-highlight-color: var(--primary-50);
   /* TREND PAGE LIGHT */
   --select-small-color: var(--white);
   --select-small-dropdown-color: var(--white);
@@ -225,8 +228,11 @@ html {
   --card-highlight: var(--primary-400);
   --border-color: transparent;
   --small-card-bottom-row: var(--primary-400);
+  /* SELECTOR DARK */
   --selector-main-color: var(--dark-mode-bg-color);
   --selector-dropdown-main-color: var(--primary-300);
+  --selector-dropdown-selected-color: var(--primary-500);
+  --selector-dropdown-highlight-color: var(--primary-400);
   /* TREND PAGE DARK */
   --select-small-color: var(--dark-mode-bg-color);
   --select-small-dropdown-color: var(--primary-400);

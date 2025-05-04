@@ -81,7 +81,28 @@ export const loader = async ({ request }) => {
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
-    return redirect('/dashboard');
+    const msg = error?.response?.data?.msg ?? 'An error occurred';
+    return {
+      trends: {
+        trends: [],
+        totalTrends: 0,
+        nextCursor: null,
+        hasNextPage: false,
+      },
+      stats: {
+        users: 0,
+        trends: 0,
+        approved: 0,
+        unapproved: 0,
+      },
+      charts: {
+        monthUsers: [],
+        monthTrends: [],
+        guestUserVisit: [],
+      },
+      searchValues: {},
+      error: msg,
+    };
   }
 };
 

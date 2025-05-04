@@ -1,20 +1,14 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import { renderToString } from 'react-dom/server';
 import {
-  matchRoutes,
-  createMemoryRouter,
-  RouterProvider,
-} from 'react-router-dom';
+  createStaticHandler,
+  createStaticRouter,
+  StaticRouterProvider,
+} from 'react-router-dom/server';
 import routes from '../src/routes.jsx';
 import { ThemeProvider } from '../src/context/ThemeContext.jsx';
-import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
-//import ServerDataContext from '../src/context/ServerDataContext.js';
-
+import { ServerStyleSheet } from 'styled-components';
 import { HelmetProvider } from 'react-helmet-async';
-//import * as HelmetAsync from 'react-helmet-async'; // react-helmet-async (CJS in SSR):
-//const { HelmetProvider } = HelmetAsync.default; //import the "react-helmet-async" default because its CJS in SSR
-// import helmetPkg from 'react-helmet-async';
-// const { HelmetProvider } = helmetPkg;
 
 //export const ServerDataContext = createContext({}); //context to hold the server-loaded data
 /**
@@ -30,62 +24,27 @@ import { HelmetProvider } from 'react-helmet-async';
  * @returns
  */
 export async function render(url) {
-  const helmetContext = {};
-
-  const matches = matchRoutes(routes, url);
-  if (!matches || matches.length === 0) {
-    const matches = matchRoutes(routes, url);
-    return { appHtml: '', helmetContext: {} };
-  }
-
-  const loaderData = {};
-  console.log('SSR loaderData:', loaderData);
-  await Promise.all(
-    matches.map(async (match) => {
-      const routeId = match.route.id || match.route.path;
-
-      try {
-        if (match.route.loader) {
-          loaderData[routeId] = await match.route.loader({
-            params: match.params || {},
-            request: { url },
-          });
-        }
-      } catch (err) {
-        console.error(`Loader error on route ${routeId}`, err);
-      }
-    })
-  ); // run all loaders for the matched routes
-
-  const memoryRouter = createMemoryRouter(routes, {
-    initialEntries: [url],
-    hydrationData: loaderData, // Pass loader data here
-  }); // providing data to the router
-
-  const sheet = new ServerStyleSheet();
-
+  const handler = createStaticHandler(routes); //creating handler which knows about loaders/actions
+  const request = new Request('http://localhost' + url); //building a request for that URL
+  const context = await handler.query(request); //running it through the handler (calling loader(s))
+  const router = createStaticRouter(handler.dataRoutes, context); //creating router with the dataRoutes + fetched data
+  const helmetContext = {}; //helmet SSR wrap
+  const sheet = new ServerStyleSheet(); //styled-components wrap
+  let appHtml, styleTags;
   try {
-    const appHtml = renderToString(
+    appHtml = renderToString(
       sheet.collectStyles(
-        // <-- Collect Styled Components CSS
         <HelmetProvider context={helmetContext}>
           <ThemeProvider>
-            <RouterProvider router={memoryRouter} />
+            <StaticRouterProvider router={router} context={context} />
           </ThemeProvider>
         </HelmetProvider>
       )
     );
-
-    const styleTags = sheet.getStyleTags();
-
-    return {
-      appHtml,
-      helmetContext,
-      styleTags,
-    };
-  } catch (error) {
-    console.error('SSR Styled-Components Error:', error);
+    styleTags = sheet.getStyleTags();
   } finally {
     sheet.seal();
   }
+
+  return { appHtml, styleTags, helmetContext };
 }

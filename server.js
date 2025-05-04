@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); //dotenv configuration
+import './schedulers/updateScores.js'; //cron job for updating scores
 
 import fs from 'fs';
 import cors from 'cors';
@@ -170,10 +171,10 @@ app.use('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
 }); //testing proxy
 
-app.use((req, res, next) => {
-  console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
+//   next();
+// });//debugging
 
 // Serve React App in Production
 if (env === 'production') {
@@ -229,7 +230,7 @@ if (env === 'production') {
       const rendered = await render(req.originalUrl);
 
       if (!rendered || !rendered.appHtml) {
-        console.error('SSR Render failed, no appHtml returned');
+        //console.error('[SSR Render Failed]: No appHtml returned');
         return res.status(500).send('Server Error');
       }
 
@@ -238,7 +239,7 @@ if (env === 'production') {
       const helmet = helmetContext.helmet || {};
       const title = helmet.title?.toString() || '';
       const meta = helmet.meta?.toString() || '';
-
+      //console.log('[SSR Final HTML Components]', { title, meta }); //HERE
       const html = `<!DOCTYPE html>
       <html lang="en">
         <head>
