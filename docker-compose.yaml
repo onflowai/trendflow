@@ -24,8 +24,33 @@ services:
       - "trendflowai-server:latest"
     environment:
       - NODE_ENV=production
+      - OTEL_SERVICE_NAME=trendflow-server
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://grafana-alloy:4318
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://grafana-alloy:4318
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     ports:
       - "5100:5100"
+    networks:
+      - trendflow
+    depends_on:
+      - grafana-alloy
+
+  grafana-alloy:
+    image: grafana/alloy:v1.8.2
+    container_name: grafana-alloy
+    volumes:
+      - ./alloy/config.alloy:/etc/agent/config.alloy
+    environment:
+      - GCLOUD_RW_API_KEY=GRAFANACLOUD_API_KEY
+    ports:
+      - "4318:4318"   # OTLP HTTP
+      - "4317:4317"   # OTLP gRPC
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --stability.level=experimental
+      - /etc/agent/config.alloy
     networks:
       - trendflow
 

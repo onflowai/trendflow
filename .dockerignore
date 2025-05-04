@@ -6,3 +6,4 @@ dist
 py_scripts
 lightning_logs
 package-lock.json
+alloy
