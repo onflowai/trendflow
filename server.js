@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); //dotenv configuration
+import './schedulers/updateScores.js'; //cron job for updating scores
 
 import fs from 'fs';
 import cors from 'cors';

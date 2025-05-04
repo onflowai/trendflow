@@ -14,6 +14,7 @@ import {
   TrendPage,
   AllTrends,
   LandingBlog,
+  LandingError,
   LandingBlogPage,
   DashboardLayout,
   LandingEmailVerify,
@@ -51,7 +52,7 @@ const routes = [
   {
     path: '/',
     element: <PublicLayout />,
-    // errorElement: <Error />,
+    errorElement: <LandingError />,
     children: [
       {
         index: true,
@@ -96,7 +97,7 @@ const routes = [
         <ProtectedLayout />
       </UserProvider>
     ),
-    // errorElement: <Error />,
+    errorElement: <Error />,
     children: [
       {
         path: '',
@@ -109,18 +110,23 @@ const routes = [
             element: <AllTrends />,
             loader: allTrendsLoader,
             id: 'dashboardAllTrends',
+            shouldRevalidate: ({ currentUrl, nextUrl }) =>
+              currentUrl.pathname !== nextUrl.pathname,
+            errorElement: <Error />,
           },
           {
             path: 'blog',
             element: <Blog />,
             loader: blogLoader,
             id: 'dashboardBlogLoader',
+            errorElement: <Error />,
           },
           {
             path: 'create-blog',
             element: <AddBlog />,
             action: createBlogAction,
             id: 'dashboardBlogAction',
+            errorElement: <Error />,
           },
           {
             path: 'edit-blog/:slug',
@@ -128,24 +134,30 @@ const routes = [
             loader: singleEditBlogLoader,
             action: editBlogAction,
             id: 'dashboardAddBlog',
+            errorElement: <Error />,
           },
           {
             path: 'blog/:slug',
             element: <BlogPage />,
             loader: singleBlogLoader,
             id: 'dashboardBlogPage',
+            errorElement: <Error />,
           },
           {
             path: 'submit',
             element: <AddTrend />,
             action: addTrendAction,
             id: 'dashboardAddTrend',
+            errorElement: <Error />,
           },
           {
             path: 'admin',
             element: <Admin />,
             loader: allTrendAdminLoader,
             id: 'dashboardAdmin',
+            shouldRevalidate: ({ currentUrl, nextUrl }) =>
+              currentUrl.pathname !== nextUrl.pathname,
+            errorElement: <Error />,
           },
           {
             path: 'profile',
@@ -153,6 +165,7 @@ const routes = [
             action: profileAction,
             loader: getUserSavedTrends,
             id: 'dashboardProfile',
+            errorElement: <Error />,
           },
           {
             path: 'edit-trend/:slug',
@@ -160,18 +173,21 @@ const routes = [
             loader: editTrendLoader,
             action: editTrendAction,
             id: 'dashboardEditTrend',
+            errorElement: <Error />,
           },
           {
             path: 'trend/:slug',
             element: <TrendPage />,
             loader: singleTrendLoader,
             id: 'dashboardTrendPage',
+            errorElement: <Error />,
           },
           {
             path: 'settings',
             element: <Settings />,
             loader: allStatsLoader,
             id: 'dashboardSettings',
+            errorElement: <Error />,
           },
         ],
       },

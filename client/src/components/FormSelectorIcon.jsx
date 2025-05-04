@@ -151,10 +151,10 @@ const customStyles = {
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
     backgroundColor: isSelected
-      ? 'var(--primary-200)'
+      ? 'var(--selector-dropdown-selected-color)'
       : isFocused
-      ? 'var(--primary-50)'
-      : null,
+        ? 'var(--selector-dropdown-highlight-color)'
+        : null,
     color: 'var(--text-color)',
     ':first-of-type': {
       borderTopLeftRadius: '10px',

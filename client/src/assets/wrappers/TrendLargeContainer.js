@@ -158,6 +158,7 @@ display: inline-block;
   width: 100%;
 }
 .bookmark-btn{
+  color: var(--black);
   size: 30px;
   border: none;            /* Removes the border */
   background: none;        /* Optional: Removes background if desired */

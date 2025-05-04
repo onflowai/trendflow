@@ -7,6 +7,7 @@ export { default as DeleteTrend } from './DeleteTrend';
 export { default as EditTrend } from './EditTrend';
 export { default as TrendPage } from './TrendPage';
 export { default as Error } from './Error';
+export { default as LandingError } from './LandingError';
 export { default as HomeLayout } from './HomeLayout';
 export { default as Landing } from './Landing';
 export { default as Login } from './Login';

@@ -80,6 +80,7 @@ const Container = styled.div`
   }
 
   .author-info {
+    color: black;
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
