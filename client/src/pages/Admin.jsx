@@ -330,7 +330,7 @@ const Admin = () => {
     const fetchData = async () => {
       if (!isClosed) {
         try {
-          const response = await customFetch.get('trends/icon-data');
+          const response = await customFetch.get('icons/icon-data');
           const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
           setTrendCategory(Object.values(TREND_CATEGORY));
           setTechnologies(Object.values(TECHNOLOGIES));

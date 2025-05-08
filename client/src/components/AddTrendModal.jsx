@@ -100,7 +100,7 @@ const AddTrendModal = ({ onClose, onAdd, slug, onManualApprove }) => {
 
         setIsUploading(true);
         await onManualApprove(slug, parsedData);
-        toast.success('Trend data added successfully!');
+        //toast.success('Trend data added successfully!');
         onAdd(); // to Admin component to refresh trends
         onClose(); // close the modal
       } catch (err) {

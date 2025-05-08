@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); //dotenv configuration
 import './schedulers/updateScores.js'; //cron job for updating scores
+import { loadEnums } from './utils/dynamicEnums.js';
 
 import fs from 'fs';
 import cors from 'cors';
@@ -20,6 +21,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
 import blogRouter from './routes/blogRouter.js';
+import iconRouter from './routes/iconRouter.js';
 import trendRouter from './routes/trendRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
 //dev routes
@@ -163,6 +165,7 @@ app.use('/', robotsRoute);
 // API Routes
 app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', csrfProtection, authRouter); //authentication
+app.use('/api/v1/icons', iconRouter); //svg router
 app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
@@ -313,6 +316,7 @@ const startServer = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+    await loadEnums();
     console.log(`Connected to MongoDB`);
 
     app.listen(port, () => {

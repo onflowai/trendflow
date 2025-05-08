@@ -1,5 +1,5 @@
 import trendModel from '../models/trendModel.js';
-import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
+//import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
 //import { executePythonScript } from '../utils/script_controller.js';
@@ -570,22 +570,22 @@ export const getApprovedTrends = async (req, res) => {
   }
 }; //end getApprovedTrends
 
-/**
- * GET TREND_CATEGORY & TECHNOLOGIES SVG
- * @param {*} req
- * @param {*} res
- * @returns
- */
-export const getSelectIconData = (req, res) => {
-  try {
-    if (!req.user) {
-      throw new UnauthenticatedError('User not authenticated');
-    }
-    res.status(StatusCodes.OK).json({ TREND_CATEGORY, TECHNOLOGIES });
-  } catch (error) {
-    return next(error);
-  }
-}; //end getSelectIconData
+// /**
+//  * GET TREND_CATEGORY & TECHNOLOGIES SVG
+//  * @param {*} req
+//  * @param {*} res
+//  * @returns
+//  */
+// export const getSelectIconData = (req, res) => {
+//   try {
+//     if (!req.user) {
+//       throw new UnauthenticatedError('User not authenticated');
+//     }
+//     res.status(StatusCodes.OK).json({ TREND_CATEGORY, TECHNOLOGIES });
+//   } catch (error) {
+//     return next(error);
+//   }
+// }; //end getSelectIconData
 
 /**
  * UPLOAD TREND SVG is responsible for allow admin to upload/modify svg belonging to a trend before and after approval
