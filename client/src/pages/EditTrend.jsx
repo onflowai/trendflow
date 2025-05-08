@@ -100,7 +100,7 @@ const EditTrend = () => {
   useEffect(() => {
     const fetchIconData = async () => {
       try {
-        const response = await customFetch.get('trends/icon-data');
+        const response = await customFetch.get('icons/icon-data');
         const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
         setTrendCategoryList(Object.values(TREND_CATEGORY));
         setTrendTechList(Object.values(TECHNOLOGIES));

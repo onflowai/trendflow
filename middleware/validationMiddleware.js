@@ -4,11 +4,12 @@ import {
   NotFoundError,
   UnauthenticatedError,
 } from '../errors/customErrors.js';
-import { trendCategoryValues, technologiesValues } from '../utils/constants.js';
+import TrendCategory from '../models/categoryModel.js';
+import Technology from '../models/technologyModel.js';
 import { getBlacklist } from '../utils/blacklisted.js';
 import trendModel from '../models/trendModel.js';
 import UserModel from '../models/userModel.js';
-import mongoose from 'mongoose';
+
 /**
  * VALIDATION LAYER test and error response
  * @param {*} validateValues
@@ -33,41 +34,26 @@ const withValidationErrors = (validateValues) => {
     },
   ];
 };
-//
-// export const validateTest = withValidationErrors([
-//   body('name')
-//     .notEmpty()
-//     .withMessage('name is required')
-//     .isLength({ min: 4, max: 50 })
-//     .withMessage('name must be at least 50 characters')
-//     .trim(),
-// ]);
-// export const adminOnly = (req, res, next) => {
-//   if (req.user && req.user.role === 'admin') {
-//     next();
-//   } else {
-//     throw new UnauthenticatedError('Unauthorized to access this page');
-//   }
-// };
-//Custom validation
+
 export const validateTrendInput = withValidationErrors([
   body('trend').notEmpty().withMessage('please add a trend'),
-  body('trendCategory')
-    .isIn(trendCategoryValues)
-    .withMessage('invalid trend category'),
-  body('trendTech').isIn(technologiesValues).withMessage('invalid trend stack'),
+  body('trendCategory').custom(async (value) => {
+    const exists = await TrendCategory.exists({ value });
+    if (!exists) {
+      throw new Error('invalid trend category');
+    }
+    return true;
+  }),
+  body('trendTech').custom(async (value) => {
+    const exists = await Technology.exists({ value });
+    if (!exists) {
+      throw new Error('invalid trend stack');
+    }
+    return true;
+  }),
   body('role').not().exists().withMessage('Cannot change role'),
 ]);
-//Async trend ID validation set up as true and false with mongoose
-// export const validateIdParam = withValidationErrors([
-//   param('slug').custom(async (value) => {
-//     const isValidId = mongoose.Types.ObjectId.isValid(value); //isValidId returns true or false
-//     if (!isValidId) throw new BadRequestError('invalid mongodb id'); //condition for the error
-//     const trendObject = await trendModel.findById(value); //retrieve the trend if it equals the id in the data
-//     if (!trendObject)
-//       throw new NotFoundError(`no trend found with id ${value}`); //if the trend does not exist get the NotfoundError
-//   }),
-// ]);
+
 //validateSlugParam middleware validates that a provided slug exists in the database
 export const validateSlugParam = withValidationErrors([
   param('slug').custom(async (value) => {

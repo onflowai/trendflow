@@ -13,7 +13,6 @@ import {
   getUserTrends,
   getSingleTrend,
   uploadTrendSVG,
-  getSelectIconData,
   getApprovedTrends,
   updateTrendManual,
   getTopViewedTrends,
@@ -50,7 +49,6 @@ router.patch(
   processSVG, // Middleware to handle SVG file
   uploadTrendSVG // Controller function to handle SVG upload
 );
-router.get('/icon-data', authenticateUser, getSelectIconData);
 router
   .route('/submit')
   .post(
