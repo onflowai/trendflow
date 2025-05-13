@@ -43,6 +43,7 @@ function TrendLarge({
   onSave,
   onDelete,
   onRemove,
+  guestUser,
   onApprove,
   createdBy,
   trendTech,
@@ -71,7 +72,10 @@ function TrendLarge({
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
 
-  const navigateToTrend = () => {
+  const navigateToTrend = async () => {
+    if (guestUser) {
+      await guestUser();
+    }
     if (isAdminPage && !isApproved) {
       navigate(`/dashboard/edit-trend/${slug}`);
     } else {

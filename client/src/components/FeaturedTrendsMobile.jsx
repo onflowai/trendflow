@@ -12,7 +12,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
  * @param {*}
  * @returns
  */
-const FeaturedTrendsMobile = ({ featuredTrends }) => {
+const FeaturedTrendsMobile = ({ featuredTrends, guestUser }) => {
   const featTrends = Array.isArray(featuredTrends) ? featuredTrends : [];
   const isFeatured = true;
   //Values used to style recharts in TrendPage
@@ -107,6 +107,7 @@ const FeaturedTrendsMobile = ({ featuredTrends }) => {
             chartMarginTop={chartMarginTop}
             chartMarginBottom={chartMarginBottom}
             isFeatured={isFeatured}
+            guestUser={guestUser}
           />
         ))}
       </div>

@@ -34,6 +34,7 @@ function TrendSmall({
   onRemove,
   onDelete,
   updatedAt,
+  guestUser,
   isLoading,
   createdBy,
   trendTech,
@@ -66,7 +67,15 @@ function TrendSmall({
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
-  const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  //const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  const handleCardClick = async () => {
+    if (guestUser) {
+      await guestUser();
+      navigate(`/dashboard/trend/${slug}`);
+    } else {
+      navigate(`/dashboard/trend/${slug}`);
+    }
+  };
   const handleInnerClick = (event) => event.stopPropagation();
   const handleBookmarkClick = async (e) => {
     e.stopPropagation();

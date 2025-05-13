@@ -33,6 +33,7 @@ function TrendMini({
   onSave,
   onRemove,
   onDelete,
+  guestUser,
   updatedAt,
   isLoading,
   createdBy,
@@ -66,7 +67,15 @@ function TrendMini({
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
-  const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  //const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  const handleCardClick = async () => {
+    if (guestUser) {
+      await guestUser(); // login as guest user
+      navigate(`/dashboard/trend/${slug}`); //then slug link
+    } else {
+      navigate(`/dashboard/trend/${slug}`);
+    }
+  };
   const handleInnerClick = (event) => event.stopPropagation();
   const handleBookmarkClick = async (e) => {
     e.stopPropagation();

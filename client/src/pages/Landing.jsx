@@ -224,9 +224,15 @@ const Landing = () => {
         <section id="trends"></section>
         <div className="featured-trends">
           {isMobile ? (
-            <FeaturedTrendsMobile featuredTrends={trends} />
+            <FeaturedTrendsMobile
+              featuredTrends={trends}
+              guestUser={guestUser}
+            />
           ) : (
-            <FeaturedTrendsDesktop featuredTrends={trends} />
+            <FeaturedTrendsDesktop
+              featuredTrends={trends}
+              guestUser={guestUser}
+            />
           )}
           <div ref={lastTrendElementRef}></div>
           <PaginationFeatured
