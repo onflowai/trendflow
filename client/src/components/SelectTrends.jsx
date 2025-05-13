@@ -10,6 +10,7 @@ import { BsCircleFill } from 'react-icons/bs';
  * @returns
  */
 const SelectTrends = ({
+  trendLimit,
   selectedTrends,
   setSelectedTrends,
   labelText,
@@ -31,9 +32,6 @@ const SelectTrends = ({
         svg_url: trend.svg_url,
         slug: trend.slug,
       }));
-      console.log('trendOptions', trendOptions);
-      console.log('trend', trendOptions.trend);
-      console.log('slug', trendOptions.slug);
       callback(trendOptions);
     } catch (error) {
       console.error('Error fetching trends:', error);
@@ -42,6 +40,8 @@ const SelectTrends = ({
   };
   const handleChange = (selectedOptions) => {
     setSelectedTrends(selectedOptions || []);
+    if (next.length > trendLimit) return;
+    setSelectedTrends(next);
   };
   const handleSelectedTrendClick = (event, slug) => {
     event.stopPropagation();
@@ -164,6 +164,7 @@ const SelectTrends = ({
         defaultOptions
         value={selectedTrends}
         onChange={handleChange}
+        isOptionDisabled={() => selectedTrends.length >= trendLimit}
         getOptionLabel={(e) => (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {e.svg_url ? (

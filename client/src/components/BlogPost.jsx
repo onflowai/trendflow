@@ -20,6 +20,12 @@ function BlogPost({
   isPublic = false,
 }) {
   const { width, height, isMobile } = useWindowSize();
+  const seen = new Set();
+  const uniqueTrends = trends.filter((t) => {
+    if (seen.has(t.trendTech)) return false;
+    seen.add(t.trendTech);
+    return true;
+  }); //REMOVING TECH DUPLICATE IN TRENDS
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 200);
   const isAuthor = user?.role === 'admin' && user._id === author._id;
@@ -42,7 +48,7 @@ function BlogPost({
           </div>
           <div className="blog-date">
             {upDate}
-            {trends.map((trend, index) => (
+            {uniqueTrends.map((trend, index) => (
               <img
                 key={index}
                 src={getFullIconUrl(trend.techIconUrl)}

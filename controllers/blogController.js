@@ -3,7 +3,7 @@ import trendBlogModel from '../models/trendBlogModel.js';
 // import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
-import { removeDuplicateTrends } from '../utils/duplicateRemover.js';
+//import { dedupeTrendsKeepAll } from '../utils/duplicateRemover.js';
 /**
  * CREATE BLOG
  * Create a new blog post (admin only)
@@ -55,10 +55,10 @@ export const getAllPosts = async (req, res) => {
         select: 'trend slug trendTech techIconUrl svg_url trendCategory',
       });
     const processedPosts = posts.map((post) => {
-      const uniqueTrends = removeDuplicateTrends(post.trends); //removing duplicates
+      //const uniqueTrends = dedupeTrendsKeepAll(post.trends); //removing duplicates
       return {
         ...post.toObject(), // converting mongoose document to plain object
-        trends: uniqueTrends,
+        trends: post.trends,
       };
     }); // remove duplicate trends based on techIconUrl
 
@@ -91,10 +91,10 @@ export const getSinglePost = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Post not found' });
     }
-    const uniqueTrends = removeDuplicateTrends(post.trends); //removing duplicates
+    //const uniqueTrends = dedupeTrendsKeepAll(post.trends); //removing duplicates
     const processedPost = {
       ...post.toObject(), // converting mongoose document to plain object
-      trends: uniqueTrends,
+      trends: post.trends,
     };
     res.status(StatusCodes.OK).json(processedPost);
   } catch (error) {
@@ -126,10 +126,10 @@ export const getSinglePublicBlog = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'Post not found or not public' });
     }
-    const uniqueTrends = removeDuplicateTrends(post.trends);
+    //const uniqueTrends = dedupeTrendsKeepAll(post.trends);
     const processedPost = {
       ...post.toObject(),
-      trends: uniqueTrends,
+      trends: post.trends,
     };
     res.status(StatusCodes.OK).json(processedPost);
   } catch (error) {
@@ -237,8 +237,8 @@ export const getPublicPosts = async (req, res) => {
       }); // only fetching posts where isPublic = true
 
     const processedPosts = publicPosts.map((post) => {
-      const uniqueTrends = removeDuplicateTrends(post.trends);
-      return { ...post.toObject(), trends: uniqueTrends };
+      //const uniqueTrends = dedupeTrendsKeepAll(post.trends);
+      return { ...post.toObject(), trends: post.trends };
     });
 
     res.status(StatusCodes.OK).json(processedPosts);

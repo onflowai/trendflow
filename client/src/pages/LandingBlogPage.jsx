@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useTheme } from '../context/ThemeContext';
 import styled from 'styled-components';
 import useWindowSize from '../hooks/useWindowSize';
 import customFetch from '../utils/customFetch';
@@ -55,7 +56,6 @@ export const loader = async ({ params }) => {
 
     console.log(`[SSR Loader Fetching URL]: ${fetchUrl}`);
     const { data } = await (isSSR ? axios : customFetch).get(fetchUrl);
-    console.log('[Loader Success]', data);
     return { blogObject: data, error: null };
   } catch (error) {
     console.error('[Axios SSR Error FULL DETAILS]', {
@@ -81,6 +81,7 @@ export const loader = async ({ params }) => {
 };
 
 const LandingBlogPage = () => {
+  const { isDarkTheme } = useTheme();
   const { slug } = useParams();
   const data = useLoaderData() || {};
   const { blogObject, error } = data;
@@ -119,8 +120,13 @@ const LandingBlogPage = () => {
     updatedAt,
     trends: rawTrends,
   } = blogObject || {};
-  console.log('title', title);
   const trends = Array.isArray(rawTrends) ? rawTrends : [];
+  const seen = new Set();
+  const uniqueTrends = trends.filter((t) => {
+    if (seen.has(t.trendTech)) return false;
+    seen.add(t.trendTech);
+    return true;
+  }); //REMOVING TECH DUPLICATE IN TRENDS
   const formattedDate = day(updatedAt).format('MMMM YYYY');
 
   return (
@@ -168,7 +174,7 @@ const LandingBlogPage = () => {
                   bgColor={bgColor}
                 />
                 <div className="trend-icons">
-                  {trends.map((trend, idx) => (
+                  {uniqueTrends.map((trend, idx) => (
                     <img
                       key={idx}
                       src={getFullIconUrl(trend.techIconUrl)}
@@ -178,7 +184,11 @@ const LandingBlogPage = () => {
                   ))}
                 </div>
                 <div className="blog-content">
-                  <DangerousMarkdown content={content} small={isMobile} />
+                  <DangerousMarkdown
+                    content={content}
+                    small={isMobile}
+                    isDarkTheme={isDarkTheme}
+                  />
                 </div>
               </div>
               <aside className="scroll-spy-sidebar-aside">

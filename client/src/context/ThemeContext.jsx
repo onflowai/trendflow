@@ -6,7 +6,6 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
-
   // Initialize theme based on localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {

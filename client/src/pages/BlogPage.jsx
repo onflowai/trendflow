@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import CustomErrorToast from '../components/CustomErrorToast';
+import { useTheme } from '../context/ThemeContext';
 import React, { useState, useEffect } from 'react';
 import {
   SEOProtected,
@@ -46,9 +47,16 @@ const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const BlogPage = () => {
+  const { isDarkTheme } = useTheme();
   const { slug } = useParams();
   const { blogObject } = useLoaderData();
   const { title, content, author, updatedAt, trends } = blogObject;
+  const seen = new Set();
+  const uniqueTrends = trends.filter((t) => {
+    if (seen.has(t.trendTech)) return false;
+    seen.add(t.trendTech);
+    return true;
+  }); //REMOVING TECH DUPLICATE IN TRENDS
   const upDate = day(updatedAt).format('MM YYYY');
   const { isMobile } = useWindowSize();
   const dashboardContext = useDashboardContext();
@@ -92,7 +100,7 @@ const BlogPage = () => {
               bgColor={bgColor}
             />
             <div className="trend-icons">
-              {trends.map((trend, index) => (
+              {uniqueTrends.map((trend, index) => (
                 <img
                   key={index}
                   src={getFullIconUrl(trend.techIconUrl)}
@@ -102,7 +110,11 @@ const BlogPage = () => {
               ))}
             </div>
             <div className="blog-content">
-              <DangerousMarkdown content={content} small={isMobile} />
+              <DangerousMarkdown
+                content={content}
+                small={isMobile}
+                isDarkTheme={isDarkTheme}
+              />
             </div>
           </div>
           <aside className="scroll-spy-sidebar-aside">

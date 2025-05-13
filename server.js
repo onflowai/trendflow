@@ -54,10 +54,6 @@ const PROD_URL = process.env.PROD_URL;
 const FRONT_URL = env === 'production' ? PROD_URL : process.env.DEV_URL;
 const SERVER_URL = env === 'production' ? PROD_URL : process.env.DEV_URL_SERVER;
 
-// Debug logs to confirm the values
-// console.log('NODE_ENV:', env);
-// console.log('MONGODB_URL:', process.env.MONGODB_URL);
-
 //setting up access to .env and loading the corresponding .env file
 dotenv.config({
   path: path.resolve(process.cwd(), `.env.${env}`),

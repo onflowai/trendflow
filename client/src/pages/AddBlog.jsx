@@ -84,6 +84,7 @@ const getRandomColor = () => {
 };
 
 const AddBlog = () => {
+  const trendLimit = 10; // max number of trends to select
   const { user } = useOutletContext(); // Getting the user from DashboardLayout
   const { slug } = useParams();
   const loaderData = slug ? useLoaderData() : { blog: null };
@@ -97,7 +98,6 @@ const AddBlog = () => {
   const [selectedTrends, setSelectedTrends] = useState(blog ? blog.trends : []);
   const [bgColor, setBgColor] = useState(getRandomColor());
   const [isPublic, setIsPublic] = useState(blog ? blog.isPublic : false);
-  console.log('isPublic', isPublic);
 
   useEffect(() => {
     if (blog) {
@@ -174,6 +174,7 @@ const AddBlog = () => {
                   </div>
                 </div>
                 <SelectTrends
+                  trendLimit={trendLimit}
                   labelText="Select Trend(s)"
                   selectedTrends={selectedTrends}
                   setSelectedTrends={(trends) => {
