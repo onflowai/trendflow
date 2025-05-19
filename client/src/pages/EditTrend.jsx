@@ -93,7 +93,9 @@ const EditTrend = () => {
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
   const [manualMode, setManualMode] = useState('approve');
-
+  const [openSourceStatus, setOpenSourceStatus] = useState(
+    trendObject.openSourceStatus || 'unknown'
+  );
   const [trendCategoryList, setTrendCategoryList] = useState([]);
   const [trendTechList, setTrendTechList] = useState([]);
 
@@ -131,7 +133,10 @@ const EditTrend = () => {
     try {
       setIsApproving(true); // start loading
       setShowAddTrendModal(false); //close modal
-      await customFetch.patch(`trends/${slug}/manual-approve`, { data });
+      await customFetch.patch(`trends/${slug}/manual-approve`, {
+        data,
+        openSourceStatus,
+      });
       toast.success(<CustomSuccessToast message={'Trend Manually Approved'} />);
       revalidate();
     } catch (error) {
@@ -146,7 +151,10 @@ const EditTrend = () => {
     try {
       setIsApproving(true); // start loading
       setShowAddTrendModal(false); //close modal
-      await customFetch.patch(`trends/${slug}/manual-update`, { data });
+      await customFetch.patch(`trends/${slug}/manual-update`, {
+        data,
+        openSourceStatus,
+      });
       toast.success(<CustomSuccessToast message={'Trend Data Updated'} />);
       revalidate();
     } catch (error) {
@@ -234,7 +242,7 @@ const EditTrend = () => {
       manualApproveTrend(selectedSlug, data);
     }
   };
-
+  console.log('trendObject in EditTrend', trendObject);
   return (
     <Container>
       <SEOProtected />
@@ -260,6 +268,8 @@ const EditTrend = () => {
                 handleApproveClick={handleApproveClick}
                 handleManualApprove={handleManualApprove}
                 handleManualUpdate={handleManualUpdate}
+                openSourceStatus={openSourceStatus}
+                setOpenSourceStatus={setOpenSourceStatus}
               />
               <div className="trend-use-container">
                 <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />

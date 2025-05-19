@@ -155,6 +155,20 @@ const Container = styled.div`
     display: none;
   }
   }
+  /* overriding DangerousMarkdown styling */
+  .blog-content-short h1,
+  .blog-content-short h2,
+  .blog-content-short h3,
+  .blog-content-short h4,
+  .blog-content-short h5,
+  .blog-content-short h6 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    border: none;
+  }
 `;
 
 export default BlogPost;

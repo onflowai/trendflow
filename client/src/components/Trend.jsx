@@ -64,6 +64,7 @@ function Trend({
   chartMarginTop,
   githubUsername,
   onApproveManual,
+  openSourceStatus,
   interestOverTime,
   isLargeTrendView,
   chartMarginBottom,
@@ -98,6 +99,7 @@ function Trend({
     trendCategory,
     githubUsername,
     onApproveManual,
+    openSourceStatus,
     interestOverTime,
   };
   // Props for TrendSmall
@@ -130,6 +132,7 @@ function Trend({
     githubUsername,
     chartMarginTop,
     onApproveManual,
+    openSourceStatus,
     chartMarginBottom,
   };
 

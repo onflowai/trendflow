@@ -1,4 +1,6 @@
 import { React, useState } from 'react';
+import openSourceLogo from '../assets/images/open-source-fill.svg';
+import partialSourceLogo from '../assets/images/open-source.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs'; //bookmark
 import { LiaClock } from 'react-icons/lia'; //updatedAt icon
@@ -59,6 +61,7 @@ function TrendLarge({
   trendStatus,
   trendCategory,
   onApproveManual,
+  openSourceStatus,
   interestOverTime,
 }) {
   const { isDarkTheme } = useTheme();
@@ -72,6 +75,11 @@ function TrendLarge({
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
 
+  const getOpenSourceIcon = (openSourceStatus) => {
+    if (openSourceStatus === 'open') return openSourceLogo;
+    if (openSourceStatus === 'partial') return partialSourceLogo;
+    return null;
+  };
   const navigateToTrend = async () => {
     if (guestUser) {
       await guestUser();
@@ -129,9 +137,23 @@ function TrendLarge({
               isApproved={isApproved}
             />
             <div className="trend-title-container">
-              <h3 className="">
-                {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
-              </h3>
+              <div className="trend-title-wrapper">
+                <h3 className="trend-title">
+                  {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
+                </h3>
+                {getOpenSourceIcon(openSourceStatus) && (
+                  <img
+                    src={getOpenSourceIcon(openSourceStatus)}
+                    alt={
+                      openSourceStatus === 'open'
+                        ? 'Open Source'
+                        : 'Partially Open Source'
+                    }
+                    className="open-source-icon"
+                    draggable={false}
+                  />
+                )}
+              </div>
               <div
                 className="category-container"
                 style={{ display: 'flex', alignItems: 'center' }}

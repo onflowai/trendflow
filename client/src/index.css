@@ -175,7 +175,7 @@ html {
   --code-inline-backtick-color: var(--grey-500);
   --blog-code-block-background: var(--grey-50);
   --code-inline-backtick-background: var(--grey-50);
-  --blog-text-heading-h1-color: var(--primary-800);
+  --blog-text-heading-h1-color: var(--primary-500);
   --blog-text-headings-color: var(--primary-300);
 
   /* DARK MODE */
@@ -283,7 +283,7 @@ html {
   --code-inline-backtick-color: #343534;
   --code-inline-backtick-background: var(--primary2-600);
   --blog-code-block-background: #4d4a88;
-  --blog-text-heading-h1-color: var(--primary-100);
+  --blog-text-heading-h1-color: var(--primary-50);
   --blog-text-headings-color: var(--primary3-500);
 
   /* LOGO HOVER (Dark Mode) */

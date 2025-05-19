@@ -141,12 +141,22 @@ export const editTrend = async (req, res) => {
   } // if the trend is already approved, forbid changing the slug/trend
   const oldSlug = doc.slug; //storing old slug to compare after save
 
+  const allowedStatuses = ['open', 'partial', 'closed', 'unknown'];
+  let openSourceStatus = doc.openSourceStatus; // fallback to existing value
+  if (
+    req.body.openSourceStatus &&
+    allowedStatuses.includes(req.body.openSourceStatus)
+  ) {
+    openSourceStatus = req.body.openSourceStatus;
+  }
+
   doc.set({
     trend: !doc.isApproved && req.body.trend ? req.body.trend : doc.trend,
     trendCategory: req.body.trendCategory,
     cateIconUrl: req.body.cateIconUrl,
     trendTech: req.body.trendTech,
     techIconUrl: req.body.techIconUrl,
+    openSourceStatus,
   }); //updating the doc with request body fields
   await doc.save();
 
@@ -256,7 +266,7 @@ export const approveTrend = async (req, res) => {
  */
 export const approveTrendManual = async (req, res) => {
   const { slug } = req.params; // extracting slug from URL parameters
-  let { data } = req.body; // extracting data from request body
+  let { data, openSourceStatus } = req.body; // extracting data from request body
   try {
     const sanitizedData = validateAndSanitizeCSVData(data); // validating and sanitize CSV data
     const trend = await trendModel.findOne({ slug: slug });
@@ -293,6 +303,12 @@ export const approveTrendManual = async (req, res) => {
       processedData.f_score
     ); // calculating the combined score
 
+    const allowedStatuses = ['open', 'partial', 'closed', 'unknown'];
+    let newOpenSourceStatus = trend.openSourceStatus; // fallback to existing
+    if (openSourceStatus && allowedStatuses.includes(openSourceStatus)) {
+      newOpenSourceStatus = openSourceStatus;
+    }
+
     const updatedTrend = await trendModel.findOneAndUpdate(
       { slug: slug },
       {
@@ -307,6 +323,7 @@ export const approveTrendManual = async (req, res) => {
           forecast: processedData.forecast,
           t_score: processedData.t_score,
           f_score: processedData.f_score,
+          openSourceStatus: newOpenSourceStatus,
           combinedScore: combinedScore, // Store the updated combined score
         },
       },
