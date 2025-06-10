@@ -17,6 +17,7 @@ function BlogPost({
   author,
   user,
   updatedAt,
+  guestUser,
   isPublic = false,
 }) {
   const { width, height, isMobile } = useWindowSize();
@@ -66,7 +67,7 @@ function BlogPost({
           </div>
         </div>
         <div className="carousel">
-          <CarouselSlider trends={trends} />
+          <CarouselSlider trends={trends} guestUser={guestUser} />
         </div>
       </div>
     </Container>

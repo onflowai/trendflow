@@ -182,6 +182,14 @@ const Container = styled.article`
   .bookmark-btn svg {
   transform: translateY(2px); // Move the SVG icon 2 pixels down
   }
+  .open-source-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
+    }
 
   @media (max-width: 500px) {
     .info {
@@ -200,7 +208,7 @@ const Container = styled.article`
         font-size: 0.8rem;
       }
       .mono-heading {
-    } 
+      }
     }
     .info-item {
     font-size: 0.5rem;

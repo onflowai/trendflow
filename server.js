@@ -238,6 +238,9 @@ if (env === 'production') {
       const helmet = helmetContext.helmet || {};
       const title = helmet.title?.toString() || '';
       const meta = helmet.meta?.toString() || '';
+      const link = helmet.link?.toString() || '';
+      const script = helmet.script?.toString() || '';
+      const style = helmet.style?.toString() || ''; // not as crucial (good practice)
       //console.log('[SSR Final HTML Components]', { title, meta }); //HERE
       const html = `<!DOCTYPE html>
       <html lang="en">
@@ -246,6 +249,9 @@ if (env === 'production') {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           ${title}
           ${meta}
+          ${link}
+          ${script}
+          ${style} 
           ${styleTags} 
           <link rel="stylesheet" href="/assets/index.css" />
           <!-- additional links to stylesheets here: -->

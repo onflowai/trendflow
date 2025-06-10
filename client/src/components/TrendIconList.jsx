@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
 import { BsCircleFill } from 'react-icons/bs';
@@ -29,11 +29,22 @@ function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
   return null;
 }
 
-const TrendIconList = ({ trends }) => {
+const TrendIconList = ({ trends, guestUser }) => {
+  const navigate = useNavigate();
   const trendsArray = Array.isArray(trends) ? trends : [];
+
+  // Intercept guest user clicks
+  const handleGuestClick = async (slug) => {
+    if (typeof guestUser === 'function') {
+      const result = await guestUser();
+      if (result) {
+        navigate(`/dashboard/trend/${slug}`);
+      }
+    }
+  };
+
   return (
     <Container>
-      {/* Hidden SVG definition for the gradient fill */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
         <defs>
           <linearGradient id="gradient" x1="100%" y1="100%" x2="0%" y2="0%">
@@ -45,7 +56,45 @@ const TrendIconList = ({ trends }) => {
       {trendsArray.map((trendItem, index) => {
         const iconUrl = getTrendIconUrl(trendItem);
 
-        return (
+        return guestUser ? (
+          <button
+            key={index}
+            className="trend-link"
+            onClick={() => handleGuestClick(trendItem.slug)}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              margin: 0,
+              cursor: 'pointer',
+              width: '100%',
+              textAlign: 'left',
+            }}
+            aria-label={`Sign in as guest and view ${trendItem.trend}`}
+            type="button"
+          >
+            <div className="trend-item">
+              {iconUrl ? (
+                <img
+                  src={iconUrl}
+                  alt={trendItem.trend}
+                  className="trend-icon"
+                />
+              ) : (
+                <BsCircleFill
+                  className="trend-icon"
+                  style={{
+                    fill: 'url(#gradient)',
+                    width: '50px',
+                    height: '50px',
+                    marginRight: '1rem',
+                  }}
+                />
+              )}
+              <div className="trend-title">{trendItem.trend}</div>
+            </div>
+          </button>
+        ) : (
           <Link
             key={index}
             to={getFullTrendUrl(trendItem.slug)}

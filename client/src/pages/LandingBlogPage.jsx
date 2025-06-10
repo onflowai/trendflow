@@ -18,7 +18,9 @@ import {
   LandingNavbar,
   TrendIconList,
   StructuredData,
+  CustomErrorToast,
   DangerousMarkdown,
+  CustomSuccessToast,
   ScrollSpyComponent,
 } from '../components';
 import BlogTitle from '../components/BlogTitle';
@@ -30,10 +32,20 @@ import useLocalStorage from '../hooks/useLocalStorage';
 day.extend(advancedFormat);
 const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
+
 export const loader = async ({ params }) => {
   const slug = params?.slug;
   const isSSR = typeof window === 'undefined';
-
+  console.log('SSR Blog loader params:', params, 'window:', typeof window);
   if (!slug) {
     const message = 'No slug provided for blog page';
     if (isSSR) {
@@ -129,13 +141,35 @@ const LandingBlogPage = () => {
   }); //REMOVING TECH DUPLICATE IN TRENDS
   const formattedDate = day(updatedAt).format('MMMM YYYY');
 
+  const guestUser = async () => {
+    try {
+      const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      );
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
+      return true; //for CarouselSlider
+      //return navigate('/dashboard');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //guestUser signs in using guestLogin controller
+
   return (
     <>
       {title && (
         <SEO
           title={title}
           description={`trendflow blog: ${title}`}
-          url={`${FRONTEND_BASE_URL}/${title}`}
+          url={`${FRONTEND_BASE_URL}/blog/${slug}`}
           img_large={`${FRONTEND_BASE_URL}/og-image-blog-page.jpg`}
           img_small={`${FRONTEND_BASE_URL}/og-image-blog-page-twitter.jpg`}
         />
@@ -196,14 +230,14 @@ const LandingBlogPage = () => {
                   <ScrollSpyComponent sectionIds={['blog', 'trends']} />
                   {!isMobile && (
                     <div className="icon-trends">
-                      <TrendIconList trends={trends} />
+                      <TrendIconList trends={trends} guestUser={guestUser} />
                     </div>
                   )}
                 </div>
               </aside>
               {isMobile && (
                 <div id="trends" className="icon-trends">
-                  <TrendIconList trends={trends} />
+                  <TrendIconList trends={trends} guestUser={guestUser} />
                 </div>
               )}
             </div>
