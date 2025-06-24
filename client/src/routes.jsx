@@ -15,6 +15,7 @@ import {
   AllTrends,
   LandingBlog,
   LandingError,
+  LandingAbout,
   LandingBlogPage,
   DashboardLayout,
   LandingEmailVerify,
@@ -74,6 +75,11 @@ const routes = [
         id: 'landingLogin',
       },
       { path: 'verify-email', element: <LandingEmailVerify /> },
+      {
+        path: 'about',
+        element: <LandingAbout />,
+        id: 'LandingAbout',
+      },
       {
         path: 'blog',
         element: <LandingBlog />,

@@ -2,10 +2,10 @@ import LandingTitle from './LandingTitle';
 import { majorUpdates, version } from '../assets/utils/data';
 import styled from 'styled-components';
 //This component is set up right after the Hero to give a little description of trendFlow
-const LandingAbout = () => {
+const LandingUpdates = () => {
   return (
     <Container>
-      <section className="section section-center" id="about">
+      <section className="section section-center" id="updates">
         <LandingTitle title="about" subTitle="us" />
 
         <div className="section-center about-center">
@@ -87,4 +87,4 @@ const Container = styled.section`
   }
 `;
 
-export default LandingAbout;
+export default LandingUpdates;

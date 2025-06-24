@@ -5,26 +5,24 @@ const ThemeContext = createContext();
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('darkTheme');
+      return savedTheme === null ? true : savedTheme === 'true';
+    }
+    return true;
+  });// default to dark - use stored value if available
 
   // Initialize theme based on localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('darkTheme') === 'true';
-      setIsDarkTheme(savedTheme);
-      document.body.classList.toggle('dark-theme', savedTheme);
+      document.body.classList.toggle('dark-theme', isDarkTheme);
+      localStorage.setItem('darkTheme', isDarkTheme);
     }
-  }, []); // only run in the browser
+  }, [isDarkTheme]); // only run in the browser
 
   const toggleDarkTheme = () => {
-    if (typeof window !== 'undefined') {
-      setIsDarkTheme((prev) => {
-        const newTheme = !prev;
-        document.body.classList.toggle('dark-theme', newTheme);
-        localStorage.setItem('darkTheme', newTheme);
-        return newTheme;
-      });
-    }
+    setIsDarkTheme((prev) => !prev);
   };
 
   return (

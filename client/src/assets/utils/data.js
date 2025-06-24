@@ -6,8 +6,8 @@ export const version = '1.0.1';
 //link used only on the Landing Page
 export const landingLinks = [
   { id: 1, href: '/blog', text: 'blog' },
-  { id: 2, href: '/#about', text: 'about' },
-  { id: 3, href: '/#services', text: 'services' },
+  { id: 2, href: '/about', text: 'about' },
+  { id: 3, href: '/#updates', text: 'updates' },
   { id: 4, href: '/#trends', text: 'trends' },
 ];
 //links used in the SIDEBAR of the dashboard
@@ -118,3 +118,6 @@ export const services = [
     text: 'Looking for a better fit? Find and compare substitutes for your current stack. The point of progress is evolution. ',
   },
 ];
+
+export const aboutDescription =
+  'TrendFlow is a community-driven platform that helps developers discover and track the latest trends in technology. Whether you are looking for new tools, frameworks, or libraries, TrendFlow has you covered.';

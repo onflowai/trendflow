@@ -12,10 +12,10 @@ import { toast } from 'react-toastify';
 import {
   SEO,
   LandingHero,
-  LandingAbout,
   LandingFooter,
   LandingNavbar,
   StructuredData,
+  LandingUpdates,
   LandingServices,
   CustomErrorToast,
   CustomSuccessToast,
@@ -220,7 +220,7 @@ const Landing = () => {
         </div>
         <LandingHero guestUser={guestUser} />
         <LandingServices />
-        <LandingAbout />
+        <LandingUpdates />
         <section id="trends"></section>
         <div className="featured-trends">
           {isMobile ? (
