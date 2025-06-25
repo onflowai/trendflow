@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import styled, { keyframes } from 'styled-components';
-import LocalCleanedSVG from '../assets/images/logo-hero-03.svg?react'; // Ensure correct suffix
+import LocalCleanedSVG from '../assets/images/logo-hero-03.svg?react';
 import LocalCleanedSVGDark from '../assets/images/logo-hero-03-dark.svg?react';
 
 const cdnCleanedSVG = 'https://cdn.trendflowai.com/content/logo-hero-03.svg';
