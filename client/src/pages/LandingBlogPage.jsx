@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useTheme } from '../context/ThemeContext';
 import styled from 'styled-components';
 import useWindowSize from '../hooks/useWindowSize';
 import customFetch from '../utils/customFetch';
@@ -17,7 +18,9 @@ import {
   LandingNavbar,
   TrendIconList,
   StructuredData,
+  CustomErrorToast,
   DangerousMarkdown,
+  CustomSuccessToast,
   ScrollSpyComponent,
 } from '../components';
 import BlogTitle from '../components/BlogTitle';
@@ -29,10 +32,20 @@ import useLocalStorage from '../hooks/useLocalStorage';
 day.extend(advancedFormat);
 const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
+
 export const loader = async ({ params }) => {
   const slug = params?.slug;
   const isSSR = typeof window === 'undefined';
-
+  console.log('SSR Blog loader params:', params, 'window:', typeof window);
   if (!slug) {
     const message = 'No slug provided for blog page';
     if (isSSR) {
@@ -55,7 +68,6 @@ export const loader = async ({ params }) => {
 
     console.log(`[SSR Loader Fetching URL]: ${fetchUrl}`);
     const { data } = await (isSSR ? axios : customFetch).get(fetchUrl);
-    console.log('[Loader Success]', data);
     return { blogObject: data, error: null };
   } catch (error) {
     console.error('[Axios SSR Error FULL DETAILS]', {
@@ -81,6 +93,7 @@ export const loader = async ({ params }) => {
 };
 
 const LandingBlogPage = () => {
+  const { isDarkTheme } = useTheme();
   const { slug } = useParams();
   const data = useLoaderData() || {};
   const { blogObject, error } = data;
@@ -119,9 +132,36 @@ const LandingBlogPage = () => {
     updatedAt,
     trends: rawTrends,
   } = blogObject || {};
-  console.log('title', title);
   const trends = Array.isArray(rawTrends) ? rawTrends : [];
+  const seen = new Set();
+  const uniqueTrends = trends.filter((t) => {
+    if (seen.has(t.trendTech)) return false;
+    seen.add(t.trendTech);
+    return true;
+  }); //REMOVING TECH DUPLICATE IN TRENDS
   const formattedDate = day(updatedAt).format('MMMM YYYY');
+
+  const guestUser = async () => {
+    try {
+      const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      );
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
+      return true; //for CarouselSlider
+      //return navigate('/dashboard');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //guestUser signs in using guestLogin controller
 
   return (
     <>
@@ -129,7 +169,7 @@ const LandingBlogPage = () => {
         <SEO
           title={title}
           description={`trendflow blog: ${title}`}
-          url={`${FRONTEND_BASE_URL}/${title}`}
+          url={`${FRONTEND_BASE_URL}/blog/${slug}`}
           img_large={`${FRONTEND_BASE_URL}/og-image-blog-page.jpg`}
           img_small={`${FRONTEND_BASE_URL}/og-image-blog-page-twitter.jpg`}
         />
@@ -168,7 +208,7 @@ const LandingBlogPage = () => {
                   bgColor={bgColor}
                 />
                 <div className="trend-icons">
-                  {trends.map((trend, idx) => (
+                  {uniqueTrends.map((trend, idx) => (
                     <img
                       key={idx}
                       src={getFullIconUrl(trend.techIconUrl)}
@@ -178,7 +218,11 @@ const LandingBlogPage = () => {
                   ))}
                 </div>
                 <div className="blog-content">
-                  <DangerousMarkdown content={content} small={isMobile} />
+                  <DangerousMarkdown
+                    content={content}
+                    small={isMobile}
+                    isDarkTheme={isDarkTheme}
+                  />
                 </div>
               </div>
               <aside className="scroll-spy-sidebar-aside">
@@ -186,14 +230,14 @@ const LandingBlogPage = () => {
                   <ScrollSpyComponent sectionIds={['blog', 'trends']} />
                   {!isMobile && (
                     <div className="icon-trends">
-                      <TrendIconList trends={trends} />
+                      <TrendIconList trends={trends} guestUser={guestUser} />
                     </div>
                   )}
                 </div>
               </aside>
               {isMobile && (
                 <div id="trends" className="icon-trends">
-                  <TrendIconList trends={trends} />
+                  <TrendIconList trends={trends} guestUser={guestUser} />
                 </div>
               )}
             </div>

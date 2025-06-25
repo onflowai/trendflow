@@ -7,7 +7,7 @@ import Container from '../assets/wrappers/FeaturedTrendsDesktop';
  * @param {*} relatedTrends
  * @returns
  */
-const FeaturedTrendsDesktop = ({ featuredTrends }) => {
+const FeaturedTrendsDesktop = ({ featuredTrends, guestUser }) => {
   const featTrends = Array.isArray(featuredTrends) ? featuredTrends : [];
   const featuredFlag = true;
   //Values used to style recharts in AllTrends & Admin pages
@@ -41,6 +41,7 @@ const FeaturedTrendsDesktop = ({ featuredTrends }) => {
             chartMarginBottom={chartMarginBottom}
             isFeatured={isFeatured}
             featuredFlag={featuredFlag}
+            guestUser={guestUser}
           />
         ))}
       </div>

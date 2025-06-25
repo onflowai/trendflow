@@ -1,18 +1,19 @@
 /**
- * helper function to remove duplicates from trends based on techIconUrl
- * @param {Array} trends - array of trend objects
- * @returns {Array} - array of unique trend objects
+ * helper function to keep every trend, but only show
+ * its techIconUrl & trendTech the first time they appear.
  */
-export const removeDuplicateTrends = (trends) => {
-  const uniqueTechIconUrls = new Set();
-  const uniqueTrends = [];
-
-  trends.forEach((trend) => {
-    if (!uniqueTechIconUrls.has(trend.techIconUrl)) {
-      uniqueTechIconUrls.add(trend.techIconUrl);
-      uniqueTrends.push(trend);
+export const dedupeTrendsKeepAll = (trends) => {
+  const seenIconUrls = new Set();
+  return trends.map((trend) => {
+    const obj = trend.toObject ? trend.toObject() : { ...trend };
+    if (!seenIconUrls.has(obj.techIconUrl)) {
+      seenIconUrls.add(obj.techIconUrl);
+      return obj;
     }
-  });
 
-  return uniqueTrends;
+    // duplicate techIconUrl
+    delete obj.techIconUrl;
+    delete obj.trendTech;
+    return obj;
+  });
 };

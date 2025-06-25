@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getFullIconUrl, getFullTrendUrl } from '../utils/urlHelper';
 import { Tooltip } from '../components';
@@ -45,8 +45,9 @@ function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
  * Renders a slider of `trends`, each with a link to its trend page
  * and logic for determining which icon (svg_url, techIconUrl, or fallback) to display.
  */
-const CarouselSlider = ({ trends }) => {
+const CarouselSlider = ({ trends, guestUser }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % trends.length);
@@ -61,6 +62,16 @@ const CarouselSlider = ({ trends }) => {
   const currentTrend = trends[currentIndex];
   const iconUrl = getTrendIconUrl(currentTrend); // pick the correct icon
 
+  const handleGuestClick = async () => {
+    if (typeof guestUser === 'function') {
+      const result = await guestUser(); // call guest login
+      if (result) {
+        // only navigate if guestUser succeeds
+        navigate(`/dashboard/trend/${currentTrend.slug}`);
+      }
+    }
+  };
+
   return (
     <SliderContainer>
       <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -74,24 +85,57 @@ const CarouselSlider = ({ trends }) => {
       <IoIosArrowBack onClick={prevSlide} className="arrow arrow-left" />
       <div className="slider">
         <Tooltip description={currentTrend.trend} xOffset={-35} yOffset={-90}>
-          <Link to={getFullTrendUrl(currentTrend.slug)}>
-            {iconUrl ? (
-              <img
-                src={iconUrl}
-                alt={currentTrend.trend}
-                className="trend-icon"
-              />
-            ) : (
-              <BsCircleFill
-                className="trend-icon"
-                style={{
-                  width: '50px',
-                  height: '50px',
-                  fill: 'url(#gradient)',
-                }}
-              />
-            )}
-          </Link>
+          {guestUser ? (
+            //guestUser provided:
+            <button
+              className="trend-btn"
+              onClick={handleGuestClick}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+              }}
+              aria-label={`Sign in as guest and view ${currentTrend.trend}`}
+            >
+              {iconUrl ? (
+                <img
+                  src={iconUrl}
+                  alt={currentTrend.trend}
+                  className="trend-icon"
+                />
+              ) : (
+                <BsCircleFill
+                  className="trend-icon"
+                  style={{
+                    width: '50px',
+                    height: '50px',
+                    fill: 'url(#gradient)',
+                  }}
+                />
+              )}
+            </button>
+          ) : (
+            //default behavior:
+            <Link to={getFullTrendUrl(currentTrend.slug)}>
+              {iconUrl ? (
+                <img
+                  src={iconUrl}
+                  alt={currentTrend.trend}
+                  className="trend-icon"
+                />
+              ) : (
+                <BsCircleFill
+                  className="trend-icon"
+                  style={{
+                    width: '50px',
+                    height: '50px',
+                    fill: 'url(#gradient)',
+                  }}
+                />
+              )}
+            </Link>
+          )}
         </Tooltip>
       </div>
       <IoIosArrowForward onClick={nextSlide} className="arrow arrow-right" />

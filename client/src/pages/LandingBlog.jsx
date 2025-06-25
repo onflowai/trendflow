@@ -13,9 +13,21 @@ import {
   LandingNavbar,
   LandingFooter,
   StructuredData,
+  CustomErrorToast,
+  CustomSuccessToast,
 } from '../components';
 
 const FRONTEND_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
+
+const getCsrfToken = async () => {
+  try {
+    const response = await customFetch.get('/csrf-token');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    throw error;
+  }
+};
 
 export const loader = async () => {
   const isSSR = typeof window === 'undefined';
@@ -59,6 +71,28 @@ const LandingBlog = () => {
 
   const currentDate = new Date().toLocaleDateString();
 
+  const guestUser = async () => {
+    try {
+      const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
+      await customFetch.post(
+        '/auth/guest-login',
+        {},
+        {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        }
+      );
+      toast.success(
+        <CustomSuccessToast message={'Welcome to trendFlow as Guest'} />
+      );
+      return true; //for CarouselSlider
+      //return navigate('/dashboard');
+    } catch (error) {
+      toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
+    }
+  }; //guestUser signs in using guestLogin controller
+
   return (
     <>
       <SEO
@@ -98,7 +132,11 @@ const LandingBlog = () => {
               <div className="current-date">{currentDate}</div>
             </div>
             <div className="blog-content">
-              <BlogPostList posts={posts} isPublic={true} />
+              <BlogPostList
+                posts={posts}
+                isPublic={true}
+                guestUser={guestUser}
+              />
             </div>
           </div>
           <LandingFooter />

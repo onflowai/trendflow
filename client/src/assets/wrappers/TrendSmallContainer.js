@@ -25,7 +25,7 @@ const Container = styled.article`
     //overflow: hidden;
   }
   .trend-title {
-  margin-top: 1rem; /* Adjust spacing of title */
+  margin-top: 0.1rem;
   text-align: left;
   }
 
@@ -58,7 +58,19 @@ const Container = styled.article`
       margin-left: 0.8rem;
       padding: 2px 4px;
     } 
-    
+    .open-source-icon {
+      width: 12px;
+      height: 12px;
+      margin-left: 1px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
+    }
+
+    article:hover .open-source-icon {
+      background: var(--card-highlight, #e6f0ff);
+    }
+
     h4 {
       top: 149px;
       z-index: 0;
@@ -170,6 +182,14 @@ const Container = styled.article`
   .bookmark-btn svg {
   transform: translateY(2px); // Move the SVG icon 2 pixels down
   }
+  .open-source-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
+    }
 
   @media (max-width: 500px) {
     .info {
@@ -188,7 +208,7 @@ const Container = styled.article`
         font-size: 0.8rem;
       }
       .mono-heading {
-    } 
+      }
     }
     .info-item {
     font-size: 0.5rem;
@@ -206,6 +226,14 @@ const Container = styled.article`
 
     .info-item {
       white-space: nowrap; // Prevent text wrapping
+    }
+    .open-source-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
     }
   }
 `;

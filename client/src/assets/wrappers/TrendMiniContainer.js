@@ -58,7 +58,19 @@ const Container = styled.div`
       border-radius: 0.25rem;
       margin-left: 0.8rem;
       padding: 2px 4px;
-    } 
+    }
+
+    .open-source-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
+    }
+    article:hover .open-source-icon {
+      background: var(--card-highlight, #e6f0ff);
+    }
     
     h4 {
       top: 149px;
@@ -96,6 +108,18 @@ const Container = styled.div`
       border-radius: 0.25rem;
       margin-left: 0.8rem;
       padding: 2px 4px;
+    }
+
+    .open-source-icon {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      margin-top: 0px;
+      vertical-align: top;
+      align-self: flex-start;
+    }
+    article:hover .open-source-icon {
+      background: var(--card-highlight, #e6f0ff);
     }
     
     h4 {

@@ -36,7 +36,18 @@ const withValidationErrors = (validateValues) => {
 };
 
 export const validateTrendInput = withValidationErrors([
-  body('trend').notEmpty().withMessage('please add a trend'),
+  body('trend')
+    .notEmpty()
+    .withMessage('please add a trend')
+    .bail()
+    .custom(async (value) => {
+      const lower = value.toLowerCase();
+      const blacklist = await getBlacklist();
+      if (blacklist.some((word) => lower.includes(word))) {
+        throw new BadRequestError('Trend contains prohibited words');
+      }
+      return true;
+    }),
   body('trendCategory').custom(async (value) => {
     const exists = await TrendCategory.exists({ value });
     if (!exists) {

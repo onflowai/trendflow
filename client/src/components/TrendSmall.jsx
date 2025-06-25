@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import openSourceLogo from '../assets/images/open-source-fill.svg';
+import partialSourceLogo from '../assets/images/open-source.svg';
 import { PiHashLight, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { IoIosCloseCircle } from 'react-icons/io';
@@ -34,6 +36,7 @@ function TrendSmall({
   onRemove,
   onDelete,
   updatedAt,
+  guestUser,
   isLoading,
   createdBy,
   trendTech,
@@ -54,6 +57,7 @@ function TrendSmall({
   trendCategory,
   chartMarginTop,
   onApproveManual,
+  openSourceStatus,
   chartMarginBottom,
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -64,9 +68,22 @@ function TrendSmall({
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
 
+  const getOpenSourceIcon = (openSourceStatus) => {
+    if (openSourceStatus === 'open') return openSourceLogo;
+    if (openSourceStatus === 'partial') return partialSourceLogo;
+    return null;
+  };
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
-  const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  //const handleCardClick = () => navigate(`/dashboard/trend/${slug}`);
+  const handleCardClick = async () => {
+    if (guestUser) {
+      await guestUser();
+      navigate(`/dashboard/trend/${slug}`);
+    } else {
+      navigate(`/dashboard/trend/${slug}`);
+    }
+  };
   const handleInnerClick = (event) => event.stopPropagation();
   const handleBookmarkClick = async (e) => {
     e.stopPropagation();
@@ -103,11 +120,25 @@ function TrendSmall({
               />
             )}
             <div className="trend-title">
-              <h4 className="underlay-heading">
-                {trend.length > (isMobileTrend ? 18 : 21)
-                  ? trend.substring(0, isMobileTrend ? 11 : 21) + '...'
-                  : trend}
-              </h4>
+              <div className="trend-title-wrapper">
+                <h4 className="underlay-heading">
+                  {trend.length > (isMobileTrend ? 18 : 21)
+                    ? trend.substring(0, isMobileTrend ? 11 : 21) + '...'
+                    : trend}
+                  {getOpenSourceIcon(openSourceStatus) && (
+                    <img
+                      src={getOpenSourceIcon(openSourceStatus)}
+                      alt={
+                        openSourceStatus === 'open'
+                          ? 'Open Source'
+                          : 'Partially Open Source'
+                      }
+                      className="open-source-icon"
+                      draggable={false}
+                    />
+                  )}
+                </h4>
+              </div>
               <div className="description-container">
                 <h6 className="underlay-heading">{trendCategory}</h6>
                 {!isGridView && trendDesc && trendDesc.trim() && (

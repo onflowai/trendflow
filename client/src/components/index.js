@@ -52,6 +52,7 @@ export { default as FormComponentButton } from './FormComponentButton';
 export { default as FallbackChart } from './FallbackChart';
 export { default as TrendFallFlashChart } from './TrendFallFlashChart';
 export { default as ToggleSwitch } from './ToggleSwitch';
+export { default as ToggleSlider } from './ToggleSlider';
 export { default as FormComponentLock } from './FormComponentLock';
 export { default as Dropdown } from './Dropdown';
 export { default as ContentBoxHighlighted } from './ContentBoxHighlighted';

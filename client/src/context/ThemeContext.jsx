@@ -13,12 +13,11 @@ export const ThemeProvider = ({ children }) => {
     return true;
   });// default to dark - use stored value if available
 
-  // Initialize theme based on localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('dark-theme', isDarkTheme);
       localStorage.setItem('darkTheme', isDarkTheme);
-    }
+    }// initialize theme based on localStorage
   }, [isDarkTheme]); // only run in the browser
 
   const toggleDarkTheme = () => {

@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
+import openSourceLogo from '../assets/images/open-source-fill.svg';
+import partialLogo from '../assets/images/open-source.svg';
+import closedLogo from '../assets/images/open-source-fill-grey.svg';
+import unknownLogo from '../assets/images/open-source-grey.svg';
 import {
+  ToggleSlider,
   FormSelector,
   FallbackChart,
   FormComponent,
@@ -22,9 +27,11 @@ const EditTrendComponent = ({
   setSelectedTech,
   handleSVGChange,
   selectedCategory,
+  openSourceStatus,
   trendCategoryList,
   handleManualUpdate,
   handleApproveClick,
+  setOpenSourceStatus,
   setSelectedCategory,
   handleManualApprove,
 }) => {
@@ -32,7 +39,15 @@ const EditTrendComponent = ({
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${trendObject.slug}`);
   };
+  console.log('trendObject', trendObject);
+  console.log('trendObject in openSourceStatus', openSourceStatus);
   const [trend, setTrend] = useState(trendObject.trend);
+  const openSourceOptions = [
+    { label: 'Open', value: 'open', icon: openSourceLogo },
+    { label: 'Partial', value: 'partial', icon: partialLogo },
+    { label: 'Closed', value: 'closed', icon: closedLogo },
+    { label: 'Unknown', value: 'unknown', icon: unknownLogo },
+  ];
   return (
     <Container>
       <Form method="post" className="">
@@ -171,6 +186,18 @@ const EditTrendComponent = ({
           </div>
           <div id="Edit"></div>
           <div className="form-actions">
+            <div className="toggle-slider-container">
+              <ToggleSlider
+                options={openSourceOptions}
+                value={openSourceStatus}
+                onChange={setOpenSourceStatus}
+              />
+              <input
+                type="hidden"
+                name="openSourceStatus"
+                value={openSourceStatus}
+              />
+            </div>
             <div className="submit-btn">
               {trendObject.isApproved ? (
                 <button
@@ -407,6 +434,24 @@ const Container = styled.div`
     display: flex;
     justify-content: flex-end;
   }
+  
+  .toggle-slider-container {
+    flex: 1 1 0;
+    min-width: 0; /* Allow it to shrink, but not below its content */
+    display: flex;
+    align-items: center;
+  }
+  
+  @media (max-width: 500px) {
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .toggle-slider, .submit-btn {
+    width: 100%;
+  }
+}
 `;
 
 export default EditTrendComponent;

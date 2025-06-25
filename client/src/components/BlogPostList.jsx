@@ -6,13 +6,19 @@ import Container from '../assets/wrappers/BlogPostListContainer';
  * @param {*} param0
  * @returns
  */
-function BlogPostList({ posts, user, isPublic }) {
+function BlogPostList({ posts, user, isPublic, guestUser }) {
   const blogPosts = Array.isArray(posts) ? posts : []; // if posts not an array define fallback
   return (
     <Container>
       <div className="posts">
         {blogPosts.map((post) => (
-          <BlogPost key={post._id} {...post} user={user} isPublic={isPublic} />
+          <BlogPost
+            key={post._id}
+            {...post}
+            user={user}
+            isPublic={isPublic}
+            guestUser={guestUser}
+          />
         ))}
       </div>
     </Container>

@@ -64,6 +64,11 @@ const TrendSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    openSourceStatus: {
+      type: String,
+      enum: ['open', 'partial', 'closed', 'unknown'],
+      default: 'unknown',
+    },
     //AFTER APPROVAL DATA:
     isApproved: {
       type: Boolean,

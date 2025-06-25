@@ -17,9 +17,16 @@ function BlogPost({
   author,
   user,
   updatedAt,
+  guestUser,
   isPublic = false,
 }) {
   const { width, height, isMobile } = useWindowSize();
+  const seen = new Set();
+  const uniqueTrends = trends.filter((t) => {
+    if (seen.has(t.trendTech)) return false;
+    seen.add(t.trendTech);
+    return true;
+  }); //REMOVING TECH DUPLICATE IN TRENDS
   const upDate = day(updatedAt).format('MM YYYY');
   const truncatedContent = truncateMarkdown(content, 200);
   const isAuthor = user?.role === 'admin' && user._id === author._id;
@@ -42,7 +49,7 @@ function BlogPost({
           </div>
           <div className="blog-date">
             {upDate}
-            {trends.map((trend, index) => (
+            {uniqueTrends.map((trend, index) => (
               <img
                 key={index}
                 src={getFullIconUrl(trend.techIconUrl)}
@@ -60,7 +67,7 @@ function BlogPost({
           </div>
         </div>
         <div className="carousel">
-          <CarouselSlider trends={trends} />
+          <CarouselSlider trends={trends} guestUser={guestUser} />
         </div>
       </div>
     </Container>
@@ -148,6 +155,20 @@ const Container = styled.div`
     .carousel {
     display: none;
   }
+  }
+  /* overriding DangerousMarkdown styling */
+  .blog-content-short h1,
+  .blog-content-short h2,
+  .blog-content-short h3,
+  .blog-content-short h4,
+  .blog-content-short h5,
+  .blog-content-short h6 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    border: none;
   }
 `;
 
