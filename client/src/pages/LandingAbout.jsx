@@ -23,8 +23,8 @@ const LandingAbout = () => {
         title="TrendFlow - About"
         description="TrendFlow helps you track the latest trends in tech."
         url={`${FRONTEND_BASE_URL}/about`}
-        img_large={`${FRONTEND_BASE_URL}/og-image.jpg`}
-        img_small={`${FRONTEND_BASE_URL}/og-image-twitter.jpg`}
+        img_large={`${FRONTEND_BASE_URL}/og-image-about.jpg`}
+        img_small={`${FRONTEND_BASE_URL}/og-image-about-twitter.jpg`}
       />
       <LandingNavbar />
       <div className="about-top">

@@ -1,19 +1,71 @@
+import React, { useState, useRef } from 'react';
 import LandingTitle from './LandingTitle';
-import { majorUpdates, version } from '../assets/utils/data';
+import { majorUpdates } from '../assets/utils/data';
 import styled from 'styled-components';
-//This component is set up right after the Hero to give a little description of trendFlow
+import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+
 const LandingUpdates = () => {
+  const updates = Array.isArray(majorUpdates) ? [...majorUpdates].reverse() : [];
+  const [current, setCurrent] = useState(0);
+  const [isSliding, setIsSliding] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(''); // 'left' or 'right'
+  const timeoutRef = useRef(null);
+
+  const handleSlide = (dir) => {
+    if (isSliding) return; // prevent spam
+
+    setSlideDirection(dir);
+    setIsSliding(true);
+
+    timeoutRef.current = setTimeout(() => {
+      setIsSliding(false);
+      setCurrent((prev) => {
+        if (dir === 'right') {
+          return (prev + 1) % updates.length;
+        } else {
+          return (prev - 1 + updates.length) % updates.length;
+        }
+      });
+    }, 330); // matching the CSS animation duration
+  };
+
+  React.useEffect(() => {
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
+
   return (
     <Container>
       <section className="section section-center" id="updates">
-        <LandingTitle title="about" subTitle="us" />
-
+        <LandingTitle title="major" subTitle="updates" />
         <div className="section-center about-center">
           <article className="about-info">
-            <h3>Major Updates:</h3>
-            <div className="about-updates">
-              <p>{majorUpdates}</p>
-              <span className="version">v{version}</span>
+            {/* <h3>Major Updates:</h3> */}
+            <div className="slider-wrapper">
+              <IoIosArrowBack
+                className="slider-arrow"
+                onClick={() => handleSlide('left')}
+                aria-label="Previous update"
+                tabIndex={0}
+              />
+              <div className="about-updates">
+                <div
+                  className={`update-slide${isSliding ? ` ${slideDirection}` : ''}`}
+                  key={updates[current].version}
+                >
+                  <div className="update-text">
+                    {updates[current].text}
+                  </div>
+                  <div className="version-box">
+                    <span className="version">v{updates[current].version}</span>
+                  </div>
+                </div>
+              </div>
+              <IoIosArrowForward
+                className="slider-arrow"
+                onClick={() => handleSlide('right')}
+                aria-label="Next update"
+                tabIndex={0}
+              />
             </div>
             <a href="#" className="btn">
               Explore All
@@ -27,41 +79,109 @@ const LandingUpdates = () => {
 
 const Container = styled.section`
   padding-bottom: 2rem;
-  
-  .page {
-    min-height: calc(60vh - var(--nav-height));
-    display: grid;
-    align-items: center;
-    margin-top: 6rem;
-  }
-  h1 {
-    font-weight: 700;
-    span {
-      color: var(--primary-700);
-    }
-    margin-bottom: 1.5rem;
-  }
-  p {
-    line-height: 2;
-    color: var(--text-second-color);
-    margin-bottom: 1.5rem;
-    max-width: 35em;
-  }
-  .register-link {
-    margin-right: 1rem;
-  }
-  .main-img {
-    display: none;
-  }
-  .btn {
-    padding: 0.75rem 1rem;
-  }
-  .about-updates {
+
+  .slider-wrapper {
     display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.2rem;
+    min-height: 90px;
+    position: relative;
+    margin-bottom: 1rem;
   }
-   .version {
+
+  .slider-arrow {
+    font-size: 2.2rem;
+    cursor: pointer;
+    color: var(--primary-300);
+    transition: color 0.15s;
+    user-select: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border: none;
+  }
+  .slider-arrow:hover {
+    color: var(--primary-800);
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border: none;
+  }
+
+  .about-updates {
+    min-width: 220px;
+    min-height: 60px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0 0.5rem;
+    height: 80px;
+  }
+
+  .update-slide {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    background: transparent;
+    transition: transform 0.3s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.3s;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .update-text {
+    flex: 5 1 0%;
+    text-align: left;
+  }
+  .version {
+    flex: 1 1 0%;
+    text-align: right;
+    margin-top: 0;  /* Remove margin so it aligns in the row */
+  }
+  .update-slide.left {
+    animation: slideLeft 0.33s forwards;
+  }
+  .update-slide.right {
+    animation: slideRight 0.33s forwards;
+  }
+
+  @keyframes slideLeft {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    70% {
+      opacity: 0.3;
+      transform: translateX(-60px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-120px);
+    }
+  }
+
+  @keyframes slideRight {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    70% {
+      opacity: 0.3;
+      transform: translateX(60px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(120px);
+    }
+  }
+
+  .version {
     background-color: var(--background-second-color);
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -69,14 +189,11 @@ const Container = styled.section`
     color: var(--text-second-color);
     margin-top: 0.5rem;
   }
+  .btn {
+    padding: 0.75rem 1rem;
+  }
+
   @media (min-width: 992px) {
-    .page {
-      grid-template-columns: 1fr 400px;
-      column-gap: 3rem;
-    }
-    .main-img {
-      display: block;
-    }
     .about-updates {
       flex-direction: row;
       align-items: center;

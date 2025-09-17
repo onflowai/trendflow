@@ -1,7 +1,13 @@
-export const majorUpdates =
-  'Secure guest sessions with implemented CSRF protection. Featured top trends in landing.';
-
-export const version = '1.0.1';
+export const majorUpdates = [
+  {
+    version: '1.0.2',
+    text: 'Open-source and partial open-source indicators on projects.',
+  },
+  {
+    version: '1.0.1',
+    text: 'Secure guest sessions with implemented CSRF protection and featured trends.',
+  },
+];
 
 //link used only on the Landing Page
 export const landingLinks = [
@@ -120,4 +126,4 @@ export const services = [
 ];
 
 export const aboutDescription =
-  'TrendFlow is a community-driven platform that helps developers discover and track the latest trends in technology. Whether you are looking for new tools, frameworks, or libraries, TrendFlow has you covered.';
+  'TrendFlow is a community-driven platform that helps developers discover the latest projects and trends in technology. Whether you are looking for new tools, frameworks, or libraries, TrendFlow is a place where you can stay updated.';

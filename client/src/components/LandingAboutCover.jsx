@@ -11,11 +11,11 @@ const LandingAboutCover = () => {
     const randomIndex = Math.floor(Math.random() * 26) + 1;
     if (isMobile) {
       setCoverUrl(
-        `https://cdn.onflowai.com/covers/small/cover-small${randomIndex}.jpg`
+        `https://cdn.trendflowai.com/covers/small/cover-small${randomIndex}.jpg`
       );
     } else {
       setCoverUrl(
-        `https://cdn.onflowai.com/covers/medium/cover-medium${randomIndex}.jpg`
+        `https://cdn.trendflowai.com/covers/medium/cover-medium${randomIndex}.jpg`
       );
     }
     setIsLoaded(false); // Reset loading state whenever coverUrl changes

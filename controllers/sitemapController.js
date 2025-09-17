@@ -16,6 +16,7 @@ export const generateSitemap = async (req, res) => {
 
     const links = [
       { url: '/', changefreq: 'monthly', priority: 1.0 },
+      { url: '/about', changefreq: 'monthly', priority: 1.0 },
       { url: '/blog', changefreq: 'weekly', priority: 0.9 },
       // Add more static URLs here
     ];
