@@ -1,6 +1,8 @@
 export { default as CustomErrorToast } from './CustomErrorToast';
 export { default as CustomSuccessToast } from './CustomSuccessToast';
 export { default as Logo } from './Logo';
+export { default as LogoLogin } from './LogoLogin';
+export { default as LogoRegister } from './LogoRegister';
 export { default as LogoBrand } from './LogoBrand';
 export { default as LogoModBrand } from './LogoModBrand';
 export { default as FormComponent } from './FormComponent';

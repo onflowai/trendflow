@@ -4,7 +4,14 @@ const Container = styled.section`
   min-height: 100vh;
   display: grid;
   align-items: center;
-  .logo {
+  .logo-login {
+    align-items: center;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 1.38rem;
+  }
+  .logo-register {
+    align-items: center;
     display: block;
     margin: 0 auto;
     margin-bottom: 1.38rem;
@@ -35,6 +42,14 @@ const Container = styled.section`
   }
   .fade-in.visible {
   opacity: 1;
+  }
+  @media (max-width: 640px) {
+    align-items: flex-start;
+    justify-items: center;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 64px);
+    .form {
+      margin-top: 0;
+    }
   }
 `;
 export default Container;

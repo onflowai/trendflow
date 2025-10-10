@@ -1,10 +1,10 @@
 export const majorUpdates = [
   {
-    version: '1.0.2',
+    version: '1.1.0',
     text: 'Open-source and partial open-source indicators on projects.',
   },
   {
-    version: '1.0.1',
+    version: '1.0.0',
     text: 'Secure guest sessions with implemented CSRF protection and featured trends.',
   },
 ];

@@ -10,9 +10,11 @@ import {
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
   SEO,
-  Logo,
   VerifyCode,
+  LogoRegister,
   LandingModal,
+  LandingFooter,
+  LandingNavbar,
   FormComponent,
   CustomErrorToast,
 } from '../components';
@@ -128,8 +130,11 @@ const Register = () => {
         img_large={`${FRONTEND_BASE_URL}/og-image-register.jpg`}
         img_small={`${FRONTEND_BASE_URL}/og-image-register-twitter.jpg`}
       />
+      <div>
+        <LandingNavbar />
+      </div>
       <Form method="post" className="form">
-        <Logo />
+        <LogoRegister />
         <h4>Register</h4>
         {/* NAME */}
         <FormComponent type="text" name="username" defaultValue="Username" />
@@ -163,6 +168,7 @@ const Register = () => {
           onResend={handleResendEmail}
         />
       </LandingModal>
+    <LandingFooter />
     </Container>
   );
 };

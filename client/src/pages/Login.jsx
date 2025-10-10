@@ -10,7 +10,9 @@ import {
 import Container from '../assets/wrappers/RegisterLoginPageContainer';
 import {
   SEO,
-  Logo,
+  LogoLogin,
+  LandingFooter,
+  LandingNavbar,
   FormComponent,
   CustomErrorToast,
   CustomSuccessToast,
@@ -93,6 +95,10 @@ const Login = () => {
   }, [errors]);
   return (
     <Container>
+      <div className="container">
+      <div>
+        <LandingNavbar />
+      </div>
       <SEO
         title="TrendFlow - Login"
         description="Login: TrendFlow and track the latest trends in tech."
@@ -101,7 +107,7 @@ const Login = () => {
         img_small={`${FRONTEND_BASE_URL}/og-image-login-twitter.jpg`}
       />
       <Form method="post" className="form">
-        <Logo />
+        <LogoLogin />
         <h4>Login</h4>
         {errors?.msg && (
           <p className={`fade-in ${showError ? 'visible' : ''}`}>
@@ -127,6 +133,8 @@ const Login = () => {
           </Link>
         </p>
       </Form>
+      </div>
+      <LandingFooter />
     </Container>
   );
 };
