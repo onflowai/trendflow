@@ -12,6 +12,7 @@ border-radius: var(--border-radius);
   }
 
   .trend-small-card {
+    background: var(--card-background);
     border-radius: var(--border-radius);
     transition: transform 0.1s ease;
     height: 150px;
