@@ -44,7 +44,7 @@ const Container = styled.section`
     
   }
   .page {
-    min-height: calc(60vh - var(--nav-height));
+    min-height: calc(45vh - var(--nav-height));
     display: grid;
     align-items: center;
     margin-top: 6rem;
@@ -80,6 +80,9 @@ const Container = styled.section`
     padding: 0.75rem 1rem;
   }
   @media (min-width: 992px) {
+    .page {
+    min-height: calc(50vh - var(--nav-height));
+    }
     .page {
       grid-template-columns: 1fr 450px;
       column-gap: 1rem;

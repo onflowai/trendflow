@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const Logo = ({ size }) => {
   const [hasError, setHasError] = useState(false);
-  const cdnLogo = 'https://cdn.trendflowai.com/content/logo029.svg';
+  const cdnLogo = 'https://cdn.trendflowai.com/content/logo.svg';
   const imageSrc = hasError ? localLogo : cdnLogo;
 
   const handleImageError = (e) => {

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { IoIosClose } from 'react-icons/io';
 import LandingMenuLink from './LandingMenuLink';
 import LandingNavbarSocials from './LandingNavbarSocials';
-import { landingLinks, socialLinks } from '../assets/utils/data';
+import { landingOverlayLinks, socialLinks } from '../assets/utils/data';
 import DarkMode from './DarkMode';
 import { useNavigate } from 'react-router-dom';
 import customFetch from '../utils/customFetch';
@@ -73,12 +73,12 @@ const LandingOverlayMenu = ({ toggleOverlay }) => {
       <div className="overlay-content">
         {/* LINKS */}
         <div className="overlay-nav-links">
-          {landingLinks.map((link, index) => (
+          {landingOverlayLinks.map((link, index) => (
             <LandingMenuLink
               key={link.id}
               link={link}
               onClick={toggleOverlay}
-              showDivider={index < landingLinks.length - 1}
+              showDivider={index < landingOverlayLinks.length - 1}
             />
           ))}
           <hr className="calls-divider" />
