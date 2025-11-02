@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/onflowai/trendflow/compare/v1.1.1...v1.1.2) (2025-11-02)
+
+
+### Bug Fixes
+
+* adding mobile services view ([839bc65](https://github.com/onflowai/trendflow/commit/839bc657f3fd35511eac37ce91dc05cf96dbd7ab))
+
 ## [1.1.1](https://github.com/onflowai/trendflow/compare/v1.1.0...v1.1.1) (2025-10-10)
 
 
