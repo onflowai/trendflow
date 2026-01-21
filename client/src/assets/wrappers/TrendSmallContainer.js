@@ -128,7 +128,7 @@ const Container = styled.article`
     padding: 0.5rem 0.5rem;
     background: var(--small-card-bottom-row);
     border-top: 1.5px solid var(--grey-50);
-    gap: 0.5rem; // Add some space between the items
+    gap: 0.2rem; // Add some space between the items
   }
 
   .user-icon {
@@ -144,6 +144,7 @@ const Container = styled.article`
     gap: 0.5rem;
     flex-wrap: nowrap; // Prevent wrapping in mobile view
     flex: 1; // Allow bottom-info to take available space
+    min-width: 0;
   }
 
   .info-item {
@@ -154,11 +155,30 @@ const Container = styled.article`
     white-space: nowrap;
     font-size: 0.8rem;
   }
+
   .icon-tech{
     margin-left: 0.2rem;
     align-items: center;
     display: flex;
     gap: 0.1rem;
+    flex: 1 1 auto;// allows the title lane to take remaining space
+    min-width: 0;//scrollable overflow
+  }
+
+  .tech-scroll {
+    flex: 1 1 auto;
+    min-width: 0;              /* enables overflow within this box */
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;     /* Firefox hide scrollbar */
+  }
+  .tech-scroll::-webkit-scrollbar { display: none; } 
+
+  .icon-tech img,
+  .icon-tech svg {
+  flex: 0 0 auto;
   }
   .icon-views{
     align-items: center;
@@ -170,6 +190,7 @@ const Container = styled.article`
     display: flex;
     align-items: center;
     gap: 1.2rem;
+    flex: 0 0 auto; 
   }
   .bookmark-btn {
     position: absolute; // Position absolutely within bottom-row

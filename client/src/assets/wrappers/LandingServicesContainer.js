@@ -35,7 +35,7 @@ const Container = styled.div`
     color: var(--text-second-color);
     margin-bottom: 1.5rem;
     max-width: 35em;
-  }
+    }
 
     .title {
       margin: 0.5rem 0;
@@ -45,6 +45,7 @@ const Container = styled.div`
       font-size: 0.9rem;
     }
   }
+  
 `;
 
 export default Container;

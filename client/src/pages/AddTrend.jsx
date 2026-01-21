@@ -16,7 +16,7 @@ import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 /**
- *
+ * AddTrend submits the trend after user types it in the from and selects category and technology
  * @param {*} param0
  * @returns
  */

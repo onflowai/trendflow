@@ -1,4 +1,3 @@
-// HeroAnimated.jsx
 import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import styled, { keyframes } from 'styled-components';

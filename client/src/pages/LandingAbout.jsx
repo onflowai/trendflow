@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SEO,
   LandingNavbar,
@@ -14,9 +14,15 @@ import { useTheme } from '../context/ThemeContext';
 //import LandingFeaturedCarousel from '../components/LandingFeaturedCarousel';
 //import LandingCover from '../components/LandingCover';
 
+const cdnLogoLight = 'https://cdn.trendflowai.com/content/logo-sphere-color-light-01.svg';
+const cdnLogoDark  = 'https://cdn.trendflowai.com/content/logo-sphere-color-dark-01.svg';
+
 const LandingAbout = () => {
-  const { isDarkTheme } = useTheme(); 
-  const logoSVG = isDarkTheme ? logoDark : logoLight;
+  const { isDarkTheme } = useTheme();
+  const [hasError, setHasError] = useState(false);
+  const cdnSrc   = isDarkTheme ? cdnLogoDark : cdnLogoLight;     // same as HeroAnimated
+  const localSrc = isDarkTheme ? logoDark     : logoLight;
+
   return (
     <Container>
       <SEO
@@ -40,15 +46,17 @@ const LandingAbout = () => {
           <LandingAboutCover />
           <img
             className="svg-overlay"
-            src={logoSVG}
-            //src="https://cdn.trendflowai.com/content/logo-sphere-light-01.svg"
+            src={hasError ? localSrc : cdnSrc}
             alt="Logo overlay"
+            onError={() => setHasError(true)}     // identical fallback logic
+            loading="lazy"
+            draggable={false}
           />
           <div className="links">
             <span className="insta-label">stay updated:</span>
               <a
                 className="insta-gradient-link"
-                href="https://www.instagram.com/onflowdev"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
               >

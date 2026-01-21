@@ -116,22 +116,23 @@ const BlogPage = () => {
                 isDarkTheme={isDarkTheme}
               />
             </div>
+            {isMobile && (
+              <div id="trends" className="icon-trends icon-trends--mobile">
+                <TrendIconList trends={trends} />
+              </div>
+            )}
           </div>
           <aside className="scroll-spy-sidebar-aside">
-            <div className="scroll-spy-sidebar">
-              <ScrollSpyComponent sectionIds={['blog', 'trends']} />
-              {!isMobile && (
-                <div className="icon-trends">
-                  <TrendIconList trends={trends} />
-                </div>
-              )}
-            </div>
-          </aside>
-          {isMobile && (
-            <div id="trends" className="icon-trends">
-              <TrendIconList trends={trends} />
-            </div>
-          )}
+          <div className="scroll-spy-sidebar">
+            <ScrollSpyComponent sectionIds={['blog', 'trends']} />
+            {/* DESKTOP: trends stay in the sticky sidebar */}
+            {!isMobile && (
+              <div id="trends" className="icon-trends">
+                <TrendIconList trends={trends} />
+              </div>
+            )}
+          </div>
+        </aside>
         </div>
       </div>
     </Container>

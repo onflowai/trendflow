@@ -76,9 +76,14 @@ export const loader = async ({ params }) => {
 };
 const TrendPage = () => {
   const { trendObject, relatedTrends, savedTrendIds } = useLoaderData(); //getting the trend from the loader above
+  const location = useLocation();
+  const pageKey = trendObject?._id || trendObject?.slug || location.key;
   const [isSaved, setIsSaved] = useState(
     savedTrendIds.includes(trendObject._id)
   );
+   useEffect(() => {
+    setIsSaved(savedTrendIds.includes(trendObject._id)); //HERE
+  }, [trendObject._id, savedTrendIds]);
   const {
     trend,
     svg_url,
@@ -180,16 +185,17 @@ const TrendPage = () => {
     { label: views, icon: <PiEyeLight />, styled: false },
   ];
   return (
-    <Container>
+    <Container key={pageKey}>
       <SEOProtected />
       <ScrollToTop />
       <div className="trend-page-container">
         <div className="page-layout">
-          <div id="Trend" className="trend">
+          <div id="Trend" className="trend" key={pageKey}>
             <div>
               <ChartTrendComponent
-                data={interestOverTime}
-                forecast={forecast}
+                key={pageKey}
+                data={interestOverTime ?? {}}
+                forecast={forecast ?? {}}
                 trend={trend}
                 trendLogo={moddingTrendSvg()}
               />

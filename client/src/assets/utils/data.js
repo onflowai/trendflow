@@ -16,6 +16,16 @@ export const landingLinks = [
   { id: 3, href: '/#updates', text: 'updates' },
   { id: 4, href: '/#trends', text: 'trends' },
 ];
+
+//link used only on the mobile Landing Overlay
+export const landingOverlayLinks = [
+  { id: 1, href: '/', text: 'home' },
+  { id: 2, href: '/blog', text: 'blog' },
+  { id: 3, href: '/about', text: 'about' },
+  { id: 4, href: '/#updates', text: 'updates' },
+  { id: 5, href: '/#trends', text: 'trends' },
+];
+
 //links used in the SIDEBAR of the dashboard
 export const dashboardLinks = [
   {

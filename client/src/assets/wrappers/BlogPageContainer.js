@@ -116,25 +116,37 @@ const Container = styled.div`
   }
 
   @media (max-width: 991px) {
+
+    .scroll-spy-sidebar-aside {
+    order: 2;          /* sits after the blog column */
+    width: 100%;
+    }
     .page-layout {
       display: flex;
       flex-direction: column;
     }
 
     .scroll-spy-sidebar {
-      position: fixed;
-      width: 100%;
-      height: 200px;
-      top: 0;
-      right: 0;
-      transform: translateY(0);
-      order: 1;
+          position: static;  /* no fixed overlay */
+    top: auto;
+    right: auto;
+    width: 100%;
+    height: auto;
+    transform: none;
+    z-index: auto;
+    overflow: visible;
     }
 
     .icon-trends {
-      order: 3;
       width: 100%;
       position: relative;
+    }
+
+    .icon-trends--mobile {
+    position: static;
+    margin: 1rem 0 2rem;
+    padding: 0 1rem;
+    width: 100%;
     }
   }
 `;

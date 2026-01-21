@@ -140,7 +140,9 @@ function TrendSmall({
                 </h4>
               </div>
               <div className="description-container">
-                <h6 className="underlay-heading">{trendCategory}</h6>
+                <h6 className="underlay-heading">{trendCategory.length > (isMobileTrend ? 8 : 11)
+                    ? trendCategory.substring(0, isMobileTrend ? 14 : 19) + '...'
+                    : trendCategory}</h6>
                 {!isGridView && trendDesc && trendDesc.trim() && (
                   <div className="trend-desc">
                     <p className="">
@@ -164,24 +166,22 @@ function TrendSmall({
               </div>
             )}
             <div className="bottom-info">
-              <span className="info-item">
-                {!(isAdminPage && isGridView) ? (
-                  <span className="icon-tech">
-                    {!techIconUrl ? (
-                      <PiHashLight />
-                    ) : (
-                      <img
-                        src={getFullIconUrl(techIconUrl)}
-                        alt="Technology Icon"
-                        style={{ width: '20px', marginRight: '10px' }}
-                      />
-                    )}
-                    {!isGridView && (
-                      <h5>{trendTech.split(' ').slice(0, 2).join(' ')}</h5>
-                    )}
-                  </span>
+              <span className="icon-tech">
+                {!techIconUrl ? (
+                  <PiHashLight />
                 ) : (
-                  <span></span>
+                  <img
+                    src={getFullIconUrl(techIconUrl)}
+                    alt="Technology Icon"
+                    style={{ width: '20px', marginRight: '2px' }}
+                  />
+                )}
+                {!isGridView && (
+                  <div className="tech-scroll" title={trendTech}>
+                    <h5 className="tech-title">
+                      {trendTech.split(' ').slice(0, 2).join(' ')}
+                    </h5>
+                  </div>
                 )}
               </span>
             </div>
