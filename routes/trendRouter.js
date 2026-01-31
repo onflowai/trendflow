@@ -17,7 +17,10 @@ import {
   updateTrendManual,
   getTopViewedTrends,
   approveTrendManual,
+  updateTrendBlogAdmin,
+  submitTrendForApproval,
 } from '../controllers/trendController.js';
+import { rateLimitSubmitTrend } from '../middleware/rateLimitMiddleware.js';
 import { adminStats, appTrendStats } from '../controllers/visitController.js';
 import {
   validateSlugParam,
@@ -54,9 +57,25 @@ router
   .post(
     authenticateUser,
     authorizedPermissions('write'),
+    rateLimitSubmitTrend,
     validateTrendInput,
     submitTrend
   );
+router.patch(
+  '/:slug/submit-for-approval',
+  authenticateUser,
+  authorizedPermissions('write'),
+  validateSlugParam,
+  submitTrendForApproval
+);
+router.patch(
+  '/:slug/update-trend-blog',
+  authenticateUser,
+  authorizedAdmin,
+  authorizedPermissions('write'),
+  validateSlugParam,
+  updateTrendBlogAdmin
+);// admin-only blog edit
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router.route('/top-viewed').get(getTopViewedTrends); //NOTE user does not need to have an account to see Top Trends
 router.route('/admin/stats').get(adminStats);
