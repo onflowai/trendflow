@@ -2,14 +2,18 @@ import trendModel from '../models/trendModel.js';
 //import { TREND_CATEGORY, TECHNOLOGIES } from '../utils/constants.js';
 import { StatusCodes } from 'http-status-codes';
 import { sanitizeHTML } from '../utils/sanitization.js';
+import { sanitizeMarkdown } from '../utils/sanitizeMarkdown.js'
 //import { executePythonScript } from '../utils/script_controller.js';
 import { generatePostContent } from '../api/trendPostGenerator.js';
 import { trendflowPyApi } from '../api/trendflowPyApi.js';
 import { trendflowPyManualApi } from '../api/trendflowPyManualApi.js';
 import { fetchRelatedTrends } from '../utils/trendRelatedUtils.js';
 import { validateAndSanitizeCSVData } from '../utils/csvValidator.js';
+import { sanitizeOfficialLink } from '../utils/sanitizeLink.js';
+import { assertNoLongStringAbuse } from '../utils/stringGuard.js';
 import { cloudinary2 } from '../config/cloudinary.js'; //using dif set of credentials
 import fs from 'fs/promises'; //allows to remove the image
+import { assertNoProfDump } from '../utils/profGuard.js';
 import {
   constructSortKey,
   constructQueryObject,
@@ -36,26 +40,244 @@ import {
 //   { id: nanoid(), trend: 'chatgpt', category: 'language model' },
 //   { id: nanoid(), trend: 'react', category: 'javascript framework' },
 // ];
+
 /**
- * SUBMIT TREND
+ * SUBMIT TREND - creates draft trend and saves it immediately to mongo (not in admin queue yet)
+ * generate markdown blog immediately return draft for display (user read-only, admin editable)
  * @param {*} req
  * @param {*} res
  * @returns
  */
-export const submitTrend = async (req, res, next) => {
-  let { trend } = req.body; //using scoped variable
-  trend = sanitizeHTML(trend); //sanitize the trend input to prevent XSS
+export const submitTrend = async (req, res) => {
+  let { trend } = req.body; //pull trend name from request body
+  trend = sanitizeHTML(trend); //sanitize trend
+
+  if (!trend || trend.trim().length < 2) {
+    throw new BadRequestError('Trend too short');
+  }// reject if trend name too short
+
   const existingTrend = await trendModel.findOne({ trend });
   if (existingTrend) {
     throw new BadRequestError('Trend already exists');
-  }
-  req.body.createdBy = req.user.userID; //adding createdBy property storing user id
-  const trendObject = await trendModel.create({
-    ...req.body,
+  }//check if exact trend already exists
+
+  const createdBy = req.user.userID;// storing current authenticated user id as author of created trend
+
+  //only accepting field EXPECTED from UI during submission:
+  const {
+    trendCategory,
+    trendTech,
+    techIconUrl,
+    cateIconUrl,
+    svg_url,
+    svg_public_id,
+    openSourceStatus,
+  } = req.body; //avoiding spreading all req.body blindly reducing mass assignment risk
+
+  const allowedStatuses = ['open', 'partial', 'closed', 'unknown']; //from trend model openSourceStatus must be one of the allowed enum values
+  const safeOpenSourceStatus = allowedStatuses.includes(openSourceStatus)
+    ? openSourceStatus
+    : 'unknown';// fallback if missing/invalid
+
+  const draftTrend = await trendModel.create({
+    trend,
+    trendCategory,
+    trendTech,
+    techIconUrl,
+    cateIconUrl,
+    svg_url,
+    svg_public_id,
+    openSourceStatus: safeOpenSourceStatus,
+    createdBy,
     isApproved: false,
-  }); //create a new document spreading current properties
-  res.status(StatusCodes.CREATED).json({ trendObject });
+    isSubmittedForApproval: false,
+  });//create the trend document as unapproved
+
+  const openAIResult = await generatePostContent(
+    draftTrend.trend,
+    draftTrend.trendCategory,
+    draftTrend.trendTech
+  );//generate markdown blog immediately based on trend info
+
+  const { trendPost, trendDesc, trendUse, trendOfficialLink, openSourceStatus: openSourceResponse } = openAIResult || {};// safely destructure result
+  const safeMarkdown = sanitizeMarkdown(trendPost || '');// sanitize markdown output before saving
+  if (!safeMarkdown || safeMarkdown.length < 20) {// basic guard for failed/empty generation
+    throw new BadRequestError('Blog generation failed');
+  }
+  if (safeMarkdown.length > 8000) {
+    throw new BadRequestError('Generated blog too long');
+  }// matching model schema max-length for trendBlog
+  const safeDesc = sanitizeHTML(trendDesc || '').trim();// normalize desc before saving
+  if (safeDesc.length > 1000) {
+    throw new BadRequestError('Generated description too long');
+  }//match schema maxlength for trendDesc
+  const safeUse = sanitizeMarkdown(trendUse || '').trim(); // sanitize usage section
+  if (safeUse.length > 2000) {
+    throw new BadRequestError('Generated use section too long');
+  }// schema max-length for trendUse double check
+
+  draftTrend.generatedBlogPost = safeMarkdown;// store markdown blog post in Mongo
+  draftTrend.trendDesc = safeDesc;// sanitize + store description
+  draftTrend.trendUse = safeUse;// sanitize + store usage section
+  draftTrend.blogLastEditedBy = null;// no editor yet (admin edits later)
+  draftTrend.blogEditedAt = null;// no edit timestamp yet
+  draftTrend.trendOfficialLink = sanitizeOfficialLink(trendOfficialLink);
+
+  if (draftTrend.openSourceStatus === 'unknown') {
+    const aiSafe = allowedStatuses.includes(String(openSourceResponse || '').toLowerCase()) ? String(openSourceResponse).toLowerCase() : 'unknown';
+    if (aiSafe !== 'unknown') draftTrend.openSourceStatus = aiSafe;
+  }// only override if request was unknown AND ai gave a valid better value
+
+  await draftTrend.save();// persist blog fields onto the created trend document
+
+  res.status(StatusCodes.CREATED).json({ // respond 201 created
+    trendObject: draftTrend, // return full draft trend to client
+  });
 }; //end SUBMIT
+
+/**
+ * SUBMIT TREND FOR APPROVAL (Admin only) - only submits the trend as is no updating / editing timestamped automatically via
+ * updatedAt
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const submitTrendForApproval = async (req, res) => {
+  const { slug } = req.params;//pulling trend from route params
+  const trend = await trendModel.findOne({ slug });//find the trend doc by slig
+  if (!trend) {
+    throw new NotFoundError('Trend not found');
+  }//if not found return 404
+  const isOwner = String(trend.createdBy) === String(req.user.userID);// check if current user created this trend
+  const isAdmin = req.user?.role === 'admin';// check if current user is admin
+  if (!isOwner && !isAdmin) {
+    throw new UnauthenticatedError('Admin only');
+  }
+  if (trend.isApproved) {
+    throw new BadRequestError('Trend already approved');
+  }
+  if (trend.isSubmittedForApproval === true){
+    return res.status(StatusCodes.OK).json({
+      msg: 'Already submitted',
+    })
+  }
+  if (!trend.generatedBlogPost || trend.generatedBlogPost.trim().length < 20) {
+    throw new BadRequestError('Trend must have a generated blog before submission');
+  }
+  trend.isSubmittedForApproval = true;// flip the flag so admin queue can filter it
+  await trend.save();
+  res.status(StatusCodes.OK).json({
+    msg: 'Trend submitted for admin approval',
+    trend,
+  });
+};//end submitTrendForApproval
+
+/**
+ * UPDATE TREND BLOG ADMIN (PATCH) (admin only setup in route middleware) - lets admin edit the trendBlog, trendUse and Link before submitTrendForApproval in AddTrend.jsx
+ * lets admin update the trend before approving with approveTrendManual or approveTrend trend in EditTrend.jsx
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export const updateTrendBlogAdmin = async (req, res) => {
+  const { slug } = req.params; // route uses :slug
+  //const { id } = req.params;// destructuring trend document id
+  let {  generatedBlogPost, trendUse, trendOfficialLink } = req.body;
+
+  if (
+    generatedBlogPost === undefined && // blog not provided
+    trendUse === undefined && // use not provided
+    trendOfficialLink === undefined // link not provided
+  ) {
+    throw new BadRequestError('No editable fields provided');
+  }//requiring at least ONE field to update
+
+  //const trend = await trendModel.findById(id);
+  const trend = await trendModel.findOne({ slug });// find by slug
+  if (!trend) {
+    throw new NotFoundError('Trend not found');
+  }//loading trend BEFORE assigning to it if doc missing 404
+
+  // if (trend.isApproved) {
+  //   throw new BadRequestError('Cannot edit after approval');
+  // }//prevent edits after approval to keep public content stable
+
+  let changed = false;// tracking change to avoid fake audit updates
+
+  if (generatedBlogPost !== undefined) {
+    if (!generatedBlogPost) {
+      throw new BadRequestError('Blog content required');
+    }// reject null/empty
+    generatedBlogPost = sanitizeMarkdown(String(generatedBlogPost));// sanitize markdown BEFORE storage
+    if (generatedBlogPost.trim().length < 20) {
+      throw new BadRequestError('Blog content too short');
+    }// avoid saving empty junk
+    if (generatedBlogPost.length > 8000) {// match schema maxlength for generatedBlogPost
+      throw new BadRequestError('Blog content too long');
+    }
+    try{
+    await assertNoLongStringAbuse(generatedBlogPost);
+    await assertNoProfDump(generatedBlogPost, {
+      maxTotalHits: 6,//allow a few (quotes / edge cases) block spam dumps
+      maxConsecutiveHits: 3,// block "word word word word ..."
+      minWordCount: 30,// dont overreact to tiny snippets
+      shortConsecutiveHits: 3,
+      minShortWords: 8,
+    });//prof checker
+    }catch(e){
+      throw new BadRequestError(e.message); 
+    }
+    trend.generatedBlogPost = generatedBlogPost;// persist blog markdown
+    changed = true;
+  }// ONLY update trendBlog if client included it
+
+  if (trendUse !== undefined) {
+    trendUse = sanitizeMarkdown(String(trendUse || '')).trim();// sanitize plain text and trim
+    if (trendUse.length > 2000) {
+      throw new BadRequestError('trendUse too long');
+    }// match model schema max-length for trendUse
+    try{
+    await assertNoLongStringAbuse(trendUse, {
+      minChars: 20,//is short guard earlier
+      minWordCount: 10,
+      maxSameBigramRun: 4,// stricter for shorter field
+    });
+    await assertNoProfDump(trendUse, {
+      maxTotalHits: 4,
+      maxConsecutiveHits: 2,
+      minWordCount: 18,
+      shortConsecutiveHits: 2,
+      minShortWords: 6,
+    });
+    }catch(e){
+      throw new BadRequestError(e.message); 
+    }
+    trend.trendUse = trendUse;// persist trendUse
+    changed = true;
+  }// ONLY update trendUse if client included it
+
+  if (trendOfficialLink !== undefined) {
+    trend.trendOfficialLink = sanitizeOfficialLink(trendOfficialLink);// normalize + validate http/https only
+    changed = true;
+  }// ONLY update official link if provided
+
+  if (!changed) { 
+    return res.status(StatusCodes.OK).json({
+      msg: 'No changes applied',
+      trend,
+    });
+  }// if nothing changed dont update audit timestamps
+
+  trend.blogLastEditedBy = req.user.userID;// track who edited
+  trend.blogEditedAt = new Date();// track when edited
+
+  await trend.save();// persist changes (+ updatedAt auto updates via timestamps)
+
+  res.status(StatusCodes.OK).json({
+    msg: 'Trend content updated',
+    trend,
+  });
+};//end updateTrendBlogAdmin
 
 /**
  * GET USER TREND (setting up a retrieve/read all trends in a route /api/v1/trends belonging to user)
@@ -91,8 +313,12 @@ export const getSingleTrend = async (req, res) => {
       .findOne({ slug: slug })
       .populate(
         'createdBy',
-        'username profile_img githubUsername privacy -_id'
-      ); //retrieve the trend if it equals the id in the data
+        'username profile_img githubUsername privacy isDeleted'
+      )
+      .populate(
+        'blogLastEditedBy',
+        'username profile_img githubUsername privacy isDeleted'
+      );//retrieve the trend if it equals the id in the data
     if (!trendObject) {
       //return res.status(404).json({ msg: 'Trend not found' });
       throw new NotFoundError('Trend not found');
@@ -100,7 +326,12 @@ export const getSingleTrend = async (req, res) => {
     if (trendObject.createdBy && trendObject.createdBy.privacy) {
       trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
     }
-    trendObject.generatedBlogPost = sanitizeHTML(trendObject.generatedBlogPost); //sanitizing html
+
+    if (trendObject.blogLastEditedBy && trendObject.blogLastEditedBy.privacy) {
+      trendObject.blogLastEditedBy.githubUsername = '';
+    }// applying privacy rules to blogLastEditedBy
+
+    trendObject.generatedBlogPost = sanitizeMarkdown(trendObject.generatedBlogPost); //sanitizing html
     const relatedTrends = await fetchRelatedTrends(trendObject); // fetching related trends from utility function
 
     const sanitizedRelatedTrends = relatedTrends.map((relatedTrend) => {
@@ -125,7 +356,8 @@ export const getSingleTrend = async (req, res) => {
 }; //end single trend
 
 /**
- * UPDATE TREND only accessible before the Trend has been approved, after this controller is not reachable
+ * UPDATE TREND (admin only setup in route middleware) only accessible before the Trend has been approved, after this controller is not reachable
+ * ADMIN EDITS the trend name, open source status, tech and category
  * @param {*} req
  * @param {*} res
  * @returns
@@ -190,7 +422,7 @@ export const deleteTrend = async (req, res) => {
 };
 
 /**
- * APPROVE TREND
+ * APPROVE TREND - takes existing trend and generated blogpost adds scores interestOverTime and flags it as isApproved true automatically
  * @param {*} req
  * @param {*} res
  * @returns
@@ -203,10 +435,9 @@ export const approveTrend = async (req, res) => {
       throw new NotFoundError('Trend not found');
     }
     //CALLING THE SCRIPT and OPENAI (executing both asynchronous functions concurrently)
-    const [trendflowPyApiResponse, openAIResult] = await Promise.all([
+    const trendflowPyApiResponse = await Promise.all([
       trendflowPyApi(trend.trend), //api call to python scripts
       //executePythonScript(trend.trend), // Execute Python script
-      generatePostContent(trend.trend, trend.trendCategory, trend.trendTech), // Generate content with OpenAI
     ]);
 
     // Handle Python API response
@@ -217,8 +448,6 @@ export const approveTrend = async (req, res) => {
     }
 
     const data = trendflowPyApiResponse.trends_data;
-    const { trendPost, trendDesc, trendUse } = openAIResult; // Destructure the OPENAI result
-    const safeTrendPost = sanitizeHTML(trendPost); //content sanitization from external sources before saving
     const combinedScore = calculateCombinedScore(
       data.t_score,
       0,
@@ -234,9 +463,6 @@ export const approveTrend = async (req, res) => {
           interestOverTime: data.trends_data,
           trendStatus: data.status,
           flashChart: data.flashChart,
-          generatedBlogPost: safeTrendPost,
-          trendDesc: trendDesc,
-          trendUse: trendUse,
           isApproved: true,
           forecast: data.forecast,
           t_score: data.t_score,
@@ -259,7 +485,7 @@ export const approveTrend = async (req, res) => {
 }; //end approveTrend
 
 /**
- * MANUAL APPROVE TREND
+ * MANUAL APPROVE TREND - takes existing trend and generated blogpost adds scores interestOverTime and flags it as isApproved true manually
  * @param {Object} req - express request object
  * @param {Object} res - express response object
  * @returns {Object} - JSON response with status and message
@@ -269,10 +495,16 @@ export const approveTrendManual = async (req, res) => {
   let { data, openSourceStatus } = req.body; // extracting data from request body
   try {
     const sanitizedData = validateAndSanitizeCSVData(data); // validating and sanitize CSV data
-    const trend = await trendModel.findOne({ slug: slug });
+    const trend = await trendModel.findOne({ slug: slug });// find trend by slug
     if (!trend) {
       throw new NotFoundError('Trend not found');
-    } // finding the trend by slug
+    } // if not found 404
+    if (trend.isApproved) {
+      throw new BadRequestError('Trend already approved');
+    }// checking for double-approval and re-running analytics
+    if (trend.isSubmittedForApproval !== true) {
+      throw new BadRequestError('Trend must be submitted for approval first');
+    }//prevents random approvals
 
     const trendflowPyApiResponse = await trendflowPyManualApi(
       slug,
@@ -286,15 +518,6 @@ export const approveTrendManual = async (req, res) => {
     } // handling trendflowPyManualApi response
 
     const processedData = trendflowPyApiResponse.trends_data;
-
-    const openAIResult = await generatePostContent(
-      trend.trend,
-      trend.trendCategory,
-      trend.trendTech
-    ); // generating content using OpenAI based on the processed data
-
-    const { trendPost, trendDesc, trendUse } = openAIResult; // destructuring OpenAI result
-    const safeTrendPost = sanitizeHTML(trendPost); // sanitizing the generated content
 
     const combinedScore = calculateCombinedScore(
       processedData.t_score,
@@ -316,9 +539,6 @@ export const approveTrendManual = async (req, res) => {
           interestOverTime: processedData.trends_data,
           trendStatus: processedData.status,
           flashChart: processedData.flashChart,
-          generatedBlogPost: safeTrendPost,
-          trendDesc: trendDesc,
-          trendUse: trendUse,
           isApproved: true,
           forecast: processedData.forecast,
           t_score: processedData.t_score,
@@ -353,7 +573,7 @@ export const approveTrendManual = async (req, res) => {
 }; //end approveTrendManual
 
 /**
- * MANUAL UPDATE TREND
+ * MANUAL UPDATE TREND (UP-TO-DATE DATA REFRESH) - ONLY FOR UPDATING THE DATA
  * @param {Object} req - express request object
  * @param {Object} res - express response object
  * @returns {Object} - JSON response with status and message
