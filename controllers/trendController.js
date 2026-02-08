@@ -21,6 +21,7 @@ import {
   calculateCombinedScore,
   paginateAndSortCursorViews,
 } from '../utils/trendUtils.js';
+import { normalizeCreatorForTrend } from '../utils/normalizeUserForTrend.js';
 import {
   BadRequestError,
   NotFoundError,
@@ -323,21 +324,26 @@ export const getSingleTrend = async (req, res) => {
       //return res.status(404).json({ msg: 'Trend not found' });
       throw new NotFoundError('Trend not found');
     }
-    if (trendObject.createdBy && trendObject.createdBy.privacy) {
-      trendObject.createdBy.githubUsername = ''; // setting githubUsername to an empty string if privacy is enabled
+    const role = req.user?.role || 'guestUser';
+    const userID = req.user?.userID ? String(req.user.userID) : null;
+    const createdById = trendObject.createdBy?._id ? String(trendObject.createdBy._id) : null;
+
+    const isOwner = !!userID && !!createdById && userID === createdById;
+    const isAdmin = role === 'admin';
+    const isApproved = trendObject.isApproved === true;
+
+    if (!isApproved && !isAdmin && !isOwner) {
+      throw new NotFoundError('Trend not found');
     }
 
-    if (trendObject.blogLastEditedBy && trendObject.blogLastEditedBy.privacy) {
-      trendObject.blogLastEditedBy.githubUsername = '';
-    }// applying privacy rules to blogLastEditedBy
+    trendObject.createdBy = normalizeCreatorForTrend(trendObject.createdBy);
+    trendObject.blogLastEditedBy = normalizeCreatorForTrend(trendObject.blogLastEditedBy); // in func applying privacy rules to blogLastEditedBy
 
     trendObject.generatedBlogPost = sanitizeMarkdown(trendObject.generatedBlogPost); //sanitizing html
     const relatedTrends = await fetchRelatedTrends(trendObject); // fetching related trends from utility function
 
     const sanitizedRelatedTrends = relatedTrends.map((relatedTrend) => {
-      if (relatedTrend.createdBy && relatedTrend.createdBy.privacy) {
-        relatedTrend.createdBy.githubUsername = ''; // Remove if privacy is enabled
-      }
+      relatedTrend.createdBy = normalizeCreatorForTrend(relatedTrend.createdBy);
       return relatedTrend;
     }); // apply privacy logic to each related trend
 
@@ -708,15 +714,9 @@ export const getAllTrends = async (req, res) => {
 
     //privacy logic if necessary (e.g., hide GitHub username if privacy is enabled)
     const safeTrends = trends.map((trend) => {
-      if (trend.createdBy?.privacy) {
-        trend.createdBy.githubUsername = '';
-      }
+      trend.createdBy = normalizeCreatorForTrend(trend.createdBy);
       return trend;
-    });
-    //   'Admin Trends fetched after applying cursor:',
-    //   trends.map((trend) => trend.trend)
-    // );
-
+    });//ADDED: normalized missing creator +hard-deleted or broken ref
     res.status(StatusCodes.OK).json({
       totalTrends,
       trends: safeTrends,
@@ -788,6 +788,7 @@ export const getApprovedTrends = async (req, res) => {
       await paginateAndSortCursor(queryObject, sortKey, limit, cursor); //undefined is set so that all trends will be pulled from the controller
     // privacy logic
     trends = trends.map((trend) => {
+      trend.createdBy = normalizeCreatorForTrend(trend.createdBy);
       if (trend.createdBy && trend.createdBy.privacy) {
         trend.createdBy.githubUsername = ''; // removing githubUsername if privacy is enabled
       }
