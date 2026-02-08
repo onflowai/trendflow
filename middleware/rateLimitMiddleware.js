@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 
 /**
  * Role based rate limiting for the trendSubmit controller
- * user: 2 submissions per hour block 15 minutes after exceeding, smooth out bursts / boundary spam and minimum spacing between allowed requests
+ * user: 4 submissions per hour block 15 minutes after exceeding, smooth out bursts / boundary spam and minimum spacing between allowed requests
  * admin: 50 submissions per day block 30 minutes after exceeding smooth out bursts / boundary spam
  */
 const redisUrl = process.env.REDIS_URL;
@@ -22,7 +22,7 @@ if (redisUrl) {
   limiterUserSubmit = new RateLimiterRedis({
     storeClient: redisClient,
     keyPrefix: 'rl:submit:user',
-    points: 2,
+    points: 4,
     duration: 60 * 60,
     blockDuration: 60 * 15,
     execEvenly: true,
