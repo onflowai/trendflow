@@ -20,7 +20,11 @@ const UserSchema = new mongoose.Schema(
     },
     name: String,
     email: String,
-    password: String,
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
     lastName: {
       type: String,
       default: 'lastName',
@@ -67,6 +71,18 @@ const UserSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
+    toJSON: {
+      transform: function (doc, ret) {
+        delete ret.password; //double-safety if someone explicitly selected it
+        return ret;
+      },
+    },
+    toObject: {
+      transform: function (doc, ret) {
+        delete ret.password; //double-safety if someone explicitly selected it
+        return ret;
+      },
+    },
   }
 );
 UserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // index only affects documents where 'expiresAt' is set (guestUser in authController)

@@ -96,7 +96,7 @@ export const register = async (req, res, next) => {
  * @returns
  */
 export const login = async (req, res) => {
-  const user = await UserModel.findOne({ email: req.body.email }); //find the users email if it exists store it in user
+  const user = await UserModel.findOne({ email: req.body.email }).select('+password');//find the users email if it exists store it in user
   if (!user) throw new UnauthenticatedError('invalid credentials'); //if user not found throw custom error
   const isPasswordCorrect = await authenticatePassword(
     req.body.password,
@@ -243,10 +243,11 @@ export const upgradeAccount = async (req, res) => {
     user.expiresAt = null; // Remove expiration
 
     await user.save();
-    const JWT_EXPIRES_IN = process.env.JWT_SECRET;
+    //const JWT_EXPIRES_IN = process.env.JWT_SECRET;
+    const expiresIn = process.env.JWT_EXPIRES_IN;
     const token = createJWT(
       { userID: user._id, role: user.role },
-      JWT_EXPIRES_IN
+      expiresIn
     ); // 1 day
     const oneDay = 86400000; // One day in milliseconds
 
