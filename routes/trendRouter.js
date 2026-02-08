@@ -91,10 +91,14 @@ router.post(
   validateTrendInput,
   createTrend
 ); //route for base URL with route param NOTE user does not need to have an account to see each Trend
-router.route('/:slug').get(validateSlugParam, incrementViews, getSingleTrend); //route to trend page
+router.route('/:slug').
+get(authenticateUser,
+  validateSlugParam,
+  incrementViews,
+  getSingleTrend); //route to trend page
 router
   .route('/edit/:slug')
-  .get(validateSlugParam, getSingleTrend)
+  .get(authenticateUser, validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
     authorizedAdmin,
