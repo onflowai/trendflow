@@ -5,7 +5,11 @@ import hljs from 'highlight.js';
 import styled, { css } from 'styled-components';
 import lightThemeCss from 'highlight.js/styles/github.css?raw';
 import darkThemeCss from 'highlight.js/styles/github-dark.css?raw';
-
+/**
+ * DangerousMarkdown used by TrendPage.jsx and BlogPage.jsx to display automated and user made markdown
+ * @param {*} param0 
+ * @returns 
+ */
 const DangerousMarkdown = ({ content, small, blogPage, isDarkTheme }) => {
   useLayoutEffect(() => {
     const codeBlocks = document.querySelectorAll('pre code');
@@ -14,7 +18,6 @@ const DangerousMarkdown = ({ content, small, blogPage, isDarkTheme }) => {
       hljs.highlightElement(block);
     }); // use useLayoutEffect so highlighting runs immediately after DOM mutations.
   }, [content, small, blogPage]); // re-run if either the content or the layout changes
-  console.log('content', content);
   useEffect(() => {
     let style = document.getElementById('hljs-theme-style');
     if (!style) {
@@ -98,7 +101,7 @@ const Container = styled.div`
         font-family: inherit;
       },
       //pre,
-      /* code {
+      code {
         //display: inline;
         font-size: inherit;
         background: none;
@@ -107,7 +110,7 @@ const Container = styled.div`
         border: none;
         color: inherit;
         font-family: inherit;
-      } */
+      }
 
       p {
         display: inline;

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
+  IconCategory,
   ScrollToTop,
   SEOProtected,
-  DangerousHTML,
+  TrendBookMark,
+  IconTechnology,
   CustomErrorToast,
+  DangerousMarkdown,
   FooterTrendDetails,
   ScrollSpyComponent,
   ContentRowComponent,
@@ -12,6 +15,8 @@ import {
   RelatedTrendsDesktop,
   RelatedTrendsMobile,
 } from '../components';
+import { normalizeUrlForOpen } from '../utils/urlHelper';
+import { useTheme } from '../context/ThemeContext';
 import { getFullIconUrl } from '../utils/urlHelper';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
 import Container from '../assets/wrappers/TrendPageContainer';
@@ -75,6 +80,7 @@ export const loader = async ({ params }) => {
   }
 };
 const TrendPage = () => {
+  const { isDarkTheme } = useTheme();
   const { trendObject, relatedTrends, savedTrendIds } = useLoaderData(); //getting the trend from the loader above
   const location = useLocation();
   const pageKey = trendObject?._id || trendObject?.slug || location.key;
@@ -82,23 +88,27 @@ const TrendPage = () => {
     savedTrendIds.includes(trendObject._id)
   );
    useEffect(() => {
-    setIsSaved(savedTrendIds.includes(trendObject._id)); //HERE
+    setIsSaved(savedTrendIds.includes(trendObject._id));
   }, [trendObject._id, savedTrendIds]);
   const {
     trend,
+    views,
     svg_url,
-    trendCategory,
+    trendUse,
+    forecast,
+    createdBy,
     trendTech,
     updatedAt,
-    generatedBlogPost,
-    trendUse,
-    interestOverTime,
-    views,
-    forecast,
     trendStatus,
     techIconUrl,
     cateIconUrl,
-    createdBy,
+    blogEditedAt,
+    trendCategory,
+    interestOverTime,
+    blogLastEditedBy,
+    openSourceStatus,
+    generatedBlogPost,
+    trendOfficialLink,
   } = trendObject;
   const { isMobile } = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
@@ -123,6 +133,16 @@ const TrendPage = () => {
     } // if trend and tech match return techURL
     return svg_url; //fallback
   };
+
+  const onToggleBookmark = async (trendId, nextIsSaved) => {
+    if (nextIsSaved) {
+      await onSave(trendId);
+      setIsSaved(true);
+    } else {
+      await onRemove(trendId);
+      setIsSaved(false);
+    }
+  }; 
 
   const handleBookmarkClick = async (e) => {
     e.stopPropagation();
@@ -153,37 +173,44 @@ const TrendPage = () => {
 
   //list of items used in the row under the chart takes on label, icon, and link and styling
   const items = [
-    {
-      label: trendTech,
-      icon: techIconUrl ? (
-        <img
-          src={getFullIconUrl(techIconUrl)}
-          alt="Technology Icon"
-          style={{ width: '20px' }}
-        />
-      ) : (
-        <PiHashDuotone />
-      ),
-      link: buildDashboardLink('trendTech', trendTech),
-      styled: true,
-    },
-    {
-      label: trendCategory,
-      icon: cateIconUrl ? (
-        <img
-          src={getFullIconUrl(cateIconUrl)}
-          alt="Category Icon"
-          style={{ width: '20px' }}
-        />
-      ) : (
-        <PiHashDuotone />
-      ),
-      link: buildDashboardLink('trendCategory', trendCategory),
-      styled: true,
-    },
-    { label: trendStatus, icon: <PiTrendUp />, styled: true },
-    { label: views, icon: <PiEyeLight />, styled: false },
-  ];
+  {
+    label: trendTech,
+    icon: techIconUrl ? (
+      <IconTechnology
+        src={getFullIconUrl(techIconUrl)}
+        fallbackSrc="/assets/fallback-tech.svg"
+        alt="Technology Icon"
+        size={20}
+      />
+    ) : (
+      <PiHashDuotone />
+    ),
+    link: buildDashboardLink('trendTech', trendTech),
+    styled: true,
+  },
+  {
+    label: trendCategory,
+    icon: cateIconUrl ? (
+      <IconCategory
+        src={getFullIconUrl(cateIconUrl)}
+        fallbackSrc="/assets/cat/fallback-cat.svg"
+        alt="Category Icon"
+        size={20}
+      />
+    ) : (
+      <PiHashDuotone />
+    ),
+    link: buildDashboardLink('trendCategory', trendCategory),
+    styled: true,
+  },
+  { label: trendStatus, icon: <PiTrendUp />, styled: true },
+  { label: views, icon: <PiEyeLight />, styled: false },
+];
+
+  const safeOfficialLink = normalizeUrlForOpen(trendOfficialLink);
+  console.log("cateIconUrl", cateIconUrl);
+  console.log("getFullIconUrl(cateIconUrl)", getFullIconUrl(cateIconUrl))
+
   return (
     <Container key={pageKey}>
       <SEOProtected />
@@ -205,18 +232,47 @@ const TrendPage = () => {
               <div className="trend-items">
                 <ContentRowComponent
                   items={items}
+                  openSourceStatus={openSourceStatus}
+                  trendId={trendObject?._id}
+                  onToggleBookmark={onToggleBookmark}
                   handleBookmarkClick={handleBookmarkClick}
                   isSaved={isSaved}
                 />
               </div>
               <div className="trend-use-container">
-                <ContentBoxHighlighted trendUse={trendUse} />
+                <ContentBoxHighlighted trendUse={trendUse} isDarkTheme={isDarkTheme} />
               </div>
             </div>
             <div className="trend-blog-post">
-              <DangerousHTML html={generatedBlogPost} />
+              <DangerousMarkdown
+                content={generatedBlogPost}
+                small={isMobile}
+                isDarkTheme={isDarkTheme}
+              />
             </div>
-            <FooterTrendDetails lastUpDate={upDate} createdBy={createdBy} />
+            {safeOfficialLink && (
+              <div className="official-link-row">
+                <a
+                  className="official-link-btn"
+                  href={safeOfficialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    className="official-link-icon"
+                    src="/assets/trend-link.svg"
+                    alt="Official link"
+                  />
+                  <span className="official-link-text">visit for more</span>
+                </a>
+              </div>
+            )}
+            <FooterTrendDetails
+              lastUpDate={upDate}
+              createdBy={createdBy}
+              blogLastEditedBy={blogLastEditedBy}
+              blogEditedAt={blogEditedAt}
+              />
           </div>
           <aside className="scroll-spy-sidebar-aside">
             <div className="scroll-spy-sidebar">

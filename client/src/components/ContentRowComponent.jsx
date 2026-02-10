@@ -2,41 +2,41 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
+import { TrendBookMark } from './index';
+import { OpenSourceView } from './index';
 
-function ContentRowComponent({ items, handleBookmarkClick, isSaved }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
+function ContentRowComponent({ 
+  items,
+  handleBookmarkClick,
+  openSourceStatus,
+  isSaved,
+  onToggleBookmark,
+  trendId 
+  }) {
+  //const [isHovered, setIsHovered] = useState(false);
+  console.log("items", items);
+  // const handleMouseEnter = () => setIsHovered(true);
+  // const handleMouseLeave = () => setIsHovered(false);
   return (
     <Container>
       <div className="row">
-        <div
+         <TrendBookMark
           className="bookmark-btn"
-          onClick={handleBookmarkClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {/* Filled icon for background */}
-          <BsFillBookmarkFill
-            size="20px"
-            style={{
-              color: isSaved || isHovered ? 'var(--grey-900)' : 'var(--white)',
-              position: 'absolute',
-            }}
+          trendId={trendId}
+          isSaved={isSaved}
+          onToggle={onToggleBookmark}
+          size={21}
+          disabled={!trendId}
+        />
+         <OpenSourceView
+            value={openSourceStatus}
+            size={44}
+            tooltipXOffset={-35}
+            tooltipYOffset={-20}
           />
-          {/* Outline icon on top */}
-          <BsBookmark
-            size="21px"
-            style={{
-              color: isSaved ? 'var(--grey-900)' : 'var(--grey-900)',
-              position: 'absolute',
-            }}
-          />
-        </div>
         <div className="content">
           {items
-            .filter((item) => item.label) // Filter out items with undefined, null, or empty labels
+            .filter((item) => item.label)
             .map((item, index) => (
               <div
                 key={index}
@@ -76,9 +76,10 @@ const Container = styled.div`
   overflow: hidden;
 
   .row {
+    overflow: visible;
     display: flex;
     align-items: center;
-    gap: 1rem; // space between bookmark and content items
+    gap: 0.5rem; // space between bookmark and content items
   }
 
   .bookmark-btn {

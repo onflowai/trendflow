@@ -62,6 +62,7 @@ export default function EditMarkdown({
   );
 }
 
+// The same styled-components from your original code + tiny control styling
 const Outline = styled.div`
   padding: 4px;
   border: 1.5px solid var(--grey-50);
@@ -78,7 +79,7 @@ const Container = styled.div`
     .top-controls {
       display: flex;
       justify-content: flex-end;
-      padding: 8px 8px 0 8px;
+      padding: 8px 8px 0 8px; /*HERE*/
     }
 
     .btn-toggle {
@@ -96,7 +97,7 @@ const Container = styled.div`
     }
 
     .md-editor-content-editor {
-      background-color: red;
+      background-color: red; /* keeping your existing styling, even if it hurts my soul */
       height: 100%;
     }
 

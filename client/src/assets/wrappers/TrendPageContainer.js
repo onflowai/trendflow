@@ -34,7 +34,40 @@ const Container = styled.section`
     padding: 0; // remove outer padding on small screens
     width: 100%; // make container full width
     box-sizing: border-box; // include padding and border in the element's total width
+    }
   }
+  .official-link-row {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0.5rem 1rem 0.25rem 1rem;
+}
+
+.official-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: var(--grey-50);
+  border: 1.5px solid var(--grey-50);
+  color: var(--grey-100);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.official-link-btn:hover {
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.official-link-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.official-link-text {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
   .scroll-spy-sidebar {
@@ -119,6 +152,7 @@ const Container = styled.section`
     word-wrap: break-word; // handle long words or URLs
     overflow: hidden; // prevent content overflow
     box-sizing: border-box; // include padding and border in element's total width
+    padding: 16px;
 
     @media (max-width: 991px) {
       padding: 0 0rem; // add padding for smaller screens

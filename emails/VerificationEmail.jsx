@@ -30,29 +30,36 @@ export const VerificationEmail = ({
           /* Additional inline CSS resets if needed */
         `}</style>
       </Head>
+
       <Preview>Verify your TrendFlow email</Preview>
+
       <Body style={bodyStyle}>
         <Container style={outerContainerStyle}>
+          {/* HEADER */}
           <Section style={headerStyle}>
             <Img
               src="https://cdn.trendflowai.com/emails/logo.png"
               alt="TrendFlow Logo"
               width="30"
-              style={headerLogoStyle}
+              style={headerLogoCenteredStyle}
             />
-            <Text style={headerTextStyle}>trendflow team</Text>
+            <Text style={headerTeamTopStyle}>trendflow team</Text> {/*HERE*/}
           </Section>
+
           <Section style={contentSectionStyle}>
             <Text style={welcomeTextStyle}>
               Welcome to <span style={gradientTextStyle}>TrendFlow!</span>
             </Text>
+
             <Text style={explanationTextStyle}>
               You are receiving this email because a request was made for a
               one-time code that can be used for authentication.
             </Text>
+
             <Section style={codeSectionContainerStyle}>
               <Text style={codeBoxStyle}>{verificationCode}</Text>
             </Section>
+
             <Section style={verifyLinkSectionStyle}>
               <Text style={explanationTextStyle}>
                 You can verify your email using trendflow email verification
@@ -62,11 +69,14 @@ export const VerificationEmail = ({
                 Verify Email
               </Link>
             </Section>
+
             <Text style={footerTextStyle}>
               If you did not request this change, please change your password or
               use the chat in the Atlas user interface to contact us.
             </Text>
           </Section>
+
+          {/* SIGNATURE (left aligned is fine per your note) */}
           <Section style={signatureStyle}>
             <Img
               src="https://cdn.trendflowai.com/emails/logo.png"
@@ -74,7 +84,6 @@ export const VerificationEmail = ({
               width="20"
               style={signatureLogoStyle}
             />
-            <Text style={signatureTextStyle}>trendflow team</Text>
           </Section>
         </Container>
       </Body>
@@ -105,21 +114,25 @@ const outerContainerStyle = {
 };
 
 const headerStyle = {
-  display: 'flex',
-  alignItems: 'center',
   paddingBottom: '10px',
   borderBottom: '1px solid #ddd',
   marginBottom: '20px',
+  textAlign: 'center', // keeps logo + trendflow team centered as a block
 };
 
-const headerLogoStyle = {
-  marginRight: '10px',
-};
-
-const headerTextStyle = {
-  fontSize: '14px',
-  textTransform: 'lowercase',
+const headerTeamTopStyle = {
+  fontSize: '12px',
+  fontWeight: '800',
+  letterSpacing: '0.7px',
+  textTransform: 'uppercase',
   color: '#333',
+  margin: '9px 0px 0px 0px',
+  lineHeight: '1',
+};
+
+const headerLogoCenteredStyle = {
+  display: 'block',
+  margin: '0 auto', //center logo
 };
 
 const contentSectionStyle = {
@@ -133,9 +146,12 @@ const welcomeTextStyle = {
 };
 
 const gradientTextStyle = {
-  background: 'linear-gradient(90deg, #ff7e5f, #feb47b)',
+  background: 'linear-gradient(90deg, #352fdc, #da9669)',//fixed
   WebkitBackgroundClip: 'text',
+  backgroundClip: 'text',
+  color: 'transparent',
   WebkitTextFillColor: 'transparent',
+  fontWeight: '800',
 };
 
 const explanationTextStyle = {
@@ -191,14 +207,20 @@ const signatureStyle = {
   borderTop: '1px solid #ddd',
   paddingTop: '10px',
   marginTop: '20px',
+  justifyContent: 'flex-start',
 };
 
 const signatureLogoStyle = {
   marginRight: '8px',
+  display: 'block',
 };
 
 const signatureTextStyle = {
   fontSize: '12px',
+  fontWeight: '700',
+  letterSpacing: '0.5px',
+  textTransform: 'uppercase',
   color: '#555',
-  textTransform: 'lowercase',
+  margin: 0,
+  lineHeight: '1',
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   LoadingBar,
   ScrollToTop,
@@ -8,10 +8,13 @@ import {
   CustomErrorToast,
   CustomSuccessToast,
   ScrollSpyComponent,
-  ContentBoxHighlighted,
   EditTrendComponent,
+  TrendOfficialLinkEditor,
 } from '../components';
+import EditMarkdown from '../components/EditMarkdown.client';
+import EditMarkdownSmall from '../components/EditMarkdownSmall.client';
 import { EDIT_PAGE_USE, EDIT_PAGE_POST } from '../utils/constants.js';
+import { normalizeUrlForSend } from '../utils/urlHelper';
 import Container from '../assets/wrappers/EditTrendContainer';
 // import Container from '../assets/wrappers/TrendPageContainer';
 import {
@@ -20,6 +23,7 @@ import {
   useLoaderData,
   useNavigate,
   useRevalidator,
+  useNavigation,
 } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
@@ -39,7 +43,15 @@ export const loader = async ({ params }) => {
       return redirect('/dashboard');
     }
     const trendResponse = await customFetch.get(`/trends/edit/${params.slug}`);
-    return { user: data.user, trendObject: trendResponse.data.trendObject };
+    const trendObject = trendResponse.data.trendObject;
+    try {
+      if (!trendObject?.isSubmittedForApproval) {
+        await customFetch.patch(`/trends/${params.slug}/submit-for-approval`);
+      }// only call if not already submitted
+    } catch (err) {
+      console.warn('submit-for-approval failed (non-blocking):', err);// swallow errors so page still loads
+    }// VISIT REVIEW APPROVAL: flips flag on visit (admin only) - DO NOT block page if this fails 
+    return { user: data.user, trendObject };// returning trend data to page
   } catch (error) {
     console.error('Loader error:', error);
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -79,8 +91,10 @@ export const action = async ({ request, params }) => {
 const EditTrend = () => {
   const { trendObject } = useLoaderData();
   const navigate = useNavigate();
-  const navigation = useLoaderData();
+  //const navigation = useLoaderData();
+  const navigation = useNavigation(); 
   const { revalidate } = useRevalidator();
+
   const isSubmitting = navigation.state === 'submitting';
   const [svgFile, setSvgFile] = useState(null);
   const [svgUrl, setSvgUrl] = useState(trendObject.svg_url || '');
@@ -98,6 +112,24 @@ const EditTrend = () => {
   );
   const [trendCategoryList, setTrendCategoryList] = useState([]);
   const [trendTechList, setTrendTechList] = useState([]);
+
+  const [generatedBlogPost, setGeneratedBlogPost] = useState(trendObject.generatedBlogPost || '');// blog edit fields
+  const [trendUse, setTrendUse] = useState(trendObject.trendUse || '');// trend use edit fields
+  const [trendOfficialLink, setTrendOfficialLink] = useState(trendObject.trendOfficialLink || '');// link edit fields
+
+  const [isSavingUse, setIsSavingUse] = useState(false);// per-section loading state
+  const [isSavingBlog, setIsSavingBlog] = useState(false);// per-section loading state
+  const [isSavingLink, setIsSavingLink] = useState(false);// per-section loading state
+
+  const initial = useMemo(() => ({
+      generatedBlogPost: trendObject.generatedBlogPost || '',
+      trendUse: trendObject.trendUse || '',
+      trendOfficialLink: trendObject.trendOfficialLink || '',
+    }), [trendObject.generatedBlogPost, trendObject.trendUse, trendObject.trendOfficialLink]);
+
+  const isUseDirty = trendUse !== initial.trendUse;
+  const isBlogDirty = generatedBlogPost !== initial.generatedBlogPost;
+  const isLinkDirty = trendOfficialLink !== initial.trendOfficialLink;
 
   useEffect(() => {
     const fetchIconData = async () => {
@@ -242,6 +274,60 @@ const EditTrend = () => {
       manualApproveTrend(selectedSlug, data);
     }
   };
+
+  const patchTrendBlogFields = async (partial) => {
+    // Only send what you’re updating
+    return customFetch.patch(`/trends/${trendObject.slug}/update-trend-blog`, partial);
+  };
+
+  const handleUpdateTrendUse = async () => {
+    try {
+      setIsSavingUse(true);
+      await patchTrendBlogFields({ trendUse });
+      toast.success(<CustomSuccessToast message="trendUse updated" />);
+      revalidate();
+    } catch (error) {
+      toast.error(
+        <CustomErrorToast message={error?.response?.data?.msg || 'Error updating trendUse'} />
+      );
+    } finally {
+      setIsSavingUse(false);
+    }
+  };
+
+  const handleUpdateGeneratedBlogPost = async () => {
+    try {
+      setIsSavingBlog(true);
+      await patchTrendBlogFields({ generatedBlogPost });
+      toast.success(<CustomSuccessToast message="Blog post updated" />);
+      revalidate();
+    } catch (error) {
+      toast.error(
+        <CustomErrorToast message={error?.response?.data?.msg || 'Error updating blog post'} />
+      );
+    } finally {
+      setIsSavingBlog(false);
+    }
+  };
+
+  const handleUpdateTrendOfficialLink = async () => {
+    try {
+      setIsSavingLink(true);
+
+      // Normalize only if user omitted scheme; server validates anyway
+      const normalized = normalizeUrlForSend(trendOfficialLink);
+      await patchTrendBlogFields({ trendOfficialLink: normalized });
+      toast.success(<CustomSuccessToast message="Official link updated" />);
+      revalidate();
+    } catch (error) {
+      toast.error(
+        <CustomErrorToast message={error?.response?.data?.msg || 'Error updating official link'} />
+      );
+    } finally {
+      setIsSavingLink(false);
+    }
+  };
+
   console.log('trendObject in EditTrend', trendObject);
   return (
     <Container>
@@ -272,11 +358,54 @@ const EditTrend = () => {
                 setOpenSourceStatus={setOpenSourceStatus}
               />
               <div className="trend-use-container">
-                <ContentBoxHighlighted trendUse={EDIT_PAGE_USE} />
+                <EditMarkdownSmall
+                  initialContent={trendUse}
+                  onContentChange={(v) => setTrendUse(v)}
+                  previewOpen={false}
+                  height="220px"
+                />
+              </div>
+              <div className="section-header">
+                <div className="update-button">
+                  <button
+                    type="button"
+                    className="btn info-btn"
+                    onClick={handleUpdateTrendUse}
+                    disabled={!isUseDirty || isSavingUse}
+                    title={!isUseDirty ? 'No changes to save' : 'Update trendUse'}
+                  >
+                    {isSavingUse ? 'updating…' : 'Update trendUse'}
+                  </button>
+                </div>
               </div>
               <div className="trend-blog-post">
-                <DangerousHTML html={EDIT_PAGE_POST} />
+                <EditMarkdown
+                  initialContent={generatedBlogPost}
+                  onContentChange={(v) => setGeneratedBlogPost(v)}
+                  previewOpen={false}
+                  height="700px"
+                />
               </div>
+              <div className="section-header">
+                <div className="update-button">
+                  <button
+                  type="button"
+                  className="btn info-btn"
+                  onClick={handleUpdateGeneratedBlogPost}
+                  disabled={!isBlogDirty || isSavingBlog}
+                  title={!isBlogDirty ? 'No changes to save' : 'Update blog'}
+                >
+                  {isSavingBlog ? 'updating…' : 'Update blog'}
+                </button>
+                </div>
+              </div>
+              <TrendOfficialLinkEditor
+                value={trendOfficialLink}
+                onChange={setTrendOfficialLink}
+                onUpdate={handleUpdateTrendOfficialLink}
+                isUpdating={isSavingLink}
+                iconUrl="/assets/trend-link.svg"
+              />
               <div id="Delete"></div>
             </div>
             <div className="form-actions">
