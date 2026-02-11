@@ -31,7 +31,7 @@ export const authenticateUser = async (req, res, next) => {
       req.user = { role: 'guestUser' };
       return next();
     }
-    const guestUser = await UserModel.findById(guestUserID); //existing
+    const guestUser = await UserModel.findById(guestUserID);
     if (
       guestUser &&
       guestUser.role === 'guestUser' &&
@@ -49,12 +49,19 @@ export const authenticateUser = async (req, res, next) => {
   }
   try {
     const decoded = verifyJWT(token);
+    const dbUser = await UserModel.findById(decoded.userID).select('tokenVersion role expiresAt');
+    if (!dbUser) throw new UnauthenticatedError('Authentication invalid');
+    const dbTokenVersion = Number(dbUser.tokenVersion ?? 0);
+    const jwtTokenVersion = Number(decoded.tokenVersion ?? 0);
+    if (dbTokenVersion !== jwtTokenVersion) {
+      throw new UnauthenticatedError('Session expired');
+    }
     req.user = { userID: decoded.userID, role: decoded.role };
     next();
   } catch (error) {
     console.log('Authentication error:', error.message);
     throw new UnauthenticatedError('Authentication invalid');
-  }
+  }//revocation mechanism land where old tokens Die Hard and tokenVersion increments
 }; //end authenticateUser
 
 /**
@@ -85,5 +92,16 @@ export const authorizedAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     throw new UnauthorizedError('Unauthorized Access');
   }
+  next();
+};
+
+/**
+ * REQUIRE AUTH USER ID - blocks the no token but role=guestUser path
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const requireAuthUserID = (req, res, next) => {
+  if (!req.user || !req.user.userID) throw new UnauthenticatedError('Authentication required');
   next();
 };

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import UserModel from '../models/userModel.js';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
@@ -117,7 +118,7 @@ export const login = async (req, res) => {
   ); //async function which takes the password entered by the user and the password from database to compare them
   if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials'); //if password does not match then:
   const expiresIn = process.env.JWT_EXPIRES_IN;
-  const token = createJWT({ userID: user._id, role: user.role }, expiresIn); //encoding user id user role into the token + iat and exp generated
+  const token = createJWT({ userID: user._id, role: user.role, tokenVersion: user.tokenVersion }, expiresIn); //encoding user id user role into the token + iat and exp generated
   const oneDay = 86400000; //one day in milliseconds
   //res.json({ token }); //seeing the token
   //cookie named token, httpOnly cookie cannot be accessed by javascript
@@ -138,11 +139,20 @@ export const login = async (req, res) => {
  * @param {*} res
  * @returns
  */
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
+  if (req.user?.userID) {
+    await UserModel.updateOne(
+      { _id: req.user.userID },
+      { $inc: { tokenVersion: 1 } }
+    );
+  }
   res.cookie('token', 'logout', {
     httpOnly: true,
-    expires: new Date(Date.now()), //users token expires right away upon logout
+    expires: new Date(Date.now()),//users token expires right away upon logout
+    secure: process.env.NODE_ENV === 'production', //HERE
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
   });
+
   res.status(StatusCodes.OK).json({ msg: 'user logged out' });
 }; //end logout
 
@@ -173,7 +183,7 @@ export const guestLogin = async (req, res) => {
 
     const expiresIn = process.env.JWT_GUEST_EXPIRES_IN;
     const token = createJWT(
-      { userID: guestUser._id, role: guestUser.role },
+      { userID: guestUser._id, role: guestUser.role, tokenVersion: guestUser.tokenVersion },
       expiresIn
     ); // JWT token for the guest user
 
@@ -228,6 +238,7 @@ export const guestCreateSession = async (req, res) => {
     lastName,
     role: 'guestUser',
     password: passwordHashed,
+    tokenVersion: 0,
     expiresAt, // setting expiration date
   }); // creating new guest user
   await guestUser.save(); // saving the guest user to the database
@@ -243,17 +254,27 @@ export const guestCreateSession = async (req, res) => {
  */
 export const upgradeAccount = async (req, res) => {
   const { password, name, email } = req.body;
+
   if (!password || !name || !email) {
     throw new BadRequestError('Please provide all required fields.');
   }
+
+  const normalizedEmail = String(email).trim().toLowerCase(); //HERE
+  const normalizedName = String(name).trim(); //HERE
+
   try {
+    if (!req.user?.userID) throw new UnauthenticatedError('Authentication required.'); //HERE
+
     const user = await UserModel.findById(req.user.userID);
-    if (!user) {
-      throw new UnauthenticatedError('User not found.');
-    }
+    if (!user) throw new UnauthenticatedError('User not found.');
+
     if (user.role !== 'guestUser') {
       throw new BadRequestError('Account is already a regular user.');
     }
+
+    const existingEmail = await UserModel.findOne({ email: normalizedEmail, _id: { $ne: user._id } }); //HERE
+    if (existingEmail) throw new BadRequestError('Email is already in use.');
+
     user.password = await hashPassword(password); // updating user details
     user.name = name; // updating user details
     user.email = email; // updating user details
@@ -264,24 +285,26 @@ export const upgradeAccount = async (req, res) => {
     //const JWT_EXPIRES_IN = process.env.JWT_SECRET;
     const expiresIn = process.env.JWT_EXPIRES_IN;
     const token = createJWT(
-      { userID: user._id, role: user.role },
+      { userID: user._id, role: user.role, tokenVersion: user.tokenVersion },
       expiresIn
     ); // 1 day
     const oneDay = 86400000; // One day in milliseconds
 
-    res.cookie('token', token, {
+    const cookieOptions = {
       httpOnly: true,
-      expires: new Date(Date.now() + oneDay),
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    };
+
+    res.cookie('token', token, {
+      ...cookieOptions,
+      expires: new Date(Date.now() + oneDay),
     });
 
     res.cookie('guestUserID', '', {
-      httpOnly: true,
-      expires: new Date(Date.now()), // Expire immediately
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-    }); //removing the guestUserID for new user creation
+      ...cookieOptions,
+      expires: new Date(0),// hard-expire
+    });//removing the guestUserID for new user creation
 
     res.status(StatusCodes.OK).json({ msg: 'Account upgraded successfully.' });
   } catch (error) {
