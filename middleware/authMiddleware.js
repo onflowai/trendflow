@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import {
   UnauthenticatedError,
   UnauthorizedError,
@@ -25,13 +26,16 @@ const rolePermissions = {
  */
 export const authenticateUser = async (req, res, next) => {
   const { token, guestUserID } = req.cookies;
-
   if (!token && guestUserID) {
-    const guestUser = await UserModel.findById(guestUserID);
-
+    if (!mongoose.isValidObjectId(guestUserID)) {
+      req.user = { role: 'guestUser' };
+      return next();
+    }
+    const guestUser = await UserModel.findById(guestUserID); //existing
     if (
       guestUser &&
       guestUser.role === 'guestUser' &&
+      guestUser.expiresAt &&
       new Date() < guestUser.expiresAt
     ) {
       req.user = { userID: guestUser._id, role: guestUser.role };
@@ -39,7 +43,7 @@ export const authenticateUser = async (req, res, next) => {
     }
   }
   if (!token) {
-    req.user = { role: 'guestUser' }; // Keep it simple; permissions will be derived from the role
+    req.user = { role: 'guestUser' };// keeping it simple the permissions will be derived from the role
     console.log('No token and no valid guestUserID.');
     return next();
   }

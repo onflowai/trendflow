@@ -1,4 +1,6 @@
 import UserModel from '../models/userModel.js';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import { StatusCodes } from 'http-status-codes';
 import visitModel from '../models/visitModel.js';
 import { createJWT } from '../utils/tokenUtils.js';
@@ -39,15 +41,18 @@ export const register = async (req, res, next) => {
         existingUser.verificationExpires = verificationExpires;
         existingUser.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await existingUser.save();
-        await sendVerificationEmail({
-          email: existingUser.email,
-          verificationCode,
-          verificationToken,
-        }); // unverified user re-generate code re-send email
-
-        return res.status(StatusCodes.OK).json({
-          msg: 'A verification email was re-sent. Please check your inbox.',
-        });
+        try {
+          await sendVerificationEmail({
+            email: existingUser.email,
+            verificationCode,
+            verificationToken,
+          });// unverified user re-generate code re-send email
+        } catch (err) {
+          console.error(
+            'Verification email failed:',
+            err?.code || err?.message
+          );//letting registration succeed
+        }
       }
     }
     const numberOfAccounts = await UserModel.countDocuments(); //if user does not exist create
@@ -73,13 +78,20 @@ export const register = async (req, res, next) => {
     }; // create the user object
 
     const newUser = await UserModel.create(userData);
-
-    await sendVerificationEmail({
-      email: newUser.email,
-      verificationCode,
-      verificationToken,
-    });
-
+    
+    try {
+      await sendVerificationEmail({
+        email: newUser.email,
+        verificationCode,
+        verificationToken,
+      });
+    } catch (err) {
+      console.error(
+        'Verification email failed:',
+        err?.code || err?.message
+      );
+      //let registration succeed
+    }
     res.status(StatusCodes.CREATED).json({
       msg: 'User created. Please check your email to verify your account.',
     });
@@ -98,6 +110,7 @@ export const register = async (req, res, next) => {
 export const login = async (req, res) => {
   const user = await UserModel.findOne({ email: req.body.email }).select('+password');//find the users email if it exists store it in user
   if (!user) throw new UnauthenticatedError('invalid credentials'); //if user not found throw custom error
+  if (!user.password) throw new UnauthenticatedError('invalid credentials'); //guestUser or corrupted record then no password hard fail
   const isPasswordCorrect = await authenticatePassword(
     req.body.password,
     user.password
@@ -146,10 +159,10 @@ export const guestLogin = async (req, res) => {
 
     const { guestUserID } = req.cookies; // check if the guestUserID cookie exists
 
-    if (guestUserID) {
+    if (guestUserID && mongoose.isValidObjectId(guestUserID)) {
       guestUser = await UserModel.findById(guestUserID); // attempt to find the existing guest user
 
-      if (guestUser && new Date() < guestUser.expiresAt) {
+      if (guestUser && guestUser.expiresAt && new Date() < guestUser.expiresAt) {
         console.log('Reusing existing guestUser.');
       } else {
         guestUser = await guestCreateSession(); // if guestUser doesn't exist or has expired, create a new one
@@ -172,7 +185,7 @@ export const guestLogin = async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 'None' requires secure to be true
     }); // setting HTTP Only cookie with the token
 
-    res.cookie('guestUserID', guestUser._id, {
+    res.cookie('guestUserID', String(guestUser._id), {
       httpOnly: true,
       expires: new Date(Date.now() + oneDay),
       secure: process.env.NODE_ENV === 'production',
@@ -181,6 +194,7 @@ export const guestLogin = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ msg: 'Guest user logged in' });
   } catch (error) {
+    console.error('guestLogin error:', error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: 'Failed to create guest user',
       error: error.message,
@@ -196,12 +210,15 @@ export const guestLogin = async (req, res) => {
  * @returns
  */
 export const guestCreateSession = async (req, res) => {
-  const randomStr = Math.random().toString(36).substring(2, 5); //generate base36 to include letters and numbers
-  const uniqueUsername = `guest_${randomStr}`; // example: guest_3df
+  const randomStr = crypto.randomBytes(4).toString('hex').slice(0, 4); //generate base36 to include letters and numbers
+  const uniqueUsername = `guest_${randomStr}`; // example: guest_3df3e
   const uniqueEmail = `guest_${randomStr}@trendflow.com`; // example: guest_3df@trendflow.com
 
   const name = 'Guest';
   const lastName = 'User';
+
+  const passwordPlain = crypto.randomBytes(24).toString('hex');
+  const passwordHashed = await bcrypt.hash(passwordPlain, 12);
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration of guest user
   const guestUser = new UserModel({
@@ -210,6 +227,7 @@ export const guestCreateSession = async (req, res) => {
     name,
     lastName,
     role: 'guestUser',
+    password: passwordHashed,
     expiresAt, // setting expiration date
   }); // creating new guest user
   await guestUser.save(); // saving the guest user to the database
