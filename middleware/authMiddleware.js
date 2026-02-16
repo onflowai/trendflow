@@ -96,6 +96,18 @@ export const authorizedAdmin = (req, res, next) => {
 };
 
 /**
+ * S-ADMIN middleware (adds deletion ability for admin)
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const authorizedSuperAdmin = (req, res, next) => {
+  if (!req.user) throw new UnauthenticatedError('Authentication invalid'); //HERE
+  if (req.user.role !== 'superAdmin') throw new UnauthorizedError('Not authorized'); //HERE
+  next();
+};
+
+/**
  * REQUIRE AUTH USER ID - blocks the no token but role=guestUser path
  * @param {*} req 
  * @param {*} res 

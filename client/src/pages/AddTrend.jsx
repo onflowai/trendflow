@@ -3,6 +3,7 @@ import {
   UserImgLarge,
   SEOProtected,
   TrendBookMark,
+  CustomInfoToast,
   CustomErrorToast,
   FormSelectorIcon,
   DangerousMarkdown,
@@ -56,7 +57,14 @@ const AddTrend = () => {
   const submitSpinnerTimerRef = useRef(null);
   const { isDarkTheme } = useDashboardContext();
   const actionData = useActionData();
-  const isAdmin = user?.role === 'admin';
+
+  const role = user?.role;
+  const isAdmin = role === 'admin';
+
+  const [trendValue, setTrendValue] = useState('');
+  const [existsState, setExistsState] = useState({ exists: false, trend: null });
+  const debounceRef = useRef(null);
+  const lastToastIdRef = useRef(null);
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
@@ -87,6 +95,59 @@ const AddTrend = () => {
 
   const { isMobile } = useWindowSize();
   const showFallback = isSubmitting || !trendObject; 
+
+
+  useEffect(() => {
+    const v = String(trendValue ?? '').trim();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (v.length < 2) {
+      setExistsState({ exists: false, trend: null });
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        console.log('[exists-check] calling exists for:', v);
+        const { data } = await customFetch.get(
+          `/trends/exists?q=${encodeURIComponent(v)}`
+        );
+        if (!data?.exists) {
+          setExistsState({ exists: false, trend: null });
+          return;
+        }
+        setExistsState({ exists: true, trend: data.trend });
+        const canLink = isAdmin || data?.trend?.isApproved;
+        const slug = data?.trend?.slug;
+        const toastBody = (
+          <CustomInfoToast
+            trendName={data?.trend?.trend || v}
+            to={canLink && slug ? `/dashboard/trend/${slug}` : null}
+            linkText="Visit"
+            onClick={() => toast.dismiss(lastToastIdRef.current)}
+            isDarkTheme={isDarkTheme}
+          />
+        );
+        toast.dismiss(lastToastIdRef.current);
+        lastToastIdRef.current = toast.info(toastBody, {
+          autoClose: false,//keeping toast on screen
+          closeOnClick: false,
+        });
+      } catch (err) {
+        console.error('[exists-check] failed:', err?.message);
+      }
+    }, 350);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [trendValue, isAdmin]);//end /exists debounce search
+
+  const handleSubmitBlock = (e) => {
+    if (existsState.exists) {
+      e.preventDefault();
+      toast.error(
+        <CustomErrorToast message={'That project already exists. Pick a different name.'} />
+      );
+    }
+  }; 
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -403,7 +464,7 @@ const AddTrend = () => {
       </div>
       <div className="submit-container">
         <div>
-          <Form method="post" className="form">
+          <Form method="post" className="form" onSubmit={handleSubmitBlock}>
             <h4 className="form-title">Submit A Project:</h4>
             <div className="form-center">
               {/* <LogoCarousel /> */}
@@ -411,7 +472,8 @@ const AddTrend = () => {
                 type="text"
                 name="trend"
                 placeholder="Any tech on your mind?"
-                className="form-input"
+                value={trendValue}
+                onChange={(e) => setTrendValue(e.target.value)}
               />
               {/* CATEGORY SELECTOR */}
               <FormSelectorIcon

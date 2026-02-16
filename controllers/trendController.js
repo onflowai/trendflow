@@ -32,15 +32,8 @@ import {
  * Automatic Error Handling: the import 'express-async-errors'; in server.js allows
  * no need of set up custom try/catch blocks in the controllers, uncaught errors are
  * automatically forwarded to the error handler.
- * @param {*} req
- * @param {*} res
- * @returns
  */
-//test data for local storage set as 'let' for modification
-// let trends = [
-//   { id: nanoid(), trend: 'chatgpt', category: 'language model' },
-//   { id: nanoid(), trend: 'react', category: 'javascript framework' },
-// ];
+
 
 /**
  * SUBMIT TREND - creates draft trend and saves it immediately to mongo (not in admin queue yet)
@@ -135,6 +128,35 @@ export const submitTrend = async (req, res) => {
     trendObject: draftTrend, // return full draft trend to client
   });
 }; //end SUBMIT
+
+
+/**
+ * TREND EXISTS (role-aware) debounce search of trends used in AddTrend.jsx if admin: can match 
+ * ANY trend (approved or not) if user: only matches approved trends Returns match info + slug + 
+ * isApproved so UI can decide link visibility
+ */
+export const trendExists = async (req, res) => {
+  let { q } = req.query;
+  q = sanitizeHTML(String(q || '')).trim();
+  if (!q) throw new BadRequestError('Query is required');
+
+  const escapeRegex = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const isAdmin = req.user?.role === 'admin';
+  const filter = {
+    trend: { $regex: `^${escapeRegex(q)}$`, $options: 'i' }, //exacting match case-insensitive
+    ...(isAdmin ? {} : { isApproved: true }),//prevent leaking unapproved
+  };
+  const match = await trendModel
+    .findOne(filter)
+    .select('trend slug isApproved');
+
+  return res.status(StatusCodes.OK).json({
+    exists: !!match,
+    trend: match
+      ? { trend: match.trend, slug: match.slug, isApproved: !!match.isApproved }
+      : null,
+  });
+};//end trendExists
 
 /**
  * SUBMIT TREND FOR APPROVAL (Admin only) - only submits the trend as is no updating / editing timestamped automatically via

@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import {
   editTrend,
+  trendExists,
   submitTrend,
   createTrend,
   deleteTrend,
@@ -30,6 +31,7 @@ import {
   authenticateUser,
   authorizedPermissions,
   authorizedAdmin,
+  authorizedSuperAdmin
 } from '../middleware/authMiddleware.js';
 import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 import { uploadMulter, processSVG } from '../middleware/imageMiddleware.js';
@@ -61,6 +63,7 @@ router
     validateTrendInput,
     submitTrend
   );
+router.get('/exists', authenticateUser, trendExists);
 router.patch(
   '/:slug/submit-for-approval',
   authenticateUser,
@@ -102,15 +105,14 @@ router
   .patch(
     authenticateUser,
     authorizedAdmin,
-    authorizedPermissions('delete'),
+    authorizedPermissions('trend:edit'),
     validateTrendInput,
     validateSlugParam,
     editTrend
   )
   .delete(
     authenticateUser,
-    authorizedAdmin,
-    authorizedPermissions('delete'),
+    authorizedSuperAdmin,
     validateSlugParam,
     deleteTrend
   );
