@@ -1,12 +1,12 @@
 import axios from 'axios';
 
+/**
+ * getBlacklist is used in validationMiddleware specifically in validateTrendInput & validateRegisterInput to validate that the user
+ * does not use profanity. getBlacklist also used in profGuard which is ued to scan markdown for profanity.
+ */
 let cachedBlacklist = [];
 let isFetching = false;
 let initialized = false;
-
-/**
- * fetches the blacklist from the URL, processes it, and caches it
- */
 
 const fetchAndCacheBlacklist = async () => {
   if (isFetching) {

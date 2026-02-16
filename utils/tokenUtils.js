@@ -7,7 +7,8 @@ export const createJWT = (payload, expiresIn) => {
   if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined');
   }
-  return jwt.sign(payload, JWT_SECRET, { expiresIn }); //creating the token with payload where we pass user id + role (user id can provide everything)
+  const jti = crypto.randomUUID();//jti for tokenVersion revocation for future deny-lists / auditing
+  return jwt.sign({ ...payload, jti }, JWT_SECRET, { expiresIn }) //creating the token with payload where we pass user id + role (user id can provide everything)
   //return token; //the return of the function which will be encoded
 };
 
