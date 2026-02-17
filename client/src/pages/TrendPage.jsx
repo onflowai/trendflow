@@ -5,6 +5,7 @@ import {
   SEOProtected,
   TrendBookMark,
   IconTechnology,
+  BrowserWebSpeech,
   CustomErrorToast,
   DangerousMarkdown,
   FooterTrendDetails,
@@ -208,8 +209,6 @@ const TrendPage = () => {
 ];
 
   const safeOfficialLink = normalizeUrlForOpen(trendOfficialLink);
-  console.log("cateIconUrl", cateIconUrl);
-  console.log("getFullIconUrl(cateIconUrl)", getFullIconUrl(cateIconUrl))
 
   return (
     <Container key={pageKey}>
@@ -244,6 +243,7 @@ const TrendPage = () => {
               </div>
             </div>
             <div className="trend-blog-post">
+              <BrowserWebSpeech text={generatedBlogPost} label="Listen to blog" />
               <DangerousMarkdown
                 content={generatedBlogPost}
                 small={isMobile}
