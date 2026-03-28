@@ -14,7 +14,6 @@ function ContentRowComponent({
   trendId 
   }) {
   //const [isHovered, setIsHovered] = useState(false);
-  console.log("items", items);
   // const handleMouseEnter = () => setIsHovered(true);
   // const handleMouseLeave = () => setIsHovered(false);
   return (
@@ -30,7 +29,7 @@ function ContentRowComponent({
         />
          <OpenSourceView
             value={openSourceStatus}
-            size={44}
+            size={39}
             tooltipXOffset={-35}
             tooltipYOffset={-20}
           />
