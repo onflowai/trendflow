@@ -4,7 +4,7 @@ import {
   AreaChart,
   Area,
   XAxis,
-  YAxis,
+  YAxis, 
   Tooltip,
   Text,
 } from 'recharts';
@@ -16,8 +16,8 @@ function CustomizedAxisTick(props) {
     <g transform={`translate(${x},${y})`}>
       <Text
         x={0}
-        y={0} // Adjust if you are customizing further
-        dy={16} // Adjust based on your needs for vertical positioning
+        y={0} //adjust if you are customizing further
+        dy={16} //adjust based on your needs for vertical positioning
         textAnchor="middle"
         fill="#b3b3b3"
         transform="rotate(0)"
@@ -53,7 +53,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 function FallbackChart() {
   const data = Array.from({ length: 12 }, (_, i) => ({
     date: `Month ${i + 1}`,
-    count: Math.floor(Math.random() * (80 - 40 + 1)) + 40, // Generates a random count between 0 and 99 (between 25 and 80)
+    count: Math.floor(Math.random() * (80 - 40 + 1)) + 40, //generates a random count between 0 and 99 (between 25 and 80)
   }));
   return (
     <Container>
@@ -73,14 +73,14 @@ function FallbackChart() {
             axisLine={{ stroke: '#c3c3c3' }}
             dataKey="date"
             height={60}
-            tick={<CustomizedAxisTick />} // Reintroduced X-axis ticks
+            tick={<CustomizedAxisTick />} //reintroduced xaxis ticks
             stroke="#cccccc"
             tickFormatter={(value) => `${value} units`}
           />
           <YAxis
             axisLine={false}
             allowDecimals={false}
-            tick={false} // Keeps Y-axis ticks hidden
+            tick={false} //keeps y-axis ticks hidden
           />
           <Area
             style={{ cursor: 'pointer' }}
