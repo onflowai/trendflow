@@ -22,8 +22,6 @@ function FooterTrendDetails({ lastUpDate, createdBy, blogLastEditedBy, blogEdite
     blogLastEditedBy?._id &&
     createdBy?._id &&
     String(blogLastEditedBy._id) === String(createdBy._id);
-  console.log(createdBy);
-  console.log(blogLastEditedBy);
   const hasBlogEditDate = !!blogEditedAt;
   const blogDate = hasBlogEditDate ? day(blogEditedAt).format('MM YYYY') : null;
   const displayedDate = blogDate || lastUpDate;
