@@ -5,8 +5,8 @@ import Container from '../assets/wrappers/FormSelectorContainer';
 
 const getFallbackByName = (dropdownName) => {
   if (dropdownName === 'trendCategory') return '/assets/cat/fallback-cat.svg';
-  if (dropdownName === 'trendTech') return '/assets/cat/fallback-tech.svg';
-  return '/assets/cat/fallback-tech.svg';
+  if (dropdownName === 'trendTech') return '/assets/fallback-tech.svg';
+  return '/assets/fallback-tech.svg';
 };
 
 const CustomOption = (props) => {
