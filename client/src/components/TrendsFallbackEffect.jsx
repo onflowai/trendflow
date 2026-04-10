@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * TrendsFallbackEffect Carousel displays random project icons in a spin mode active = true or
@@ -8,6 +9,7 @@ import styled, { keyframes } from 'styled-components';
  * resize safe recompute sizing + snap current frame cleanly visibilitychange safety resumes when tab/app comes back
  */
 const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 }) => {
+  const { isDarkTheme } = useTheme();
   const icons = useMemo(() => {
     const modules = import.meta.glob('../assets/images/icons/*.svg', {
       eager: true,
@@ -119,16 +121,16 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
       applyFrame(false);
       if (t >= 1) beginRest();
     } else if (a.phase === 'rest') {
-      applyFrame(false);// keep frame applied (cheap)
+      applyFrame(false);//keep frame applied (cheap)
       const t = now - a.phaseStartTs;
       if (t >= a.restDurationMs) {
         beginSpin();
       }
     } else {
-      // idle: do nothing
+      //idle: do nothing
     }
     rafRef.current = requestAnimationFrame(tick);
-  }; // main RAF loop single source of truth
+  }; //main RAF loop single source of truth
 
   const stop = () => {
     const a = animRef.current;
@@ -170,7 +172,7 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
     document.addEventListener('visibilitychange', onVis);
     return () => document.removeEventListener('visibilitychange', onVis);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, icons.length, metrics.w]);// resume safety for mobile/tab throttling
+  }, [active, icons.length, metrics.w]);//resume safety for mobile/tab throttling
 
   const applyFrame = (force = false) => {
     const a = animRef.current;
@@ -193,7 +195,7 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
       const distN = clamp01(Math.abs(itemCenter - a.centerPx) / halfW);
 
       const scale = lerp(centerScale, edgeScale, Math.pow(distN, 0.85));
-      const alpha = lerp(0.55, 0.95, distN);// make center MORE visible your previous math inverted it
+      const alpha = lerp(0.55, 0.95, distN);//make center MORE visible your previous math inverted it
 
       el.style.opacity = `${alpha}`;
       el.style.transform = `translate3d(${baseX}px, -50%, 0) scale(${scale})`;
@@ -254,9 +256,9 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
 
   return (
     <Shell aria-label="Loading effect">
-      <Blob className="blob blob-1" />
-      <Blob className="blob blob-2" />
-      <Blob className="blob blob-3" />
+    <Blob $isDarkTheme={isDarkTheme} className="blob blob-1" /> {/*HERE*/}
+    <Blob $isDarkTheme={isDarkTheme} className="blob blob-2" /> {/*HERE*/}
+    <Blob $isDarkTheme={isDarkTheme} className="blob blob-3" /> {/*HERE*/}
 
       <Vignette />
 
@@ -340,15 +342,17 @@ const Blob = styled.div`
   left: -25%;
   top: -25%;
 
-  background:
-    radial-gradient(50% 50% at 20% 30%, rgba(70, 65, 222, 0.183) 0%, rgba(53,47,220,0.00) 72%),
-    radial-gradient(50% 50% at 55% 80%, rgba(90, 47, 199, 0.34) 0%, rgba(255,209,25,0.00) 70%),
-    radial-gradient(50% 50% at 85% 72%, rgba(207,125,71,0.14) 0%, rgba(207,125,71,0.00) 78%),
-    radial-gradient(50% 50% at 40% 10%, rgba(112, 150, 255, 0.396) 0%, rgba(255,209,25,0.00) 74%),
-    radial-gradient(50% 50% at 40% 10%, rgba(40, 69, 125, 0.257) 0%, rgba(255,209,25,0.00) 74%);
+    background: ${(p) =>
+    p.$isDarkTheme
+      ? `radial-gradient(50% 50% at 20% 30%, rgba(70, 65, 222, 0.183) 0%, rgba(53,47,220,0.00) 72%),
+         radial-gradient(50% 50% at 55% 80%, rgba(90, 47, 199, 0.34) 0%, rgba(255,209,25,0.00) 70%),
+         radial-gradient(50% 50% at 85% 72%, rgba(207,125,71,0.14) 0%, rgba(207,125,71,0.00) 78%),
+         radial-gradient(50% 50% at 40% 10%, rgba(112, 150, 255, 0.396) 0%, rgba(255,209,25,0.00) 74%),
+         radial-gradient(50% 50% at 40% 10%, rgba(40, 69, 125, 0.257) 0%, rgba(255,209,25,0.00) 74%)`
+      : 'transparent'};
 
-  filter: blur(60px);
-  opacity: 0.82;
+  //filter: blur(60px);
+  //opacity: 0.82;
   mix-blend-mode: screen;
 
   &.blob-1 {
@@ -421,6 +425,4 @@ const CenterMask = styled.div`
   pointer-events: none;
   z-index: 4;
 
-  background:
-    radial-gradient(50% 60% at 50% 50%, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.06) 55%, rgba(0,0,0,0.20) 100%);
 `;

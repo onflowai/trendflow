@@ -24,7 +24,7 @@ const UserDropdown = () => {
     if (action === 'logout') {
       logoutUser();
     } else if (action === 'addAccount') {
-      navigate('/add-account');
+      navigate('/register');
     }
     setShowDropdown(false);
   };
