@@ -663,7 +663,15 @@ button:disabled {
 .Toastify__toast {
   box-shadow: none;
 }
-
+.Toastify__toast--info {
+  background: var(--grey-50) !important;
+  color: rgba(101, 101, 101, 0.88) !important;
+  border-radius: var(--input-radius-rounded);
+}
+.toast-dark .Toastify__toast--info {
+  background: rgba(20, 20, 25, 0.96) !important;
+  color: rgba(170, 170, 170, 0.92) !important;
+}
 /* alerts */
 .alert {
   padding: 0.375rem 0.75rem;
@@ -728,6 +736,14 @@ button:disabled {
 
 .form-input:-webkit-autofill {
   background-color: var(--input-highlighted-valid) !important;
+}
+
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color); /*HERE*/
+  box-shadow: 0 0 0px 1000px var(--background-color) inset; /*HERE*/
+  transition: background-color 9999s ease-in-out 0s; /*HERE*/
 }
 
 .form-input,
