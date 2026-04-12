@@ -8,10 +8,11 @@ import customFetch from '../utils/customFetch';
 import axios from 'axios';
 import {
   SEO,
-  CarouselCards,
+  UserCarousel,
   BlogPostList,
   LandingNavbar,
   LandingFooter,
+  CarouselCards,
   StructuredData,
   CustomErrorToast,
   CustomSuccessToast,
@@ -59,7 +60,6 @@ const LandingBlog = () => {
   const infoHubItems = Array.isArray(data.infoHubItems)
     ? data.infoHubItems
     : [];
-
   const authors = posts
     ? posts
         .map((post) => post.author)
@@ -70,7 +70,6 @@ const LandingBlog = () => {
     : []; // unique authors if you want a “Contributors” section
 
   const currentDate = new Date().toLocaleDateString();
-
   const guestUser = async () => {
     try {
       const csrfToken = await getCsrfToken(); // fetch CSRF token as in the login page
@@ -119,14 +118,7 @@ const LandingBlog = () => {
             <div className="admin-section">
               <div className="contributors">Contributors:</div>
               <div className="author-list">
-                {authors.map((author) => (
-                  <img
-                    key={author._id}
-                    src={author.profile_img}
-                    alt={author.username}
-                    className="author-img"
-                  />
-                ))}
+                <UserCarousel posts={posts} />
               </div>
               <div className="line" />
               <div className="current-date">{currentDate}</div>
