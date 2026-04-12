@@ -241,16 +241,26 @@ const Container = styled.div`
     grid-template-columns: auto 1fr; /* indicator and selector */
     align-items: center; /* align items vertically */
   }
-
-.button-row {
-  margin-top: 0.5rem;
-  display: flex; /* use flex-box for layout */
-  justify-content: flex-end; /* align items to the right within the row */
-  align-items: center; /* center items vertically */
-  @media (max-width: 1470px) {
-    margin-bottom: 1rem;
+  .indicator-container-search{
+    display: grid; /* use grid layout */
+    grid-template-columns: auto 1fr; /* indicator and selector */
+    align-items: center; /* align items vertically */
   }
-}
+  .indicator-container-search .indicator{ 
+  margin-top: 1rem;
+  }
+  .button-row .indicator{ 
+  margin-top: 1rem;
+  }
+  .button-row {
+    margin-top: 0.5rem;
+    display: flex; /* use flex-box for layout */
+    justify-content: flex-end; /* align items to the right within the row */
+    align-items: center; /* center items vertically */
+    @media (max-width: 1470px) {
+      margin-bottom: 1rem;
+    }
+  }
 
 /* .button-row {
     display: grid;

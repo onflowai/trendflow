@@ -79,7 +79,7 @@ const Container = styled.div`
     transition: transform 0.3s ease;
     right: 0;
     top: var(--nav-height);
-    height: 100vh;
+    //height: 100vh;
     overflow-y: auto;
   }
 
@@ -127,7 +127,7 @@ const Container = styled.div`
     }
 
     .scroll-spy-sidebar {
-          position: static;  /* no fixed overlay */
+    position: static;  /* no fixed overlay */
     top: auto;
     right: auto;
     width: 100%;

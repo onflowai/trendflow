@@ -117,11 +117,21 @@ border-radius: var(--border-radius); // set border radius
       display: none;
     }
   }
+  .update-button{
+    padding: 1rem 0rem 1rem; 
+  }
 
   .delete-btn {
     display: flex;
     justify-content: flex-end;
-  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    margin-bottom: 10px;
+  }  }
 
   @media (max-width: 991px) {
     .content {
@@ -131,16 +141,16 @@ border-radius: var(--border-radius); // set border radius
   }
 
   @media (min-width: 992px) {
-  .form-edit-container {
-    align-items: left;
-    column-gap: 1rem;
+    .form-edit-container {
+      align-items: left;
+      column-gap: 1rem;
+    }
   }
-}
 
-@media (min-width: 1120px) {
-  .form-edit-container {
-  }
-}
+  @media (min-width: 1120px) {
+      .form-edit-container {
+      }
+    }
 
   @media (min-width: 992px) {
     .page-layout {
