@@ -328,7 +328,6 @@ const EditTrend = () => {
     }
   };
 
-  console.log('trendObject in EditTrend', trendObject);
   return (
     <Container>
       <SEOProtected />
