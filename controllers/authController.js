@@ -1,4 +1,7 @@
+import mongoose from 'mongoose';
 import UserModel from '../models/userModel.js';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import { StatusCodes } from 'http-status-codes';
 import visitModel from '../models/visitModel.js';
 import { createJWT } from '../utils/tokenUtils.js';
@@ -39,15 +42,18 @@ export const register = async (req, res, next) => {
         existingUser.verificationExpires = verificationExpires;
         existingUser.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await existingUser.save();
-        await sendVerificationEmail({
-          email: existingUser.email,
-          verificationCode,
-          verificationToken,
-        }); // unverified user re-generate code re-send email
-
-        return res.status(StatusCodes.OK).json({
-          msg: 'A verification email was re-sent. Please check your inbox.',
-        });
+        try {
+          await sendVerificationEmail({
+            email: existingUser.email,
+            verificationCode,
+            verificationToken,
+          });// unverified user re-generate code re-send email
+        } catch (err) {
+          console.error(
+            'Verification email failed:',
+            err?.code || err?.message
+          );//letting registration succeed
+        }
       }
     }
     const numberOfAccounts = await UserModel.countDocuments(); //if user does not exist create
@@ -73,13 +79,20 @@ export const register = async (req, res, next) => {
     }; // create the user object
 
     const newUser = await UserModel.create(userData);
-
-    await sendVerificationEmail({
-      email: newUser.email,
-      verificationCode,
-      verificationToken,
-    });
-
+    
+    try {
+      await sendVerificationEmail({
+        email: newUser.email,
+        verificationCode,
+        verificationToken,
+      });
+    } catch (err) {
+      console.error(
+        'Verification email failed:',
+        err?.code || err?.message
+      );
+      //let registration succeed
+    }
     res.status(StatusCodes.CREATED).json({
       msg: 'User created. Please check your email to verify your account.',
     });
@@ -96,15 +109,18 @@ export const register = async (req, res, next) => {
  * @returns
  */
 export const login = async (req, res) => {
-  const user = await UserModel.findOne({ email: req.body.email }); //find the users email if it exists store it in user
+  const email = req.body?.email;//retrieving email from body
+  if (typeof email !== 'string') throw new UnauthenticatedError('invalid credentials');//if not string trow
+  const user = await UserModel.findOne({ email: { $eq: email } }).select('+password');//find the users email if it exists store it in user
   if (!user) throw new UnauthenticatedError('invalid credentials'); //if user not found throw custom error
+  if (!user.password) throw new UnauthenticatedError('invalid credentials'); //guestUser or corrupted record then no password hard fail
   const isPasswordCorrect = await authenticatePassword(
     req.body.password,
     user.password
   ); //async function which takes the password entered by the user and the password from database to compare them
   if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials'); //if password does not match then:
   const expiresIn = process.env.JWT_EXPIRES_IN;
-  const token = createJWT({ userID: user._id, role: user.role }, expiresIn); //encoding user id user role into the token + iat and exp generated
+  const token = createJWT({ userID: user._id, role: user.role, tokenVersion: user.tokenVersion }, expiresIn); //encoding user id user role into the token + iat and exp generated
   const oneDay = 86400000; //one day in milliseconds
   //res.json({ token }); //seeing the token
   //cookie named token, httpOnly cookie cannot be accessed by javascript
@@ -125,11 +141,20 @@ export const login = async (req, res) => {
  * @param {*} res
  * @returns
  */
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
+  if (req.user?.userID) {
+    await UserModel.updateOne(
+      { _id: req.user.userID },
+      { $inc: { tokenVersion: 1 } }
+    );
+  }
   res.cookie('token', 'logout', {
     httpOnly: true,
-    expires: new Date(Date.now()), //users token expires right away upon logout
+    expires: new Date(Date.now()),//users token expires right away upon logout
+    secure: process.env.NODE_ENV === 'production', //HERE
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
   });
+
   res.status(StatusCodes.OK).json({ msg: 'user logged out' });
 }; //end logout
 
@@ -146,10 +171,10 @@ export const guestLogin = async (req, res) => {
 
     const { guestUserID } = req.cookies; // check if the guestUserID cookie exists
 
-    if (guestUserID) {
+    if (guestUserID && mongoose.isValidObjectId(guestUserID)) {
       guestUser = await UserModel.findById(guestUserID); // attempt to find the existing guest user
 
-      if (guestUser && new Date() < guestUser.expiresAt) {
+      if (guestUser && guestUser.expiresAt && new Date() < guestUser.expiresAt) {
         console.log('Reusing existing guestUser.');
       } else {
         guestUser = await guestCreateSession(); // if guestUser doesn't exist or has expired, create a new one
@@ -160,7 +185,7 @@ export const guestLogin = async (req, res) => {
 
     const expiresIn = process.env.JWT_GUEST_EXPIRES_IN;
     const token = createJWT(
-      { userID: guestUser._id, role: guestUser.role },
+      { userID: guestUser._id, role: guestUser.role, tokenVersion: guestUser.tokenVersion },
       expiresIn
     ); // JWT token for the guest user
 
@@ -172,7 +197,7 @@ export const guestLogin = async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 'None' requires secure to be true
     }); // setting HTTP Only cookie with the token
 
-    res.cookie('guestUserID', guestUser._id, {
+    res.cookie('guestUserID', String(guestUser._id), {
       httpOnly: true,
       expires: new Date(Date.now() + oneDay),
       secure: process.env.NODE_ENV === 'production',
@@ -181,6 +206,7 @@ export const guestLogin = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ msg: 'Guest user logged in' });
   } catch (error) {
+    console.error('guestLogin error:', error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: 'Failed to create guest user',
       error: error.message,
@@ -196,12 +222,15 @@ export const guestLogin = async (req, res) => {
  * @returns
  */
 export const guestCreateSession = async (req, res) => {
-  const randomStr = Math.random().toString(36).substring(2, 5); //generate base36 to include letters and numbers
-  const uniqueUsername = `guest_${randomStr}`; // example: guest_3df
+  const randomStr = crypto.randomBytes(4).toString('hex').slice(0, 4); //generate base36 to include letters and numbers
+  const uniqueUsername = `guest_${randomStr}`; // example: guest_3df3e
   const uniqueEmail = `guest_${randomStr}@trendflow.com`; // example: guest_3df@trendflow.com
 
   const name = 'Guest';
   const lastName = 'User';
+
+  const passwordPlain = crypto.randomBytes(24).toString('hex');
+  const passwordHashed = await bcrypt.hash(passwordPlain, 12);
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration of guest user
   const guestUser = new UserModel({
@@ -210,6 +239,8 @@ export const guestCreateSession = async (req, res) => {
     name,
     lastName,
     role: 'guestUser',
+    password: passwordHashed,
+    tokenVersion: 0,
     expiresAt, // setting expiration date
   }); // creating new guest user
   await guestUser.save(); // saving the guest user to the database
@@ -225,17 +256,27 @@ export const guestCreateSession = async (req, res) => {
  */
 export const upgradeAccount = async (req, res) => {
   const { password, name, email } = req.body;
+
   if (!password || !name || !email) {
     throw new BadRequestError('Please provide all required fields.');
   }
+
+  const normalizedEmail = String(email).trim().toLowerCase(); //HERE
+  const normalizedName = String(name).trim(); //HERE
+
   try {
+    if (!req.user?.userID) throw new UnauthenticatedError('Authentication required.'); //HERE
+
     const user = await UserModel.findById(req.user.userID);
-    if (!user) {
-      throw new UnauthenticatedError('User not found.');
-    }
+    if (!user) throw new UnauthenticatedError('User not found.');
+
     if (user.role !== 'guestUser') {
       throw new BadRequestError('Account is already a regular user.');
     }
+
+    const existingEmail = await UserModel.findOne({ email: normalizedEmail, _id: { $ne: user._id } }); //HERE
+    if (existingEmail) throw new BadRequestError('Email is already in use.');
+
     user.password = await hashPassword(password); // updating user details
     user.name = name; // updating user details
     user.email = email; // updating user details
@@ -243,26 +284,29 @@ export const upgradeAccount = async (req, res) => {
     user.expiresAt = null; // Remove expiration
 
     await user.save();
-    const JWT_EXPIRES_IN = process.env.JWT_SECRET;
+    //const JWT_EXPIRES_IN = process.env.JWT_SECRET;
+    const expiresIn = process.env.JWT_EXPIRES_IN;
     const token = createJWT(
-      { userID: user._id, role: user.role },
-      JWT_EXPIRES_IN
+      { userID: user._id, role: user.role, tokenVersion: user.tokenVersion },
+      expiresIn
     ); // 1 day
     const oneDay = 86400000; // One day in milliseconds
 
-    res.cookie('token', token, {
+    const cookieOptions = {
       httpOnly: true,
-      expires: new Date(Date.now() + oneDay),
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    };
+
+    res.cookie('token', token, {
+      ...cookieOptions,
+      expires: new Date(Date.now() + oneDay),
     });
 
     res.cookie('guestUserID', '', {
-      httpOnly: true,
-      expires: new Date(Date.now()), // Expire immediately
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-    }); //removing the guestUserID for new user creation
+      ...cookieOptions,
+      expires: new Date(0),// hard-expire
+    });//removing the guestUserID for new user creation
 
     res.status(StatusCodes.OK).json({ msg: 'Account upgraded successfully.' });
   } catch (error) {

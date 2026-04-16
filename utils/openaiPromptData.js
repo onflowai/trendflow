@@ -19,7 +19,6 @@ export const {
   RESPONSE_USER_USE,
 } = prompts;
 
-export const USER_ROLE_POST = prompts.USER_ROLE_POST.replace(
-  '${MAX_TOKENS_POST}',
-  MAX_TOKENS_POST.toString()
-); // interpolating the token count into template
+//ensuring it's always a string: interpolating the token count into template
+export const USER_ROLE_POST = String(prompts.USER_ROLE_POST || '')
+  .replace('${MAX_TOKENS_POST}', String(MAX_TOKENS_POST || 0));

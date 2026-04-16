@@ -415,7 +415,7 @@ function FilterTrendsLarge({
                       </div>
                     </div>
                     <div className="search">
-                      <div className="indicator-container">
+                      <div className="indicator-container-search">
                         <div
                           className={`indicator ${
                             indicatorState.search ? 'active' : ''

@@ -3,8 +3,15 @@ import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
 //import { getFullIconUrl } from '../utils/urlHelper';
 
+const getFallbackByName = (dropdownName) => {
+  if (dropdownName === 'trendCategory') return '/assets/cat/fallback-cat.svg';
+  if (dropdownName === 'trendTech') return '/assets/fallback-tech.svg';
+  return '/assets/fallback-tech.svg';
+};
+
 const CustomOption = (props) => {
   const IconComponent = props.data.icon;
+  const fallback = getFallbackByName(props.selectProps?.name);
   return (
     <components.Option {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -14,6 +21,8 @@ const CustomOption = (props) => {
             src={props.data.image}
             alt={props.data.label}
             style={{ width: '20px', marginRight: '10px' }}
+            onError={(e) => { e.currentTarget.src = fallback; }}
+            draggable={false} 
           />
         )}
         {IconComponent && (
@@ -30,42 +39,15 @@ const CustomOption = (props) => {
 const CustomSingleValue = (props) => {
   const { isDarkTheme, name } = props.selectProps || {}; // Pass theme and dropdown name via selectProps
   const IconComponent = props.data.icon;
-  const applyCustomStyling = name === 'trendCategory'; //ISSUE HERE isDarkTheme cannot be passed
+  const applyCustomStyling = name === 'trendCategory' && isDarkTheme === true;//ISSUE HERE isDarkTheme cannot be passed
+  const fallback = getFallbackByName(name);
   return (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {props.data.image && (
           <div
             style={{
-              backgroundColor: applyCustomStyling
-                ? 'var(--off-white)'
-                : 'transparent', // white background only when styling applies
-              borderRadius: applyCustomStyling ? '20%' : '0', // rounded only in dark mode for trendCategory
-              width: applyCustomStyling ? '25px' : 'auto', // box size for dark mode
-              height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '5px', // space between box and label
-            }}
-          >
-            <img
-              //src={getFullIconUrl(props.data.image)}
-              src={props.data.image}
-              alt={props.data.label}
-              style={{
-                width: '20px', // SVG size
-                height: '20px',
-              }}
-            />
-          </div>
-        )}
-        {IconComponent && (
-          <div
-            style={{
-              backgroundColor: applyCustomStyling
-                ? 'var(--off-white)'
-                : 'transparent',
+              backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
               borderRadius: applyCustomStyling ? '20%' : '0',
               width: applyCustomStyling ? '25px' : 'auto',
               height: applyCustomStyling ? '25px' : 'auto',
@@ -73,6 +55,30 @@ const CustomSingleValue = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: '5px',
+              padding: applyCustomStyling ? '1px' : '0',
+            }}
+          >
+            <img
+              src={props.data.image}
+              alt={props.data.label}
+              style={{ width: '20px', height: '20px' }}
+              onError={(e) => { e.currentTarget.src = fallback; }}
+              draggable={false}
+            />
+          </div>
+        )}
+        {IconComponent && (
+          <div
+            style={{
+              backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
+              borderRadius: applyCustomStyling ? '20%' : '0',
+              width: applyCustomStyling ? '25px' : 'auto',
+              height: applyCustomStyling ? '25px' : 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '5px',
+              padding: applyCustomStyling ? '1px' : '0',
             }}
           >
             <IconComponent style={{ width: '20px', height: '20px' }} />
@@ -122,7 +128,7 @@ const FormSelectorIcon = ({
           styles={customStyles}
           isClearable={isClearable}
           components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
-          selectProps={{ isDarkTheme, name }}
+          isDarkTheme={isDarkTheme}
         />
       </div>
     </Container>
@@ -172,3 +178,4 @@ const customStyles = {
 };
 
 export default FormSelectorIcon;
+

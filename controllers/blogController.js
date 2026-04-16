@@ -38,6 +38,7 @@ export const createPost = async (req, res) => {
       .json({ message: error.message });
   }
 }; //end createPost
+
 /**
  * GET ALL POSTS
  * returns all posts which are in the schema currently sorted newest to oldest with page limit
@@ -49,7 +50,10 @@ export const getAllPosts = async (req, res) => {
     const posts = await trendBlogModel
       .find()
       .sort({ createdAt: -1 })
-      .populate('author')
+      .populate({
+        path: 'author',
+        select: 'username githubUsername profile_img privacy role', //only return safe fields
+      })
       .populate({
         path: 'trends',
         select: 'trend slug trendTech techIconUrl svg_url trendCategory',
@@ -116,7 +120,10 @@ export const getSinglePublicBlog = async (req, res) => {
   try {
     const post = await trendBlogModel
       .findOne({ slug, isPublic: true })
-      .populate('author')
+      .populate({
+        path: 'author',
+        select: 'username githubUsername profile_img privacy role',
+      })
       .populate({
         path: 'trends',
         select: 'trend slug trendTech techIconUrl svg_url trendCategory',
@@ -230,7 +237,10 @@ export const getPublicPosts = async (req, res) => {
     const publicPosts = await trendBlogModel
       .find({ isPublic: true })
       .sort({ createdAt: -1 })
-      .populate('author')
+      .populate({
+        path: 'author',
+        select: 'username githubUsername profile_img privacy role', //only return safe fields
+      })
       .populate({
         path: 'trends',
         select: 'trend slug trendTech techIconUrl svg_url trendCategory',

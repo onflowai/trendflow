@@ -24,3 +24,23 @@ export const githubUrl = () => {
 export const githubFullUrl = () => {
   return FULL_GITHUB_URL;
 };
+
+//HTTPS VALIDATION
+export const normalizeUrlForSend = (raw) => {
+  const val = String(raw || '').trim();
+  if (!val) return val;
+  if (!/^https?:\/\//i.test(val)) return `https://${val}`;
+  return val;
+};//if no scheme assume https
+
+export const normalizeUrlForOpen = (raw) => {
+  const val = String(raw || '').trim();
+  if (!val) return '';
+  if (!/^https?:\/\//i.test(val)) return `https://${val}`;
+  try {
+    new URL(val);
+    return val;
+  } catch {
+    return '';
+  }// eslint-disable-next-line no-new
+};

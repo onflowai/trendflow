@@ -1,40 +1,76 @@
-import React, { useState } from 'react';
-import Select from 'react-select'; // Import Select from react-select
+import React, { useMemo, useState } from 'react';
+import Select from 'react-select';
 import BarChart from './BarChartComponent';
 import AreaChart from './AreaChartComponent';
+import FallbackChart from './FallbackChart';
 import Container from '../assets/wrappers/ChartsContainer';
 import { TiMediaRewind, TiMediaFastForward } from 'react-icons/ti';
 import { TbTimeline } from 'react-icons/tb';
+import trendFallbackLocal from '../assets/images/fallback-tech.svg';
+
 /**
- * Component used for passing data needed for charts from Trend page
- * @param {*} param0
- * @returns
+ * 
  */
+const TREND_FALLBACK_CDN = 'https://cdn.trendflowai.com/content/fallback-tech.svg';
+
 function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
+
+  const hasData =
+    Array.isArray(data?.previousYear) &&
+    Array.isArray(data?.currentYear) &&
+    (data.previousYear.length || data.currentYear.length);
+
+  if (!hasData) {
+    return (
+      <Container>
+        <div className="chart-header">
+          <div className="logo-trend">
+            <img
+              src={trendLogo || TREND_FALLBACK_CDN}
+              onError={(e) => {
+                e.currentTarget.src = trendFallbackLocal;
+              }}
+              style={{ width: '20px' }}
+              className="trend-logo"
+              alt=""
+              draggable={false}
+            />
+            <div className="trend-title">{trend || 'Trend'}</div>
+          </div>
+        </div>
+        <FallbackChart /> {/*HERE*/}
+      </Container>
+    );
+  }
+
   const { previousYear, currentYear } = data;
-  const combinedData = [...previousYear, ...currentYear]; //combining trend data
-  const combinedForecast = [
-    ...(forecast.previousYear || []),
-    ...(forecast.currentYear || []),
-  ]; //combining forecast data
+
+  const combinedData = useMemo(
+    () => [...previousYear, ...currentYear],
+    [previousYear, currentYear]
+  );
+
+  const combinedForecast = useMemo(
+    () => [
+      ...(forecast?.previousYear || []),
+      ...(forecast?.currentYear || []),
+    ],
+    [forecast]
+  );
+
   const [chartData, setChartData] = useState(combinedData);
-  const [dataView, setDataView] = useState('combined'); //keeping track of current data displayed
+  const [dataView, setDataView] = useState('combined');
   const [forecastData, setForecastData] = useState([]);
   const [showForecast, setShowForecast] = useState(false);
-  const [chartOption, setChartOption] = useState({
-    value: 'bar',
-    label: 'Bar Chart',
-  }); // Use object for react-select
+  const [chartOption, setChartOption] = useState({ value: 'bar', label: 'Bar Chart' });
 
   const chartOptions = [
     { value: 'bar', label: 'Bar Chart' },
     { value: 'area', label: 'Area Chart' },
   ];
 
-  // Handles changing the chart type from the dropdown
-  const handleChartTypeChange = (selectedOption) => {
-    setChartOption(selectedOption);
-  };
+  const handleChartTypeChange = (selectedOption) => setChartOption(selectedOption);
+
   const toggleForecast = () => {
     if (forecastData.length) {
       setForecastData([]);
@@ -44,48 +80,36 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
       setShowForecast(true);
     }
   };
+
   const handleArrowClick = (type) => {
     if (dataView === type) {
-      // If already showing this year, switch to combined
       setChartData(combinedData);
       setDataView('combined');
-    } else {
-      // Otherwise, show the selected year
-      if (type === 'previous') {
-        setChartData(previousYear);
-      } else if (type === 'current') {
-        setChartData(currentYear);
-      }
-      setDataView(type);
+      return;
     }
+    if (type === 'previous') setChartData(previousYear);
+    if (type === 'current') setChartData(currentYear);
+    setDataView(type);
   };
-  //react-select custom styling
+
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
-      border: '1.5px solid var(--grey-70)', // custom border
-      borderRadius: 'var(--input-radius-rounded)', // rounded corners
-      boxShadow: state.isFocused ? 'var(--grey-50)' : 'none', // shadow on focus
-      '&:hover': {
-        border: '1.5px solid var(--grey-100)', // Custom hover color
-      },
+      border: '1.5px solid var(--grey-70)',
+      borderRadius: 'var(--input-radius-rounded)',
+      boxShadow: state.isFocused ? 'var(--grey-50)' : 'none',
+      '&:hover': { border: '1.5px solid var(--grey-100)' },
       backgroundColor: 'var(--selector-main-color)',
     }),
     option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected
-        ? 'var(--primary-100)' // custom selected background color
+        ? 'var(--primary-100)'
         : state.isFocused
-        ? 'var(--primary-300)' // custom hover background color
-        : 'transparent', // default background
-      color: state.isSelected
-        ? 'var(--text-color)' // Text color for selected option
-        : state.isFocused
-        ? 'var(--text-color)' // Text color for focused (hovered) option
-        : 'var(--text-color)', // Text color for default options
-      '&:hover': {
-        backgroundColor: 'var(--primary-200)',
-      },
+        ? 'var(--primary-300)'
+        : 'transparent',
+      color: 'var(--text-color)',
+      '&:hover': { backgroundColor: 'var(--primary-200)' },
     }),
     menu: (provided) => ({
       ...provided,
@@ -93,55 +117,53 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
       borderRadius: 'var(--border-radius-inner)', // rounded corners
       backgroundColor: 'var(--select-small-dropdown-color)',
     }),
-    singleValue: (provided, state) => ({
-      ...provided,
-      color: 'var(--text-color)',
-    }),
+    singleValue: (provided) => ({ ...provided, color: 'var(--text-color)' }),
   };
 
   return (
     <Container>
       <div className="chart-header">
         <div className="logo-trend">
-          {trendLogo ? (
-            <img
-              src={trendLogo}
-              style={{ width: '20px' }}
-              className="trend-logo"
-            />
-          ) : null}
+          <img
+            src={trendLogo || TREND_FALLBACK_CDN}
+            onError={(e) => {
+              e.currentTarget.src = trendFallbackLocal;
+            }}
+            style={{ width: '20px' }}
+            className="trend-logo"
+            alt=""
+            draggable={false}
+          />
           <div className="trend-title">{trend}</div>
         </div>
+
         <div className="chart-controls-container">
           <div className="chart-controls">
             <button
-              className={`text-button ${
-                dataView === 'previous' ? 'active' : ''
-              }`}
+              type="button"
+              className={`text-button ${dataView === 'previous' ? 'active' : ''}`}
               onClick={() => handleArrowClick('previous')}
             >
-              <div
-                className={`circle ${dataView === 'previous' ? 'active' : ''}`}
-              ></div>
+              <div className={`circle ${dataView === 'previous' ? 'active' : ''}`} />
               {new Date().getFullYear() - 1}
             </button>
+
             <button
-              className={`text-button ${
-                dataView === 'current' ? 'active' : ''
-              }`}
+              type="button"
+              className={`text-button ${dataView === 'current' ? 'active' : ''}`}
               onClick={() => handleArrowClick('current')}
             >
-              <div
-                className={`circle ${dataView === 'current' ? 'active' : ''}`}
-              ></div>
+              <div className={`circle ${dataView === 'current' ? 'active' : ''}`} />
               {new Date().getFullYear()}
             </button>
+
             {combinedForecast.length > 0 && (
               <button
+                type="button" //HERE
                 className={`text-button ${showForecast ? 'active' : ''}`}
                 onClick={toggleForecast}
               >
-                <div className={`circle ${showForecast ? 'active' : ''}`}></div>
+                <div className={`circle ${showForecast ? 'active' : ''}`} />
                 Forecast
               </button>
             )}
@@ -156,31 +178,34 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
             />
           </div>
         </div>
+
         <div className="chart-controls-icons">
           <button
+            type="button" //HERE
             className={`icon-button ${dataView === 'previous' ? 'active' : ''}`}
             onClick={() => handleArrowClick('previous')}
           >
-            <TiMediaRewind
-              className={`icon ${dataView === 'previous' ? 'active' : ''}`}
-            />
+            <TiMediaRewind className={`icon ${dataView === 'previous' ? 'active' : ''}`} />
           </button>
+
           <button
+            type="button" //HERE
             className={`icon-button ${dataView === 'current' ? 'active' : ''}`}
             onClick={() => handleArrowClick('current')}
           >
-            <TiMediaFastForward
-              className={`icon ${dataView === 'current' ? 'active' : ''}`}
-            />
+            <TiMediaFastForward className={`icon ${dataView === 'current' ? 'active' : ''}`} />
           </button>
+
           {combinedForecast.length > 0 && (
             <button
+              type="button" //HERE
               className={`icon-button ${showForecast ? 'active' : ''}`}
               onClick={toggleForecast}
             >
               <TbTimeline className={`icon ${showForecast ? 'active' : ''}`} />
             </button>
           )}
+
           <div className="chart-selector-container-small">
             <Select
               className="chart-selector"

@@ -25,12 +25,17 @@ import {
  * slug:
  * views:
  * createdAt: 2024-03-16T02:22:50.315+00:00
- * updatedAt: 2024-03-16T02:22:50.315+00:00
+ * updatedAt: 2024-03-16T02:22:50.315+00:00 (ALL changes ARE timestamped)
  * __v: 0
  */
 const TrendSchema = new mongoose.Schema(
   {
-    trend: String,
+    trend: { 
+      type: String,
+      required: true,
+      unique: true,
+      index: true 
+    },
     trendCategory: {
       type: String,
       enum: trendCategoryValues,
@@ -73,6 +78,11 @@ const TrendSchema = new mongoose.Schema(
     isApproved: {
       type: Boolean,
       default: false,
+      index: true
+    },
+    isSubmittedForApproval: { 
+      type: Boolean,
+      default: false,
     },
     trendStatsFetched: Boolean,
     interestOverTime: {
@@ -107,14 +117,29 @@ const TrendSchema = new mongoose.Schema(
     trendDesc: {
       type: String,
       default: 'description',
+      maxlength: 1000,
     },
     generatedBlogPost: {
       type: String,
       default: '',
+      maxlength: 8000,
+    },
+    blogLastEditedBy: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+    },
+    blogEditedAt: {
+      type: Date,
     },
     trendUse: {
       type: String,
       default: '',
+      maxlength: 2000,
+    },
+    trendOfficialLink: {
+      type: String,
+      default: '',
+      maxlength: 500,
     },
     contentGenerated: Boolean,
     forecast: {

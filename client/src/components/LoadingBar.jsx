@@ -1,13 +1,13 @@
+// File: client/src/components/LoadingBar.jsx
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
+/**
+ * simple never ending loading bar
+ */
 const waveAnimation = keyframes`
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(200%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 `;
 
 const BarContainer = styled.div`
@@ -16,6 +16,7 @@ const BarContainer = styled.div`
   height: 4px;
   background-color: var(--grey-70);
   overflow: hidden;
+  border-radius: 999px; 
 `;
 
 const BarWave = styled.div`
@@ -26,12 +27,20 @@ const BarWave = styled.div`
   height: 100%;
   background-color: var(--primary-500);
   animation: ${waveAnimation} 1.5s linear infinite;
+  border-radius: 999px;
+  filter: blur(0.9px);
+
+  ${(p) =>
+    p.$paused &&
+    css`
+      animation-play-state: paused;
+    `}
 `;
 
-const LoadingBar = () => {
+const LoadingBar = ({ paused = false }) => {
   return (
     <BarContainer>
-      <BarWave />
+      <BarWave $paused={paused} />
     </BarContainer>
   );
 };

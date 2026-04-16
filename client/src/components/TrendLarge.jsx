@@ -22,10 +22,12 @@ import { MdDelete } from 'react-icons/md';
 import { githubFullUrl } from '../utils/urlHelper';
 import { getFullIconUrl } from '../utils/urlHelper';
 import {
-  TrendChartComponent,
   Loading,
-  UserImgSmall,
   Tooltip,
+  IconCategory,
+  UserImgSmall,
+  IconTechnology,
+  TrendChartComponent,
 } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
 import day from 'dayjs';
@@ -70,7 +72,9 @@ function TrendLarge({
   const handleMouseLeave = () => setIsHovered(false);
   const navigate = useNavigate(); // Use navigate for navigation
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id)); // checking if the current trend is saved
-  const isDeleted = createdBy.isDeleted; //for deleted user
+  const isDeleted = Boolean(createdBy?.isDeleted) || !createdBy;
+  const creatorImg = createdBy?.profile_img || null;
+  const creatorName = createdBy?.username || 'unknown user';
   const githubUrl = createdBy.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
@@ -167,19 +171,11 @@ function TrendLarge({
                     }}
                   />
                 ) : (
-                  <img
-                    src={getFullIconUrl(cateIconUrl)}
-                    alt="Category Icon"
-                    style={{
-                      width: '17px',
-                      height: '17px',
-                      marginRight: '5px',
-                      backgroundColor: isDarkTheme
-                        ? 'var(--off-white)'
-                        : 'transparent', // Add white background in dark mode
-                      borderRadius: '20%', // Optional: Make the background circular
-                      padding: isDarkTheme ? '1px' : '0', // Add some padding for better appearance
-                    }}
+                  <IconCategory
+                    src={cateIconUrl ? getFullIconUrl(cateIconUrl) : ''}
+                    isDarkTheme={isDarkTheme}
+                    size={17}
+                    style={{ marginRight: '5px' }}
                   />
                 )}
                 <h6 className="">{trendCategory}</h6>
@@ -206,13 +202,12 @@ function TrendLarge({
                         }}
                       />
                     ) : (
-                      <img
-                        src={getFullIconUrl(techIconUrl)}
-                        alt="Category Icon"
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                        }}
+                      <IconTechnology
+                        src={techIconUrl ? getFullIconUrl(techIconUrl) : ''}
+                        fallbackSrc="/assets/fallback-tech.svg"
+                        alt="Technology Icon"
+                        size={20}
+                        style={{ marginRight: '2px' }}
                       />
                     )}
                   </span>
@@ -243,11 +238,11 @@ function TrendLarge({
               <div className="user-section">
                 <UserImgSmall
                   isDeleted={isDeleted}
-                  user_img={createdBy.profile_img}
+                  user_img={creatorImg}
                   githubUrl={githubUrl}
                 />
                 <span className={`username ${isDeleted ? 'deleted-user' : ''}`}>
-                  {createdBy.username}
+                  {creatorName.toLowerCase()}
                 </span>
               </div>
               <div className="admin-buttons">

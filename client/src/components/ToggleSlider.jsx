@@ -1,21 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const ToggleSlider = ({ options, value, onChange }) => {
-  // Find the index and object for the current value
-  const currentIdx = options.findIndex((opt) => opt.value === value);
+  const currentIdx = options.findIndex((opt) => opt.value === value);// finding the index and object for the current value
   const currentOption = options[currentIdx] || {};
 
   const handleClick = (idx) => {
     if (onChange) onChange(options[idx].value);
   };
-  console.log('value in ToggleSlider', value);
   return (
     <Container className="slider" data-count={options.length}>
       <div className="slider__row">
         {/* Conditionally render icon */}
         {currentOption.icon && (
-          <img
+          <img 
             src={currentOption.icon}
             alt={`${currentOption.label} icon`}
             className="slider__icon"

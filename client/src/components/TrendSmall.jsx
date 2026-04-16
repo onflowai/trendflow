@@ -15,6 +15,7 @@ import {
   Tooltip,
   UserImgSmall,
   AddTrendModal,
+  IconTechnology,
   TrendFlashChart,
   TrendFallFlashChart,
 } from '../components';
@@ -63,7 +64,8 @@ function TrendSmall({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
-  const isDeleted = createdBy?.isDeleted; //for deleted user
+  const isDeleted = Boolean(createdBy?.isDeleted) || !createdBy;//for deleted user
+  const creatorImg = !isDeleted ? createdBy?.profile_img : null;
   const githubUrl = createdBy?.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
@@ -160,7 +162,7 @@ function TrendSmall({
               <div className="user-icon">
                 <UserImgSmall
                   isDeleted={isDeleted}
-                  user_img={createdBy.profile_img}
+                  user_img={creatorImg}
                   githubUrl={githubUrl}
                 />
               </div>
@@ -170,11 +172,13 @@ function TrendSmall({
                 {!techIconUrl ? (
                   <PiHashLight />
                 ) : (
-                  <img
-                    src={getFullIconUrl(techIconUrl)}
-                    alt="Technology Icon"
-                    style={{ width: '20px', marginRight: '2px' }}
-                  />
+                <IconTechnology
+                  src={techIconUrl ? getFullIconUrl(techIconUrl) : ''}
+                  fallbackSrc="/assets/fallback-tech.svg"
+                  alt="Technology Icon"
+                  size={20}
+                  style={{ marginRight: '2px' }}
+                />
                 )}
                 {!isGridView && (
                   <div className="tech-scroll" title={trendTech}>

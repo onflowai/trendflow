@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import {
   UnauthenticatedError,
   UnauthorizedError,
@@ -25,13 +26,16 @@ const rolePermissions = {
  */
 export const authenticateUser = async (req, res, next) => {
   const { token, guestUserID } = req.cookies;
-
   if (!token && guestUserID) {
+    if (!mongoose.isValidObjectId(guestUserID)) {
+      req.user = { role: 'guestUser' };
+      return next();
+    }
     const guestUser = await UserModel.findById(guestUserID);
-
     if (
       guestUser &&
       guestUser.role === 'guestUser' &&
+      guestUser.expiresAt &&
       new Date() < guestUser.expiresAt
     ) {
       req.user = { userID: guestUser._id, role: guestUser.role };
@@ -39,18 +43,25 @@ export const authenticateUser = async (req, res, next) => {
     }
   }
   if (!token) {
-    req.user = { role: 'guestUser' }; // Keep it simple; permissions will be derived from the role
+    req.user = { role: 'guestUser' };// keeping it simple the permissions will be derived from the role
     console.log('No token and no valid guestUserID.');
     return next();
   }
   try {
     const decoded = verifyJWT(token);
+    const dbUser = await UserModel.findById(decoded.userID).select('tokenVersion role expiresAt');
+    if (!dbUser) throw new UnauthenticatedError('Authentication invalid');
+    const dbTokenVersion = Number(dbUser.tokenVersion ?? 0);
+    const jwtTokenVersion = Number(decoded.tokenVersion ?? 0);
+    if (dbTokenVersion !== jwtTokenVersion) {
+      throw new UnauthenticatedError('Session expired');
+    }
     req.user = { userID: decoded.userID, role: decoded.role };
     next();
   } catch (error) {
     console.log('Authentication error:', error.message);
     throw new UnauthenticatedError('Authentication invalid');
-  }
+  }//revocation mechanism land where old tokens Die Hard and tokenVersion increments
 }; //end authenticateUser
 
 /**
@@ -81,5 +92,28 @@ export const authorizedAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     throw new UnauthorizedError('Unauthorized Access');
   }
+  next();
+};
+
+/**
+ * S-ADMIN middleware (adds deletion ability for admin)
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const authorizedSuperAdmin = (req, res, next) => {
+  if (!req.user) throw new UnauthenticatedError('Authentication invalid'); //HERE
+  if (req.user.role !== 'superAdmin') throw new UnauthorizedError('Not authorized'); //HERE
+  next();
+};
+
+/**
+ * REQUIRE AUTH USER ID - blocks the no token but role=guestUser path
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+export const requireAuthUserID = (req, res, next) => {
+  if (!req.user || !req.user.userID) throw new UnauthenticatedError('Authentication required');
   next();
 };

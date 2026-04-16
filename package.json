@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.986.0",
     "@react-email/components": "^0.0.33",
     "@react-email/render": "^1.0.5",
     "axios": "^1.13.2",

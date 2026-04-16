@@ -39,8 +39,6 @@ const EditTrendComponent = ({
   const navigateToTrend = () => {
     navigate(`/dashboard/trend/${trendObject.slug}`);
   };
-  console.log('trendObject', trendObject);
-  console.log('trendObject in openSourceStatus', openSourceStatus);
   const [trend, setTrend] = useState(trendObject.trend);
   const openSourceOptions = [
     { label: 'Open', value: 'open', icon: openSourceLogo },

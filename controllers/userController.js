@@ -30,7 +30,7 @@ export const getCurrentUser = async (req, res) => {
   let approvedTrends = 0; // initializing approved trends by user
   let submittedTrends = 0; // initializing submitted trends by user
   let totalSiteTrends = await trendModel.countDocuments(); // this is a total trends, not user-specific
-  let totalTrendViews = 0; //// initializing trends views by user
+  let totalTrendViews = 0; // initializing trends views by user
 
   if (role !== 'guestUser') {
     approvedTrends = await trendModel.countDocuments({
@@ -41,7 +41,7 @@ export const getCurrentUser = async (req, res) => {
       createdBy: userID,
     }); //user stats
     const trendViews = await trendModel.aggregate([
-      //HERE
+     
       { $match: { createdBy: new mongoose.Types.ObjectId(userID) } }, //referencing the user with $match user specific
       { $group: { _id: null, totalViews: { $sum: '$views' } } }, //
     ]); //using mongodb aggregation operation (looks for array) to count views of each trend
@@ -171,25 +171,44 @@ export const getAdminApplicationStats = async (req, res) => {
 export const saveUserTrend = async (req, res) => {
   try {
     const { _id } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ msg: 'Invalid trend id' });
+    }
+
+    // req.user might exist but without userID (guest w/out cookie token)
+    if (!req.user?.userID) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ msg: 'Login required' });
+    }
+
     const user = await userModel.findById(req.user.userID);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
     }
+
+    const trend = await trendModel.findById(_id).select('_id');
+    if (!trend) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Trend not found' });
+    }
+
+    // policy: only approved trends can be saved unless admin
+    // if (trend.isApproved !== true && user.role !== 'admin') {
+    //   return res.status(StatusCodes.FORBIDDEN).json({ msg: 'Trend not approved' });
+    // }
+
     if (user.savedTrends.includes(_id)) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: 'Trend already saved' });
-    } // checking if _id already exists in savedTrends array
-    user.savedTrends.push(_id); // adding _id to savedTrends array
+      return res.status(StatusCodes.BAD_REQUEST).json({ msg: 'Trend already saved' });
+    }
+
+    user.savedTrends.push(_id);
     await user.save();
-    res.status(StatusCodes.OK).json({ msg: 'Trend saved successfully' });
+    return res.status(StatusCodes.OK).json({ msg: 'Trend saved successfully' });
   } catch (error) {
     console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: 'Something went wrong' });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Something went wrong' });
   }
 };
+
 /**
  * GET USER BOOKMARKED TREND
  * retrieves the trends saved by a user from the database
@@ -219,8 +238,9 @@ export const getUserSavedTrends = async (req, res) => {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message }); // handle errors
   }
 }; //end getUserSavedTrends
+
 /**
- * REMOVE USER TREND
+ * REMOVE USER TREND FROM USERS BOOKMARKED
  * @param {*} req
  * @param {*} res
  * @returns
@@ -353,56 +373,52 @@ export const deleteUserSavedFilters = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
   const userId = req.user.userID;
-  const trendsCount = await trendModel.countDocuments({ createdBy: userId }); //checking how many trends this user created
+  const session = await mongoose.startSession();
+  try {
+      await session.withTransaction(async () => {
+        const hasTrends = await trendModel.exists({ createdBy: userId }).session(session);//cheaper than count with safer intent
 
-  if (trendsCount === 0) {
-    const deletedUser = await userModel.findByIdAndDelete(userId);
-    if (!deletedUser) {
-      return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
-    } // user has never submitted any trends full delete
+        if (!hasTrends) {
+          const deletedUser = await userModel.findByIdAndDelete(userId, { session });
+          if (!deletedUser) {
+            res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+            return;
+          }
+        } else {
+          const updates = {
+            isDeleted: true,
+            email: null,
+            password: null,
+            name: null,
+            lastName: null,
+            verified: false,
+            githubUsername: '',
+            lastVerificationEmailSentAt: null,
+            verificationToken: null,
+            verificationCode: null,
+            verificationExpires: null,
+            savedTrends: [],
+            savedFilters: {},
+          }; //user has at least 1 trend submitted soft delete
 
-    res.clearCookie('token', {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    }); // clearing cookie
+          const updatedUser = await userModel.findByIdAndUpdate(userId, updates, {
+            new: true,
+            session,
+          });
 
-    return res
-      .status(StatusCodes.OK)
-      .json({ msg: 'Account deleted successfully.' });
+          if (!updatedUser) {
+            res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
+            return;
+          }
+        }
+        res.clearCookie('token', {
+          httpOnly: true,
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
+        });
+        res.status(StatusCodes.OK).json({ msg: 'Account deleted successfully.' });
+      });
+    } finally {
+      session.endSession();
   }
-
-  const updates = {
-    isDeleted: true,
-    email: null,
-    password: null,
-    name: null,
-    lastName: null,
-    verified: false,
-    githubUsername: '',
-    lastVerificationEmailSentAt: null,
-    verificationToken: null,
-    verificationCode: null,
-    verificationExpires: null,
-    savedTrends: [],
-    savedFilters: {},
-  }; //user has at least 1 trend submitted soft delete
-
-  const updatedUser = await userModel.findByIdAndUpdate(userId, updates, {
-    new: true,
-  });
-
-  if (!updatedUser) {
-    return res.status(StatusCodes.NOT_FOUND).json({ msg: 'User not found' });
-  }
-
-  res.clearCookie('token', {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  }); // clearing auth cookie
-
-  return res
-    .status(StatusCodes.OK)
-    .json({ msg: 'Account deleted successfully.' });
 };

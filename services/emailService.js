@@ -1,30 +1,10 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import nodemailer from 'nodemailer';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { verificationEmailBuild } from './verificationEmailBuild.js';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.AWS_SES_HOST,
-  port: process.env.AWS_SES_PORT || 587, // or 465 for secure SSL connections
-  secure: process.env.AWS_SES_PORT == 465, // true for port 465, false for 587 (STARTTLS)
-  auth: {
-    user: process.env.AWS_SES_SMTP_USER, // SMTP username
-    pass: process.env.AWS_SES_SMTP_PASS, // SMTP password
-  },
-}); // configure the transporter using environment variables
+const ses = new SESv2Client({
+  region: process.env.AWS_REGION || 'us-east-2'
+});
 
-/**
- * Generic email function to send an email
- * @param {Object} mailOptions - contains keys like from, to, subject, text
- */
-export const sendEmail = async (mailOptions) => {
-  return transporter.sendMail(mailOptions);
-};
-
-/**
- * Sends a verification email to the user
- * @param {Object} user - The user object should include email and verificationCode
- */
 export const sendVerificationEmail = async ({
   email,
   verificationToken,
@@ -35,15 +15,16 @@ export const sendVerificationEmail = async ({
     verificationCode,
   });
 
-  const mailOptions = {
-    from: 'no-reply@trendflowai.com',
-    to: email,
-    subject,
-    html,
-  };
+  const cmd = new SendEmailCommand({
+    FromEmailAddress: process.env.NO_REPLY_EMAIL || 'no-reply@trendflowai.com',
+    Destination: { ToAddresses: [email] },
+    Content: {
+      Simple: {
+        Subject: { Data: subject, Charset: 'UTF-8' },
+        Body: { Html: { Data: html, Charset: 'UTF-8' } },
+      },
+    },
+  });
 
-  return sendEmail(mailOptions);
+  return ses.send(cmd);
 };
-
-export const sendTestEmail = sendEmail; // export sendEmail as sendTestEmail for testing purposes
-export { transporter };

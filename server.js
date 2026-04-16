@@ -91,12 +91,17 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', PROD_URL, FRONT_URL],
-        // Add other directives as needed
+        scriptSrc: ["'self'", 'https://static.cloudflareinsights.com'],//scripts for Cloudflare Insights
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'], //already use CDN css + need inline syles
+        fontSrc: ["'self'", 'https://cdnjs.cloudflare.com', 'data:'], //fonts font-awesome pulls fonts
+        imgSrc: ["'self'", 'data:', 'https://cdn.trendflowai.com', PROD_URL, FRONT_URL], // allowing images site + data + your CDN
+        connectSrc: ["'self'", PROD_URL, FRONT_URL], //connect/fetch/websocket app fetches APIs, add your domains
+        baseUri: ["'self'"], //trying to avoid iframe/base issues
+        frameAncestors: ["'self'"],
       },
     },
   })
-); // helmet security helps secure express apps by setting various HTTP headers
+);// helmet security helps secure express apps by setting various HTTP headers
 app.use(mongoSanitize());
 
 //Cloudflare will handle rate limiting

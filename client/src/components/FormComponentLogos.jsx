@@ -2,20 +2,39 @@ import React from 'react';
 import { LogoCarousel } from '../components';
 import styled from 'styled-components';
 
-const FormComponentLogos = ({ type, name, labelText, placeholder }) => {
+const FormComponentLogos = ({
+  type,
+  name,
+  labelText,
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  autoComplete,
+  disabled,
+  className,
+}) => {
   return (
-    <Container>
+    <Container className={className}>
       <label htmlFor={name} className="form-label">
         {labelText || name}
       </label>
-      <div className="carousel-container">
+
+      <div className="carousel-container" aria-hidden="true">
         <LogoCarousel />
       </div>
+
       <input
+        id={name}
         className="form-input"
         type={type}
-        name={name} // Ensure this matches expected field names
+        name={name}
         placeholder={placeholder}
+        value={value ?? ''}
+        onChange={onChange}
+        onBlur={onBlur}
+        autoComplete={autoComplete}
+        disabled={disabled}
       />
     </Container>
   );
@@ -42,6 +61,7 @@ const Container = styled.div`
     height: 23px;
     width: 23px;
     overflow: hidden;
+    pointer-events: none;
   }
     @media (max-width: 768px) {
       margin-bottom: 1rem;

@@ -1,12 +1,14 @@
 import React from 'react';
-import { DangerousHTML } from '../components';
+import DangerousMarkdownSmall from './DangerousMarkdownSmall';
 import styled from 'styled-components';
-
-function ContentBoxHighlighted({ trendUse }) {
+/**
+ * This component is for HTML highlighted box
+ * @param {*} param0 
+ * @returns 
+ */
+function ContentBoxHighlighted({ trendUse, isDarkTheme }) {
   return (
-    <Container>
-      <DangerousHTML html={trendUse} />
-    </Container>
+    <DangerousMarkdownSmall content={trendUse} isDarkTheme={isDarkTheme} />
   );
 }
 

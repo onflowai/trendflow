@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import {
   editTrend,
+  trendExists,
   submitTrend,
   createTrend,
   deleteTrend,
@@ -17,7 +18,10 @@ import {
   updateTrendManual,
   getTopViewedTrends,
   approveTrendManual,
+  updateTrendBlogAdmin,
+  submitTrendForApproval,
 } from '../controllers/trendController.js';
+import { rateLimitSubmitTrend } from '../middleware/rateLimitMiddleware.js';
 import { adminStats, appTrendStats } from '../controllers/visitController.js';
 import {
   validateSlugParam,
@@ -27,6 +31,7 @@ import {
   authenticateUser,
   authorizedPermissions,
   authorizedAdmin,
+  authorizedSuperAdmin
 } from '../middleware/authMiddleware.js';
 import { incrementViews } from '../middleware/trendAnalyticsMiddleware.js';
 import { uploadMulter, processSVG } from '../middleware/imageMiddleware.js';
@@ -54,9 +59,26 @@ router
   .post(
     authenticateUser,
     authorizedPermissions('write'),
+    rateLimitSubmitTrend,
     validateTrendInput,
     submitTrend
   );
+router.get('/exists', authenticateUser, trendExists);
+router.patch(
+  '/:slug/submit-for-approval',
+  authenticateUser,
+  authorizedPermissions('write'),
+  validateSlugParam,
+  submitTrendForApproval
+);
+router.patch(
+  '/:slug/update-trend-blog',
+  authenticateUser,
+  authorizedAdmin,
+  authorizedPermissions('write'),
+  validateSlugParam,
+  updateTrendBlogAdmin
+);// admin-only blog edit
 router.route('/').get(getApprovedTrends); //NOTE user does not need to have an account to see Trends
 router.route('/top-viewed').get(getTopViewedTrends); //NOTE user does not need to have an account to see Top Trends
 router.route('/admin/stats').get(adminStats);
@@ -72,22 +94,25 @@ router.post(
   validateTrendInput,
   createTrend
 ); //route for base URL with route param NOTE user does not need to have an account to see each Trend
-router.route('/:slug').get(validateSlugParam, incrementViews, getSingleTrend); //route to trend page
+router.route('/:slug').
+get(authenticateUser,
+  validateSlugParam,
+  incrementViews,
+  getSingleTrend); //route to trend page
 router
   .route('/edit/:slug')
-  .get(validateSlugParam, getSingleTrend)
+  .get(authenticateUser, validateSlugParam, getSingleTrend)
   .patch(
     authenticateUser,
     authorizedAdmin,
-    authorizedPermissions('delete'),
+    authorizedPermissions('trend:edit'),
     validateTrendInput,
     validateSlugParam,
     editTrend
   )
   .delete(
     authenticateUser,
-    authorizedAdmin,
-    authorizedPermissions('delete'),
+    authorizedSuperAdmin,
     validateSlugParam,
     deleteTrend
   );

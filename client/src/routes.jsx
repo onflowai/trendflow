@@ -195,6 +195,11 @@ const routes = [
             id: 'dashboardSettings',
             errorElement: <Error />,
           },
+          {
+            path: 'error',
+            element: <Error />,
+            id: 'dashboardError',
+          }
         ],
       },
     ],
