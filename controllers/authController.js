@@ -109,7 +109,9 @@ export const register = async (req, res, next) => {
  * @returns
  */
 export const login = async (req, res) => {
-  const user = await UserModel.findOne({ email: req.body.email }).select('+password');//find the users email if it exists store it in user
+  const email = req.body?.email;//retrieving email from body
+  if (typeof email !== 'string') throw new UnauthenticatedError('invalid credentials');//if not string trow
+  const user = await UserModel.findOne({ email: { $eq: email } }).select('+password');//find the users email if it exists store it in user
   if (!user) throw new UnauthenticatedError('invalid credentials'); //if user not found throw custom error
   if (!user.password) throw new UnauthenticatedError('invalid credentials'); //guestUser or corrupted record then no password hard fail
   const isPasswordCorrect = await authenticatePassword(
