@@ -36,7 +36,9 @@ import customFetch from '../utils/customFetch';
 export const loader = async ({ params }) => {
   try {
     const { data } = await customFetch.get('/users/current-user'); // Fetch current user
-    if (!data.user || data.user.role !== 'admin') {
+    const role = data?.user?.role;
+    const isAdminRole = role === 'admin' || role === 'superAdmin';
+    if (!data?.user || !isAdminRole) {
       toast.error(
         <CustomErrorToast message="Unauthorized access to this Resource!" />
       );

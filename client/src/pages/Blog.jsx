@@ -35,7 +35,7 @@ export const loader = async () => {
 
 const Blog = () => {
   const { user } = useOutletContext();
-  const isAdmin = user?.role === 'admin'; // is the user is an admin
+  const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'; // is the user is an admin
   const currentDate = new Date().toLocaleDateString(); //date formatting
   const { posts, infoHubItems: initialInfoHubItems, error } = useLoaderData();
   const [infoHubItems, setInfoHubItems] = useState(initialInfoHubItems);

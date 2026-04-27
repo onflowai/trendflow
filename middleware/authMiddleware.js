@@ -13,7 +13,8 @@ import { verifyJWT } from '../utils/tokenUtils.js';
  */
 const rolePermissions = {
   user: ['read', 'write'],
-  admin: ['read', 'write', 'delete'],
+  admin: ['read', 'write'],
+  superAdmin: ['read', 'write', 'delete'],
   guestUser: ['read'],
 };
 /**
@@ -89,9 +90,10 @@ export const authorizedPermissions = (requiredPermission) => {
  * @param {*} next
  */
 export const authorizedAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    throw new UnauthorizedError('Unauthorized Access');
-  }
+  if (!req.user) throw new UnauthenticatedError('Authentication invalid');
+  const role = req.user.role;
+  const ok = role === 'admin' || role === 'superAdmin';
+  if (!ok) throw new UnauthorizedError('Not authorized');
   next();
 };
 
@@ -102,8 +104,8 @@ export const authorizedAdmin = (req, res, next) => {
  * @param {*} next 
  */
 export const authorizedSuperAdmin = (req, res, next) => {
-  if (!req.user) throw new UnauthenticatedError('Authentication invalid'); //HERE
-  if (req.user.role !== 'superAdmin') throw new UnauthorizedError('Not authorized'); //HERE
+  if (!req.user) throw new UnauthenticatedError('Authentication invalid');
+  if (req.user.role !== 'superAdmin') throw new UnauthorizedError('Not authorized');
   next();
 };
 

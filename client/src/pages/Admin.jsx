@@ -109,7 +109,7 @@ export const loader = async ({ request }) => {
 const Admin = () => {
   const navigate = useNavigate();
   const { user } = useOutletContext();
-  const isAdminPage = user.role === 'admin';
+  const isAdminPage = user?.role === 'admin' || user?.role === 'superAdmin';
 
   const {
     trends: initialTrendsData,
