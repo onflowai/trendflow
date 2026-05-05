@@ -36,13 +36,13 @@ export const constructQueryObject = (
   if (search) {
     queryObject.$or = [
       { trend: { $regex: sanitizeHTML(search), $options: 'i' } },
-      { trendTech: { $regex: sanitizeHTML(search), $options: 'i' } },
+      { 'trendTechs.value': { $regex: sanitizeHTML(search), $options: 'i' } },
       { trendCategory: { $regex: sanitizeHTML(search), $options: 'i' } },
-    ]; //Matching against 'trend', 'trendTech', and 'trendCategory' fields using a 'i' case-insensitive '$regex' regex
+    ]; //Matching against 'trend', 'trendTechs.value', and 'trendCategory' fields using a 'i' case-insensitive '$regex' regex
   } // if search term exists, add a $or condition to match any of the fields, match trend field with case-insensitive regex
   if (trendTech && trendTech !== 'all') {
-    queryObject.trendTech = trendTech; //dropdown query for trendTech
-  } // if trendTech is specified and not 'all' add trendTech to the query object
+    queryObject['trendTechs.value'] = trendTech; //dropdown query for trendTechs.value
+  } // if trendTech is specified and not 'all' add trendTechs.value to the query object
   if (trendCategory && trendCategory !== 'all') {
     queryObject.trendCategory = trendCategory; //dropdown query for trendCategory
   }
