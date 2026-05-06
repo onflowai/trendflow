@@ -55,15 +55,32 @@ export const validateTrendInput = withValidationErrors([
     }
     return true;
   }),
-  body('trendTech').custom(async (value) => {
-    const exists = await Technology.exists({ value });
-    if (!exists) {
-      throw new Error('invalid trend stack');
+  body('trendTechs').custom(async (value) => {
+    let arr;
+    try {
+      arr = typeof value === 'string' ? JSON.parse(value) : value;
+    } catch {
+      throw new Error('trendTechs must be a valid JSON array');
+    }
+    if (!Array.isArray(arr) || arr.length < 1) {
+      throw new Error('At least one technology is required');
+    }
+    if (arr.length > 5) {
+      throw new Error('A maximum of 5 technologies is allowed');
+    }
+    for (const item of arr) {
+      if (!item?.value) throw new Error('Each technology must have a value');
+      const exists = await Technology.exists({ value: item.value });
+      if (!exists) throw new Error(`Invalid technology: ${item.value}`);
+    }
+    const values = arr.map((i) => i.value);// uniqueness check
+    if (new Set(values).size !== values.length) {
+      throw new Error('Duplicate technologies are not allowed');
     }
     return true;
   }),
   body('role').not().exists().withMessage('Cannot change role'),
-]);
+]); //accept either a parsed array or JSON string (FormData sends strings)
 
 //validateSlugParam middleware validates that a provided slug exists in the database
 export const validateSlugParam = withValidationErrors([
