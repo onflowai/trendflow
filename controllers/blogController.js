@@ -56,7 +56,7 @@ export const getAllPosts = async (req, res) => {
       })
       .populate({
         path: 'trends',
-        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+        select: 'trend slug trendTechs svg_url trendCategory',
       });
     const processedPosts = posts.map((post) => {
       //const uniqueTrends = dedupeTrendsKeepAll(post.trends); //removing duplicates
@@ -88,7 +88,7 @@ export const getSinglePost = async (req, res) => {
       .populate('author')
       .populate({
         path: 'trends',
-        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+        select: 'trend slug trendTechs svg_url trendCategory',
       });
     if (!post) {
       return res
@@ -126,7 +126,7 @@ export const getSinglePublicBlog = async (req, res) => {
       })
       .populate({
         path: 'trends',
-        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+        select: 'trend slug trendTechs svg_url trendCategory',
       });
     if (!post) {
       return res
@@ -183,7 +183,7 @@ export const updatePost = async (req, res) => {
       .findOneAndUpdate({ slug }, updateFields, { new: true })
       .populate(
         'author trends',
-        'trend slug trendTech techIcon svg_url trendCategory'
+        'trend slug trendTechs svg_url trendCategory'
       );
 
     if (!updateFields) {
@@ -243,7 +243,7 @@ export const getPublicPosts = async (req, res) => {
       })
       .populate({
         path: 'trends',
-        select: 'trend slug trendTech techIconUrl svg_url trendCategory',
+        select: 'trend slug trendTechs svg_url trendCategory',
       }); // only fetching posts where isPublic = true
 
     const processedPosts = publicPosts.map((post) => {
