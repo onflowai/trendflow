@@ -61,6 +61,7 @@ function TrendSmall({
   openSourceStatus,
   chartMarginBottom,
 }) {
+  const safeTrendTech = String(trendTech || '');
   const [isHovered, setIsHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
@@ -183,7 +184,7 @@ function TrendSmall({
                 {!isGridView && (
                   <div className="tech-scroll" title={trendTech}>
                     <h5 className="tech-title">
-                      {trendTech.split(' ').slice(0, 2).join(' ')}
+                      {safeTrendTech.split(' ').slice(0, 2).join(' ') || 'Unknown'}
                     </h5>
                   </div>
                 )}
