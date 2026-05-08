@@ -39,7 +39,7 @@ const Blog = () => {
   const currentDate = new Date().toLocaleDateString(); //date formatting
   const { posts, infoHubItems: initialInfoHubItems, error } = useLoaderData();
   const [infoHubItems, setInfoHubItems] = useState(initialInfoHubItems);
-
+  console.log("posts", posts);
   const authors = posts
     .map((post) => post.author)
     .filter(
