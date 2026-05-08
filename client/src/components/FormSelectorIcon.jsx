@@ -37,7 +37,7 @@ const CustomOption = (props) => {
 };
 
 const CustomSingleValue = (props) => {
-  const { isDarkTheme, name } = props.selectProps || {}; // Pass theme and dropdown name via selectProps
+  const { isDarkTheme, name } = props.selectProps || {};// passing theme and dropdown name via selectProps
   const IconComponent = props.data.icon;
   const applyCustomStyling = name === 'trendCategory' && isDarkTheme === true;//ISSUE HERE isDarkTheme cannot be passed
   const fallback = getFallbackByName(name);
@@ -98,6 +98,15 @@ const FormSelectorIcon = ({
   defaultValue,
   onChange,
   isClearable = true,
+  hight = '46px',
+  borderColor = 'var(--grey-70)',
+  hoverBorderColor = 'var(--grey-100)',
+  focusBorderColor = 'var(--primary-200)',
+  focusBoxShadowColor = 'var(--primary-100)',
+  labelFontSize = '0.9rem',
+  labelColor = 'var(--text-color)',
+  labelFontWeight = '500',
+  labelMarginBottom = '0.35rem',
 }) => {
   const initialOption =
     typeof defaultValue === 'string'
@@ -118,14 +127,31 @@ const FormSelectorIcon = ({
   return (
     <Container>
       <div className="form-row">
-        <label htmlFor={name}>{labelText}</label>
+        <label
+          htmlFor={name}
+          style={{
+            fontSize: labelFontSize,
+            color: labelColor,
+            fontWeight: labelFontWeight,
+            marginBottom: labelMarginBottom,
+            display: 'block',
+          }}
+        >
+          {labelText}
+        </label>
         <Select
           id={name}
           name={name}
           value={selectedOption}
           onChange={handleChange}
           options={list}
-          styles={customStyles}
+          styles={getCustomStyles({
+            hight,
+            borderColor,
+            hoverBorderColor,
+            focusBorderColor,
+            focusBoxShadowColor,
+          })}
           isClearable={isClearable}
           components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
           isDarkTheme={isDarkTheme}
@@ -134,25 +160,48 @@ const FormSelectorIcon = ({
     </Container>
   );
 };
-const customStyles = {
-  control: (styles) => ({
+const getCustomStyles = ({
+  hight = '46px',
+  borderColor = 'var(--grey-70)',
+  hoverBorderColor = 'var(--grey-100)',
+  focusBorderColor = 'var(--primary-200)',
+  focusBoxShadowColor = 'var(--primary-100)',
+}) => ({
+  control: (styles, state) => ({
     ...styles,
+    minHeight: hight,
     borderRadius: 'var(--input-radius-rounded)',
-    border: '1.5px solid var(--grey-70)',
+    borderWidth: '1.5px',
+    borderStyle: 'solid',
+    borderColor: state.isFocused ? focusBorderColor : borderColor,
     backgroundColor: 'var(--selector-main-color)',
+    boxShadow: state.isFocused
+      ? `0 0 0 1px ${focusBoxShadowColor}`
+      : 'none',
+    '&:hover': {
+      borderColor: state.isFocused ? focusBorderColor : hoverBorderColor,
+    },
+  }),
+
+  valueContainer: (styles) => ({
+    ...styles,
+    minHeight: hight,
+    padding: '2px 8px',
+    display: 'flex',
+    alignItems: 'center',
   }),
   menu: (styles) => ({
     ...styles,
-    borderRadius: '10px', // Outer dropdown rounding
-    marginTop: '0px', // Align dropdown with the selector
-    overflow: 'hidden', // Prevent inner elements from breaking rounding
+    borderRadius: '10px',
+    marginTop: '0px',
+    overflow: 'hidden',
   }),
   menuList: (styles) => ({
     ...styles,
     paddingTop: '0px',
     paddingBottom: '0px',
     backgroundColor: 'var(--selector-dropdown-main-color)',
-    borderRadius: 'inherit', // Inherit rounding from `menu`
+    borderRadius: 'inherit',
   }),
   option: (styles, { isFocused, isSelected }) => ({
     ...styles,
@@ -175,7 +224,37 @@ const customStyles = {
     ...styles,
     color: 'var(--text-color)',
   }),
-};
+
+  placeholder: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
+  }),
+
+  input: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
+    margin: '0',
+    padding: '0',
+  }),
+
+  dropdownIndicator: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
+    padding: '6px',
+  }),
+
+  clearIndicator: (styles) => ({
+    ...styles,
+    color: 'var(--text-color)',
+    padding: '6px',
+  }),
+
+  indicatorSeparator: (styles) => ({
+    ...styles,
+    marginTop: '6px',
+    marginBottom: '6px',
+  }),
+});
 
 export default FormSelectorIcon;
 

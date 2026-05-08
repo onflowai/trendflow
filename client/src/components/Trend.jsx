@@ -46,7 +46,7 @@ function Trend({
   guestUser,
   onApprove,
   trendDesc,
-  trendTech,
+  trendTechs,
   updatedAt,
   flashChart,
   isApproved,
@@ -57,7 +57,6 @@ function Trend({
   isAdminPage,
   loadingSlug,
   savedTrends,
-  techIconUrl,
   trendStatus,
   isMobileTrend,
   trendCategory,
@@ -69,6 +68,8 @@ function Trend({
   isLargeTrendView,
   chartMarginBottom,
 }) {
+  const trendTech   = trendTechs?.[0]?.value ?? '';//primary tech from trendTechs[0] so child props stay unchanged
+  const techIconUrl = trendTechs?.[0]?.techIconUrl ?? '';//primary tech icon url from trendTechs[0] so child props stay unchanged
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
   const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   const isLargeScreen = window.matchMedia('(min-width: 812px)').matches; // using media query hook to determine the screen size
