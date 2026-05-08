@@ -103,7 +103,9 @@ const EditTrend = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     trendObject.trendCategory
   );
-  const [selectedTech, setSelectedTech] = useState(trendObject.trendTech);
+  const [selectedTech, setSelectedTech] = useState(
+    trendObject.trendTechs?.[0]?.value ?? ''
+  );
   const [showAddTrendModal, setShowAddTrendModal] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState(null);
   const [loadingSlug, setLoadingSlug] = useState(null);
