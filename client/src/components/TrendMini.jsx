@@ -62,6 +62,7 @@ function TrendMini({
   chartMarginBottom,
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  console.log("techIconUrl", techIconUrl);
   const [isSaved, setIsSaved] = useState(savedTrends?.includes(_id));
   const navigate = useNavigate();
   const isDeleted = Boolean(createdBy?.isDeleted) || !createdBy;//for deleted user
@@ -181,7 +182,7 @@ function TrendMini({
                     {!isGridView && (
                       <h5>
                         {(() => {
-                          const words = trendTech.split(' ');
+                        const words = (trendTech ?? '').split(' ');
                           if (words[1]) {
                             words[1] = words[1].slice(0, 3) + '...'; // limit second word to 6 characters
                           }
