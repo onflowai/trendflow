@@ -17,8 +17,11 @@ import { BsCircleFill } from 'react-icons/bs';
 const isValidUrl = (url) =>
   url && url !== 'undefined' && url !== 'null' && url.trim() !== '';
 
-function getTrendIconUrl({ svg_url, trend, trendTech, techIconUrl }) {
-  const trendLower = trend?.toLowerCase() || '';
+function getTrendIconUrl({ svg_url, trend, trendTechs }) {
+  // Derive the primary tech pair from trendTechs[0]
+  const trendTech   = trendTechs?.[0]?.value       ?? '';
+  const techIconUrl = trendTechs?.[0]?.techIconUrl  ?? '';
+  const trendLower     = trend?.toLowerCase() || '';
   const trendTechLower = trendTech?.toLowerCase() || '';
 
   // 1) If `svg_url` is valid, use it
