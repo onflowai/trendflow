@@ -38,7 +38,7 @@ function ContentRowComponent({
             .filter((item) => item.label)
             .map((item, index) => (
               <div
-                key={index}
+                key={item.key || `${item.label}-${index}`}
                 className={`item-container ${
                   item.styled ? 'styled' : 'unstyled'
                 }`}

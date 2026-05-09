@@ -166,7 +166,7 @@ const EditTrendComponent = ({
                 <div className="select-locked-input-container">
                   <IoLockClosed className="select-lock-icon" />
                   <div className="locked-input">
-                    <p>{trendObject.trendTech}</p>
+                    <p>{trendObject.trendTechs?.[0]?.value ?? ''}</p>
                   </div>
                 </div>
               ) : (
@@ -177,6 +177,16 @@ const EditTrendComponent = ({
                     value={selectedTech}
                     list={trendTechList}
                     onChange={(name, val) => setSelectedTech(val)}
+                  />
+                  <input
+                    type="hidden"
+                    name="trendTechs"
+                    value={JSON.stringify([
+                      {
+                        value: selectedTech,
+                        techIconUrl: trendObject.trendTechs?.[0]?.techIconUrl ?? '',
+                      },
+                    ])}
                   />
                 </>
               )}
