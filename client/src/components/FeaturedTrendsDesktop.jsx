@@ -10,7 +10,6 @@ import Container from '../assets/wrappers/FeaturedTrendsDesktop';
 const FeaturedTrendsDesktop = ({ featuredTrends, guestUser }) => {
   const featTrends = Array.isArray(featuredTrends) ? featuredTrends : [];
   const featuredFlag = true;
-  //Values used to style recharts in AllTrends & Admin pages
   const isFeatured = true;
   const chartHeight = 100;
   const chartMarginTop = 10;
@@ -31,19 +30,27 @@ const FeaturedTrendsDesktop = ({ featuredTrends, guestUser }) => {
   return (
     <Container>
       <div className="featured-trends-desktop">
-        {featTrends.map(({ trendDesc, ...trend }) => (
-          <TrendMini
-            key={trend._id}
-            {...trend}
-            relatedStyle={relatedStyle}
-            chartHeight={chartHeight}
-            chartMarginTop={chartMarginTop}
-            chartMarginBottom={chartMarginBottom}
-            isFeatured={isFeatured}
-            featuredFlag={featuredFlag}
-            guestUser={guestUser}
-          />
-        ))}
+        {featTrends.map(({ trendDesc, ...trend }) => {
+          const primaryTrendTech = trend.trendTechs?.[0]?.value ?? trend.trendTech ?? '';
+          const primaryTechIconUrl =
+            trend.trendTechs?.[0]?.techIconUrl ?? trend.trendTechs?.[0]?.image ?? trend.techIconUrl ?? '';
+
+          return (
+            <TrendMini
+              key={trend._id}
+              {...trend}
+              trendTech={primaryTrendTech}
+              techIconUrl={primaryTechIconUrl}
+              relatedStyle={relatedStyle}
+              chartHeight={chartHeight}
+              chartMarginTop={chartMarginTop}
+              chartMarginBottom={chartMarginBottom}
+              isFeatured={isFeatured}
+              featuredFlag={featuredFlag}
+              guestUser={guestUser}
+            />
+          );
+        })}
       </div>
     </Container>
   );

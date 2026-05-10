@@ -16,6 +16,7 @@ import {
   getAdminApplicationStats,
 } from '../controllers/userController.js';
 import {
+  authorizedAdmin,
   authenticateUser,
   authorizedPermissions,
 } from '../middleware/authMiddleware.js';
@@ -28,7 +29,7 @@ router.get('/current-user', authenticateUser, getCurrentUser);
 router.get(
   '/admin/app-stats',
   authenticateUser,
-  authorizedPermissions('delete'),
+  authorizedAdmin,
   getAdminApplicationStats
 );
 router.patch(

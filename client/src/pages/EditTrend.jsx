@@ -36,7 +36,9 @@ import customFetch from '../utils/customFetch';
 export const loader = async ({ params }) => {
   try {
     const { data } = await customFetch.get('/users/current-user'); // Fetch current user
-    if (!data.user || data.user.role !== 'admin') {
+    const role = data?.user?.role;
+    const isAdminRole = role === 'admin' || role === 'superAdmin';
+    if (!data?.user || !isAdminRole) {
       toast.error(
         <CustomErrorToast message="Unauthorized access to this Resource!" />
       );
@@ -101,7 +103,9 @@ const EditTrend = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     trendObject.trendCategory
   );
-  const [selectedTech, setSelectedTech] = useState(trendObject.trendTech);
+  const [selectedTech, setSelectedTech] = useState(
+    trendObject.trendTechs?.[0]?.value ?? ''
+  );
   const [showAddTrendModal, setShowAddTrendModal] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState(null);
   const [loadingSlug, setLoadingSlug] = useState(null);

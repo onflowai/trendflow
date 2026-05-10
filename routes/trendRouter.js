@@ -85,7 +85,7 @@ router.route('/admin/stats').get(adminStats);
 router.route('/app/stats').get(authenticateUser, appTrendStats);
 router
   .route('/admin/all-trends')
-  .get(authenticateUser, authorizedPermissions('delete'), getAllTrends);
+  .get(authenticateUser, authorizedAdmin, getAllTrends);
 router.route('/my-trends').get(authenticateUser, getUserTrends);
 router.post(
   '/add-trend',

@@ -135,8 +135,9 @@ const LandingBlogPage = () => {
   const trends = Array.isArray(rawTrends) ? rawTrends : [];
   const seen = new Set();
   const uniqueTrends = trends.filter((t) => {
-    if (seen.has(t.trendTech)) return false;
-    seen.add(t.trendTech);
+    const primaryValue = t.trendTechs?.[0]?.value;
+    if (seen.has(primaryValue)) return false;
+    seen.add(primaryValue);
     return true;
   }); //REMOVING TECH DUPLICATE IN TRENDS
   const formattedDate = day(updatedAt).format('MMMM YYYY');
@@ -211,7 +212,7 @@ const LandingBlogPage = () => {
                   {uniqueTrends.map((trend, idx) => (
                     <img
                       key={idx}
-                      src={getFullIconUrl(trend.techIconUrl)}
+                      src={getFullIconUrl(trend.trendTechs?.[0]?.techIconUrl)}
                       alt={trend.trend}
                       className="tech-icon"
                     />

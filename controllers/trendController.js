@@ -60,13 +60,30 @@ export const submitTrend = async (req, res) => {
   //only accepting field EXPECTED from UI during submission:
   const {
     trendCategory,
-    trendTech,
-    techIconUrl,
+    trendTechs: rawTrendTechs, // array: [{ value, techIconUrl }, ...]
     cateIconUrl,
     svg_url,
     svg_public_id,
     openSourceStatus,
   } = req.body; //avoiding spreading all req.body blindly reducing mass assignment risk
+
+
+  let trendTechs;
+  try {
+    trendTechs = typeof rawTrendTechs === 'string' ? JSON.parse(rawTrendTechs) : rawTrendTechs;
+  } catch {
+    throw new BadRequestError('Invalid trendTechs format');
+  } //parse trendTechs if it arrives as a JSON string FormData cannot send arrays natively
+  if (!Array.isArray(trendTechs) || trendTechs.length < 1) {
+    throw new BadRequestError('At least one technology is required');
+  }
+  if (trendTechs.length > 5) {
+    throw new BadRequestError('A maximum of 5 technologies is allowed');
+  }
+  const techValues = trendTechs.map((t) => t.value);
+  if (new Set(techValues).size !== techValues.length) {
+    throw new BadRequestError('Duplicate technologies are not allowed');
+  } //enforcing uniqueness within the submitted array
 
   const allowedStatuses = ['open', 'partial', 'closed', 'unknown']; //from trend model openSourceStatus must be one of the allowed enum values
   const safeOpenSourceStatus = allowedStatuses.includes(openSourceStatus)
@@ -76,8 +93,7 @@ export const submitTrend = async (req, res) => {
   const draftTrend = await trendModel.create({
     trend,
     trendCategory,
-    trendTech,
-    techIconUrl,
+    trendTechs,
     cateIconUrl,
     svg_url,
     svg_public_id,
@@ -87,10 +103,12 @@ export const submitTrend = async (req, res) => {
     isSubmittedForApproval: false,
   });//create the trend document as unapproved
 
+  // Pass the primary tech's value (string) to OpenAI — same as before
+  const primaryTechValue = trendTechs[0]?.value ?? '';
   const openAIResult = await generatePostContent(
     draftTrend.trend,
     draftTrend.trendCategory,
-    draftTrend.trendTech
+    primaryTechValue
   );//generate markdown blog immediately based on trend info
 
   const { trendPost, trendDesc, trendUse, trendOfficialLink, openSourceStatus: openSourceResponse } = openAIResult || {};// safely destructure result
@@ -374,11 +392,9 @@ export const getSingleTrend = async (req, res) => {
       .json({ trendObject, relatedTrends: sanitizedRelatedTrends }); // return trend and related trends
   } catch (error) {
     // DEBUG detailed response for debugging
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: 'Server Error',
-      error: error.message,
-      stack: error.stack,
-      slug: slug,
+    const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+    res.status(statusCode).json({
+      msg: error.message || 'Server Error',
     });
   }
 }; //end single trend
@@ -410,12 +426,33 @@ export const editTrend = async (req, res) => {
     openSourceStatus = req.body.openSourceStatus;
   }
 
+  // Parse trendTechs if it arrives as a JSON string
+  let trendTechs;
+  if (req.body.trendTechs !== undefined) {
+    try {
+      trendTechs = typeof req.body.trendTechs === 'string'
+        ? JSON.parse(req.body.trendTechs)
+        : req.body.trendTechs;
+    } catch {
+      throw new BadRequestError('Invalid trendTechs format');
+    }
+    if (!Array.isArray(trendTechs) || trendTechs.length < 1) {
+      throw new BadRequestError('At least one technology is required');
+    }
+    if (trendTechs.length > 5) {
+      throw new BadRequestError('A maximum of 5 technologies is allowed');
+    }
+    const techValues = trendTechs.map((t) => t.value);
+    if (new Set(techValues).size !== techValues.length) {
+      throw new BadRequestError('Duplicate technologies are not allowed');
+    }
+  }
+
   doc.set({
     trend: !doc.isApproved && req.body.trend ? req.body.trend : doc.trend,
     trendCategory: req.body.trendCategory,
     cateIconUrl: req.body.cateIconUrl,
-    trendTech: req.body.trendTech,
-    techIconUrl: req.body.techIconUrl,
+    ...(trendTechs ? { trendTechs } : {}),
     openSourceStatus,
   }); //updating the doc with request body fields
   await doc.save();

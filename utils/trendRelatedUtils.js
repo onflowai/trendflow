@@ -4,7 +4,7 @@ import trendModel from '../models/trendModel.js';
 /**
  * Fetch related trends based on category, technology, and views with fallback logic for insufficient results.
  *
- * @param {Object} trendObject - The main trend object
+ * @param {Object} trendObject - The main trend object (expects trendTechs array and trendCategory)
  * @returns {Array} - Array of related trends
  */
 export const fetchRelatedTrends = async (trendObject) => {
@@ -13,12 +13,13 @@ export const fetchRelatedTrends = async (trendObject) => {
     const fetchedTrendIds = new Set();
     fetchedTrendIds.add(trendObject._id.toString());
 
-    // Primary query: finds trends in the same category and tech
+    // Primary query: finds trends in the same category and primary tech
+    const primaryTechValue = trendObject.trendTechs?.[0]?.value;
     let relatedTrends = await trendModel
       .find({
         _id: { $nin: Array.from(fetchedTrendIds) }, // exclude current trend and already fetched trends
         trendCategory: trendObject.trendCategory, // match category
-        trendTech: trendObject.trendTech, // match technology
+        ...(primaryTechValue ? { 'trendTechs.value': primaryTechValue } : {}), // match primary technology
         isApproved: true, // only approved trends
       })
       .populate('createdBy', 'username profile_img githubUsername privacy -_id') // populate createdBy

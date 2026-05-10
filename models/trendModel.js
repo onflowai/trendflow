@@ -17,7 +17,7 @@ import {
  * _id: ObjectId('id_of_the_trend')
  * trend:
  * trendCategory:
- * trendTech:
+ * trendTechs: [{ value, techIconUrl }]
  * trendDesc:
  * trendStatus: trending, breakout, cool-off, static, sublevel, undefined
  * createdBy: ObjectId('id_of_the_user')
@@ -41,10 +41,25 @@ const TrendSchema = new mongoose.Schema(
       enum: trendCategoryValues,
       default: 'API Development Tools',
     },
-    trendTech: {
-      type: String,
-      enum: technologiesValues,
-      default: 'Ada',
+    trendTechs: {
+      type: [
+        {
+          _id: false,
+          value: {
+            type: String,
+            enum: technologiesValues,
+          },
+          techIconUrl: {
+            type: String,
+          },
+        },
+      ],
+      validate: {
+        validator(arr) {
+          return Array.isArray(arr) && arr.length >= 1;
+        },
+        message: 'At least one technology is required',
+      },
     },
     createdBy: {
       type: mongoose.Types.ObjectId,
@@ -57,10 +72,6 @@ const TrendSchema = new mongoose.Schema(
     },
     svg_url: String,
     svg_public_id: String,
-    techIconUrl: {
-      type: String,
-      required: true,
-    },
     cateIconUrl: {
       type: String,
       required: true,
@@ -181,7 +192,7 @@ const TrendSchema = new mongoose.Schema(
 );
 
 // indexes for optimized querying
-TrendSchema.index({ trendCategory: 1, trendTech: 1 }); // filtering by category and tech
+TrendSchema.index({ trendCategory: 1, 'trendTechs.value': 1 }); // filtering by category and tech
 TrendSchema.index({ slug: 1 }); // quick lookups by slug
 TrendSchema.index({ isApproved: 1, _id: 1 }); //index specifically for cursor pagination
 TrendSchema.index({ isApproved: 1, updatedAt: -1 }); // optimizes approved trends sorted by update time

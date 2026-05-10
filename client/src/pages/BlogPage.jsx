@@ -53,8 +53,9 @@ const BlogPage = () => {
   const { title, content, author, updatedAt, trends } = blogObject;
   const seen = new Set();
   const uniqueTrends = trends.filter((t) => {
-    if (seen.has(t.trendTech)) return false;
-    seen.add(t.trendTech);
+    const primaryValue = t.trendTechs?.[0]?.value;
+    if (seen.has(primaryValue)) return false;
+    seen.add(primaryValue);
     return true;
   }); //REMOVING TECH DUPLICATE IN TRENDS
   const upDate = day(updatedAt).format('MM YYYY');
@@ -103,7 +104,7 @@ const BlogPage = () => {
               {uniqueTrends.map((trend, index) => (
                 <img
                   key={index}
-                  src={getFullIconUrl(trend.techIconUrl)}
+                  src={getFullIconUrl(trend.trendTechs?.[0]?.techIconUrl)}
                   alt={trend.trend}
                   className="tech-icon"
                 />

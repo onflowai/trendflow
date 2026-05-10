@@ -1,6 +1,7 @@
 import React from 'react';
 import TrendSmall from './TrendSmall';
 import Container from '../assets/wrappers/RelatedTrendsDesktop';
+import { getPrimaryTrendTech } from '../utils/trendTechs';
 /**
  * Related Trends Desktop takes on data from TrendPage to display related trends in a single column
  * @param {*} relatedTrends
@@ -33,20 +34,26 @@ const RelatedTrendsDesktop = ({
   return (
     <Container>
       <div className="related-trends-desktop">
-        {relatedTrends.map(({ trendDesc, ...trend }) => (
-          <TrendSmall
-            key={trend._id}
-            {...trend}
-            relatedStyle={relatedStyle}
-            chartHeight={chartHeight}
-            chartMarginTop={chartMarginTop}
-            chartMarginBottom={chartMarginBottom}
-            savedTrends={savedTrends}
-            onSave={onSave}
-            onRemove={onRemove}
-            relatedFlag={relatedFlag}
-          />
-        ))}
+        {relatedTrends.map(({ trendDesc, trendTechs, ...trend }) => {
+          const primaryTech = getPrimaryTrendTech(trendTechs);
+
+          return (
+            <TrendSmall
+              key={trend._id}
+              {...trend}
+              trendTech={primaryTech.value}
+              techIconUrl={primaryTech.techIconUrl}
+              relatedStyle={relatedStyle}
+              chartHeight={chartHeight}
+              chartMarginTop={chartMarginTop}
+              chartMarginBottom={chartMarginBottom}
+              savedTrends={savedTrends}
+              onSave={onSave}
+              onRemove={onRemove}
+              relatedFlag={relatedFlag}
+            />
+          );
+        })}
       </div>
     </Container>
   );

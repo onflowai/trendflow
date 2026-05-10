@@ -16,6 +16,7 @@ import {
   RelatedTrendsDesktop,
   RelatedTrendsMobile,
 } from '../components';
+import { normalizeTrendTechs, getPrimaryTrendTech } from '../utils/trendTechs';
 import { normalizeUrlForOpen } from '../utils/urlHelper';
 import { useTheme } from '../context/ThemeContext';
 import { getFullIconUrl } from '../utils/urlHelper';
@@ -98,10 +99,9 @@ const TrendPage = () => {
     trendUse,
     forecast,
     createdBy,
-    trendTech,
+    trendTechs,
     updatedAt,
     trendStatus,
-    techIconUrl,
     cateIconUrl,
     blogEditedAt,
     trendCategory,
@@ -111,6 +111,10 @@ const TrendPage = () => {
     generatedBlogPost,
     trendOfficialLink,
   } = trendObject;
+  const normalizedTrendTechs = normalizeTrendTechs(trendTechs);//deriving the primary tech pair from trendTechs[0] for all downstream usage
+  const primaryTrendTech = getPrimaryTrendTech(normalizedTrendTechs);
+  const trendTech = primaryTrendTech.value;
+  const techIconUrl = primaryTrendTech.techIconUrl;
   const { isMobile } = useWindowSize();
   const upDate = day(updatedAt).format('MM YYYY');
   const dashboardContext = useDashboardContext();
@@ -171,24 +175,26 @@ const TrendPage = () => {
     const encodedValue = encodeURIComponent(paramValue);
     return `${baseURL}?${paramName}=${encodedValue}`;
   }
-
+  //list of all techs embedded into items
+  const techItems = normalizedTrendTechs.map((tech, index) => ({
+  label: tech.value,
+  icon: tech.techIconUrl ? (
+    <IconTechnology
+      src={getFullIconUrl(tech.techIconUrl)}
+      fallbackSrc="/assets/fallback-tech.svg"
+      alt={`${tech.value} Icon`}
+      size={20}
+    />
+  ) : (
+    <PiHashDuotone />
+  ),
+  link: buildDashboardLink('trendTech', tech.value),
+  styled: true,
+  key: `tech-${tech.value}-${index}`,
+  }));
   //list of items used in the row under the chart takes on label, icon, and link and styling
   const items = [
-  {
-    label: trendTech,
-    icon: techIconUrl ? (
-      <IconTechnology
-        src={getFullIconUrl(techIconUrl)}
-        fallbackSrc="/assets/fallback-tech.svg"
-        alt="Technology Icon"
-        size={20}
-      />
-    ) : (
-      <PiHashDuotone />
-    ),
-    link: buildDashboardLink('trendTech', trendTech),
-    styled: true,
-  },
+  ...techItems,
   {
     label: trendCategory,
     icon: cateIconUrl ? (
