@@ -4,13 +4,14 @@ import trendCategoryModel from '../models/categoryModel.js';
 
 import {
   DEFAULT_VISUAL_LIMIT,
-  buildNodeId,
-  createEdgeId,
-  getSafeVisualLimit,
-  getTrendIconUrl,
-  buildVisualQuery,
   addNode,
   addEdge,
+  buildNodeId,
+  createEdgeId,
+  getTrendIconUrl,
+  buildVisualQuery,
+  getSafeVisualLimit,
+  getVisualLimitConfig,
   getCanonicalTrendNodeId,
   doesPrimaryTechMatchTrend,
   shouldSkipPrimaryTechEdge,
@@ -30,10 +31,13 @@ export const getApprovedViewFlow = async (req, res) => {
     trendCategory,
     trendTech,
     status,
-    limit = DEFAULT_VISUAL_LIMIT,
+    limit,
   } = req.query;
 
-  const safeLimit = getSafeVisualLimit(limit);
+  const userRole = req.user?.role || 'guestUser';
+  const safeLimit = getSafeVisualLimit(limit, userRole);
+  const { defaultLimit, minLimit, maxLimit, canUseRequestedLimit } =
+    getVisualLimitConfig(userRole);
 
   const queryObject = buildVisualQuery({
     search,
@@ -131,7 +135,13 @@ export const getApprovedViewFlow = async (req, res) => {
         nodeCount: nodeMap.size,
         edgeCount: edgeMap.size,
         limit: safeLimit,
-        defaultTrendSlug: defaultTrend?.slug || null, 
+        requestedLimit: limit || null,
+        defaultLimit,
+        minLimit,
+        maxLimit,
+        canUseRequestedLimit,
+        role: userRole,
+        defaultTrendSlug: defaultTrend?.slug || null,
       },
     });
   } catch (error) {
