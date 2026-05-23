@@ -16,6 +16,7 @@ import {
   LandingFooter,
   LandingNavbar,
   FormComponent,
+  DisclaimerMini,
   CustomErrorToast,
 } from '../components';
 import customFetch from '../utils/customFetch';
@@ -168,7 +169,8 @@ const Register = () => {
           onResend={handleResendEmail}
         />
       </LandingModal>
-    <LandingFooter />
+      <LandingFooter />
+      <DisclaimerMini/>
     </Container>
   );
 };
