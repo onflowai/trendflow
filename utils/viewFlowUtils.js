@@ -1,19 +1,26 @@
 /**
- * how many approved trend documents the backend is allowed to pull before building the graph:
- */
-
-/**
  * Authenticated ViewFlow limits
  */
-export const DEFAULT_VISUAL_LIMIT = 72;
+export const DEFAULT_VISUAL_LIMIT = 72;//fallback
 export const MIN_VISUAL_LIMIT = 12;
 export const MAX_VISUAL_LIMIT = 100;
-
 /**
  * Guest ViewFlow limit
  * Guest does NOT get frontend control.
  */
-export const GUEST_VISUAL_LIMIT = 42; //hardcoded guest pull limit
+export const GUEST_VISUAL_LIMIT = 30; //hardcoded guest pull limit
+export const GUEST_MOBILE_VISUAL_LIMIT = 32;
+/**
+ * Mobile ViewFlow limits
+ */
+export const MOBILE_VISUAL_LIMIT = 40; //mobile fallback
+export const MOBILE_MIN_VISUAL_LIMIT = 10; //
+export const MOBILE_MAX_VISUAL_LIMIT = 54; //mobile hard cap
+/**
+ * Tech edge limits
+ */
+export const MOBILE_TECHS_PER_TREND = 3; //limiting for mobile 
+export const DESKTOP_TECHS_PER_TREND = 10; //setting large limit if in future trendTechs limit lifted
 
 /**
  * nodes include:
@@ -38,13 +45,34 @@ export const isGuestRole = (role = 'guestUser') => {
   return role === 'guestUser' || !role;
 };
 
-export const getVisualLimitConfig = (role = 'guestUser') => {
+export const getVisualLimitConfig = (
+  role = 'guestUser',
+  isMobileView = false
+) => {
+  if (isGuestRole(role) && isMobileView) {
+    return {
+      defaultLimit: GUEST_MOBILE_VISUAL_LIMIT,
+      minLimit: GUEST_MOBILE_VISUAL_LIMIT,
+      maxLimit: GUEST_MOBILE_VISUAL_LIMIT,
+      canUseRequestedLimit: false,
+    };
+  }
+
   if (isGuestRole(role)) {
     return {
       defaultLimit: GUEST_VISUAL_LIMIT,
       minLimit: GUEST_VISUAL_LIMIT,
       maxLimit: GUEST_VISUAL_LIMIT,
       canUseRequestedLimit: false,
+    };
+  }
+
+  if (isMobileView) {
+    return {
+      defaultLimit: MOBILE_VISUAL_LIMIT,
+      minLimit: MOBILE_MIN_VISUAL_LIMIT,
+      maxLimit: MOBILE_MAX_VISUAL_LIMIT,
+      canUseRequestedLimit: true,
     };
   }
 
@@ -73,9 +101,13 @@ export const createEdgeId = (source, target, relation) => {
 export const escapeRegex = (value = '') => {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); //prevents user search from becoming raw regex chaos
 };
-export const getSafeVisualLimit = (limit, role = 'guestUser') => {
+export const getSafeVisualLimit = (
+  limit,
+  role = 'guestUser',
+  isMobileView = false
+) => {
   const { defaultLimit, minLimit, maxLimit, canUseRequestedLimit } =
-    getVisualLimitConfig(role);
+    getVisualLimitConfig(role, isMobileView);
   if (!canUseRequestedLimit) {
     return defaultLimit; //uestUser always gets backend hardcoded limit
   }
@@ -85,6 +117,9 @@ export const getSafeVisualLimit = (limit, role = 'guestUser') => {
   }
   const requestedLimit = Math.floor(parsedLimit);
   return Math.min(Math.max(requestedLimit, minLimit), maxLimit); //clamp min/max
+};
+export const getViewFlowTechLimit = (isMobileView = false) => {
+  return isMobileView ? MOBILE_TECHS_PER_TREND : DESKTOP_TECHS_PER_TREND;
 };
 export const getTrendIconUrl = (trend) => {
   const firstTech = trend.trendTechs?.[0];
