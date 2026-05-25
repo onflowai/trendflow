@@ -12,6 +12,7 @@ import {
   buildVisualQuery,
   getSafeVisualLimit,
   getVisualLimitConfig,
+  getViewFlowTechLimit,
   getCanonicalTrendNodeId,
   doesPrimaryTechMatchTrend,
   shouldSkipPrimaryTechEdge,
@@ -35,10 +36,16 @@ export const getApprovedViewFlow = async (req, res) => {
   } = req.query;
 
   const userRole = req.user?.role || 'guestUser';
-  const safeLimit = getSafeVisualLimit(limit, userRole);
+  const userAgent = req.headers['user-agent'] || '';
+  const isMobileView =
+  req.query.viewMode === 'mobile' ||
+  req.query.isMobile === 'true' ||
+  /iphone|android|mobile/i.test(userAgent); //mobile safety net
+  const safeLimit = getSafeVisualLimit(limit, userRole, isMobileView);
   const { defaultLimit, minLimit, maxLimit, canUseRequestedLimit } =
-    getVisualLimitConfig(userRole);
+    getVisualLimitConfig(userRole, isMobileView);
 
+  const techLimit = getViewFlowTechLimit(isMobileView);
   const queryObject = buildVisualQuery({
     search,
     trendCategory,
@@ -97,8 +104,11 @@ export const getApprovedViewFlow = async (req, res) => {
           relation: 'category',
         });
       }
+      const limitedTrendTechs = Array.isArray(trend.trendTechs)
+        ? trend.trendTechs.slice(0, techLimit)
+        : []; //mobile edge reduction
 
-      trend.trendTechs?.forEach((tech, index) => {
+      limitedTrendTechs.forEach((tech, index) => {
         if (!tech?.value) return;
         const skipPrimarySelfEdge = shouldSkipPrimaryTechEdge(trend, tech, index);
         const techNodeId = buildNodeId('tech', tech.value);
@@ -131,12 +141,14 @@ export const getApprovedViewFlow = async (req, res) => {
       nodes: Array.from(nodeMap.values()),
       edges: Array.from(edgeMap.values()),
       meta: {
+        isMobileView,
         trendCount: trends.length,
         nodeCount: nodeMap.size,
         edgeCount: edgeMap.size,
         limit: safeLimit,
         requestedLimit: limit || null,
         defaultLimit,
+        techLimit,
         minLimit,
         maxLimit,
         canUseRequestedLimit,
