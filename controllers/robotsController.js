@@ -7,7 +7,6 @@
 export const serveRobotsTxt = (req, res) => {
   const env = process.env.NODE_ENV || 'development';
   const PROD_URL = process.env.PROD_URL;
-  console.log('PROD_URL: ', PROD_URL);
   const FRONT_URL = env === 'production' ? PROD_URL : process.env.DEV_URL;
   const SERVER_URL =
     env === 'production' ? PROD_URL : process.env.DEV_URL_SERVER;
