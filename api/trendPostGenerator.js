@@ -22,7 +22,12 @@ dotenv.config(); //initializing dotenv once at module load
 const ALLOWED_OPEN_SOURCE = ['open', 'partial', 'closed', 'unknown'];
 
 // async function to generate blog content using OpenAI (single-call version):
-export const generatePostContent = async (trend, trendCategory, trendTech) => {
+export const generatePostContent = async (
+  trend, 
+  trendCategory,
+  primaryTechValue = '',
+  secondaryTechValues = []
+  ) => {
   const config = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -67,9 +72,21 @@ You must return valid JSON with the following exact shape:
 }
 `;
 
-  const user = `
+const safeSecondaryTechValues = Array.isArray(secondaryTechValues)
+    ? secondaryTechValues
+        .map((tech) => String(tech || '').trim())
+        .filter(Boolean)
+    : [];
+
+  const secondaryTechClause = safeSecondaryTechValues.length
+    ? ` while also exploring complementary technologies such as ${safeSecondaryTechValues
+        .map((tech) => `"${tech}"`)
+        .join(', ')}`
+    : '';
+
+const user = `
 ${USER_ROLE_POST}
-Write it about the "${trend}" in the technology category of "${trendCategory}", specifically focusing on "${trendTech}" technology, keep it concise and practical. ${TREND_URL_BUTTON}`;
+Write it about the "${trend}" in the technology category of "${trendCategory}", specifically focusing on "${primaryTechValue}" as the primary technology${secondaryTechClause}. Keep it concise and practical. ${TREND_URL_BUTTON}`;
 
   try {
     const response = await withRetries(async () =>

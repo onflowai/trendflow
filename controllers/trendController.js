@@ -103,13 +103,17 @@ export const submitTrend = async (req, res) => {
     isSubmittedForApproval: false,
   });//create the trend document as unapproved
 
-  // Pass the primary tech's value (string) to OpenAI — same as before
-  const primaryTechValue = trendTechs[0]?.value ?? '';
+  const primaryTechValue = trendTechs[0]?.value ?? ''; // primary tech
+  const secondaryTechValues = trendTechs //secondary tecsh adds context for the prompt
+    .slice(1) //excluding the primary tech
+    .map((tech) => String(tech?.value || '').trim()) //normalizing values
+    .filter(Boolean); //removing empty values
   const openAIResult = await generatePostContent(
     draftTrend.trend,
     draftTrend.trendCategory,
-    primaryTechValue
-  );//generate markdown blog immediately based on trend info
+    primaryTechValue,
+    secondaryTechValues
+  ); //generate markdown blog immediately based on trend info
 
   const { trendPost, trendDesc, trendUse, trendOfficialLink, openSourceStatus: openSourceResponse } = openAIResult || {};// safely destructure result
   const safeMarkdown = sanitizeMarkdown(trendPost || '');// sanitize markdown output before saving

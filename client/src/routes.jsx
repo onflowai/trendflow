@@ -6,6 +6,7 @@ import {
   Profile,
   AddBlog,
   Landing,
+  ViewFlow,
   Register,
   AddTrend,
   BlogPage,
@@ -30,6 +31,7 @@ import { action as loginAction } from './pages/Login.jsx';
 import { loader as dashboardLoader } from './pages/DashboardLayout.jsx';
 import { action as addTrendAction } from './pages/AddTrend.jsx';
 import { loader as allTrendsLoader } from './pages/AllTrends.jsx';
+import { loader as viewLoader } from './pages/ViewFlow.jsx';
 import { action as editTrendAction } from './pages/EditTrend.jsx';
 import { loader as editTrendLoader } from './pages/EditTrend.jsx';
 import { loader as singleTrendLoader } from './pages/TrendPage.jsx';
@@ -118,6 +120,13 @@ const routes = [
             id: 'dashboardAllTrends',
             shouldRevalidate: ({ currentUrl, nextUrl }) =>
               currentUrl.pathname !== nextUrl.pathname,
+            errorElement: <Error />,
+          },
+          {
+            path: 'view-flow',
+            element: <ViewFlow />,
+            loader: viewLoader,
+            id: 'dashboardViewLoader',
             errorElement: <Error />,
           },
           {

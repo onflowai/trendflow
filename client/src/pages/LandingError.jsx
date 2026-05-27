@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useRouteError, useNavigate } from 'react-router-dom';
 import Container from '../assets/wrappers/ErrorPageContainer';
 import errorLogo from '../assets/images/trendflow-error.svg';
@@ -24,9 +24,6 @@ const ImgWithFallback = ({
 }) => {
   const [activeSrc, setActiveSrc] = useState(src);
 
-  React.useEffect(() => {
-    setActiveSrc(src);
-  }, [src]);// if the hovered src changes update what we try to show
 
   return (
     <img
@@ -45,8 +42,11 @@ const ImgWithFallback = ({
 const LandingError = () => {
   const error = useRouteError();
   const navigate = useNavigate();
-
   const [isHovered, setIsHovered] = useState(false);
+
+  const goHome = () => {
+    navigate('/');
+  };
 
   const message =
     error?.statusText ||
@@ -54,10 +54,11 @@ const LandingError = () => {
     'Sorry, something went wrong loading this page.';
 
   const is404 = error?.status === 404;
-  console.log('ERROR BOUNDARY:', window?.location?.pathname, error);
-  const goHome = () => {
-    navigate('/');
-  };
+  
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    console.log('ERROR BOUNDARY:', window.location.pathname, error);
+  }, [error]);
 
   const handleClose = () => {
     navigate('/');
