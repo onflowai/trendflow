@@ -79,7 +79,6 @@ COPY routes/ ./routes/
 COPY schedulers/ ./schedulers/
 COPY services/ ./services/
 COPY utils/ ./utils/
-COPY public/ ./public/
 
 # Copy built email templates and static assets from builder stage
 COPY --from=builder /app/dist/emails/ ./dist/emails/
