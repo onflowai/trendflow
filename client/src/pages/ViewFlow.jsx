@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Container from '../assets/wrappers/ViewFlowContainer';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useTheme } from '../context/ThemeContext'; 
+import useWindowSize from '../hooks/useWindowSize';
 import {
   ReactFlow,
   Background,
@@ -40,16 +41,23 @@ import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
  */
 const GRAPH_WIDTH = 1400;
 const GRAPH_HEIGHT = 900;
-const VIEW_LIMIT = 72;// requesting limit for authenticated users
+//const VIEW_LIMIT = 72;// requesting limit for authenticated users
 const INITIAL_ZOOM_CLICKS = 7;// zoom-in of about 7
 const ZOOM_CLICK_FACTOR = 1.2;// reactflow-style zoom multiplier
+
+const DESKTOP_VIEW_LIMIT = 72;
+const MOBILE_VIEW_LIMIT = 26;
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
     ...new URL(request.url).searchParams.entries(),
   ]);
 
-  params.limit = params.limit || VIEW_LIMIT; 
+  const isMobileRequest =
+  typeof window !== 'undefined' &&
+  window.matchMedia?.('(max-width: 768px)').matches;
+  params.viewMode = isMobileRequest ? 'mobile' : 'desktop'; //HERE
+  params.limit = params.limit || (isMobileRequest ? MOBILE_VIEW_LIMIT : DESKTOP_VIEW_LIMIT); //HERE
 
   try {
     const { data } = await customFetch.get('/views/approved-view-flow', {
@@ -295,7 +303,11 @@ const nodeTypes = {
   visualNode: VisualNode,
 };
 
-const buildForceLayout = (graphNodes, graphEdges) => {
+const buildForceLayout = (graphNodes, graphEdges, isMobile = false) => {
+  const tickCount = isMobile ? 100 : 280;
+  const chargeStrength = isMobile ? -420 : -650;
+  const centerX = isMobile ? 700 : GRAPH_WIDTH / 2;
+  const centerY = isMobile ? 520 : GRAPH_HEIGHT / 2;
   const simulationNodes = graphNodes.map((node, index) => ({
     ...node,
     x:
@@ -329,8 +341,8 @@ const buildForceLayout = (graphNodes, graphEdges) => {
         })
         .strength(0.55)
     )
-    .force('charge', forceManyBody().strength(-650))
-    .force('center', forceCenter(GRAPH_WIDTH / 2, GRAPH_HEIGHT / 2))
+    .force('charge', forceManyBody().strength(chargeStrength))
+    .force('center', forceCenter(centerX, centerY))
     .force(
       'collide',
       forceCollide().radius((node) => {
@@ -341,7 +353,7 @@ const buildForceLayout = (graphNodes, graphEdges) => {
     )
     .stop();
 
-  for (let i = 0; i < 280; i += 1) {
+  for (let i = 0; i < tickCount; i += 1) {
     simulation.tick();
   }
 
@@ -377,7 +389,7 @@ const buildForceLayout = (graphNodes, graphEdges) => {
     nodes: reactFlowNodes,
     edges: reactFlowEdges,
   };
-};
+};//end buildForceLayout
 
   const buildTrendPanelFromPreview = (trendPreview) => {
     if (!trendPreview) return null;
@@ -404,6 +416,7 @@ const buildForceLayout = (graphNodes, graphEdges) => {
 const ViewFlow = () => {
   const navigate = useNavigate();
   const { isDarkTheme } = useTheme();
+  const { isMobile } = useWindowSize();
 
   const handleFlowInit = async (reactFlowInstance) => {
     await reactFlowInstance.fitView({
@@ -479,9 +492,8 @@ const selectedPanelKey = selectedPanel
         edges: [],
       };
     }
-
-    return buildForceLayout(graphData.nodes, graphData.edges);
-  }, [graphData]);
+  return buildForceLayout(graphData.nodes, graphData.edges, isMobile);
+}, [graphData, isMobile]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedGraph.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedGraph.edges);
@@ -774,24 +786,34 @@ const selectedPanelKey = selectedPanel
             onEdgesChange={onEdgesChange}
             onNodeClick={handleNodeClick}
             onNodeDoubleClick={handleNodeDoubleClick}
+            onlyRenderVisibleElements={isMobile}
             onInit={handleFlowInit}
-            minZoom={0.15}
-            maxZoom={2}
+            minZoom={isMobile ? 0.10 : 0.15}
+            maxZoom={isMobile ? 1.20 : 2}
             nodesDraggable
             nodesConnectable={false}
             elementsSelectable
             panOnDrag
           >
+            {!isMobile && (
             <Background
               gap={28}
               size={1}
-              color={isDarkTheme ? '#4b5563' : '#d1d5db'} //
+              color={isDarkTheme ? '#4b5563' : '#d1d5db'}
             />
-            <Controls />
+          )}
+
+          <Controls />
+
+          {!isMobile && (
             <MiniMap
               zoomable
               pannable
-              maskColor={isDarkTheme ? 'rgba(17, 24, 39, 0.72)' : 'rgba(248, 250, 252, 0.72)'}
+              maskColor={
+                isDarkTheme
+                  ? 'rgba(17, 24, 39, 0.72)'
+                  : 'rgba(248, 250, 252, 0.72)'
+              }
               nodeColor={(node) => {
                 if (node?.data?.nodeType === 'trend') {
                   return isDarkTheme ? '#625eda' : '#c1bff6';
@@ -800,6 +822,7 @@ const selectedPanelKey = selectedPanel
                 return isDarkTheme ? '#a0a1a0' : '#ffffff';
               }}
             />
+          )}
           </ReactFlow>
         </div>
       </Container>
