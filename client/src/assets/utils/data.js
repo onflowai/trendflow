@@ -1,11 +1,27 @@
 export const majorUpdates = [
   {
+    version: '1.1.3',
+    text: 'Observation relationship graph tool.',
+  },
+  {
+    version: '1.1.2',
+    text: 'Filtering tool based on status and tech.',
+  },
+  {
+    version: '1.1.1',
+    text: 'Bookmarking, github tagging & privacy mode.',
+  },
+  {
     version: '1.1.0',
+    text: 'Blog with simple project tagging.',
+  },
+  {
+    version: '1.0.1',
     text: 'Open-source and partial open-source indicators on projects.',
   },
   {
     version: '1.0.0',
-    text: 'Secure guest sessions with implemented CSRF protection and featured trends.',
+    text: 'Secure guest sessions with CSRF protection.',
   },
 ];
 
@@ -31,6 +47,10 @@ export const dashboardLinks = [
   {
     text: 'trends',
     path: '.',
+  },
+  {
+    text: 'viewFlow',
+    path: 'view-flow',
   },
   {
     text: 'submit',
@@ -65,6 +85,10 @@ export const dashboardAllLinks = [
   {
     text: 'trends',
     path: '.',
+  },
+  {
+    text: 'viewFlow',
+    path: 'view-flow',
   },
   {
     text: 'submit',
@@ -137,3 +161,8 @@ export const services = [
 
 export const aboutDescription =
   'TrendFlow is a community-driven platform that helps developers discover the latest projects and trends in technology. Whether you are looking for new tools, frameworks, or libraries, TrendFlow is a place where you can stay updated.';
+
+export const fullTrademarkDisclaimer = `All trademarks, logos, company names, product names, and brand names are the property of their respective owners. Use of these names, trademarks, and logos is for identification, informational, educational, and descriptive purposes only. Use of any third-party trademark or logo does not imply endorsement, sponsorship, partnership, affiliation, approval, or recommendation by the trademark owner. If you are a rights holder and believe a logo, trademark, or asset is being used incorrectly, please contact us at: dev@onflowai.com`;
+
+export const miniTrademarkDisclaimer =
+  'All trademarks, logos, company names, product names, and brand names belong to their respective owners. TrendFlow is not affiliated with or endorsed by them.';
