@@ -21,3 +21,4 @@ export { default as LandingAbout } from './LandingAbout';
 export { default as LandingEmailVerify } from './LandingEmailVerify';
 export { default as LandingBlog } from './LandingBlog';
 export { default as LandingBlogPage } from './LandingBlogPage';
+export { default as ViewFlow } from './ViewFlow';
