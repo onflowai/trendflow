@@ -92,17 +92,62 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://static.cloudflareinsights.com'],//scripts for Cloudflare Insights
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'], //already use CDN css + need inline syles
-        fontSrc: ["'self'", 'https://cdnjs.cloudflare.com', 'data:'], //fonts font-awesome pulls fonts
-        imgSrc: ["'self'", 'data:', 'https://cdn.trendflowai.com', PROD_URL, FRONT_URL], // allowing images site + data + your CDN
-        connectSrc: ["'self'", PROD_URL, FRONT_URL], //connect/fetch/websocket app fetches APIs, add your domains
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'", //inline scripts (needed for some injected/inline snippets)
+          'https://static.cloudflareinsights.com', //cloudflare insights beacon script
+          'https://www.googletagmanager.com',
+          'https://www.google-analytics.com',
+        ],//scripts for cloudflare insights + google analytics/tag manager
+        scriptSrcElem: [
+          "'self'",
+          "'unsafe-inline'", //inline script elements (fallback safety)
+          'https://static.cloudflareinsights.com', //Cloudflare Insights
+          'https://www.googletagmanager.com', //GTM / gtag
+          'https://www.google-analytics.com', //GA
+        ],//allowing external script elements imports (script-src-elem) + same domains as scriptSrc
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'", //inline styles allowed
+          'https://cdnjs.cloudflare.com', //font-awesome css
+          'https://fonts.googleapis.com', //google fonts CSS
+        ],//already use CDN css + need inline syles + allow Google Fonts stylesheet loads
+        styleSrcElem: [
+          "'self'",
+          "'unsafe-inline'", //inline stylesheets if any
+          'https://cdnjs.cloudflare.com', //CDN styles
+          'https://fonts.googleapis.com', //google Fonts CSS
+        ],//explicitly allow stylesheet <link> loads (some browsers use style-src fallback if missing)
+        fontSrc: [
+          "'self'",
+          'https://cdnjs.cloudflare.com', //font-awesome fonts
+          'https://fonts.gstatic.com', //google Fonts font files
+          'data:', //inline font data uris
+        ],//fonts font-awesome pulls fonts + Google Fonts font files
+        imgSrc: [
+          "'self'",
+          'data:', //inline images (base64)
+          'https://cdn.trendflowai.com', //your CDN
+          'https://res.cloudinary.com', //cloudinary images
+          PROD_URL, //your prod domain
+          FRONT_URL, //your frontend dev/prod url
+        ],// allowing images site + data + your CDN + cloudinary
+        connectSrc: [
+          "'self'",
+          PROD_URL, //api calls to prod
+          FRONT_URL, //api calls to dev/prod front
+          'https://www.google-analytics.com', //GA beacons
+          'https://region1.google-analytics.com', //GA regional endpoint
+          'https://cloudflareinsights.com', //Cloudflare Insights beacon endpoint
+        ],// connect/fetch/websocket app fetches APIs, add your domains + analytics endpoints
         baseUri: ["'self'"], //trying to avoid iframe/base issues
-        frameAncestors: ["'self'"],
+        frameAncestors: ["'self'"], //prevent being framed
+        objectSrc: ["'none'"], //block <object>/<embed> entirely
       },
     },
   })
-);// helmet security helps secure express apps by setting various HTTP headers
+); // helmet security helps secure express apps by setting various HTTP headers
+
 app.use(mongoSanitize());
 
 //Cloudflare will handle rate limiting
@@ -248,7 +293,7 @@ if (env === 'production') {
       const link = helmet.link?.toString() || '';
       const script = helmet.script?.toString() || '';
       const style = helmet.style?.toString() || ''; // not as crucial (good practice)
-      //console.log('[SSR Final HTML Components]', { title, meta }); //HERE
+      //console.log('[SSR Final HTML Components]', { title, meta });
       const html = `<!DOCTYPE html>
       <html lang="en">
         <head>
