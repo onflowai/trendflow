@@ -8,12 +8,12 @@ export const MAX_VISUAL_LIMIT = 100;
  * Guest ViewFlow limit
  * Guest does NOT get frontend control.
  */
-export const GUEST_VISUAL_LIMIT = 30; //hardcoded guest pull limit
+export const GUEST_VISUAL_LIMIT = 22; //hardcoded guest pull limit
 export const GUEST_MOBILE_VISUAL_LIMIT = 32;
 /**
  * Mobile ViewFlow limits
  */
-export const MOBILE_VISUAL_LIMIT = 40; //mobile fallback
+export const MOBILE_VISUAL_LIMIT = 26; //mobile fallback
 export const MOBILE_MIN_VISUAL_LIMIT = 10; //
 export const MOBILE_MAX_VISUAL_LIMIT = 54; //mobile hard cap
 /**
