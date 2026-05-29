@@ -3,6 +3,7 @@ import {
   SEO,
   LandingNavbar,
   LandingFooter,
+  DisclaimerFull,
   LandingAboutCover,
 } from '../components';
 import styled from 'styled-components';
@@ -36,10 +37,10 @@ const LandingAbout = () => {
       <div className="about-top">
         <div className="columns">
           <div className="left-column">
-            <h1>trendflow</h1>
+            <h1 className="insta-gradient-link">trendflow</h1>
           </div>
           <div className="right-column">
-            <p>{aboutDescription}</p>
+            <p className="google-code-text">{aboutDescription}</p>
           </div>
         </div>
         <div className="image-section">
@@ -53,19 +54,19 @@ const LandingAbout = () => {
             draggable={false}
           />
           <div className="links">
-            <span className="insta-label">stay updated:</span>
               <a
                 className="insta-gradient-link"
-                href=""
+                href="https://www.instagram.com/onflowdev"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                instagram/trendflow
+                instagram/onflowdev
               </a>
           </div>
         </div>
       </div>
       <LandingFooter />
+      <DisclaimerFull/>
     </Container>
   );
 };
@@ -95,7 +96,7 @@ const Container = styled.main`
 
   .left-column {
     flex: 1;
-    font-size: 3rem;
+    font-size: 1rem;
     font-weight: bold;
     text-align: center;
   }
@@ -114,7 +115,7 @@ const Container = styled.main`
     }
   }
   .right-column p {
-    color: var(--grey-500);
+    color: var(--grey-600);
   }
 
   .image-section {
