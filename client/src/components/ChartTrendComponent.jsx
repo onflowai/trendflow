@@ -159,7 +159,7 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
 
             {combinedForecast.length > 0 && (
               <button
-                type="button" //HERE
+                type="button"
                 className={`text-button ${showForecast ? 'active' : ''}`}
                 onClick={toggleForecast}
               >
@@ -181,7 +181,7 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
 
         <div className="chart-controls-icons">
           <button
-            type="button" //HERE
+            type="button"
             className={`icon-button ${dataView === 'previous' ? 'active' : ''}`}
             onClick={() => handleArrowClick('previous')}
           >
@@ -189,7 +189,7 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
           </button>
 
           <button
-            type="button" //HERE
+            type="button"
             className={`icon-button ${dataView === 'current' ? 'active' : ''}`}
             onClick={() => handleArrowClick('current')}
           >
@@ -198,7 +198,7 @@ function ChartTrendComponent({ data, forecast, trend, trendLogo }) {
 
           {combinedForecast.length > 0 && (
             <button
-              type="button" //HERE
+              type="button"
               className={`icon-button ${showForecast ? 'active' : ''}`}
               onClick={toggleForecast}
             >
