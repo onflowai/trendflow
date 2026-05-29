@@ -14,6 +14,7 @@ import {
   getUserTrends,
   getSingleTrend,
   uploadTrendSVG,
+  getTrendForEdit,
   getApprovedTrends,
   updateTrendManual,
   getTopViewedTrends,
@@ -101,7 +102,10 @@ get(authenticateUser,
   getSingleTrend); //route to trend page
 router
   .route('/edit/:slug')
-  .get(authenticateUser, validateSlugParam, getSingleTrend)
+  .get(authenticateUser,
+    authorizedAdmin,
+    validateSlugParam,
+    getTrendForEdit)
   .patch(
     authenticateUser,
     authorizedAdmin,
