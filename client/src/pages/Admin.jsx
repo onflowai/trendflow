@@ -109,7 +109,6 @@ export const loader = async ({ request }) => {
 const Admin = () => {
   const navigate = useNavigate();
   const { user } = useOutletContext();
-  console.log("user", user);
   const isAdminPage = user?.role === 'admin' || user?.role === 'superAdmin';
 
   const {
