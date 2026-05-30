@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 function useLocalStorage(key, initialValue) {
   //if localStorage is available (i.e. we're on the client)
@@ -19,18 +19,22 @@ function useLocalStorage(key, initialValue) {
     }
   });
 
-  const setValue = (value) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (localStorageAvailable) {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+  const setValue = useCallback(
+    (value) => {
+      try {
+        setStoredValue((prev) => {
+          const valueToStore = value instanceof Function ? value(prev) : value;
+          if (localStorageAvailable) {
+            window.localStorage.setItem(key, JSON.stringify(valueToStore));
+          }
+          return valueToStore;
+        });
+      } catch (error) {
+        console.error('Error setting localStorage key "' + key + '": ', error);
       }
-    } catch (error) {
-      console.error('Error setting localStorage key "' + key + '": ', error);
-    }
-  }; // creating a setter that updates both state and localStorage (if available)
+    },
+    [key, localStorageAvailable] //fully stable
+  );// creating a setter that updates both state and localStorage (if available)
 
   return [storedValue, setValue];
 }
