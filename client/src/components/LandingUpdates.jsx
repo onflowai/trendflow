@@ -35,7 +35,7 @@ const LandingUpdates = () => {
 
   return (
     <Container>
-      <section className="section section-center" id="updates">
+      <section className="section section-center section-updates" id="updates">
         <LandingTitle title="major" subTitle="updates" />
         <div className="section-center about-center">
           <article className="about-info">
@@ -78,7 +78,8 @@ const LandingUpdates = () => {
 };
 
 const Container = styled.section`
-  padding-bottom: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 
   .slider-wrapper {
     display: flex;
@@ -88,6 +89,10 @@ const Container = styled.section`
     min-height: 90px;
     position: relative;
     margin-bottom: 1rem;
+  }
+
+  .section-title{
+    margin-bottom: 0rem;
   }
 
   .slider-arrow {
