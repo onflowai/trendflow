@@ -33,6 +33,7 @@ import customFetch from '../utils/customFetch';
  *
  */
 //Fetching the trend data
+
 export const loader = async ({ params }) => {
   try {
     const { data } = await customFetch.get('/users/current-user'); // Fetch current user
@@ -103,9 +104,11 @@ const EditTrend = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     trendObject.trendCategory
   );
-  const [selectedTech, setSelectedTech] = useState(
-    trendObject.trendTechs?.[0]?.value ?? ''
-  );
+  const [selectedTechs, setSelectedTechs] = useState(
+  Array.isArray(trendObject.trendTechs)
+    ? trendObject.trendTechs.map((tech) => tech.value).filter(Boolean)
+    : []
+); //storing all selected tech values for the multi selector
   const [showAddTrendModal, setShowAddTrendModal] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState(null);
   const [loadingSlug, setLoadingSlug] = useState(null);
@@ -352,8 +355,8 @@ const EditTrend = () => {
                 trendTechList={trendTechList}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
-                selectedTech={selectedTech}
-                setSelectedTech={setSelectedTech}
+                selectedTechs={selectedTechs}
+                setSelectedTechs={setSelectedTechs}
                 handleApproveClick={handleApproveClick}
                 handleManualApprove={handleManualApprove}
                 handleManualUpdate={handleManualUpdate}
