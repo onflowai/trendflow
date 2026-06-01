@@ -41,7 +41,7 @@ const Container = styled.main`
     background: var(--background-color);
     text-align: center;
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 0%.5rem;
     padding-left: 2rem;
     padding-right: 2rem;
 
