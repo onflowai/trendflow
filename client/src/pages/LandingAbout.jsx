@@ -21,7 +21,7 @@ const cdnLogoDark  = 'https://cdn.trendflowai.com/content/logo-sphere-color-dark
 const LandingAbout = () => {
   const { isDarkTheme } = useTheme();
   const [hasError, setHasError] = useState(false);
-  const cdnSrc   = isDarkTheme ? cdnLogoDark : cdnLogoLight;     // same as HeroAnimated
+  const cdnSrc   = isDarkTheme ? cdnLogoDark : cdnLogoLight;
   const localSrc = isDarkTheme ? logoDark     : logoLight;
 
   return (
@@ -37,7 +37,7 @@ const LandingAbout = () => {
       <div className="about-top">
         <div className="columns">
           <div className="left-column">
-            <h1 className="insta-gradient-link">trendflow</h1>
+            <h1 className="insta-gradient-link">trendflowai</h1>
           </div>
           <div className="right-column">
             <p className="google-code-text">{aboutDescription}</p>
@@ -49,7 +49,7 @@ const LandingAbout = () => {
             className="svg-overlay"
             src={hasError ? localSrc : cdnSrc}
             alt="Logo overlay"
-            onError={() => setHasError(true)}     // identical fallback logic
+            onError={() => setHasError(true)}
             loading="lazy"
             draggable={false}
           />
