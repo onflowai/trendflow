@@ -129,17 +129,19 @@ app.use(
           'data:', //inline images (base64)
           'https://cdn.trendflowai.com', //your CDN
           'https://res.cloudinary.com', //cloudinary images
+          'https://avatars.githubusercontent.com', //gitHub contributor avatar images
           PROD_URL, //your prod domain
           FRONT_URL, //your frontend dev/prod url
-        ],// allowing images site + data + your CDN + cloudinary
+        ],// allowing images site + data + your CDN + cloudinary + GitHub avatars
         connectSrc: [
           "'self'",
           PROD_URL, //api calls to prod
           FRONT_URL, //api calls to dev/prod front
+          'https://api.github.com', //GitHub API calls for repo contributors
           'https://www.google-analytics.com', //GA beacons
           'https://region1.google-analytics.com', //GA regional endpoint
           'https://cloudflareinsights.com', //Cloudflare Insights beacon endpoint
-        ],// connect/fetch/websocket app fetches APIs, add your domains + analytics endpoints
+        ],// connect/fetch/websocket app fetches APIs, add your domains + analytics endpoints + GitHub API
         baseUri: ["'self'"], //trying to avoid iframe/base issues
         frameAncestors: ["'self'"], //prevent being framed
         objectSrc: ["'none'"], //block <object>/<embed> entirely
