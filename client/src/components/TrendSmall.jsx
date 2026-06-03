@@ -60,6 +60,9 @@ function TrendSmall({
   onApproveManual,
   openSourceStatus,
   chartMarginBottom,
+  overlayColor = '--card-highlight',
+  overlayGrain = 22,
+  overlayGrainSize = 120,
 }) {
   const safeTrendTech = String(trendTech || '');
   const [isHovered, setIsHovered] = useState(false);
@@ -99,7 +102,13 @@ function TrendSmall({
     }
   };
   return (
-    <Container style={relatedStyle} onClick={handleCardClick}>
+    <Container
+    style={relatedStyle}
+    onClick={handleCardClick}
+    $overlayColor={overlayColor}
+    $overlayGrain={overlayGrain}
+    $overlayGrainSize={overlayGrainSize}
+    >
       <header className="trend-small-card">
         <div className="overlay">
           <div className={featuredFlag || relatedFlag ? 'info-mini' : 'info'}>
