@@ -6,6 +6,7 @@ import unknownLogo from '../assets/images/open-source-grey.svg';
 import {
   ToggleSlider,
   FormSelector,
+  FormSelectors,
   FallbackChart,
   FormComponent,
   FormComponentLock,
@@ -18,14 +19,19 @@ import { PiFileSvgFill } from 'react-icons/pi';
 import { IoLockClosed } from 'react-icons/io5';
 import { RxUpdate } from 'react-icons/rx';
 
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const EditTrendComponent = ({
   svgUrl,
   trendObject,
   isSubmitting,
-  selectedTech,
+  selectedTechs,
   trendTechList,
-  setSelectedTech,
   handleSVGChange,
+  setSelectedTechs,
   selectedCategory,
   openSourceStatus,
   trendCategoryList,
@@ -166,27 +172,60 @@ const EditTrendComponent = ({
                 <div className="select-locked-input-container">
                   <IoLockClosed className="select-lock-icon" />
                   <div className="locked-input">
-                    <p>{trendObject.trendTechs?.[0]?.value ?? ''}</p>
+                    <p>
+                    {(trendObject.trendTechs || [])
+                      .map((tech) => tech?.value)
+                      .filter(Boolean)
+                      .join(', ')}
+                  </p>
                   </div>
                 </div>
               ) : (
                 <>
-                  <FormSelector
-                    className="form-selector"
-                    name="trendTech"
-                    value={selectedTech}
+                  <FormSelectors
+                    name="trendTechs_display"
+                    labelText=""
+                    value={selectedTechs}
                     list={trendTechList}
-                    onChange={(name, val) => setSelectedTech(val)}
+                    maxSelections={5}
+                    placeholder="Select up to 5 technologies..."
+                    onChange={(name, vals) => setSelectedTechs(vals)}
+                    hight="47px"
+                    borderColor="var(--grey-70)"
+                    hoverBorderColor="var(--grey-100)"
+                    focusBorderColor="var(--primary-300)"
+                    focusBoxShadowColor="var(--primary-100)"
+                    labelFontSize="0.8rem"
+                    labelColor="var(--grey-400)"
+                    labelFontWeight="400"
                   />
+
+                  <input
+                    type="hidden"
+                    name="trendTech"
+                    value={selectedTechs?.[0] || ''} //keeping primary tech for compatibility
+                  />
+
                   <input
                     type="hidden"
                     name="trendTechs"
-                    value={JSON.stringify([
-                      {
-                        value: selectedTech,
-                        techIconUrl: trendObject.trendTechs?.[0]?.techIconUrl ?? '',
-                      },
-                    ])}
+                    value={JSON.stringify(
+                      (selectedTechs || []).map((value) => {
+                        const matchedTech = trendTechList.find((tech) => tech.value === value);
+                        const existingTech = (trendObject.trendTechs || []).find(
+                          (tech) => tech.value === value
+                        );//preserve existing icon when possible
+
+                        return {
+                          value,
+                          techIconUrl:
+                            matchedTech?.image ||
+                            matchedTech?.fullImageUrl ||
+                            existingTech?.techIconUrl ||
+                            '',
+                        };
+                      })
+                    )}
                   />
                 </>
               )}

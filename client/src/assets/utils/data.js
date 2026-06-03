@@ -166,3 +166,1151 @@ export const fullTrademarkDisclaimer = `All trademarks, logos, company names, pr
 
 export const miniTrademarkDisclaimer =
   'All trademarks, logos, company names, product names, and brand names belong to their respective owners. TrendFlow is not affiliated with or endorsed by them.';
+
+
+export const manual = String.raw`
+# Manual
+
+## TrendFlow Usage Guide
+
+### If you want to know how Trendflowai works instead of how to use it please visit __Documentation__ tab.
+
+TrendFlow is a developer-focused trend discovery app for submitting, reviewing, searching, saving, and exploring technologies, projects, companies, tools, and systems.
+
+This guide explains the basic usage flow after creating an account.
+
+## 1. Create An Account
+
+Create an account or log in before submitting or saving trends.
+
+~~~txt
+Account required for:
+- submitting trends
+- saving/bookmarking trends
+- viewing saved trends
+~~~
+
+Guest users can search and view approved public trends, but they cannot save trends.
+
+## 2. Go To The Submit Page
+
+After logging in, open the submit page.
+
+~~~txt
+Navigation:
+Submit Page -> Add Trend
+~~~
+
+A trend can be a:
+
+~~~txt
+- project
+- technology
+- company
+- developer tool
+- framework
+- platform
+- system
+~~~
+
+Example:
+
+~~~txt
+Trend Name: tldr
+Trend Type: Developer CLI Tool
+~~~
+
+## 3. Add Related Techs
+
+Add one or more technologies related to the trend.
+
+~~~txt
+Example:
+Trend: tldr
+
+Related Techs:
+- CLI
+- Shell
+- Bash
+- Node.js
+~~~
+
+Related techs help TrendFlow connect the trend to other tools in the app.
+
+Use existing techs when they already exist. If the correct tech does not exist, choose the closest matching option or submit the trend with the best available relationship.
+
+## 4. Choose A Category
+
+If the trend does not already exist, choose the best category.
+
+~~~txt
+Example:
+Trend: tldr
+Category: Development
+~~~
+
+Pick the category that best describes the main purpose of the trend.
+
+## 5. Submit The Trend
+
+After filling out the trend details, submit it for review.
+
+~~~txt
+Submit Trend
+   ↓
+Review Generated Startup Guide
+   ↓
+Submit For Approval
+~~~
+
+Before submitting, check:
+
+~~~txt
+- trend name
+- category
+- related techs
+- description/startup guide
+- official link if available
+~~~
+
+## 6. Wait For Approval
+
+Submitted trends may need approval before appearing publicly.
+
+~~~txt
+Submitted
+   ↓
+Waiting For Approval
+   ↓
+Approved
+~~~
+
+Once approved, the trend becomes searchable and visible in TrendFlow.
+
+## 7. Search For Trends
+
+Use search to find approved trends.
+
+~~~txt
+Example searches:
+- tldr
+- Next.js
+- Docker
+- OpenCode
+- CLI
+~~~
+
+You can search by:
+
+~~~txt
+- trend name
+- category
+- technology
+- related tech
+~~~
+
+## 8. Filter By Category Or Tech
+
+Use category and tech filters to narrow results.
+
+~~~txt
+Category Filter:
+Development
+
+Tech Filter:
+CLI
+~~~
+
+This helps you find tools within a specific technical area.
+
+## 9. Review The Relationship Graph
+
+Use the relationship graph to explore how trends connect to each other.
+
+~~~txt
+Trend -> Related Techs -> Connected Trends
+~~~
+
+Example:
+
+~~~txt
+tldr
+├── CLI
+├── Bash
+├── Shell
+└── Node.js
+~~~
+
+The graph helps show tools that are similar, connected, or commonly used together.
+
+## 10. Save Trends To Your Account
+
+Logged-in users can save trends.
+
+~~~txt
+Click Bookmark / Save
+~~~
+
+Saved trends are stored in your account so you can return to them later.
+
+~~~txt
+Account -> Saved Trends
+~~~
+
+## 11. View The Blog / Startup Guide
+
+Each trend can include a blog or startup guide.
+
+~~~txt
+Trend Page -> Blog / Guide Section
+~~~
+
+Use this section to understand:
+
+~~~txt
+- what the trend is
+- why it is useful
+- how it works
+- related tools
+- basic usage examples
+~~~
+
+## Basic User Flow
+
+~~~txt
+Create Account
+   ↓
+Go To Submit Page
+   ↓
+Submit Trend
+   ↓
+Add Related Techs
+   ↓
+Choose Category
+   ↓
+Review Generated Guide
+   ↓
+Submit For Approval
+   ↓
+Wait For Approval
+   ↓
+Search Trends
+   ↓
+Review Relationship Graph
+   ↓
+Save Trend
+   ↓
+View Blog / Startup Guide
+~~~
+
+## TL;DR
+
+~~~txt
+1. Create an account.
+2. Go to the submit page.
+3. Submit a trend like a project, tech, company, tool, or system.
+4. Add related techs.
+5. Choose a category if the trend is new.
+6. Review the generated guide.
+7. Submit for approval.
+8. Search approved trends.
+9. Explore the relationship graph.
+10. Save trends to your account.
+11. Read the blog/startup guide.
+~~~
+`;
+
+
+export const contributing = String.raw`
+# Contributing
+
+## Trendflowai Contribution Guide
+
+Trendflowai supports two main types of contributors:
+
+~~~txt
+- Admin contributors
+- Code contributors
+~~~
+
+Admin contributors help review submitted trends, improve generated guides, and keep the platform organized.
+
+Code contributors help improve the Trendflowai application, fix bugs, build features, improve performance, and support the open-source project.
+
+## Requesting To Become An Admin
+
+To request admin access, reach out to the Trendflowai team.
+
+~~~txt
+Contact:
+dev@onflowai.com
+~~~
+
+You can also reach out directly through the official Trendflowai Discord or Instagram.
+
+When requesting admin access, include basic information about yourself.
+
+~~~txt
+Include:
+- your name or username
+- your Trendflowai username
+- your GitHub username
+- your profession or technical background
+- why you want to become an admin contributor
+- what areas you want to help with
+~~~
+
+Example request:
+
+~~~txt
+Subject: Admin Contributor Request
+
+Hello Trendflowai team,
+
+I would like to request admin contributor access.
+
+Trendflowai Username:
+myusername
+
+GitHub:
+https://github.com/myusername
+
+Profession / Background:
+Frontend developer working with React, Node.js, and developer tooling.
+
+Reason:
+I want to help review submitted trends, improve startup guides, and keep technology relationships accurate.
+
+Areas I Can Help With:
+- reviewing submitted trends
+- improving generated blog/startup guide content
+- validating categories and related techs
+- checking official links and project metadata
+~~~
+
+Admin access is reviewed manually. Approval is not automatic.
+
+## Admin Contributor Responsibilities
+
+Admin contributors should help keep Trendflowai clean, accurate, and useful for developers.
+
+~~~txt
+Admin responsibilities:
+- review submitted trends
+- approve valid technology submissions
+- reject spam or low-quality submissions
+- improve generated startup guides
+- check related techs for accuracy
+- verify categories match the trend
+- avoid approving duplicate or misleading trends
+~~~
+
+Admin contributors should not approve content only because it is popular. The goal is to keep Trendflowai useful, technical, and organized.
+
+## Contributing To The Code
+
+Trendflowai is also open to code contributors.
+
+Code contributions can include:
+
+~~~txt
+- bug fixes
+- frontend improvements
+- backend improvements
+- performance improvements
+- accessibility improvements
+- documentation updates
+- UI/UX improvements
+- test coverage
+- security improvements
+- new developer-focused features
+~~~
+
+To request to contribute code, use the same contact process.
+
+~~~txt
+Contact:
+dev@onflowai.com
+Discord:
+Official Trendflowai Discord
+
+Instagram:
+Official Trendflowai Instagram
+~~~
+
+When reaching out, include basic contributor information.
+
+~~~txt
+Include:
+- your name or username
+- your Trendflowai username
+- your GitHub username
+- your profession or technical background
+- what part of the codebase you want to help with
+- why you want to contribute
+- any relevant experience
+~~~
+
+Example request:
+
+~~~txt
+Subject: Code Contributor Request
+
+Hello Trendflowai team,
+
+I would like to contribute to the Trendflowai codebase.
+
+Trendflowai Username:
+myusername
+
+GitHub:
+https://github.com/myusername
+
+Profession / Background:
+Full-stack developer with experience in React, Node.js, Express, MongoDB, and deployment.
+
+Reason:
+I want to help improve the developer experience and contribute to a project that helps people discover and understand technology trends.
+
+Areas I Can Help With:
+- React components
+- API controllers
+- MongoDB models
+- performance fixes
+- bug fixes
+- documentation
+- testing
+~~~
+
+## Project Contribution Expectations
+
+Before contributing code, make sure your changes are clear, focused, and easy to review.
+
+~~~txt
+Good contribution:
+- fixes one issue
+- improves one feature
+- updates related docs
+- avoids unrelated refactors
+- follows existing project style
+- includes a clear explanation
+~~~
+
+Avoid large mixed changes that touch many unrelated files.
+
+~~~txt
+Avoid:
+- random formatting changes
+- unrelated refactors
+- changing project structure without discussion
+- adding large dependencies without approval
+- modifying auth, security, or deployment logic without explanation
+~~~
+
+## Technical Contribution Flow
+
+Use a normal Git contribution workflow.
+
+~~~bash
+# Fork or clone the repository
+git clone https://github.com/your-username/Trendflowai.git
+
+# Move into the project
+cd Trendflowai
+
+# Create a feature branch
+git checkout -b feature/my-change
+~~~
+
+Install dependencies.
+
+~~~bash
+# Install root dependencies if used by the project
+npm install
+
+# Install client dependencies
+cd client
+npm install
+
+# Install server dependencies if separated
+cd ../server
+npm install
+~~~
+
+Run the project locally.
+
+~~~bash
+# Start the development environment
+npm run dev
+~~~
+
+Before submitting changes, run the available checks.
+
+~~~bash
+# Run lint checks
+npm run lint
+
+# Run tests if available
+npm run test
+
+# Run build check
+npm run build
+~~~
+
+Commit your changes with a clear message.
+
+~~~bash
+git add .
+
+git commit -m "Fix trend bookmark guest error"
+~~~
+
+Push your branch.
+
+~~~bash
+git push origin feature/my-change
+~~~
+
+Then open a pull request with a clear explanation.
+
+## Pull Request Notes
+
+A good pull request should explain what changed and why.
+
+~~~txt
+Pull request should include:
+- summary of the change
+- reason for the change
+- files or areas affected
+- screenshots if UI changed
+- testing steps
+- known limitations if any
+~~~
+
+Example pull request description:
+
+~~~txt
+Summary:
+Updated the bookmark error message for guest users.
+
+Reason:
+Guest users were seeing a generic save error instead of being told to create an account.
+
+Changed:
+- updated frontend save handler
+- added guest-specific toast message
+
+Testing:
+- tested as guest user
+- tested as logged-in user
+- confirmed saved trends still work
+~~~
+
+## Code Style
+
+Follow the existing code style in the project.
+
+~~~txt
+Frontend:
+- React
+- styled-components
+- existing component patterns
+- reusable helpers when possible
+
+Backend:
+- Node.js
+- Express
+- MongoDB / Mongoose
+- existing controller and route patterns
+- input validation and safe error handling
+~~~
+
+Keep changes simple and readable.
+
+## Security Notes
+
+Security-related changes should be handled carefully.
+
+~~~txt
+Be careful with:
+- authentication
+- authorization
+- cookies
+- CORS
+- CSP / Helmet
+- file uploads
+- SVG handling
+- user-generated content
+- admin-only routes
+- database queries
+~~~
+
+If your contribution touches security-sensitive code, explain the risk and why the change is safe.
+
+## TL;DR
+
+~~~txt
+To become an admin:
+Contact dev@onflowai.com or reach out through Discord/Instagram.
+Include your Trendflowai username, GitHub username, background, and reason.
+
+To contribute code:
+Use the same contact process.
+Explain what part of the project you want to help with and why.
+
+Good contributions:
+- are focused
+- are technical
+- are easy to review
+- follow existing project patterns
+- include a clear reason
+~~~
+
+## Final Note
+
+Trendflowai is built for developers who want to discover, understand, and connect technology trends.
+
+Contributors should help keep the project useful, technical, accurate, and clean.
+`;
+
+
+export const documentation = String.raw`
+# Documentation
+
+## Trendflowai App Documentation
+
+Trendflowai is a developer-focused app for discovering, submitting, saving, and understanding technology trends.
+
+This documentation explains what the app displays, how to read trend data, how graphs work, what forecast data means, and how relationship views can be used.
+
+## App Issues Or Support
+
+If something in the app does not work correctly, reach out to the Trendflowai team.
+
+~~~txt
+Contact:
+dev@onflowai.com
+~~~
+
+You can also reach out through the official Trendflowai Discord or Instagram.
+
+When reporting an issue, include useful details.
+
+~~~txt
+Include:
+- your Trendflowai username if relevant
+- page where the issue happened
+- what you were trying to do
+- what actually happened
+- browser and device
+- screenshot if possible
+- steps to reproduce the issue
+~~~
+
+Example:
+
+~~~txt
+Page:
+Trend Details Page
+
+Issue:
+Forecast graph did not load.
+
+Steps:
+1. Opened a trend.
+2. Scrolled to the graph section.
+3. Graph stayed empty.
+
+Browser:
+Chrome on macOS
+~~~
+
+## Trend Data Display
+
+Each trend page displays information about a technology, project, company, tool, framework, system, or platform.
+
+A trend page may include:
+
+~~~txt
+- trend name
+- category
+- related technologies
+- open source status
+- trend status
+- trend score
+- view count
+- forecast graph
+- bookmark/save button
+- blog/startup guide
+- relationship data
+~~~
+
+The goal is to help users understand what the trend is, how active it is, what it connects to, and whether it may continue growing.
+
+## Forecast Graph
+
+The forecast graph shows trend activity over time and predicts possible future movement.
+
+Trendflowai uses forecasting to estimate where a trend may be heading.
+
+~~~txt
+Forecast range:
+6 months forward
+~~~
+
+The forecast is generated using **NeuralProphet**, which is a time-series forecasting model.
+
+The graph may display:
+
+~~~txt
+- historical trend data
+- predicted future data
+- upward or downward movement
+- possible growth pattern
+- possible cool-off pattern
+~~~
+
+The forecast should be treated as an estimate, not a guarantee.
+
+~~~txt
+Important:
+Forecasts predict possible movement.
+They do not guarantee future popularity.
+~~~
+
+## Reading The Forecast Graph
+
+Use the graph to understand the direction of a trend.
+
+~~~txt
+Upward movement:
+The trend may be gaining attention.
+
+Flat movement:
+The trend may be stable.
+
+Downward movement:
+The trend may be cooling off.
+
+Mixed movement:
+The trend may be unstable or changing slowly.
+~~~
+
+Example:
+
+~~~txt
+A trend with steady historical growth and a rising 6-month forecast may be considered a stronger growth signal than a trend with short temporary spikes.
+~~~
+
+## Bookmark Button
+
+Under the graph, there may be a bookmark or save button.
+
+This button lets logged-in users save a trend to their account.
+
+~~~txt
+Bookmark / Save:
+Adds the trend to your saved trends list.
+~~~
+
+Saved trends can be used to track technologies you want to revisit later.
+
+~~~txt
+Saved Trends:
+Account -> Saved Trends
+~~~
+
+Guest users must create an account or log in before saving trends.
+
+## Open Source Status
+
+Each trend may display an open source status.
+
+Open source status helps explain whether the project or technology is publicly available as open source.
+
+Supported statuses:
+
+~~~txt
+open
+partial
+closed
+unknown
+~~~
+
+## Open Source Status Meaning
+
+~~~txt
+open:
+The project is open source or mostly open source.
+The source code is publicly available.
+
+partial:
+Some parts are open source, but not everything.
+The project may have open SDKs, clients, tools, or libraries, while the main platform remains closed.
+
+closed:
+The project is not open source.
+The code is private or proprietary.
+
+unknown:
+The open source status could not be confirmed.
+More review may be needed.
+~~~
+
+Example:
+
+~~~txt
+React:
+open
+
+Vercel:
+partial
+
+A private SaaS platform:
+closed
+
+New project with unclear license:
+unknown
+~~~
+
+## Related Techs
+
+Related techs are technologies connected to a trend.
+
+They help explain what the trend is built with, used with, similar to, or commonly related to.
+
+~~~txt
+Related techs can include:
+- frameworks
+- programming languages
+- platforms
+- cloud providers
+- databases
+- runtimes
+- package managers
+- APIs
+- developer tools
+~~~
+
+Example:
+
+~~~txt
+Trend:
+Next.js
+
+Related Techs:
+- React
+- TypeScript
+- Node.js
+- Vercel
+~~~
+
+Related techs also help power relationship views like ViewFlow.
+
+## Trend Status
+
+Trend status explains the current movement pattern of a trend.
+
+Supported statuses:
+
+~~~txt
+breakout
+trending
+cool-off
+static
+undefined
+~~~
+
+## Trend Status Meaning
+
+~~~txt
+breakout:
+The trend is growing quickly or showing a strong upward signal.
+
+trending:
+The trend is actively popular and gaining attention.
+
+cool-off:
+The trend was previously stronger but may be slowing down.
+
+static:
+The trend is stable with limited movement.
+
+undefined:
+The trend does not currently have a clear status.
+~~~
+
+## Trend Status Weight
+
+Trendflowai uses status multipliers when calculating ranking signals.
+
+~~~txt
+breakout:
+1.2
+
+trending:
+1.1
+
+cool-off:
+0.9
+
+static:
+0.8
+
+undefined:
+no strong status boost
+~~~
+
+This means breakout trends get the strongest status boost, while static and cool-off trends receive lower status influence.
+
+## Trend Score Weighting
+
+Trendflowai ranking uses multiple signals.
+
+~~~txt
+weights:
+t_score: 0.4
+views: 0.3
+trendStatus: 0.1
+f_score: 0.2
+~~~
+
+Meaning:
+
+~~~txt
+t_score:
+40% of the ranking signal.
+Represents the main trend score.
+
+views:
+30% of the ranking signal.
+Represents how much attention or traffic the trend has.
+
+trendStatus:
+10% of the ranking signal.
+Adds influence based on breakout, trending, cool-off, or static status.
+
+f_score:
+20% of the ranking signal.
+Represents forecast strength or future prediction signal.
+~~~
+
+Example interpretation:
+
+~~~txt
+A trend with a strong t_score, high views, breakout status, and strong forecast score will rank stronger than a trend with low views and static movement.
+~~~
+
+## Graph Information
+
+Trend graphs are used to understand movement, attention, and forecast direction.
+
+A graph may help answer:
+
+~~~txt
+- Is this trend growing?
+- Is this trend slowing down?
+- Is this trend stable?
+- Did this trend spike recently?
+- Is the forecast positive or negative?
+- Is this trend worth watching?
+~~~
+
+Graph data should be read with context.
+
+~~~txt
+High views alone do not always mean strong future growth.
+
+A strong forecast alone does not always mean the trend is already popular.
+
+Trend status helps explain the current movement pattern.
+
+Related techs help explain where the trend fits technically.
+~~~
+
+## ViewFlow Relationship Graph
+
+ViewFlow is the relationship graph view in Trendflowai.
+
+It displays how trends and technologies connect to each other.
+
+~~~txt
+ViewFlow:
+Trend -> Related Techs -> Connected Trends
+~~~
+
+Example:
+
+~~~txt
+Next.js
+├── React
+├── TypeScript
+├── Node.js
+└── Vercel
+~~~
+
+This helps users visually understand relationships between tools.
+
+## How ViewFlow Displays Information
+
+ViewFlow uses trend and technology relationships to show connections.
+
+~~~txt
+A trend can connect to:
+- its related techs
+- other trends using the same techs
+- similar tools
+- tools in the same category
+- tools commonly used together
+~~~
+
+Example:
+
+~~~txt
+Trend:
+OpenCode
+
+Related Techs:
+- CLI
+- AI Coding Agent
+- TypeScript
+- Node.js
+- Ollama
+
+Connected Trends:
+- Codex
+- Claude Code
+- Cursor
+- Continue
+~~~
+
+This lets users explore a technical ecosystem instead of only viewing one trend at a time.
+
+## How To Interpret ViewFlow
+
+Use ViewFlow to understand where a trend fits.
+
+~~~txt
+If multiple trends share the same related tech:
+They may belong to the same technical ecosystem.
+
+If a trend connects to many important tools:
+It may be part of a larger developer workflow.
+
+If a trend has very few connections:
+It may be new, niche, or missing relationship data.
+
+If many connected trends are growing:
+The whole category or ecosystem may be gaining attention.
+~~~
+
+Example:
+
+~~~txt
+If several AI coding tools are connected through CLI, VS Code, Ollama, and LLMs, that may show growth in local AI developer tooling.
+~~~
+
+## Using ViewFlow For Research
+
+ViewFlow can be used to research technical relationships.
+
+~~~txt
+Use ViewFlow to:
+- discover similar tools
+- understand what technologies are commonly used together
+- compare competing projects
+- identify ecosystems
+- find related trends to save
+- explore new categories
+~~~
+
+Example workflow:
+
+~~~txt
+Search:
+OpenCode
+
+Open ViewFlow:
+Review related techs and connected trends.
+
+Compare:
+Codex, Claude Code, Cursor, Continue, Ollama.
+
+Save:
+Bookmark the trends you want to track.
+~~~
+
+## Blog / Startup Guide
+
+Each trend may include a blog or startup guide.
+
+The blog explains what the trend is and how it can be used.
+
+~~~txt
+Blog section may include:
+- introduction
+- why it matters
+- use cases
+- technical setup
+- code examples
+- related tools
+- production notes
+~~~
+
+This section is meant to help users quickly understand the trend without needing to search across many different sources.
+
+## Saved Trends
+
+Saved trends allow users to keep track of tools they care about.
+
+~~~txt
+Use saved trends for:
+- tools you want to research later
+- technologies you are considering using
+- competitors you want to compare
+- trends you want to watch over time
+~~~
+
+To save a trend, use the bookmark button on the trend page or card.
+
+## TL;DR
+
+~~~txt
+Trendflowai displays:
+- trend data
+- related techs
+- open source status
+- trend status
+- forecast graphs
+- saved/bookmarked trends
+- blogs/startup guides
+- ViewFlow relationship graphs
+
+Forecast graph:
+Uses NeuralProphet to predict possible movement 6 months forward.
+
+Open source status:
+open, partial, closed, unknown.
+
+Trend status:
+breakout, trending, cool-off, static, undefined.
+
+Ranking weights:
+t_score: 0.4
+views: 0.3
+trendStatus: 0.1
+f_score: 0.2
+
+ViewFlow:
+Shows how trends and technologies relate to each other.
+
+Support:
+Contact dev@onflowai.com for app issues.
+~~~
+
+## Final Note
+
+Trendflowai is designed to help users understand technology trends through data, forecasts, relationships, and technical context.
+
+Use the graphs to understand movement, use related techs to understand technical connections, use ViewFlow to explore ecosystems, and save trends you want to track over time.
+`;

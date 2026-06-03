@@ -6,30 +6,32 @@ import styled from 'styled-components';
  * @returns 
  */
 const ToggleSlider = ({ options, value, onChange }) => {
+  const EDGE_PADDING = '0.35rem';
   const currentIdx = options.findIndex((opt) => opt.value === value);// finding the index and object for the current value
   const currentOption = options[currentIdx] || {};
-
   const handleClick = (idx) => {
     if (onChange) onChange(options[idx].value);
   };
   return (
     <Container className="slider" data-count={options.length}>
       <div className="slider__row">
-        {/* Conditionally render icon */}
         {currentOption.icon && (
-          <img 
+          <img
             src={currentOption.icon}
             alt={`${currentOption.label} icon`}
             className="slider__icon"
             draggable={false}
           />
         )}
-        <div className="slider-track">
+        <div
+          className="slider-track"
+          style={{ '--edge-padding': EDGE_PADDING }} //pass padding into css
+        >
           <div
             className="slider-thumb"
             style={{
-              width: `${100 / options.length}%`,
-              left: `${(100 / options.length) * currentIdx}%`,
+              width: `calc((100% - (${EDGE_PADDING} * 2)) / ${options.length})`, //thumb respects edge padding
+              left: `calc(${EDGE_PADDING} + ((100% - (${EDGE_PADDING} * 2)) / ${options.length}) * ${currentIdx})`,//thubm starts after left padding
             }}
           />
           {options.map((option, idx) => (
@@ -74,16 +76,17 @@ const Container = styled.div`
   }
 
   .slider-track {
-    flex: 1;
-    position: relative;
-    height: 40px;
-    background: var(--grey-50);
-    border-radius: var(--round-radius);
-    border: 1.5px solid var(--grey-70);
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
+  flex: 1;
+  position: relative;
+  height: 40px;
+  background: var(--grey-50);
+  border-radius: var(--round-radius);
+  border: 1.5px solid var(--grey-70);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 var(--edge-padding, 0.5rem); //adds space only on both outer ends
+}
 
   .slider-thumb {
     position: absolute;
@@ -92,7 +95,7 @@ const Container = styled.div`
     left: 0;
     background: var(--primary-300, #6d8bfa);
     border-radius: 18px;
-    z-index: 1;
+    //z-index: 1;
     transition: left 0.3s cubic-bezier(.6,.4,0,1), background 0.25s;
     box-shadow: 0 2px 8px rgba(60,80,150,0.08);
     pointer-events: none;
@@ -101,7 +104,7 @@ const Container = styled.div`
   .slider-option {
     flex: 1 1 0;
     position: relative;
-    z-index: 2;
+    //z-index: 2;
     height: 44px;
     background: transparent;
     border: none;

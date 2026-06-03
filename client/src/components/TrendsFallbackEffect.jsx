@@ -5,28 +5,44 @@ import { useTheme } from '../context/ThemeContext';
 /**
  * TrendsFallbackEffect Carousel displays random project icons in a spin mode active = true or
  * in no movement active = false, total icons in the carousel iconCount = 14 and speed spinSpeed
- * single RAF loop with phase state machine adaptive strip repetition so small screens never run out of icons
- * resize safe recompute sizing + snap current frame cleanly visibilitychange safety resumes when tab/app comes back
+ * iconSize controls icon box size in px while keeping default adaptive sizing
+ * carouselHeight controls shell height while keeping default height/min-height behavior
  */
-const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 }) => {
+const TrendsFallbackEffect = ({
+  active = true,
+  iconCount = 14,
+  spinSpeed = 55,
+  iconSize = null,
+  carouselHeight = null,
+}) => {
   const { isDarkTheme } = useTheme();
   const icons = useMemo(() => {
     const modules = import.meta.glob('../assets/images/icons/*.svg', {
       eager: true,
       as: 'url',
     });
-    const urls = Object.values(modules);
+
+    const cdnBase = String(import.meta.env.VITE_ASSET_CDN_BASE || '').replace(/\/+$/, '');
+    const urls = Object.entries(modules).map(([modulePath, localUrl]) => {
+      const fileName = modulePath.split('/').pop() || ''; //use local file name to build featured cdn path
+      const cdnUrl = cdnBase ? `${cdnBase}/featured/${fileName}` : ''; //remote url mirrors filename under /featured
+      return {
+        localUrl,
+        cdnUrl,
+        src: cdnUrl || localUrl,
+      }; // try cdn first when configured otherwise use local directly
+    });
+
     return urls.slice(0, Math.max(1, Math.min(iconCount, urls.length)));
   }, [iconCount]);
 
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const itemRefs = useRef([]);
-
   const rafRef = useRef(null);
 
   const animRef = useRef({
-    phase: 'idle', // 'spin' | 'rest' | 'idle'
+    phase: 'idle',
     phaseStartTs: 0,
     spinDurationMs: 0,
     restDurationMs: 0,
@@ -38,19 +54,33 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
     itemPx: 0,
     centerPx: 0,
     viewW: 0,
-    running: false,// used for resume safety
+    running: false,
   });
 
   const [metrics, setMetrics] = useState({ w: 0, h: 0 });
-  const [rev, setRev] = useState(0); // forces rebuild when sizing changes
+  const [rev, setRev] = useState(0);
+  const fixedIconSize = useMemo(() => {
+    if (iconSize === null || iconSize === undefined || iconSize === '') return null;
+
+    const nextSize = Number(iconSize);
+    if (!Number.isFinite(nextSize)) return null;
+    return clamp(Math.round(nextSize), 24, 220);
+  }, [iconSize]);
+
+  const shellHeight = useMemo(() => {
+    return toCssSize(carouselHeight);
+  }, [carouselHeight]);
+
   useEffect(() => {
     if (!viewportRef.current) return;
-
     const el = viewportRef.current;
     const ro = new ResizeObserver(() => {
       const r = el.getBoundingClientRect();
-      setMetrics({ w: Math.round(r.width), h: Math.round(r.height) });
-    });  // eesizeObserver update viewport width/height
+      setMetrics({
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+      });
+    });
 
     ro.observe(el);
     return () => ro.disconnect();
@@ -59,35 +89,32 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
   useEffect(() => {
     if (!metrics.w || icons.length <= 0) return;
 
-    const w = metrics.w;//for small-screen slightly smaller min
-    const itemPx = clamp(Math.round(w * 0.16), 48, 120);
-    const gapPx = clamp(Math.round(w * 0.035), 8, 22);
+    const w = metrics.w;
+    const adaptiveItemPx = clamp(Math.round(w * 0.16), 48, 120);
+    const itemPx = fixedIconSize || adaptiveItemPx;
+    const gapPx = clamp(Math.round(itemPx * 0.22), 8, 26);
     const stepPx = itemPx + gapPx;
-
     const trackPx = stepPx * icons.length;
     const centerPx = w / 2;
-
     const a = animRef.current;
+
     a.itemPx = itemPx;
     a.stepPx = stepPx;
     a.trackPx = trackPx;
     a.centerPx = centerPx;
     a.viewW = w;
-    a.offset = mod(a.offset, trackPx);// keep offset valid after resizing
+    a.offset = mod(a.offset, trackPx);
 
-    setRev((x) => x + 1);//triggers re-render of strip with new sizing
-  }, [metrics.w, icons.length]);  // build sizing model when metrics/icons change
+    setRev((x) => x + 1);
+  }, [metrics.w, icons.length, fixedIconSize]);
 
   const beginSpin = () => {
     const a = animRef.current;
     if (!a.trackPx || !a.stepPx || !a.itemPx || !a.centerPx) return;
-
-    const durMs = randInt(2000, 3000);
-    const speedN = clamp01(spinSpeed / 100);
-
-    const loops = 1 + Math.floor(speedN * 3) + randInt(0, 1);
+    const speedN = clamp01(Number(spinSpeed) / 100);
+    const durMs = Math.round(lerp(4800, 900, speedN));
+    const loops = Math.max(1, Math.round(lerp(1, 6, speedN)));
     const targetIdx = randInt(0, icons.length - 1);
-
     const i = targetIdx + loops * icons.length;
     const toOffset = i * a.stepPx + a.itemPx / 2 - a.centerPx;
 
@@ -96,41 +123,43 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
     a.spinDurationMs = durMs;
     a.fromOffset = a.offset;
     a.toOffset = toOffset;
-  };// phase helper chooses next spin target
+  };
 
   const beginRest = () => {
     const a = animRef.current;
+
     a.phase = 'rest';
     a.phaseStartTs = performance.now();
     a.restDurationMs = 3000 + randInt(-180, 220);
-    a.offset = mod(a.toOffset, a.trackPx); //snap clean
+    a.offset = mod(a.toOffset, a.trackPx);
+
     applyFrame(true);
   };
 
   const tick = () => {
     const a = animRef.current;
-
     if (!a.running) return;
-
     const now = performance.now();
-
     if (a.phase === 'spin') {
       const t = clamp01((now - a.phaseStartTs) / a.spinDurationMs);
       const eased = easeOutCubic(t);
+
       a.offset = lerp(a.fromOffset, a.toOffset, eased);
+
       applyFrame(false);
+
       if (t >= 1) beginRest();
     } else if (a.phase === 'rest') {
-      applyFrame(false);//keep frame applied (cheap)
+      applyFrame(false);
+
       const t = now - a.phaseStartTs;
+
       if (t >= a.restDurationMs) {
         beginSpin();
       }
-    } else {
-      //idle: do nothing
     }
     rafRef.current = requestAnimationFrame(tick);
-  }; //main RAF loop single source of truth
+  };
 
   const stop = () => {
     const a = animRef.current;
@@ -142,9 +171,8 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
 
   const start = () => {
     const a = animRef.current;
-    stop();//ensure clean start
+    stop();
     if (!active || icons.length <= 1 || !metrics.w) return;
-
     a.running = true;
     beginSpin();
     rafRef.current = requestAnimationFrame(tick);
@@ -158,32 +186,36 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
     start();
     return () => stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, icons.length, metrics.w, spinSpeed]);//start/stop based on active/icons/metrics
+  }, [active, icons.length, metrics.w, spinSpeed, fixedIconSize]);
 
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === 'visible') {
-        // restart clean when coming back
         if (active) start();
       } else {
         stop();
       }
     };
+
     document.addEventListener('visibilitychange', onVis);
+
     return () => document.removeEventListener('visibilitychange', onVis);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, icons.length, metrics.w]);//resume safety for mobile/tab throttling
+  }, [active, icons.length, metrics.w, spinSpeed, fixedIconSize]);
 
   const applyFrame = (force = false) => {
     const a = animRef.current;
     const track = trackRef.current;
+
     if (!track || !a.trackPx || !a.stepPx || !a.itemPx || !a.viewW) return;
 
     const off = mod(a.offset, a.trackPx);
+
     track.style.transform = `translate3d(${-off}px, 0, 0)`;
 
     const halfW = a.viewW / 2;
-    const edgeScale = 1.18; // slightly calmer on small screens
+    const edgeScale = 1.18;
     const centerScale = 0.70;
 
     for (let i = 0; i < itemRefs.current.length; i++) {
@@ -195,7 +227,7 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
       const distN = clamp01(Math.abs(itemCenter - a.centerPx) / halfW);
 
       const scale = lerp(centerScale, edgeScale, Math.pow(distN, 0.85));
-      const alpha = lerp(0.55, 0.95, distN);//make center MORE visible your previous math inverted it
+      const alpha = lerp(0.55, 0.95, distN);
 
       el.style.opacity = `${alpha}`;
       el.style.transform = `translate3d(${baseX}px, -50%, 0) scale(${scale})`;
@@ -211,19 +243,16 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
     itemRefs.current = [];
 
     const baseCount = icons.length;
-
-    // ensure we render enough to cover viewport twice + extra
     const needed = Math.ceil((metrics.w * 2) / a.stepPx) + baseCount * 2;
     const total = clamp(needed, baseCount * 3, baseCount * 8);
-
-    // center the strip around 0 so translate works smoothly
     const startK = -Math.floor(total / 2);
-
     const items = [];
+
     for (let n = 0; n < total; n++) {
       const k = startK + n;
       const idx = mod(k, baseCount);
       const baseX = k * a.stepPx;
+      const icon = icons[idx]; //each item carries both remote and local urls
 
       items.push(
         <IconItem
@@ -237,36 +266,47 @@ const TrendsFallbackEffect = ({ active = true, iconCount = 14, spinSpeed = 55 })
             opacity: 0.9,
           }}
         >
-          <img src={icons[idx]} alt="" draggable={false} />
+          <img
+            src={icon.src}
+            alt=""
+            draggable={false}
+            onError={(e) => {
+              if (e.currentTarget.dataset.fallbackApplied === 'true') return; //avoid infinite loops if local is also missing
+              e.currentTarget.dataset.fallbackApplied = 'true'; //mark that fallback has been used once
+              e.currentTarget.src = icon.localUrl; //fall back to bundled local asset when cdn misses
+            }}
+          />
         </IconItem>
       );
     }
 
     return items;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [icons, metrics.w, rev]);  // render strip adaptive repeats so viewport always filled + buffer
+  }, [icons, metrics.w, rev]);
 
   useEffect(() => {
     if (!renderedItems.length) return;
+
     applyFrame(true);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [renderedItems]);
 
-  if (!icons.length) return <Shell aria-label="Loading effect" />;
+  if (!icons.length) {
+    return <Shell aria-label="Loading effect" $carouselHeight={shellHeight} />;
+  }
 
   return (
-    <Shell aria-label="Loading effect">
-    <Blob $isDarkTheme={isDarkTheme} className="blob blob-1" /> {/*HERE*/}
-    <Blob $isDarkTheme={isDarkTheme} className="blob blob-2" /> {/*HERE*/}
-    <Blob $isDarkTheme={isDarkTheme} className="blob blob-3" /> {/*HERE*/}
-
+    <Shell aria-label="Loading effect" $carouselHeight={shellHeight}>
+      <Blob $isDarkTheme={isDarkTheme} className="blob blob-1" />
+      <Blob $isDarkTheme={isDarkTheme} className="blob blob-2" />
+      <Blob $isDarkTheme={isDarkTheme} className="blob blob-3" />
       <Vignette />
-
       <CarouselViewport ref={viewportRef}>
         <CarouselTrack ref={trackRef}>{renderedItems}</CarouselTrack>
         <CenterMask />
       </CarouselViewport>
-
       <GlassHighlight />
     </Shell>
   );
@@ -281,7 +321,15 @@ const clamp01 = (v) => clamp(v, 0, 1);
 const mod = (n, m) => ((n % m) + m) % m;
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-// ===== styles (kept basically the same) =====
+const toCssSize = (value) => {
+  if (value === null || value === undefined || value === '') return null;
+
+  if (typeof value === 'number') return `${value}px`;
+
+  return String(value);
+};
+
+// ===== styles =====
 
 const drift1 = keyframes`
   0%   { transform: translate(-12%, -10%) scale(1.15); }
@@ -313,14 +361,13 @@ const hueSwim = keyframes`
 const Shell = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 320px;
+  height: ${(p) => p.$carouselHeight || '100%'};
+  min-height: ${(p) => p.$carouselHeight || '320px'};
   border-radius: var(--input-radius-rounded);
   border: 1.5px solid var(--grey-50);
   background: transparent;
   overflow: hidden;
   isolation: isolate;
-
   will-change: transform;
 
   &::before {
@@ -342,27 +389,27 @@ const Blob = styled.div`
   left: -25%;
   top: -25%;
 
-    background: ${(p) =>
+  background: ${(p) =>
     p.$isDarkTheme
-      ? `radial-gradient(50% 50% at 20% 30%, rgba(70, 65, 222, 0.183) 0%, rgba(53,47,220,0.00) 72%),
-         radial-gradient(50% 50% at 55% 80%, rgba(90, 47, 199, 0.34) 0%, rgba(255,209,25,0.00) 70%),
-         radial-gradient(50% 50% at 85% 72%, rgba(207,125,71,0.14) 0%, rgba(207,125,71,0.00) 78%),
-         radial-gradient(50% 50% at 40% 10%, rgba(112, 150, 255, 0.396) 0%, rgba(255,209,25,0.00) 74%),
-         radial-gradient(50% 50% at 40% 10%, rgba(40, 69, 125, 0.257) 0%, rgba(255,209,25,0.00) 74%)`
+      ? `radial-gradient(50% 20% at 20% 30%, rgba(70, 65, 222, 0.093) 0%, rgba(53,47,220,0.00) 62%),
+         radial-gradient(50% 20% at 55% 80%, rgba(90, 47, 199, 0.34) 0%, rgba(255,209,25,0.00) 60%),
+         radial-gradient(50% 20% at 85% 72%, rgba(207,125,71,0.14) 0%, rgba(207,125,71,0.00) 68%),
+         radial-gradient(50% 50% at 40% 10%, rgba(112, 150, 255, 0.256) 0%, rgba(255,209,25,0.00) 64%),
+         radial-gradient(30% 50% at 40% 10%, rgba(40, 68, 125, 0.203) 0%, rgba(255,209,25,0.00) 64%)`
       : 'transparent'};
 
-  //filter: blur(60px);
-  //opacity: 0.82;
   mix-blend-mode: screen;
 
   &.blob-1 {
     animation: ${drift1} 8.6s ease-in-out infinite, ${hueSwim} 6.4s ease-in-out infinite;
   }
+
   &.blob-2 {
     animation: ${drift2} 10.4s ease-in-out infinite, ${hueSwim} 7.2s ease-in-out infinite;
     opacity: 0.98;
     filter: blur(18px);
   }
+
   &.blob-3 {
     animation: ${drift3} 9.6s ease-in-out infinite, ${hueSwim} 8.0s ease-in-out infinite;
     opacity: 0.58;
@@ -424,5 +471,4 @@ const CenterMask = styled.div`
   inset: 0;
   pointer-events: none;
   z-index: 4;
-
 `;

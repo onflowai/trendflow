@@ -16,10 +16,12 @@ import {
   LandingNavbar,
   StructuredData,
   LandingUpdates,
+  DisclaimerMini,
   LandingServices,
   CustomErrorToast,
   CustomSuccessToast,
   PaginationFeatured,
+  TrendsFallbackEffect,
   FeaturedTrendsMobile,
   FeaturedTrendsDesktop,
 } from '../components';
@@ -219,6 +221,9 @@ const Landing = () => {
           <LandingNavbar />
         </div>
         <LandingHero guestUser={guestUser} />
+        <div className="landing-trends-carousel">
+           <TrendsFallbackEffect active={true} iconCount={45} spinSpeed={7} iconSize={56} carouselHeight={110} />
+        </div>
         <LandingServices />
         <LandingUpdates />
         <section id="trends"></section>
@@ -243,6 +248,7 @@ const Landing = () => {
         </div>
       </div>
       <LandingFooter />
+      <DisclaimerMini/>
     </Container>
   );
 };

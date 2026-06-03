@@ -189,7 +189,6 @@ const Profile = () => {
     switch (action) {
       case 'verify':
         //TODO: perform verify profile action
-        //console.log('Verify profile action triggered');
         break;
       case 'delete':
         setIsDeleteModalOpen(true); // delete profile action

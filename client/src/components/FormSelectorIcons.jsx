@@ -94,19 +94,31 @@ const getCustomStyles = ({
   focusBorderColor = 'var(--primary-200)',
   focusBoxShadowColor = 'var(--primary-400)',
   }) => ({ 
-  control: (styles, state) => ({
+  control: (styles, state) => {
+  const activeBorderColor = state.isFocused
+    ? focusBorderColor
+    : borderColor || 'var(--grey-70)';
+
+  return {
     ...styles,
     borderRadius: '8px',
-    border: '1.5px solid',
-    borderColor: state.isFocused ? focusBorderColor : borderColor, //initial border color lives here
+    borderWidth: '1.5px',
+    borderStyle: 'solid',
+    borderColor: activeBorderColor,
     backgroundColor: 'var(--selector-main-color)',
     minHeight: hight,
-    boxShadow: state.isFocused ? `0 0 0 1px ${focusBoxShadowColor}` : 'none', //focus outline color
+    boxShadow: state.isFocused
+      ? `0 0 0 1px ${focusBoxShadowColor}`
+      : 'none',
     cursor: 'pointer',
+
     '&:hover': {
-      borderColor: state.isFocused ? focusBorderColor : hoverBorderColor, //hover border color
+      borderColor: state.isFocused
+        ? focusBorderColor
+        : hoverBorderColor || activeBorderColor,
     },
-  }),
+  };
+},
 
   valueContainer: (styles) => ({
     ...styles,
@@ -249,13 +261,13 @@ const FormSelectorIcons = ({
 }) => {
   const selectedValues = Array.isArray(value) ? value : [];
 
-  const handleChange = (selectedOptions) => {
-    const next = Array.isArray(selectedOptions)
-      ? selectedOptions.slice(0, maxSelections)
-      : [];
+  const handleChange = (selectedOptions, meta) => { //meta gives action info
+  const next = Array.isArray(selectedOptions)
+    ? selectedOptions.slice(0, maxSelections)
+    : [];
 
-    if (onChange) onChange(name, next);
-  };
+  if (onChange) onChange(name, next, meta); //pass meta up
+};
 
   return (
     <Container>

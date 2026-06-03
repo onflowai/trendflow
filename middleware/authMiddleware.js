@@ -13,8 +13,8 @@ import { verifyJWT } from '../utils/tokenUtils.js';
  */
 const rolePermissions = {
   user: ['read', 'write'],
-  admin: ['read', 'write'],
-  superAdmin: ['read', 'write', 'delete'],
+  admin: ['read', 'write', 'trend:edit'],
+  superAdmin: ['read', 'write', 'delete', 'trend:edit'],
   guestUser: ['read'],
 };
 /**

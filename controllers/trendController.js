@@ -56,6 +56,7 @@ export const submitTrend = async (req, res) => {
   }//check if exact trend already exists
 
   const createdBy = req.user.userID;// storing current authenticated user id as author of created trend
+  const isAdmin = req.user?.role === 'admin' || req.user?.role === 'superAdmin';
 
   //only accepting field EXPECTED from UI during submission:
   const {
@@ -100,7 +101,7 @@ export const submitTrend = async (req, res) => {
     openSourceStatus: safeOpenSourceStatus,
     createdBy,
     isApproved: false,
-    isSubmittedForApproval: false,
+    isSubmittedForApproval: !isAdmin,
   });//create the trend document as unapproved
 
   const primaryTechValue = trendTechs[0]?.value ?? ''; // primary tech
@@ -146,9 +147,12 @@ export const submitTrend = async (req, res) => {
 
   await draftTrend.save();// persist blog fields onto the created trend document
 
-  res.status(StatusCodes.CREATED).json({ // respond 201 created
-    trendObject: draftTrend, // return full draft trend to client
-  });
+  res.status(StatusCodes.CREATED).json({
+  trendObject: draftTrend,
+  msg: isAdmin
+    ? 'Draft trend created'
+    : 'Trend submitted for admin approval',
+});
 }; //end SUBMIT
 
 
@@ -373,7 +377,7 @@ export const getSingleTrend = async (req, res) => {
     const createdById = trendObject.createdBy?._id ? String(trendObject.createdBy._id) : null;
 
     const isOwner = !!userID && !!createdById && userID === createdById;
-    const isAdmin = role === 'admin';
+    const isAdmin = ['admin', 'superAdmin'].includes(String(role).trim());
     const isApproved = trendObject.isApproved === true;
 
     if (!isApproved && !isAdmin && !isOwner) {
@@ -402,6 +406,40 @@ export const getSingleTrend = async (req, res) => {
     });
   }
 }; //end single trend
+
+/**
+ * GET TREND FOR ADMIN EDIT PAGE
+ * Admin can load user-submitted unapproved trends
+ */
+export const getTrendForEdit = async (req, res) => {
+  const { slug } = req.params;
+
+  const trendObject = await trendModel
+    .findOne({ slug })
+    .populate(
+      'createdBy',
+      'username profile_img githubUsername privacy isDeleted'
+    )
+    .populate(
+      'blogLastEditedBy',
+      'username profile_img githubUsername privacy isDeleted'
+    );
+
+  if (!trendObject) {
+    throw new NotFoundError('Trend not found');
+  }
+
+  trendObject.createdBy = normalizeCreatorForTrend(trendObject.createdBy); //keep creator privacy logic
+  trendObject.blogLastEditedBy = normalizeCreatorForTrend(
+    trendObject.blogLastEditedBy
+  ); //keep editor privacy logic
+
+  trendObject.generatedBlogPost = sanitizeMarkdown(
+    trendObject.generatedBlogPost
+  ); //sanitize markdown for edit page too
+
+  res.status(StatusCodes.OK).json({ trendObject });
+};
 
 /**
  * UPDATE TREND (admin only setup in route middleware) only accessible before the Trend has been approved, after this controller is not reachable

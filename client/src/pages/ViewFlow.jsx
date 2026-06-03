@@ -26,13 +26,19 @@ import {
 import customFetch from '../utils/customFetch';
 import { getFullIconUrl } from '../utils/urlHelper';
 import {
-  ContentRowComponent,
-  CustomErrorToast,
+  Loading,
   IconCategory,
-  IconTechnology,
   SEOProtected,
+  IconTechnology,
+  CustomErrorToast,
+  ContentRowComponent,
 } from '../components';
 import { PiHashDuotone, PiEyeLight, PiTrendUp } from 'react-icons/pi';
+import {
+  buildViewFlowCacheKey,
+  getCachedViewFlow,
+  setCachedViewFlow,
+} from '../utils/viewFlowCache';
 
 
 /**
@@ -46,7 +52,7 @@ const INITIAL_ZOOM_CLICKS = 7;// zoom-in of about 7
 const ZOOM_CLICK_FACTOR = 1.2;// reactflow-style zoom multiplier
 
 const DESKTOP_VIEW_LIMIT = 72;
-const MOBILE_VIEW_LIMIT = 26;
+const MOBILE_VIEW_LIMIT = 20;
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
@@ -54,44 +60,53 @@ export const loader = async ({ request }) => {
   ]);
 
   const isMobileRequest =
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(max-width: 768px)').matches;
-  params.viewMode = isMobileRequest ? 'mobile' : 'desktop'; //HERE
-  params.limit = params.limit || (isMobileRequest ? MOBILE_VIEW_LIMIT : DESKTOP_VIEW_LIMIT); //HERE
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(max-width: 768px)').matches;
+
+  params.viewMode = isMobileRequest ? 'mobile' : 'desktop';
+  params.limit =
+    params.limit || (isMobileRequest ? MOBILE_VIEW_LIMIT : DESKTOP_VIEW_LIMIT);
+
+  const cacheKey = buildViewFlowCacheKey(params);
 
   try {
-    const { data } = await customFetch.get('/views/approved-view-flow', {
-      params,
-    });
+    let cachedGraphPayload = getCachedViewFlow(cacheKey);
+    if (!cachedGraphPayload) {
+      const { data } = await customFetch.get('/views/approved-view-flow', {
+        params,
+      });
 
-    const defaultTrendSlug = data?.meta?.defaultTrendSlug;
+      const defaultTrendSlug = data?.meta?.defaultTrendSlug;
+      let initialTrendPreview = null;
 
-    let initialTrendPreview = null;
-
-    if (defaultTrendSlug) {
-      const { data: previewData } = await customFetch.get(
-        `/views/trend-preview/${defaultTrendSlug}`
-      );
-
-      initialTrendPreview = previewData.trendPreview || null;
+      if (defaultTrendSlug) {
+        const { data: previewData } = await customFetch.get(
+          `/views/trend-preview/${defaultTrendSlug}`
+        );
+        initialTrendPreview = previewData.trendPreview || null;
+      }
+      cachedGraphPayload = {
+        graphData: {
+          nodes: data.nodes || [],
+          edges: data.edges || [],
+          meta: data.meta || null,
+        },
+        initialTrendPreview,
+        searchValues: params,
+      };
+      setCachedViewFlow(cacheKey, cachedGraphPayload); //cacheing the graph only
     }
 
     const { data: savedTrendsData } = await customFetch.get(
       '/users/saved-trends'
-    );
+    ); //im fresh.. FRESH.. exciting.. 
 
     const savedTrendIds =
       savedTrendsData?.savedTrends?.map((trend) => trend._id) || [];
 
     return {
-      graphData: {
-        nodes: data.nodes || [],
-        edges: data.edges || [],
-        meta: data.meta || null,
-      },
-      initialTrendPreview,
+      ...cachedGraphPayload,
       savedTrendIds,
-      searchValues: params,
     };
   } catch (error) {
     toast.error(<CustomErrorToast message={error?.response?.data?.msg} />);
@@ -419,21 +434,19 @@ const ViewFlow = () => {
   const { isMobile } = useWindowSize();
 
   const handleFlowInit = async (reactFlowInstance) => {
-    await reactFlowInstance.fitView({
-      padding: 0.18,
-    });
-
-    const fittedZoom = reactFlowInstance.getZoom();
-
-    const nextZoom = Math.min(
-      fittedZoom * Math.pow(ZOOM_CLICK_FACTOR, INITIAL_ZOOM_CLICKS),
-      2 //respects your maxZoom
-    );
-
-    reactFlowInstance.zoomTo(nextZoom, {
-      duration: 0,
-    });
-  };
+  await reactFlowInstance.fitView({
+    padding: isMobile ? 0.08 : 0.18,
+  });
+  if (isMobile) return; //do not force zoom on mobile
+  const fittedZoom = reactFlowInstance.getZoom();
+  const nextZoom = Math.min(
+    fittedZoom * Math.pow(ZOOM_CLICK_FACTOR, INITIAL_ZOOM_CLICKS),
+    2
+  );
+  reactFlowInstance.zoomTo(nextZoom, {
+    duration: 0,
+  });
+};
 
   const {
     graphData,
@@ -485,23 +498,47 @@ const selectedPanelKey = selectedPanel
       savedTrendIds.includes(selectedTrendPreview.trendId)
   );
 
-  const layoutedGraph = useMemo(() => {
+const [nodes, setNodes, onNodesChange] = useNodesState([]);
+const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+const [isGraphLoading, setIsGraphLoading] = useState(true);
+
+useEffect(() => {
+  let isMounted = true;
+
+  setIsGraphLoading(true);
+  setNodes([]);
+  setEdges([]);
+
+  const buildGraph = () => {
     if (!graphData?.nodes?.length) {
-      return {
-        nodes: [],
-        edges: [],
-      };
+      if (!isMounted) return;
+
+      setNodes([]);
+      setEdges([]);
+      setIsGraphLoading(false);
+      return;
     }
-  return buildForceLayout(graphData.nodes, graphData.edges, isMobile);
-}, [graphData, isMobile]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedGraph.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedGraph.edges);
+    const layoutedGraph = buildForceLayout(
+      graphData.nodes,
+      graphData.edges,
+      isMobile
+    );
 
-  useEffect(() => {
+    if (!isMounted) return;
+
     setNodes(layoutedGraph.nodes);
     setEdges(layoutedGraph.edges);
-  }, [layoutedGraph, setNodes, setEdges]);
+    setIsGraphLoading(false);
+  };
+
+  const timer = window.setTimeout(buildGraph, 80); //loading render first
+
+  return () => {
+    isMounted = false;
+    window.clearTimeout(timer);
+  };
+}, [graphData, isMobile, setNodes, setEdges]);
 
   useEffect(() => {
     if (!selectedPanel) {
@@ -776,7 +813,12 @@ const selectedPanelKey = selectedPanel
               </div>
             )}
           </div>
-        <div className={`graph-shell ${panelData ? 'has-selected' : ''}`}>
+        <div className="graph-shell has-selected">
+        {isGraphLoading ? (
+          <div className="graph-loading-center">
+            <Loading />
+          </div>
+        ) : (
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -788,43 +830,44 @@ const selectedPanelKey = selectedPanel
             onNodeDoubleClick={handleNodeDoubleClick}
             onlyRenderVisibleElements={isMobile}
             onInit={handleFlowInit}
-            minZoom={isMobile ? 0.10 : 0.15}
-            maxZoom={isMobile ? 1.20 : 2}
+            minZoom={isMobile ? 0.1 : 0.15}
+            maxZoom={isMobile ? 1.2 : 2}
             nodesDraggable
             nodesConnectable={false}
             elementsSelectable
             panOnDrag
           >
             {!isMobile && (
-            <Background
-              gap={28}
-              size={1}
-              color={isDarkTheme ? '#4b5563' : '#d1d5db'}
-            />
-          )}
+              <Background
+                gap={28}
+                size={1}
+                color={isDarkTheme ? '#4b5563' : '#d1d5db'}
+              />
+            )}
 
-          <Controls />
+            <Controls />
 
-          {!isMobile && (
-            <MiniMap
-              zoomable
-              pannable
-              maskColor={
-                isDarkTheme
-                  ? 'rgba(17, 24, 39, 0.72)'
-                  : 'rgba(248, 250, 252, 0.72)'
-              }
-              nodeColor={(node) => {
-                if (node?.data?.nodeType === 'trend') {
-                  return isDarkTheme ? '#625eda' : '#c1bff6';
+            {!isMobile && (
+              <MiniMap
+                zoomable
+                pannable
+                maskColor={
+                  isDarkTheme
+                    ? 'rgba(17, 24, 39, 0.72)'
+                    : 'rgba(248, 250, 252, 0.72)'
                 }
+                nodeColor={(node) => {
+                  if (node?.data?.nodeType === 'trend') {
+                    return isDarkTheme ? '#625eda' : '#c1bff6';
+                  }
 
-                return isDarkTheme ? '#a0a1a0' : '#ffffff';
-              }}
-            />
-          )}
+                  return isDarkTheme ? '#a0a1a0' : '#ffffff';
+                }}
+              />
+            )}
           </ReactFlow>
-        </div>
+        )}
+      </div>
       </Container>
     </>
   );

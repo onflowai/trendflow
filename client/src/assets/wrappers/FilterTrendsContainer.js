@@ -32,7 +32,7 @@ const Container = styled.div`
   @media (min-width: 1470px) {
     grid-template-columns: minmax(35rem, 1fr) 2fr;
     gap: 20px;
-     grid-template-rows: auto auto; /* two rows: one for checkboxes, one for selectors */ //HERE
+     grid-template-rows: auto auto; /* two rows: one for checkboxes, one for selectors */
   }
 
   @media (min-width: 812px) and (max-width: 1469px) {

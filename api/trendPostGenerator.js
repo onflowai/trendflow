@@ -86,7 +86,7 @@ const safeSecondaryTechValues = Array.isArray(secondaryTechValues)
 
 const user = `
 ${USER_ROLE_POST}
-Write it about the "${trend}" in the technology category of "${trendCategory}", specifically focusing on "${primaryTechValue}" as the primary technology${secondaryTechClause}. Keep it concise and practical. ${TREND_URL_BUTTON}`;
+Write it specifically about the "${trend}", in the technology category of "${trendCategory}", and exploring "${primaryTechValue}" as the primary technology${secondaryTechClause}. Keep it concise and practical. ${TREND_URL_BUTTON}`;
 
   try {
     const response = await withRetries(async () =>

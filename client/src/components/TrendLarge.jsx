@@ -1,6 +1,4 @@
 import { React, useState } from 'react';
-import openSourceLogo from '../assets/images/open-source-fill.svg';
-import partialSourceLogo from '../assets/images/open-source.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { BsFillBookmarkFill, BsBookmark } from 'react-icons/bs'; //bookmark
 import { LiaClock } from 'react-icons/lia'; //updatedAt icon
@@ -27,6 +25,7 @@ import {
   IconCategory,
   UserImgSmall,
   IconTechnology,
+  OpenSourceView,
   TrendChartComponent,
 } from '../components';
 import Container from '../assets/wrappers/TrendLargeContainer';
@@ -65,6 +64,9 @@ function TrendLarge({
   onApproveManual,
   openSourceStatus,
   interestOverTime,
+  overlayColor = '--card-highlight',
+  overlayGrain = 22,
+  overlayGrainSize = 120,
 }) {
   const { isDarkTheme } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -75,15 +77,10 @@ function TrendLarge({
   const isDeleted = Boolean(createdBy?.isDeleted) || !createdBy;
   const creatorImg = createdBy?.profile_img || null;
   const creatorName = createdBy?.username || 'unknown user';
-  const githubUrl = createdBy.githubUsername
+  const githubUrl = createdBy?.githubUsername
     ? `${githubFullUrl()}${createdBy.githubUsername}`
     : null; //creating the github url of user who created trend
 
-  const getOpenSourceIcon = (openSourceStatus) => {
-    if (openSourceStatus === 'open') return openSourceLogo;
-    if (openSourceStatus === 'partial') return partialSourceLogo;
-    return null;
-  };
   const navigateToTrend = async () => {
     if (guestUser) {
       await guestUser();
@@ -127,7 +124,13 @@ function TrendLarge({
   // const upDate = day(updatedAt).format('MM YYYY');
   // const isLoading = loadingSlug === slug; // determining if this specific trend is loading
   return (
-    <Container onClick={navigateToTrend} className="trend-large-card">
+    <Container
+      onClick={navigateToTrend}
+      className="trend-large-card"
+      $overlayColor={overlayColor}
+      $overlayGrain={overlayGrain}
+      $overlayGrainSize={overlayGrainSize}
+      >
       <header>
         <div className="overlay">
           <div className="info">
@@ -145,18 +148,14 @@ function TrendLarge({
                 <h3 className="trend-title">
                   {trend.length > 21 ? trend.substring(0, 21) + '...' : trend}
                 </h3>
-                {getOpenSourceIcon(openSourceStatus) && (
-                  <img
-                    src={getOpenSourceIcon(openSourceStatus)}
-                    alt={
-                      openSourceStatus === 'open'
-                        ? 'Open Source'
-                        : 'Partially Open Source'
-                    }
-                    className="open-source-icon"
-                    draggable={false}
-                  />
-                )}
+                <OpenSourceView
+                  value={openSourceStatus}
+                  size={16}
+                  showTooltip={false}
+                  showOnly={['open', 'partial']}
+                  className="trend-mini-open-source"
+                  iconClassName="open-source-icon"
+                />
               </div>
               <div
                 className="category-container"

@@ -151,7 +151,7 @@ export const logout = async (req, res) => {
   res.cookie('token', 'logout', {
     httpOnly: true,
     expires: new Date(Date.now()),//users token expires right away upon logout
-    secure: process.env.NODE_ENV === 'production', //HERE
+    secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
   });
 
@@ -261,11 +261,11 @@ export const upgradeAccount = async (req, res) => {
     throw new BadRequestError('Please provide all required fields.');
   }
 
-  const normalizedEmail = String(email).trim().toLowerCase(); //HERE
-  const normalizedName = String(name).trim(); //HERE
+  const normalizedEmail = String(email).trim().toLowerCase();
+  const normalizedName = String(name).trim();
 
   try {
-    if (!req.user?.userID) throw new UnauthenticatedError('Authentication required.'); //HERE
+    if (!req.user?.userID) throw new UnauthenticatedError('Authentication required.');
 
     const user = await UserModel.findById(req.user.userID);
     if (!user) throw new UnauthenticatedError('User not found.');
@@ -274,7 +274,7 @@ export const upgradeAccount = async (req, res) => {
       throw new BadRequestError('Account is already a regular user.');
     }
 
-    const existingEmail = await UserModel.findOne({ email: normalizedEmail, _id: { $ne: user._id } }); //HERE
+    const existingEmail = await UserModel.findOne({ email: normalizedEmail, _id: { $ne: user._id } });
     if (existingEmail) throw new BadRequestError('Email is already in use.');
 
     user.password = await hashPassword(password); // updating user details
