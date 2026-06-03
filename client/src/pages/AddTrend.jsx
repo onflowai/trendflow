@@ -4,8 +4,11 @@ import {
   SEOProtected,
   TrendBookMark,
   CustomInfoToast,
+  TrendBlogLoading,
   CustomErrorToast,
   FormSelectorIcon,
+  FormSelectorIcons,
+  AdminSettingModal,
   DangerousMarkdown,
   FormComponentLogos,
   CustomSuccessToast,
@@ -14,8 +17,6 @@ import {
   ContentBoxHighlighted,
   TrendOfficialLinkEditor,
 } from '../components';
-import FormSelectorIcons from '../components/FormSelectorIcons';
-import TrendBlogLoading from '../components/TrendBlogLoading';
 import EditMarkdown from '../components/EditMarkdown.client';
 import EditMarkdownSmall from '../components/EditMarkdownSmall.client';
 import { useUser } from '../context/UserContext';
@@ -29,8 +30,11 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import useWindowSize from '../hooks/useWindowSize';
 import useLocalStorage from '../hooks/useLocalStorage';
+
 /**
- * AddTrend submits the trend after user types it in the from and selects category and technology
+ * AddTrend submits the trend after user types it in the from and selects category and technology it lets user edit the description and guide
+ * lets user save the progress of their edit and it lets user submit the edits for approval. lets user modify the official link additionally 
+ * lets user bookmark the trend if they are admin role
  * @param {*} param0
  * @returns
  */
@@ -134,11 +138,6 @@ const hydrateStoredTrendTechs = (storedTrendTechs = [], technologies = []) => {
   );
 };
 
-/**
- * AddTrend submits the trend after user types it in the from and selects category and technology
- * @param {*} param0
- * @returns
- */
 export const action = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -186,8 +185,7 @@ const AddTrend = () => {
   const { isDarkTheme } = useDashboardContext();
   const actionData = useActionData();
 
-  const role = user?.role;
-  const isAdmin = role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin';
 
   const autoSelectedTechValueRef = useRef(''); //tracking the current auto-added tech value
   const dismissedAutoTechRef = useRef({ input: '', techValue: '' }); //tracking auto-added tech for the current input
@@ -233,6 +231,29 @@ const AddTrend = () => {
     () => buildTrendTechsPayload(selectedTrendTechs),
     [selectedTrendTechs]
   );
+
+  const resetAfterApproval = () => {
+    setTrendObject(null);
+    setGeneratedBlogPost('');
+    setTrendUse('');
+    setTrendOfficialLink('');
+
+    setTrendValue('');
+    setExistsState({ exists: false, trend: null });
+
+    setSelectedTrendTechs([]);
+    setTechLabel('');
+    setTechIconUrl('');
+
+    setCateLabel('');
+    setCateIconUrl('');
+
+    dismissedAutoTechRef.current = { input: '', techValue: '' };
+    autoSelectedTechValueRef.current = '';
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (lastToastIdRef.current) toast.dismiss(lastToastIdRef.current);
+  };
 
   useEffect(() => {
     const v = String(trendValue ?? '').trim();
@@ -313,11 +334,17 @@ const AddTrend = () => {
     setTrendOfficialLink(adminDraft.trendOfficialLink || '');
   }, [isAdmin, adminDraft, trendObject]);
 
+    const lastAppliedSlugRef = useRef('');
+
   useEffect(() => {
     if (!actionData) return;
     if (actionData?.error) return;
     const nextTrendObject = actionData?.trendObject;
-    if (!nextTrendObject) return;
+    const nextSlug = nextTrendObject?.slug || '';
+
+    if (!nextSlug) return;
+    if (lastAppliedSlugRef.current === nextSlug) return; //prevents re-apply loop
+    lastAppliedSlugRef.current = nextSlug; //
 
     setTrendObject(nextTrendObject);
     setGeneratedBlogPost(nextTrendObject.generatedBlogPost || '');
@@ -325,7 +352,7 @@ const AddTrend = () => {
     setTrendOfficialLink(nextTrendObject.trendOfficialLink || '');
 
     if (isAdmin && nextTrendObject?.slug) {
-      setAdminDraft({
+    setAdminDraft({
         slug: nextTrendObject.slug,
         generatedBlogPost: nextTrendObject.generatedBlogPost || '',
         trendUse: nextTrendObject.trendUse || '',
@@ -333,10 +360,11 @@ const AddTrend = () => {
         trendTechs: nextTrendObject.trendTechs || [],
         isSubmittedForApproval: Boolean(nextTrendObject.isSubmittedForApproval),
         updatedAt: Date.now(),
-      });// save initial draft only for admin (so refresh keeps it)
+    });// save initial draft only for admin (so refresh keeps it)
     }//saving initial draft only for admin so refresh keeps it
-  }, [actionData, isAdmin, setAdminDraft]);// when submit returns treat it as the new source of truth
+  }, [actionData, isAdmin]);// when submit returns treat it as the new source of truth
   //+ persist a draft snapshot applying actionData after submit completes as single source of truth
+  
   useEffect(() => {
     if (!isAdmin) return;
     if (!trendObject?.slug) return;
@@ -369,7 +397,6 @@ const AddTrend = () => {
     trendUse,
     trendOfficialLink,
     trendTechsPayload,
-    setAdminDraft,
   ]);//persist draft as admin edits debounced to avoid writing on every keystroke
 
   useEffect(() => {
@@ -640,8 +667,10 @@ const AddTrend = () => {
       setIsSubmittingForApproval(true);
       await customFetch.patch(`/trends/${trendObject.slug}/submit-for-approval`);
       toast.success(<CustomSuccessToast message="Submitted for approval" />);
-      setTrendObject((prev) => ({ ...(prev || {}), isSubmittedForApproval: true }));
       if (isAdmin) setAdminDraft(null);
+      resetAfterApproval();//setting trendObject to null reset on submit for approval
+      //setTrendObject((prev) => ({ ...(prev || {}), isSubmittedForApproval: true }));//already submited switch
+      //if (isAdmin) setAdminDraft(null);
     } catch (error) {
       toast.error(
         <CustomErrorToast
@@ -805,6 +834,7 @@ const AddTrend = () => {
               {/* MULTI TECH SELECTOR */}
               <FormSelectorIcons
                 hight="47px"
+                isClearable={true}
                 labelText="Choose Technologies:"
                 name="trendTechs_display"
                 list={technologies}
@@ -818,8 +848,12 @@ const AddTrend = () => {
                 labelFontSize="0.8rem"
                 labelColor="var(--grey-400)"
                 labelFontWeight="400"
-                onChange={(name, selectedOptions) => {
-                  applyTrendTechSelection(selectedOptions || [], { isManual: true }); //manual user changes go through the central helper
+                onChange={(name, selectedOptions, meta) => {
+                  applyTrendTechSelection(selectedOptions || [], { isManual: true });
+                  if (meta?.action === 'clear') {
+                    dismissedAutoTechRef.current = { input: '', techValue: '' };
+                    autoSelectedTechValueRef.current = '';
+                  }
                 }}
                 isDarkTheme={isDarkTheme}
               />
@@ -851,14 +885,23 @@ const AddTrend = () => {
                 name="trendTechs"
                 value={JSON.stringify(trendTechsPayload)}
               />
+              <div className={`submit-row ${isAdmin ? 'has-settings' : 'no-settings'}`}>
+                <div className="submit-action">
+                  <button
+                    type="submit"
+                    className="btn btn-block form-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'submitting' : 'submit'}
+                  </button>
+                </div>
 
-              <button
-                type="submit"
-                className="btn btn-block form-btn"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'submitting' : 'submit'}
-              </button>
+                {isAdmin && (
+                  <div className="submit-gear">
+                    <AdminSettingModal currentUser={user} className="settings-icon" />
+                  </div>
+                )}
+              </div>
             </div>
           </Form>
 
@@ -992,7 +1035,7 @@ const AddTrend = () => {
                     </div>
                     <button
                       type="button"
-                      className="btn btn-block form-btn"
+                      className="btn-action btn-block form-btn"
                       onClick={handleSubmitForApproval}
                       disabled={
                         isSubmittingForApproval ||
@@ -1014,7 +1057,7 @@ const AddTrend = () => {
 
         <div className="">
           {showFallback ? (
-            <TrendsFallbackEffect active={true} iconCount={14} spinSpeed={55} />
+            <TrendsFallbackEffect active={true} iconCount={14} spinSpeed={25} />
           ) : (
             <TrendFallbackSuccess
               icon={techIconUrl}
