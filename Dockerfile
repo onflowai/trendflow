@@ -66,6 +66,13 @@ COPY package*.json ./
 # Install only production dependencies for the backend
 RUN npm ci --only=production
 
+# Copy client dependency files for SSR runtime
+COPY client/package*.json ./client/
+
+# Install only production dependencies for the client
+RUN cd client && npm ci --only=production
+
+
 # Copy backend files and directories
 COPY server.js redisClient.js trendUploader.js ./
 COPY api/ ./api/
