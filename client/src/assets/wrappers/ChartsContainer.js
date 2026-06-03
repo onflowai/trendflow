@@ -23,7 +23,6 @@ const Container = styled.main`
   .trend-logo {
     width: 20px;
     height: 20px; /* Ensures a uniform size */
-    border-radius: 50%; /* Optional: Makes the logo round */
   }
 
   .trend-title {
