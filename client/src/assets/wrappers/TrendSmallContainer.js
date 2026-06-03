@@ -1,12 +1,70 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const getOverlayColor = (color = '--card-highlight') => {
+  if (!color) return 'var(--card-highlight)';
+
+  return String(color).startsWith('--') ? `var(${color})` : color;
+};
 
 const Container = styled.article`
+  ${({ $overlayColor, $overlayGrain, $overlayGrainSize }) => css`
+    --trend-card-overlay-color: ${getOverlayColor($overlayColor)};
+    --trend-card-overlay-grain-opacity: ${Math.min(
+      1,
+      Math.max(0, Number($overlayGrain || 0) / 100)
+    )};
+    --trend-card-overlay-grain-size: ${Number($overlayGrainSize || 120)}px;
+  `}
+
   position: relative;
+  isolation: isolate;
   cursor: pointer;
-  transition: background-color 0.2s ease; // Smooth transition for background color
+  transition: background-color 0.2s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23noise)' opacity='0.8'/%3E%3C/svg%3E"),
+      linear-gradient(
+        var(--trend-card-overlay-color),
+        var(--trend-card-overlay-color)
+      );
+
+    background-repeat: repeat, no-repeat;
+    background-size:
+      var(--trend-card-overlay-grain-size)
+      var(--trend-card-overlay-grain-size),
+      100% 100%;
+
+    background-blend-mode: soft-light, normal;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   &:hover {
-    background-color: var(--card-highlight); // Change background on hover //
+    background-color: var(--trend-card-overlay-color);
+  }
+
+  &:hover::before {
+    opacity: var(--trend-card-overlay-grain-opacity);
+  }
+
+  .inference-color-mode &:hover {
+    background-color: var(--trend-card-overlay-color);
+  }
+
+  .inference-color-mode &:hover::before {
+    opacity: var(--trend-card-overlay-grain-opacity);
   }
 
   .trend-small-card {
@@ -193,7 +251,7 @@ const Container = styled.article`
     flex: 0 0 auto; 
   }
   .bookmark-btn {
-    position: absolute; // Position absolutely within bottom-row
+      //position: absolute; // Position absolutely within bottom-row
       right: 1rem; // Move to the right with some padding
       top: 0.5rem; // Move it down a bit from the top
       background-color: var(--white); // Add white background

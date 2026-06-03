@@ -14,6 +14,23 @@ const Container = styled.section`
     gap: 1rem;
   }
 
+  .graph-loading-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-color);
+    z-index: 5;
+  }
+
+  .graph-loading-center .loading-overlay {
+    position: static;
+    width: auto;
+    height: auto;
+    background: transparent;
+  }
+
   .view-flow-title {
     margin: 0;
   }
@@ -104,7 +121,7 @@ const Container = styled.section`
     border-color: var(--background-color);
   }
 
-   .selected-flow-icon,
+  .selected-flow-icon,
   .selected-flow-icon.secondary {
     width: 20px; //no giant spacing
     height: 20px; //no giant spacing
