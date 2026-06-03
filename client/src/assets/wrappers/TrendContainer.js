@@ -81,6 +81,59 @@ const Container = styled.article`
     );
 
     transform: translate3d(-16.666%, 16.666%, 0);
+  }//end  &::after
+
+  &.inference-random-mode::after {
+    background: linear-gradient(
+      to top right,
+      transparent 0%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 12%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 22%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 33.333%,
+
+      transparent 44%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 55%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 66.666%,
+
+      color-mix(
+        in srgb,
+        var(--inference-random-color, var(--inference-color-1))
+          var(--inference-random-color-strength, 100%),
+        transparent
+      ) 77%,
+
+      transparent 100%
+    );
   }
 
   &.inference-color-mode:hover::before {
@@ -90,6 +143,15 @@ const Container = styled.article`
   &.inference-color-mode:hover::after {
     opacity: var(--inference-color-transparency, 0.18);
     animation: inferenceOneWayFlow var(--inference-mode-speed, 5s) linear infinite;
+  }
+
+  &.inference-color-mode.inference-no-animation:hover::after {
+  animation: none; /* HERE static overlay with grain */
+  }
+
+  &.inference-no-hover-trigger:hover,
+  &.inference-no-hover-trigger:hover * {
+    cursor: none !important; /* HERE hides cursor only while hovering this card */
   }
 
   @keyframes inferenceOneWayFlow {
@@ -119,10 +181,10 @@ const Container = styled.article`
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &.inference-color-mode:hover::after {
-      animation: none;
-    }
+  &.inference-color-mode:hover::after {
+    animation: none;
   }
+}
 `;
 
 export default Container;

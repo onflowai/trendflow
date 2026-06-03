@@ -127,7 +127,6 @@ const Container = styled.section`
     min-width: 0;
   }
 
-  /* Markdown/editor/content wrapping helpers */
   .generated-panel * {
     max-width: 100%;
   }
@@ -142,13 +141,13 @@ const Container = styled.section`
   }
 
   .generated-panel pre {
-    overflow-x: auto; /* long code blocks scroll instead of blowing layout */
+    overflow-x: auto;//long code blocks scroll instead of blowing layout
   }
 
   .generated-panel p,
   .generated-panel li,
   .generated-panel a {
-    overflow-wrap: anywhere; /* long URLs/words stop nuking layout */
+    overflow-wrap: anywhere;//long URLs/words stop nuking layout
     word-break: break-word;
   }
   .trend-header-row {
@@ -262,8 +261,79 @@ const Container = styled.section`
   }
 
   .approval-btn {
-    flex: 1; /*HERE (button takes remaining space)*/
+    flex: 1;//button takes remaining space)
     width: auto;
+  }
+
+ .submit-row {
+    grid-column: 1 / -1;//mobile/tablet: sits under selector/full row
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;//submit button + gear
+    gap: 0;//glued together
+    align-items: stretch;
+  }
+
+  .submit-row.no-settings {
+    grid-template-columns: 1fr;//submit takes full space when gear is missing
+  }
+
+  .submit-action {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .submit-action .form-btn {
+    width: 100%;
+    height: 50px;
+    margin-top: 0;
+    border-top-right-radius: var(--border-radius);//default full button
+    border-bottom-right-radius: var(--border-radius);//default full button
+  }
+
+  .submit-row.has-settings .submit-action .form-btn {
+    border-top-right-radius: 0; //glued to gear
+    border-bottom-right-radius: 0;//glued to gear
+  }
+
+  .submit-gear {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .submit-gear {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;//glued right side
+    border: 1.5px solid var(--grey-50);
+    border-left: 0;//removes double border between button + gear
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .settings-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-primary-color);
+    transition: color 0.3s ease;
+  }
+
+  .settings-icon:hover {
+    color: var(--primary-500);
+  }
+
+  .settings-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .dropdown {
@@ -351,6 +421,10 @@ const Container = styled.section`
       grid-template-columns: 1fr 1fr;
       align-items: center;
       column-gap: 1rem;
+
+      .submit-row {
+      grid-column: auto; /* //makes submit sit to the right of tech selector */
+    }
     }
     @media (min-width: 1120px) {
       grid-template-columns: 1fr 1fr;
@@ -372,6 +446,7 @@ const Container = styled.section`
   }
 
   .info-btn {
+    border: 1.5px solid var(--grey-100);
     margin-right: 0.5rem;
   }
 
