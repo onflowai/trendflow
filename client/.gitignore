@@ -32,5 +32,4 @@ dist-ssr
 dangerous_keywords.js
 
 #assets
-icons/
-/src/assets/images/
+/src/assets/images/icons/
