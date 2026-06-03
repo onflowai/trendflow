@@ -159,6 +159,26 @@ const Container = styled.div`
     flex: 1; // Allow bottom-info to take available space
   }
 
+  .info .open-source-icon-wrap,
+  .info-mini .open-source-icon-wrap {
+    display: inline-flex;
+    align-items: flex-start;
+    vertical-align: top;
+    margin-left: 2px;
+    line-height: 0;
+    transform: translateY(1px); /* adjust this if needed */
+  }
+
+  .info .open-source-icon,
+  .info-mini .open-source-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+  }
+
   .info-item {
     display: flex;
     align-items: center;

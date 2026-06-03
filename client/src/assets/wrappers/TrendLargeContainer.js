@@ -1,17 +1,76 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const getOverlayColor = (color = '--card-highlight') => {
+  if (!color) return 'var(--card-highlight)';
+
+  return String(color).startsWith('--') ? `var(${color})` : color;
+};
 
 const Container = styled.article`
-/* background: var(--primary-50); */
-cursor: pointer; // making the entire container behave like a clickable element
-transition: background-color 0.2s ease; // smooth transition for background color
-&:hover {
-    background-color: var(--card-highlight);
+  ${({ $overlayColor, $overlayGrain, $overlayGrainSize }) => css`
+    --trend-card-overlay-color: ${getOverlayColor($overlayColor)};
+    --trend-card-overlay-grain-opacity: ${Math.min(
+      1,
+      Math.max(0, Number($overlayGrain || 0) / 100)
+    )};
+    --trend-card-overlay-grain-size: ${Number($overlayGrainSize || 120)}px;
+  `}
+
+  position: relative; //needed for grain overlay
+  isolation: isolate; //keeps grain inside this card
+  cursor: pointer; //making the entire container behave like a clickable element
+  transition: background-color 0.2s ease; // smooth transition for background color
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23noise)' opacity='0.8'/%3E%3C/svg%3E"),
+      linear-gradient(
+        var(--trend-card-overlay-color),
+        var(--trend-card-overlay-color)
+      );
+
+    background-repeat: repeat, no-repeat;
+    background-size:
+      var(--trend-card-overlay-grain-size)
+      var(--trend-card-overlay-grain-size),
+      100% 100%;
+
+    background-blend-mode: soft-light, normal; // lets color seep into grain
   }
-.loading-overlay {
-  position: absolute;
-  background-color: var(--white);
-  
-}
+
+  > * {
+    position: relative;
+    z-index: 1; // keeps content above grain overlay
+  }
+
+  &:hover {
+    background-color: var(--trend-card-overlay-color);
+  }
+
+  &:hover::before {
+    opacity: var(--trend-card-overlay-grain-opacity);
+  }
+
+  .inference-color-mode &:hover {
+    background-color: var(--trend-card-overlay-color);
+  }
+
+  .inference-color-mode &:hover::before {
+    opacity: var(--trend-card-overlay-grain-opacity);
+  }
+
+  .loading-overlay {
+    position: absolute;
+    background-color: var(--white);
+  }
 
 .deleted-user {
     opacity: 0.6; 
@@ -178,14 +237,18 @@ display: inline-block;
 .btn-block {
   width: 100%;
 }
-.bookmark-btn{
+.bookmark-btn {
+  position: static;
   color: var(--black);
-  size: 30px;
-  border: none;            /* removes the border */
-  background: none;        /* removes background if desired */
-  cursor: pointer;         /* clear clickable */
-  padding: 0;              /* adjusts padding to zero */
-  outline: none;  
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 `;
 
