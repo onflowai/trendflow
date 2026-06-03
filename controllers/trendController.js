@@ -56,6 +56,7 @@ export const submitTrend = async (req, res) => {
   }//check if exact trend already exists
 
   const createdBy = req.user.userID;// storing current authenticated user id as author of created trend
+  const isAdmin = req.user?.role === 'admin' || req.user?.role === 'superAdmin';
 
   //only accepting field EXPECTED from UI during submission:
   const {
@@ -100,7 +101,7 @@ export const submitTrend = async (req, res) => {
     openSourceStatus: safeOpenSourceStatus,
     createdBy,
     isApproved: false,
-    isSubmittedForApproval: false,
+    isSubmittedForApproval: !isAdmin,
   });//create the trend document as unapproved
 
   const primaryTechValue = trendTechs[0]?.value ?? ''; // primary tech
@@ -146,9 +147,12 @@ export const submitTrend = async (req, res) => {
 
   await draftTrend.save();// persist blog fields onto the created trend document
 
-  res.status(StatusCodes.CREATED).json({ // respond 201 created
-    trendObject: draftTrend, // return full draft trend to client
-  });
+  res.status(StatusCodes.CREATED).json({
+  trendObject: draftTrend,
+  msg: isAdmin
+    ? 'Draft trend created'
+    : 'Trend submitted for admin approval',
+});
 }; //end SUBMIT
 
 
