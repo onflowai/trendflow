@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import useWindowSize from '../hooks/useWindowSize';
 
 const LandingAboutCover = () => {
-  const { isMobile } = useWindowSize(); // <--- replaces ScreenSizeContext
+  const { isMobile } = useWindowSize();
   const [coverUrl, setCoverUrl] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
 
