@@ -419,11 +419,11 @@ html {
 }
 /* FONTS - CODE SANS */
 .google-code-text {
-  font-family: 'Google Sans Code', monospace; /* HERE */
-  font-optical-sizing: auto; /* HERE */
-  font-weight: 200; /* HERE */
-  font-style: normal; /* HERE */
-  font-variation-settings: 'MONO' 1; /* HERE */
+  font-family: 'Google Sans Code', monospace;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings: 'MONO' 1;
 
   line-height: 1.5; /* optional text styling */
   letter-spacing: -0.01em; /* optional text styling */

@@ -33,6 +33,24 @@ day.extend(advancedFormat);
  * @param {string[]}
  *
  */
+
+const inferenceColorOptions = [
+  'var(--inference-color-1)',
+  'var(--inference-color-2)',
+  'var(--inference-color-3)',
+  'var(--inference-color-4)',
+  'var(--inference-color-5)',
+  'var(--inference-color-6)',
+  'var(--inference-color-7)',
+  'var(--inference-color-8)',
+  'var(--inference-color-9)',
+];
+
+const getRandomInferenceColor = () => {
+  const randomIndex = Math.floor(Math.random() * inferenceColorOptions.length);
+  return inferenceColorOptions[randomIndex];
+};
+
 function Trend({
   _id,
   slug,
@@ -68,8 +86,19 @@ function Trend({
   isLargeTrendView,
   chartMarginBottom,
 }) {
+  //main card overlay color
+  const cardOverlayColor = '--card-highlight'; //can be CSS var name
+  const cardOverlayGrain = 42; //0 to 100
+  const cardOverlayGrainSize = 120; //px grain size
+  const safeCardOverlayGrain = Math.min(100, Math.max(0, cardOverlayGrain));
+  //end main card overlay color
+
    //inferenceColorMode styling
   const inferenceColorMode = false; //manual switch for now
+  const inferenceColorModeRandom = false; //random single-color overlay mode
+  const inferenceRandomColorStrength = 100;//0 to 100, controls random color strength
+  const overlayTrigerNoHover = false; // true means overlay is always active and cursor pointer is removed
+  const inferenceColorModeAnimation = true; //true = animated, false = static overlay with grain
   const inferenceModeSpeed = 5; //existing speed
   const inferenceColorTransparency = 0.18; //existing transparency
   const inferenceOverlaySize = 420; //existing overlay size
@@ -79,13 +108,33 @@ function Trend({
   const safeInferenceGrain = Math.min(100, Math.max(0, inferenceGrain)); //keeps value valid
   //end inferenceColorMode styling
 
+  //styling helpers
+  const [randomInferenceColor, setRandomInferenceColor] = React.useState(
+  getRandomInferenceColor
+  ); //selected random overlay color
   const viewCount = Number(String(views || 0).replaceAll(',', '')); //handles 1000 or "1,000"
   const inferenceStatuses = ['trending', 'breakout', 'static']; //statuses allowed to trigger gradient
   const hasInferenceStatus = inferenceStatuses.includes(
     String(trendStatus || '').toLowerCase()
   ); //checks
   const shouldUseInferenceGradient =
-    inferenceColorMode || (viewCount > 50 && hasInferenceStatus); //appling to TrendLarge and TrendSmall
+  inferenceColorModeRandom ||
+  inferenceColorMode ||
+  (viewCount > 50 && hasInferenceStatus);//appling to TrendLarge and TrendSmall
+  const handleInferenceMouseEnter = () => {
+  if (!inferenceColorModeRandom) return;
+  setRandomInferenceColor(getRandomInferenceColor()); //HERE chooses new random color on hover
+  };
+  const trendContainerClassName = [
+    shouldUseInferenceGradient ? 'inference-color-mode' : '',
+    inferenceColorModeRandom ? 'inference-random-mode' : '',
+    overlayTrigerNoHover ? 'inference-no-hover-trigger' : '',
+    !inferenceColorModeAnimation ? 'inference-no-animation' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  //styling helpers end
+  
   const trendTech   = trendTechs?.[0]?.value ?? '';//primary tech from trendTechs[0] so child props stay unchanged
   const techIconUrl = trendTechs?.[0]?.techIconUrl ?? '';//primary tech icon url from trendTechs[0] so child props stay unchanged
   const upDate = day(updatedAt).format('MM YYYY'); //converting updated at
@@ -120,6 +169,9 @@ function Trend({
     onApproveManual,
     openSourceStatus,
     interestOverTime,
+    overlayColor: cardOverlayColor,
+    overlayGrain: safeCardOverlayGrain,
+    overlayGrainSize: cardOverlayGrainSize,
   };
   // Props for TrendSmall
   const smallProps = {
@@ -153,19 +205,25 @@ function Trend({
     onApproveManual,
     openSourceStatus,
     chartMarginBottom,
+    overlayColor: cardOverlayColor,
+    overlayGrain: safeCardOverlayGrain,
+    overlayGrainSize: cardOverlayGrainSize,
   };
 
 return (
  <Container
-    className={shouldUseInferenceGradient ? 'inference-color-mode' : ''}
-    style={{
-  '--inference-mode-speed': `${inferenceModeSpeed}s`,
-  '--inference-color-transparency': inferenceColorTransparency,
-  '--inference-overlay-size': `${inferenceOverlaySize}%`,
-  '--inference-color-proximity': inferenceColorProximity,
-  '--inference-grain-opacity': safeInferenceGrain / 100,
-  '--inference-grain-size': `${inferenceGrainSize}px`,
-}}
+  className={trendContainerClassName}
+  onMouseEnter={handleInferenceMouseEnter}
+  style={{
+    '--inference-mode-speed': `${inferenceModeSpeed}s`,
+    '--inference-color-transparency': inferenceColorTransparency,
+    '--inference-overlay-size': `${inferenceOverlaySize}%`,
+    '--inference-color-proximity': inferenceColorProximity,
+    '--inference-grain-opacity': safeInferenceGrain / 100,
+    '--inference-grain-size': `${inferenceGrainSize}px`,
+    '--inference-random-color': randomInferenceColor,
+    '--inference-random-color-strength': `${inferenceRandomColorStrength}%`,
+  }}
   >
     {isLargeScreen ? (
       isLargeTrendView ? (
