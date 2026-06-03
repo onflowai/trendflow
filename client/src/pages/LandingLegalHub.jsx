@@ -17,7 +17,6 @@ import {
   FaFileSignature,
   FaQuestionCircle,
 } from 'react-icons/fa';
-
 import {
   legalFaqContent,
   termsOfUseContent,
@@ -116,24 +115,21 @@ const LandingLegalHub = () => {
             draggable={false}
           />
         </div>
-
         <div className="legal-hero-content">
           <p className="eyebrow">Legal Center</p>
-          <h1>trendFlowAI Legal Hub</h1>
+          <h1>Trendflowai Legal Hub</h1>
           <p>
             Review platform terms, content rules, logo notices, ranking
             disclosures, and removal policies.
           </p>
         </div>
       </section>
-
       <ActionsList
         items={legalActions}
         activeId={selectedLegalId}
         onChange={(item) => setSelectedLegalId(item.id)}
         ariaLabel="Legal hub sections"
       />
-
       <section className="legal-content-card">
         <DangerousMarkdownBasic
           content={selectedLegalItem.content}

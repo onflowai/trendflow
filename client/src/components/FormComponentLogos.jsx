@@ -55,10 +55,10 @@ const Container = styled.div`
   .carousel-container {
     position: absolute;
     left: 5px; // Position inside the input on the left
-    top: 65%;
-    transform: translateY(-50%);
+    top: 55%;
+    transform: translateY(-1%);
     /* transform: translateX(-40%); */
-    height: 23px;
+    height: 100px;
     width: 23px;
     overflow: hidden;
     pointer-events: none;
