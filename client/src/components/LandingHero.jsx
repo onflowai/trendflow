@@ -2,7 +2,7 @@ import React from 'react';
 import { tagLarge, tagSmall } from '../assets/utils/data';
 // import Container from '../assets/wrappers/LandingHeroContainer';
 import HeroAnimated from './HeroAnimated';
-import LandingFeaturedDevs from './LandingFeaturedDevs';
+import FeaturedDevs from './FeaturedDevs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 const LandingHero = ({ guestUser }) => {
@@ -21,7 +21,18 @@ const LandingHero = ({ guestUser }) => {
             </h1>
             <h2>{tagLarge}</h2>
             <p>{tagSmall}</p>
-            <LandingFeaturedDevs/>
+            <div className='featured-devs'>
+            <FeaturedDevs
+              owner="onflowai"
+              repo="trendflow"
+              limit={2}
+              title="devs:"
+              commits={false}
+              notOnTheList="@github-actions[bot]"
+              maxWidth="520px"
+              imageMaxWidth={48}
+            />
+            </div>
             <Link to="/register" className="btn register-link">
               Create Account
             </Link>
@@ -121,7 +132,7 @@ const Container = styled.section`
   p {
     line-height: 2;
     color: var(--text-second-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     max-width: 35em;
   }
   .register-link {
@@ -132,6 +143,9 @@ const Container = styled.section`
   }
   .btn {
     padding: 0.75rem 1rem;
+  }
+  .featured-devs{
+    margin-bottom: 0.5rem;
   }
 
   @keyframes heroAiInferenceFlow {
