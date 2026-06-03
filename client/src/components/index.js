@@ -111,3 +111,6 @@ export { default as BrowserWebSpeech } from './BrowserWebSpeech';
 export { default as AudioControls } from './AudioControls';
 export { default as DisclaimerMini } from './DisclaimerMini';
 export { default as DisclaimerFull } from './DisclaimerFull';
+export { default as ActionsList } from './ActionsList';
+export { default as DangerousMarkdownBasic } from './DangerousMarkdownBasic';
+export { default as FeaturedDevs } from './FeaturedDevs';
