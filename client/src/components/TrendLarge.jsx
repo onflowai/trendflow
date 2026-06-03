@@ -64,6 +64,9 @@ function TrendLarge({
   onApproveManual,
   openSourceStatus,
   interestOverTime,
+  overlayColor = '--card-highlight',
+  overlayGrain = 22,
+  overlayGrainSize = 120,
 }) {
   const { isDarkTheme } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
@@ -124,6 +127,9 @@ function TrendLarge({
     <Container
       onClick={navigateToTrend}
       className="trend-large-card"
+      $overlayColor={overlayColor}
+      $overlayGrain={overlayGrain}
+      $overlayGrainSize={overlayGrainSize}
       >
       <header>
         <div className="overlay">
