@@ -52,7 +52,7 @@ const INITIAL_ZOOM_CLICKS = 7;// zoom-in of about 7
 const ZOOM_CLICK_FACTOR = 1.2;// reactflow-style zoom multiplier
 
 const DESKTOP_VIEW_LIMIT = 72;
-const MOBILE_VIEW_LIMIT = 20;
+const MOBILE_VIEW_LIMIT = 16;
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
