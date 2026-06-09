@@ -97,7 +97,7 @@ const Container = styled.section`
     justify-content: flex-end; /* button stays right, no awkward empty space */
     gap: 12px;
     margin-top: 20px;
-    flex-wrap: wrap; /* prevents overflow on small screens */
+    //flex-wrap: wrap; /* prevents overflow on small screens */
   }
 
   .box-highlighted{
