@@ -23,7 +23,7 @@ const Container = styled.main`
   }
 
   .legal-logo {
-    width: clamp(54px, 7vw, 86px) //about as large as hero text
+    width: clamp(54px, 7vw, 86px); //about as large as hero text
     height: clamp(54px, 7vw, 86px);
     object-fit: contain;
     display: block;

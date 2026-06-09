@@ -251,12 +251,12 @@ const Container = styled.article`
     flex: 0 0 auto; 
   }
   .bookmark-btn {
-      //position: absolute; // Position absolutely within bottom-row
-      right: 1rem; // Move to the right with some padding
-      top: 0.5rem; // Move it down a bit from the top
-      background-color: var(--white); // Add white background
-      border-radius: 40%; // Make it round
-      padding: 0.4rem; // Add some padding for spacing
+      //position: absolute;
+      right: 1rem;
+      top: 0.5rem;
+      background-color: var(--white);
+      border-radius: var(--input-radius-rounded);
+      padding: 0.2rem;
   }
   .bookmark-btn svg {
   transform: translateY(2px); // Move the SVG icon 2 pixels down
