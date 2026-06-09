@@ -51,11 +51,10 @@ const CustomSingleValue = (props) => {
               borderRadius: applyCustomStyling ? '20%' : '0',
               width: applyCustomStyling ? '25px' : 'auto',
               height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: '5px',
-              padding: applyCustomStyling ? '1px' : '0',
+              padding: applyCustomStyling ? '2px' : '0',
             }}
           >
             <img
@@ -74,7 +73,6 @@ const CustomSingleValue = (props) => {
               borderRadius: applyCustomStyling ? '20%' : '0',
               width: applyCustomStyling ? '25px' : 'auto',
               height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: '5px',
@@ -187,7 +185,6 @@ const getCustomStyles = ({
     ...styles,
     minHeight: hight,
     padding: '2px 8px',
-    display: 'flex',
     alignItems: 'center',
   }),
   menu: (styles) => ({
@@ -240,13 +237,25 @@ const getCustomStyles = ({
   dropdownIndicator: (styles) => ({
     ...styles,
     color: 'var(--text-color)',
-    padding: '6px',
+       width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0',
+    cursor: 'pointer',
   }),
 
   clearIndicator: (styles) => ({
     ...styles,
     color: 'var(--text-color)',
-    padding: '6px',
+        width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0',
+    cursor: 'pointer',
   }),
 
   indicatorSeparator: (styles) => ({

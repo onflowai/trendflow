@@ -122,7 +122,7 @@ const getCustomStyles = ({
 
   valueContainer: (styles) => ({
     ...styles,
-    padding: '4px 8px',
+    padding: '4px 4px',
     gap: '4px',
     alignItems: 'center',
   }),

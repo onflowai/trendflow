@@ -161,6 +161,9 @@ const Container = styled.div`
     .left-section .username {
       margin-left: 0.5rem;
     }
+    .sub-label {
+      font-size: 0px;
+    }
   }
 `;
 
