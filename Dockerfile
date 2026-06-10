@@ -74,7 +74,7 @@ RUN cd client && npm ci --only=production
 
 
 # Copy backend files and directories
-COPY server.js redisClient.js trendUploader.js ./
+COPY server.js redisClient.js trendUploader.js loadEnv.js ./
 COPY api/ ./api/
 COPY config/ ./config/
 COPY controllers/ ./controllers/
