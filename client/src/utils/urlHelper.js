@@ -15,17 +15,14 @@ export const getFullIconUrl = (iconUrl) => {
   if (!value) return '';
   if (isAbsoluteUrl(value)) return value;//leave absolute urls alone (cloudinary/r2/full urls/etc.)
 
-  if (import.meta.env.DEV && !ASSET_CDN_BASE) {
-    return value;//in dev keep local relative assets unless you explicitly set a cdn base
-  }
   if (ASSET_CDN_BASE) {
     return joinUrl(ASSET_CDN_BASE, value);// if cdn base exists, use it in prod (and optionally dev)
   }
-  return FRONTEND_BASE_URL ? joinUrl(FRONTEND_BASE_URL, value) : value;// final fallback to frontend base if needed
+  return value.startsWith('/') ? value : `/${value}`;
 };// icons/assets url
 
 export const getFullTrendUrl = (slug) =>
-  `${FRONTEND_BASE_URL}/dashboard/trend/${slug}`;//trend detail page url stays on the app domain
+  `/dashboard/trend/${slug}`;//trend detail page url stays on the app domain
 
 export const githubUrl = () => {
   return GITHUB_URL;
