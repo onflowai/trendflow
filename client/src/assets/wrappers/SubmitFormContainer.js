@@ -71,7 +71,7 @@ const Container = styled.section`
   }
 
   .generated-panel {
-    margin-top: 16px;
+    //margin-top: 16px;
     width: 100%;
     max-width: 100%;
     min-width: 0; /* critical for grid children so they can shrink */
