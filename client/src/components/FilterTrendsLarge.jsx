@@ -378,6 +378,8 @@ function FilterTrendsLarge({
                               value: cate.label,
                               label: cate.label,
                               image: cate.image,
+                              cateIconUrl: cate.cateIconUrl,
+                              fullImageUrl: cate.fullImageUrl,
                             })),
                           ]}
                           onChange={handleChange}
@@ -407,6 +409,8 @@ function FilterTrendsLarge({
                               value: tech.label,
                               label: tech.label,
                               image: tech.image,
+                              techIconUrl: tech.techIconUrl,
+                              fullImageUrl: tech.fullImageUrl,
                             })),
                           ]}
                           onChange={handleChange}
