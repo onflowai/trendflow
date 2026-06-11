@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.article`
-  position: relative;
+    position: relative;
   background: var(--card-background);
   border-radius: var(--border-radius);
   border: 1.5px solid var(--border-color);
@@ -9,6 +9,18 @@ const Container = styled.article`
   grid-template-rows: 1fr auto;
   overflow: hidden;
   isolation: isolate;
+  background-clip: padding-box;
+
+  /* safari + webKit rounded overflow clipping fix */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+
+  /* extra compositor stability for safari */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   &::before {
     content: '';
@@ -18,6 +30,9 @@ const Container = styled.article`
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
+    border-radius: inherit;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23noise)' opacity='0.8'/%3E%3C/svg%3E");
     background-repeat: repeat;

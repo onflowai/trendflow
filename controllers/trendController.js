@@ -121,7 +121,7 @@ export const submitTrend = async (req, res) => {
   if (!safeMarkdown || safeMarkdown.length < 20) {// basic guard for failed/empty generation
     throw new BadRequestError('Blog generation failed');
   }
-  if (safeMarkdown.length > 8000) {
+  if (safeMarkdown.length > 14000) {
     throw new BadRequestError('Generated blog too long');
   }// matching model schema max-length for trendBlog
   const safeDesc = sanitizeHTML(trendDesc || '').trim();// normalize desc before saving
@@ -261,7 +261,7 @@ export const updateTrendBlogAdmin = async (req, res) => {
     if (generatedBlogPost.trim().length < 20) {
       throw new BadRequestError('Blog content too short');
     }// avoid saving empty junk
-    if (generatedBlogPost.length > 8000) {// match schema maxlength for generatedBlogPost
+    if (generatedBlogPost.length > 14000) {// match schema maxlength for generatedBlogPost
       throw new BadRequestError('Blog content too long');
     }
     try{

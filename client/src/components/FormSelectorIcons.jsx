@@ -1,21 +1,27 @@
 import React from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
+import {
+  TECH_FALLBACK_ICON,
+  TECH_BUNDLED_FALLBACK_ICON,
+  getTechDisplayImage,
+  handleIconError,
+} from '../utils/iconFallbacks';
 
-const TECH_FALLBACK_ICON = '/assets/fallback-tech.svg';
+//const TECH_FALLBACK_ICON = '/assets/fallback-tech.svg';
 
-const getTechDisplayImage = (option) => {
-  const image = String(option?.image || option?.fullImageUrl || '').trim();
-  if (image) return image;
+// const getTechDisplayImage = (option) => {
+//   const image = String(option?.image || option?.fullImageUrl || '').trim();
+//   if (image) return image;
 
-  const techIconUrl = String(option?.techIconUrl || '').trim();
-  if (techIconUrl) return techIconUrl.endsWith('.svg') ? techIconUrl : `${techIconUrl}.svg`;
+//   const techIconUrl = String(option?.techIconUrl || '').trim();
+//   if (techIconUrl) return techIconUrl.endsWith('.svg') ? techIconUrl : `${techIconUrl}.svg`;
 
-  const fileName = String(option?.fileName || '').trim();
-  if (fileName) return fileName.startsWith('/assets/') ? fileName : `/assets/${fileName}`;
+//   const fileName = String(option?.fileName || '').trim();
+//   if (fileName) return fileName.startsWith('/assets/') ? fileName : `/assets/${fileName}`;
 
-  return TECH_FALLBACK_ICON;
-};
+//   return TECH_FALLBACK_ICON;
+// };
 
 const iconStyle = {
   width: '20px',
@@ -51,7 +57,13 @@ const TechOption = (props) => {
           src={imgSrc}
           alt={props.data.label}
           style={iconStyle}
-          onError={(e) => { e.currentTarget.src = TECH_FALLBACK_ICON; }}
+          onError={(event) =>
+            handleIconError({
+              event,
+              publicFallback: TECH_FALLBACK_ICON,
+              bundledFallback: TECH_BUNDLED_FALLBACK_ICON,
+            })
+          }
           draggable={false}
         />
         <span>{props.data.label}</span>
@@ -77,12 +89,98 @@ const TechMultiValueLabel = (props) => {
           src={imgSrc}
           alt={props.data.label}
           style={smallIconStyle}
-          onError={(e) => { e.currentTarget.src = TECH_FALLBACK_ICON; }}
+          onError={(event) =>
+            handleIconError({
+              event,
+              publicFallback: TECH_FALLBACK_ICON,
+              bundledFallback: TECH_BUNDLED_FALLBACK_ICON,
+            })
+          }
           draggable={false}
         />
         <span>{props.data.label}</span>
       </div>
     </components.MultiValueLabel>
+  );
+};
+
+const FormSelectorIcons = ({
+  hight = '46px',
+  name,
+  labelText,
+  list = [],
+  value = [],
+  onChange,
+  isClearable = false,
+  maxSelections = 5,
+  placeholder = 'Select technologies...',
+  isDarkTheme,
+  borderColor = 'var(--grey-70)',
+  hoverBorderColor = 'var(--grey-100)',
+  focusBorderColor = 'var(--primary-700)',
+  focusBoxShadowColor = 'var(--primary-100)',
+  labelFontSize = '0.8rem',
+  labelColor = 'var(--grey-400)',
+  labelFontWeight = '400',
+  labelMarginBottom = '0.15rem',
+}) => {
+  const selectedValues = Array.isArray(value) ? value : [];
+
+  const handleChange = (selectedOptions, meta) => { //meta gives action info
+  const next = Array.isArray(selectedOptions)
+    ? selectedOptions.slice(0, maxSelections)
+    : [];
+
+  if (onChange) onChange(name, next, meta); //pass meta up
+};
+
+  return (
+    <Container>
+      <div className="form-row">
+        <label 
+        htmlFor={name} 
+        style={{
+          fontSize: labelFontSize,
+          color: labelColor,
+          fontWeight: labelFontWeight,
+          marginBottom: labelMarginBottom,
+          display: 'block',
+        }}>{labelText}</label>
+        <Select
+          id={name}
+          name={name}
+          isMulti
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          value={selectedValues}
+          onChange={handleChange}
+          options={list}
+          styles={getCustomStyles({
+            isDarkTheme,
+            hight,
+            borderColor,
+            hoverBorderColor,
+            focusBorderColor,
+            focusBoxShadowColor,
+          })}
+          isClearable={isClearable}
+          placeholder={placeholder}
+          getOptionValue={(option) => option.value}
+          isOptionDisabled={(option) => {
+            const alreadySelected = selectedValues.some(
+              (item) => item.value === option.value
+            );
+
+            return selectedValues.length >= maxSelections && !alreadySelected;
+          }}
+          components={{
+            Option: TechOption,
+            MultiValueLabel: TechMultiValueLabel,
+          }}
+          isDarkTheme={isDarkTheme}
+        />
+      </div>
+    </Container>
   );
 };
 
@@ -122,7 +220,7 @@ const getCustomStyles = ({
 
   valueContainer: (styles) => ({
     ...styles,
-    padding: '4px 8px',
+    padding: '4px 4px',
     gap: '4px',
     alignItems: 'center',
   }),
@@ -238,85 +336,5 @@ const getCustomStyles = ({
     color: 'var(--text-color)',
   }),
 });
-
-const FormSelectorIcons = ({
-  hight = '46px',
-  name,
-  labelText,
-  list = [],
-  value = [],
-  onChange,
-  isClearable = false,
-  maxSelections = 5,
-  placeholder = 'Select technologies...',
-  isDarkTheme,
-  borderColor = 'var(--grey-70)',
-  hoverBorderColor = 'var(--grey-100)',
-  focusBorderColor = 'var(--primary-700)',
-  focusBoxShadowColor = 'var(--primary-100)',
-  labelFontSize = '0.8rem',
-  labelColor = 'var(--grey-400)',
-  labelFontWeight = '400',
-  labelMarginBottom = '0.15rem',
-}) => {
-  const selectedValues = Array.isArray(value) ? value : [];
-
-  const handleChange = (selectedOptions, meta) => { //meta gives action info
-  const next = Array.isArray(selectedOptions)
-    ? selectedOptions.slice(0, maxSelections)
-    : [];
-
-  if (onChange) onChange(name, next, meta); //pass meta up
-};
-
-  return (
-    <Container>
-      <div className="form-row">
-        <label 
-        htmlFor={name} 
-        style={{
-          fontSize: labelFontSize,
-          color: labelColor,
-          fontWeight: labelFontWeight,
-          marginBottom: labelMarginBottom,
-          display: 'block',
-        }}>{labelText}</label>
-        <Select
-          id={name}
-          name={name}
-          isMulti
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
-          value={selectedValues}
-          onChange={handleChange}
-          options={list}
-          styles={getCustomStyles({
-            isDarkTheme,
-            hight,
-            borderColor,
-            hoverBorderColor,
-            focusBorderColor,
-            focusBoxShadowColor,
-          })}
-          isClearable={isClearable}
-          placeholder={placeholder}
-          getOptionValue={(option) => option.value}
-          isOptionDisabled={(option) => {
-            const alreadySelected = selectedValues.some(
-              (item) => item.value === option.value
-            );
-
-            return selectedValues.length >= maxSelections && !alreadySelected;
-          }}
-          components={{
-            Option: TechOption,
-            MultiValueLabel: TechMultiValueLabel,
-          }}
-          isDarkTheme={isDarkTheme}
-        />
-      </div>
-    </Container>
-  );
-};
 
 export default FormSelectorIcons;

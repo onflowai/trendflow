@@ -6,6 +6,7 @@ import {
   SEOProtected,
   ProfileHeader,
   CarouselCards,
+  UserCarousel,
 } from '../components';
 import customFetch from '../utils/customFetch';
 import Container from '../assets/wrappers/BlogContainer';
@@ -37,15 +38,13 @@ const Blog = () => {
   const { user } = useOutletContext();
   const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'; // is the user is an admin
   const currentDate = new Date().toLocaleDateString(); //date formatting
-  const { posts, infoHubItems: initialInfoHubItems, error } = useLoaderData();
+  const data = useLoaderData() || {};
+  const posts = Array.isArray(data.posts) ? data.posts : [];
+  const initialInfoHubItems = Array.isArray(data.infoHubItems)
+    ? data.infoHubItems
+    : [];
+  const error = data.error;
   const [infoHubItems, setInfoHubItems] = useState(initialInfoHubItems);
-  const authors = posts
-    .map((post) => post.author)
-    .filter(
-      (author, index, self) =>
-        self.findIndex((a) => a._id === author._id) === index
-    )
-    .slice(0, 16); // getting unique authors from the posts limit to 16 authors
 
   //deleting info hub
   const handleDeleteHubItem = async (id) => {
@@ -97,14 +96,7 @@ const Blog = () => {
             <>
               <div className="contributors">Contributors:</div>
               <div className="author-list">
-                {authors.map((author) => (
-                  <img
-                    key={author._id}
-                    src={author.profile_img}
-                    alt={author.username}
-                    className="author-img"
-                  />
-                ))}
+                <UserCarousel posts={posts} />
               </div>
               <div className="line"></div>
               <div className="current-date">{currentDate}</div>

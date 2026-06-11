@@ -210,7 +210,7 @@ const Container = styled.div`
       top: 0.5rem; // Move it down a bit from the top
       background-color: var(--white); // Add white background
       border-radius: 40%; // Make it round
-      padding: 0.4rem; // Add some padding for spacing
+      padding: 0.2rem; // Add some padding for spacing
   }
   .bookmark-btn svg {
   transform: translateY(2px); // Move the SVG icon 2 pixels down

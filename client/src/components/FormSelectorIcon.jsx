@@ -1,35 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
+import {
+  getPublicFallbackByName,
+  getBundledFallbackByName,
+  getCategoryDisplayImage,
+  handleIconError,
+} from '../utils/iconFallbacks';
 //import { getFullIconUrl } from '../utils/urlHelper';
 
-const getFallbackByName = (dropdownName) => {
-  if (dropdownName === 'trendCategory') return '/assets/cat/fallback-cat.svg';
-  if (dropdownName === 'trendTech') return '/assets/fallback-tech.svg';
-  return '/assets/fallback-tech.svg';
-};
+// const getFallbackByName = (dropdownName) => {
+//   if (dropdownName === 'trendCategory') return '/assets/cat/fallback-cat.svg';
+//   if (dropdownName === 'trendTech') return '/assets/fallback-tech.svg';
+//   return '/assets/fallback-tech.svg';
+// };
 
 const CustomOption = (props) => {
   const IconComponent = props.data.icon;
-  const fallback = getFallbackByName(props.selectProps?.name);
+  const publicFallback = getPublicFallbackByName(props.selectProps?.name);
+  const bundledFallback = getBundledFallbackByName(props.selectProps?.name);
+
+  const imageSrc =
+    props.selectProps?.name === 'trendCategory'
+      ? getCategoryDisplayImage(props.data)
+      : props.data.image || publicFallback;
+
   return (
     <components.Option {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {props.data.image && (
+        {imageSrc ? (
           <img
-            //src={getFullIconUrl(props.data.image)}
-            src={props.data.image}
+            src={imageSrc}
             alt={props.data.label}
-            style={{ width: '20px', marginRight: '10px' }}
-            onError={(e) => { e.currentTarget.src = fallback; }}
-            draggable={false} 
+            style={{
+              width: '20px',
+              height: '20px',
+              marginRight: '10px',
+              objectFit: 'contain',
+            }}
+            onError={(event) =>
+              handleIconError({
+                event,
+                publicFallback,
+                bundledFallback,
+              })
+            }
+            draggable={false}
           />
+        ) : (
+          IconComponent && (
+            <span style={{ marginRight: '10px' }}>
+              <IconComponent />
+            </span>
+          )
         )}
-        {IconComponent && (
-          <span style={{ marginRight: '10px' }}>
-            <IconComponent />
-          </span>
-        )}
+
         {props.data.label}
       </div>
     </components.Option>
@@ -39,12 +64,19 @@ const CustomOption = (props) => {
 const CustomSingleValue = (props) => {
   const { isDarkTheme, name } = props.selectProps || {};// passing theme and dropdown name via selectProps
   const IconComponent = props.data.icon;
-  const applyCustomStyling = name === 'trendCategory' && isDarkTheme === true;//ISSUE HERE isDarkTheme cannot be passed
-  const fallback = getFallbackByName(name);
+  const applyCustomStyling = name === 'trendCategory' && isDarkTheme === true;
+  const publicFallback = getPublicFallbackByName(name);
+  const bundledFallback = getBundledFallbackByName(name);
+
+  const imageSrc =
+    name === 'trendCategory'
+      ? getCategoryDisplayImage(props.data)
+      : props.data.image || publicFallback;
+
   return (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {props.data.image && (
+        {imageSrc ? (
           <div
             style={{
               backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
@@ -55,34 +87,45 @@ const CustomSingleValue = (props) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: '5px',
-              padding: applyCustomStyling ? '1px' : '0',
+              padding: applyCustomStyling ? '2px' : '0',
             }}
           >
             <img
-              src={props.data.image}
+              src={imageSrc}
               alt={props.data.label}
-              style={{ width: '20px', height: '20px' }}
-              onError={(e) => { e.currentTarget.src = fallback; }}
+              style={{
+                width: '20px',
+                height: '20px',
+                objectFit: 'contain',
+              }}
+              onError={(event) =>
+                handleIconError({
+                  event,
+                  publicFallback,
+                  bundledFallback,
+                })
+              }
               draggable={false}
             />
           </div>
-        )}
-        {IconComponent && (
-          <div
-            style={{
-              backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
-              borderRadius: applyCustomStyling ? '20%' : '0',
-              width: applyCustomStyling ? '25px' : 'auto',
-              height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '5px',
-              padding: applyCustomStyling ? '1px' : '0',
-            }}
-          >
-            <IconComponent style={{ width: '20px', height: '20px' }} />
-          </div>
+        ) : (
+          IconComponent && (
+            <div
+              style={{
+                backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
+                borderRadius: applyCustomStyling ? '20%' : '0',
+                width: applyCustomStyling ? '25px' : 'auto',
+                height: applyCustomStyling ? '25px' : 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '5px',
+                padding: applyCustomStyling ? '1px' : '0',
+              }}
+            >
+              <IconComponent style={{ width: '20px', height: '20px' }} />
+            </div>
+          )
         )}
         <span>{props.data.label}</span>
       </div>
@@ -187,7 +230,6 @@ const getCustomStyles = ({
     ...styles,
     minHeight: hight,
     padding: '2px 8px',
-    display: 'flex',
     alignItems: 'center',
   }),
   menu: (styles) => ({
@@ -240,13 +282,25 @@ const getCustomStyles = ({
   dropdownIndicator: (styles) => ({
     ...styles,
     color: 'var(--text-color)',
-    padding: '6px',
+       width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0',
+    cursor: 'pointer',
   }),
 
   clearIndicator: (styles) => ({
     ...styles,
     color: 'var(--text-color)',
-    padding: '6px',
+        width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0',
+    cursor: 'pointer',
   }),
 
   indicatorSeparator: (styles) => ({

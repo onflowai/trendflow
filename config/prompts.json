@@ -1,5 +1,5 @@
 {
-  "MAX_TOKENS_POST": 2600,
+  "MAX_TOKENS_POST": 3600,
   "MAX_TOKENS_DESC": 140,
   "MAX_TOKENS_USE": 260,
   "SYSTEM_ROLE_POST": "You are an expert Technology Software Engineer and technical tutorial writer. You write practical, production-minded guides with clear structure, strong spacing, and readable formatting. Your output must be easy to scan and must preserve Markdown whitespace (blank lines). You follow the exact formatting rules and section blueprint provided. You never compress content into a single line.",

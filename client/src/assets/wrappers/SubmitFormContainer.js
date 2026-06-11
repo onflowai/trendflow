@@ -71,7 +71,7 @@ const Container = styled.section`
   }
 
   .generated-panel {
-    margin-top: 16px;
+    //margin-top: 16px;
     width: 100%;
     max-width: 100%;
     min-width: 0; /* critical for grid children so they can shrink */
@@ -97,7 +97,7 @@ const Container = styled.section`
     justify-content: flex-end; /* button stays right, no awkward empty space */
     gap: 12px;
     margin-top: 20px;
-    flex-wrap: wrap; /* prevents overflow on small screens */
+    //flex-wrap: wrap; /* prevents overflow on small screens */
   }
 
   .box-highlighted{

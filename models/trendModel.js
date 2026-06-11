@@ -133,7 +133,7 @@ const TrendSchema = new mongoose.Schema(
     generatedBlogPost: {
       type: String,
       default: '',
-      maxlength: 8000,
+      maxlength: 14000,
     },
     blogLastEditedBy: {
       type: mongoose.Types.ObjectId,

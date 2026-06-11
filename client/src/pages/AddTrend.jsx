@@ -30,6 +30,12 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import useWindowSize from '../hooks/useWindowSize';
 import useLocalStorage from '../hooks/useLocalStorage';
+import {
+  TECH_FALLBACK_ICON,
+  CATEGORY_FALLBACK_ICON,
+  getTechDisplayImage,
+  getCategoryDisplayImage,
+} from '../utils/iconFallbacks';
 
 /**
  * AddTrend submits the trend after user types it in the from and selects category and technology it lets user edit the description and guide
@@ -38,8 +44,8 @@ import useLocalStorage from '../hooks/useLocalStorage';
  * @param {*} param0
  * @returns
  */
-const TECH_FALLBACK_ICON = '/assets/fallback-tech.svg';
-const CATEGORY_FALLBACK_ICON = '/assets/cat/fallback-cat.svg';
+// const TECH_FALLBACK_ICON = '/assets/fallback-tech.svg';
+// const CATEGORY_FALLBACK_ICON = '/assets/cat/fallback-cat.svg';
 const MAX_TREND_TECHS = 5;
 
 const stripSvgExtension = (value = '') => String(value).replace(/\.svg$/i, '');
@@ -51,21 +57,21 @@ const ensureAssetPath = (value = '') => {
   return `/assets/${v}`;
 };
 
-const getTechDisplayImage = (tech) => {
-  const fullImageUrl = String(tech?.fullImageUrl || '').trim();
-  if (fullImageUrl) return fullImageUrl;
+// const getTechDisplayImage = (tech) => {
+//   const fullImageUrl = String(tech?.fullImageUrl || '').trim();
+//   if (fullImageUrl) return fullImageUrl;
 
-  const image = String(tech?.image || '').trim();
-  if (image) return image;
+//   const image = String(tech?.image || '').trim();
+//   if (image) return image;
 
-  const fileName = String(tech?.fileName || '').trim();
-  if (fileName) return ensureAssetPath(fileName);
+//   const fileName = String(tech?.fileName || '').trim();
+//   if (fileName) return ensureAssetPath(fileName);
 
-  const techIconUrl = String(tech?.techIconUrl || '').trim();
-  if (techIconUrl) return techIconUrl.endsWith('.svg') ? techIconUrl : `${techIconUrl}.svg`;
+//   const techIconUrl = String(tech?.techIconUrl || '').trim();
+//   if (techIconUrl) return techIconUrl.endsWith('.svg') ? techIconUrl : `${techIconUrl}.svg`;
 
-  return TECH_FALLBACK_ICON;
-};
+//   return TECH_FALLBACK_ICON;
+// };
 
 const getStoredTechIconUrl = (tech) => {
   const fullImageUrl = String(tech?.fullImageUrl || '').trim();//fullImageUrl since it always carries the complete path with .svg extension
@@ -405,8 +411,22 @@ const AddTrend = () => {
         const response = await customFetch.get('icons/icon-data');
         const { TREND_CATEGORY, TECHNOLOGIES } = response.data;
 
-        const trendCategoryList = Object.values(TREND_CATEGORY || {}).map(normalizeCategoryOption);
-        const technologiesList = Object.values(TECHNOLOGIES || {}).map(normalizeTechnologyOption);
+        const trendCategoryList = Object.values(TREND_CATEGORY || {}).map((cate) => {
+          const normalized = normalizeCategoryOption(cate);
+
+          return {
+            ...normalized,
+            image: getCategoryDisplayImage(normalized),
+          };
+        });
+        const technologiesList = Object.values(TECHNOLOGIES || {}).map((tech) => {
+          const normalized = normalizeTechnologyOption(tech);
+
+          return {
+            ...normalized,
+            image: getTechDisplayImage(normalized),
+          };
+        });
 
         setTrendCategory(trendCategoryList);
         setTechnologies(technologiesList);
@@ -828,7 +848,7 @@ const AddTrend = () => {
                 type="hidden"
                 id="cateIconUrl"
                 name="cateIconUrl"
-                value={cateIconUrl || ''}
+                value={cateIconUrl || CATEGORY_FALLBACK_ICON}
               />
 
               {/* MULTI TECH SELECTOR */}
@@ -876,7 +896,7 @@ const AddTrend = () => {
                 type="hidden"
                 id="techIconUrl"
                 name="techIconUrl"
-                value={selectedTrendTechs[0]?.techIconUrl || ''}
+                value={selectedTrendTechs[0]?.techIconUrl || selectedTrendTechs[0]?.image || TECH_FALLBACK_ICON}
               />
 
               <input
