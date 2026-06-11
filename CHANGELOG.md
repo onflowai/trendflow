@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/onflowai/trendflow/compare/v1.1.2...v1.1.3) (2026-05-27)
+
+
+### Bug Fixes
+
+* local storage update for view flow ([febd1dd](https://github.com/onflowai/trendflow/commit/febd1ddb22b1393f39c5865e1d213430a31895eb))
+
 ## [1.1.2](https://github.com/onflowai/trendflow/compare/v1.1.1...v1.1.2) (2026-01-24)
 
 

@@ -14,7 +14,7 @@ function useLocalStorage(key, initialValue) {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error('Error reading localStorage key "' + key + '": ', error);
+      console.error('Error reading localStorage key "%s":', key, error);
       return initialValue;
     }
   });
@@ -30,7 +30,7 @@ function useLocalStorage(key, initialValue) {
           return valueToStore;
         });
       } catch (error) {
-        console.error('Error setting localStorage key "' + key + '": ', error);
+        console.error('Error setting localStorage key "%s":', key, error);
       }
     },
     [key, localStorageAvailable] //fully stable
