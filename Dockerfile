@@ -8,6 +8,7 @@ ARG VITE_DEV_BASE_URL="https://trendflowai.com"
 ARG VITE_DEV_PARENT_URL="https://onflowai.com"
 ARG VITE_GITHUB_URL="github.com/"
 ARG VITE_FULL_GITHUB_URL="http://github.com/"
+ARG VITE_ASSET_CDN_BASE="https://cdn.trendflowai.com"
 ARG VITE_TRENDS_LABEL_BASE_1="'google trends US:'"
 ARG VITE_TRENDS_LINK_BASE_1="https://trends.google.com/trends/explore"
 ARG VITE_TRENDS_LINK_GEO_1="US"
@@ -21,6 +22,7 @@ ENV VITE_DEV_BASE_URL=$VITE_DEV_BASE_URL
 ENV VITE_DEV_PARENT_URL=$VITE_DEV_PARENT_URL
 ENV VITE_GITHUB_URL=$VITE_GITHUB_URL
 ENV VITE_FULL_GITHUB_URL=$VITE_FULL_GITHUB_URL
+ENV VITE_ASSET_CDN_BASE=$VITE_ASSET_CDN_BASE
 ENV VITE_TRENDS_LABEL_BASE_1=$VITE_TRENDS_LABEL_BASE_1
 ENV VITE_TRENDS_LINK_BASE_1=$VITE_TRENDS_LINK_BASE_1
 ENV VITE_TRENDS_LINK_GEO_1=$VITE_TRENDS_LINK_GEO_1
@@ -33,7 +35,7 @@ ENV VITE_TRENDS_LINK_LANG_2=$VITE_TRENDS_LINK_LANG_2
 # Copy root dependency files
 COPY package*.json ./
 
-# Install root dependencies (needed for babel, emails build)
+# Install root dependencies needed for emails build
 RUN npm ci
 
 # Copy configuration and source files needed for emails build
@@ -49,7 +51,7 @@ COPY client/ ./client/
 # Install client dependencies
 RUN cd client && npm ci
 
-# Build client production assets (both client and server SSR bundles)
+# Build client production assets with Vite env baked in
 RUN cd client && npm run build:client && npm run build:ssr
 
 # --- Stage 2: Runtime ---
@@ -72,7 +74,6 @@ COPY client/package*.json ./client/
 # Install only production dependencies for the client
 RUN cd client && npm ci --only=production
 
-
 # Copy backend files and directories
 COPY server.js redisClient.js trendUploader.js ./
 COPY api/ ./api/
@@ -86,7 +87,7 @@ COPY schedulers/ ./schedulers/
 COPY services/ ./services/
 COPY utils/ ./utils/
 
-# Copy built email templates and static assets from builder stage
+# Copy built email templates and frontend build from builder stage
 COPY --from=builder /app/dist/emails/ ./dist/emails/
 COPY --from=builder /app/client/dist/ ./client/dist/
 
