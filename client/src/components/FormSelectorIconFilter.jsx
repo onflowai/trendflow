@@ -2,24 +2,75 @@ import React, { useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import Container from '../assets/wrappers/FormSelectorContainer';
 import { FaInfinity } from 'react-icons/fa6';
+import {
+  getPublicFallbackByName,
+  getBundledFallbackByName,
+  getTechDisplayImage,
+  getCategoryDisplayImage,
+  handleIconError,
+} from '../utils/iconFallbacks';
+
+const getFilterDisplayImage = (option, dropdownName) => {
+  // Do not show fallback icon for the "All" option.
+  // It already uses FaInfinity.
+  if (option?.value === 'all') return '';
+
+  if (dropdownName === 'trendCategory') {
+    return getCategoryDisplayImage(option);
+  }
+
+  if (dropdownName === 'trendTech') {
+    return getTechDisplayImage(option);
+  }
+
+  return option?.image || '';
+};
+
+const iconBoxStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: '5px',
+};
 
 const CustomOption = (props) => {
+  const { name } = props.selectProps || {};
   const IconComponent = props.data.icon;
+
+  const publicFallback = getPublicFallbackByName(name);
+  const bundledFallback = getBundledFallbackByName(name);
+  const imageSrc = getFilterDisplayImage(props.data, name);
+
   return (
     <components.Option {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {props.data.image && (
+        {imageSrc && (
           <img
-            src={props.data.image}
+            src={imageSrc}
             alt={props.data.label}
-            style={{ width: '20px', marginRight: '10px' }}
+            style={{
+              width: '20px',
+              height: '20px',
+              marginRight: '10px',
+              objectFit: 'contain',
+            }}
+            onError={(event) =>
+              handleIconError({
+                event,
+                publicFallback,
+                bundledFallback,
+              })
+            }
+            draggable={false}
           />
         )}
+
         {IconComponent && (
           <span style={{ marginRight: '10px' }}>
             <IconComponent />
           </span>
         )}
+
         {props.data.label}
       </div>
     </components.Option>
@@ -29,50 +80,48 @@ const CustomOption = (props) => {
 const CustomSingleValue = (props) => {
   const { isDarkTheme, name } = props.selectProps || {}; // Pass theme and dropdown name via selectProps
   const IconComponent = props.data.icon;
-  const applyCustomStyling = name === 'trendCategory'; //ISSUE HERE isDarkTheme cannot be passed
+  const publicFallback = getPublicFallbackByName(name);
+  const bundledFallback = getBundledFallbackByName(name);
+  const imageSrc = getFilterDisplayImage(props.data, name);
+
+  // category SVGs often need a light background only in dark mode
+  const applyCustomStyling = name === 'trendCategory' && isDarkTheme === true;
+
+  const wrapperStyle = {
+    ...iconBoxStyle,
+    backgroundColor: applyCustomStyling ? 'var(--off-white)' : 'transparent',
+    borderRadius: applyCustomStyling ? '20%' : '0',
+    width: applyCustomStyling ? '25px' : 'auto',
+    height: applyCustomStyling ? '25px' : 'auto',
+    padding: applyCustomStyling ? '2px' : '0',
+  };
+
   return (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {props.data.image && (
-          <div
-            style={{
-              backgroundColor: applyCustomStyling
-                ? 'var(--off-white)'
-                : 'transparent', // white background only when styling applies
-              borderRadius: applyCustomStyling ? '20%' : '0', // rounded only in dark mode for trendCategory
-              width: applyCustomStyling ? '25px' : 'auto', // box size for dark mode
-              height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '5px', // space between box and label
-            }}
-          >
+        {imageSrc && (
+          <div style={wrapperStyle}>
             <img
-              src={props.data.image}
+              src={imageSrc}
               alt={props.data.label}
               style={{
-                width: '20px', // SVG size
+                width: '20px',
                 height: '20px',
+                objectFit: 'contain',
               }}
+              onError={(event) =>
+                handleIconError({
+                  event,
+                  publicFallback,
+                  bundledFallback,
+                })
+              }
+              draggable={false}
             />
           </div>
         )}
         {IconComponent && (
-          <div
-            style={{
-              backgroundColor: applyCustomStyling
-                ? 'var(--off-white)'
-                : 'transparent',
-              borderRadius: applyCustomStyling ? '20%' : '0',
-              width: applyCustomStyling ? '25px' : 'auto',
-              height: applyCustomStyling ? '25px' : 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '5px',
-            }}
-          >
+          <div style={wrapperStyle}>
             <IconComponent style={{ width: '20px', height: '20px' }} />
           </div>
         )}
@@ -86,24 +135,26 @@ const FormSelectorIconFilter = ({
   name,
   isDarkTheme,
   labelText,
-  list,
+  list = [],
   defaultValue,
   onChange,
   isClearable = true,
 }) => {
   const [selectedOption, setSelectedOption] = useState(
-    list.find((option) => option.value === defaultValue) || list[0]
+    list.find((option) => option.value === defaultValue) || list[0] || null
   );
 
   useEffect(() => {
     const updatedOption =
-      list.find((option) => option.value === defaultValue) || list[0];
-    setSelectedOption(updatedOption); // Update state only when necessary
+      list.find((option) => option.value === defaultValue) || list[0] || null;
+    setSelectedOption(updatedOption);
   }, [defaultValue, list]);
 
   const handleChange = (option) => {
     setSelectedOption(option);
-    if (onChange) onChange(name, option);
+    if (onChange) {
+      onChange(name, option);
+    }
   };
 
   return (
@@ -118,8 +169,11 @@ const FormSelectorIconFilter = ({
           options={list}
           styles={customStyles}
           isClearable={isClearable}
-          components={{ Option: CustomOption, SingleValue: CustomSingleValue }}
-          selectProps={{ isDarkTheme, name }}
+          components={{
+            Option: CustomOption,
+            SingleValue: CustomSingleValue,
+          }}
+          isDarkTheme={isDarkTheme}
         />
       </div>
     </Container>
