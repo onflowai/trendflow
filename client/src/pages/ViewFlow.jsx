@@ -26,6 +26,13 @@ import {
 import customFetch from '../utils/customFetch';
 import { getFullIconUrl } from '../utils/urlHelper';
 import {
+  TECH_FALLBACK_ICON,
+  CATEGORY_FALLBACK_ICON,
+  TECH_BUNDLED_FALLBACK_ICON,
+  CATEGORY_BUNDLED_FALLBACK_ICON,
+  handleIconError,
+} from '../utils/iconFallbacks';
+import {
   Loading,
   IconCategory,
   SEOProtected,
@@ -127,18 +134,58 @@ export const loader = async ({ request }) => {
   }
 };
 
-const resolveIconUrl = (iconUrl, type) => {
-  if (!iconUrl) {
-    return type === 'category'
-      ? '/assets/cat/fallback-cat.svg'
-      : '/assets/fallback-tech.svg';
+const getTrendSvgUrl = (source = {}) => {
+  return String(
+    source.svg_url ||
+      source.svgUrl ||
+      source.trendSvgUrl ||
+      source.trendSVGUrl ||
+      ''
+  ).trim();
+};
+
+const getViewFlowFallbacks = (type) => {
+  if (type === 'category') {
+    return {
+      publicFallback: CATEGORY_FALLBACK_ICON,
+      bundledFallback: CATEGORY_BUNDLED_FALLBACK_ICON,
+    };
   }
 
-  if (/^https?:\/\//i.test(iconUrl)) {
-    return iconUrl;
+  // trend nodes fall back to tech-style logo fallback only after svg_url/iconUrl fail
+  return {
+    publicFallback: TECH_FALLBACK_ICON,
+    bundledFallback: TECH_BUNDLED_FALLBACK_ICON,
+  };
+};
+
+const resolveIconUrl = (iconUrl, type, source = {}) => {
+  const { publicFallback } = getViewFlowFallbacks(type);
+  const preferredIcon =
+    type === 'trend' ? getTrendSvgUrl(source) || iconUrl : iconUrl;
+  const value = String(preferredIcon || '').trim();
+
+  if (!value) return publicFallback;
+  if (
+    value.startsWith('http://') ||
+    value.startsWith('https://') ||
+    value.startsWith('data:') ||
+    value.startsWith('blob:')
+  ) {
+    return value;
   }
 
-  return getFullIconUrl(iconUrl);
+  return getFullIconUrl(value);
+};
+
+const handleViewFlowIconError = (event, type) => {
+  const { publicFallback, bundledFallback } = getViewFlowFallbacks(type);
+
+  handleIconError({
+    event,
+    publicFallback,
+    bundledFallback,
+  });
 };
 
 const getNodeSize = (type) => {
@@ -163,7 +210,8 @@ const buildSelectedTrendItems = (selectedTrendPreview) => {
       icon: tech.techIconUrl ? (
         <IconTechnology
           src={resolveIconUrl(tech.techIconUrl, 'tech')}
-          fallbackSrc="/assets/fallback-tech.svg"
+          fallbackSrc={TECH_FALLBACK_ICON}
+          bundledFallbackSrc={TECH_BUNDLED_FALLBACK_ICON}
           alt={`${tech.value} Icon`}
           size={20}
         />
@@ -182,7 +230,8 @@ const buildSelectedTrendItems = (selectedTrendPreview) => {
       icon: selectedTrendPreview.cateIconUrl ? (
         <IconCategory
           src={resolveIconUrl(selectedTrendPreview.cateIconUrl, 'category')}
-          fallbackSrc="/assets/cat/fallback-cat.svg"
+          fallbackSrc={CATEGORY_FALLBACK_ICON}
+          bundledFallbackSrc={CATEGORY_BUNDLED_FALLBACK_ICON}
           alt="Category Icon"
           size={20}
         />
@@ -215,7 +264,7 @@ const VisualNode = ({ data }) => {
   const { isDarkTheme } = useTheme();
 
   const size = getNodeSize(data.nodeType);
-  const iconUrl = resolveIconUrl(data.iconUrl, data.nodeType);
+  const iconUrl = resolveIconUrl(data.iconUrl, data.nodeType, data);
 
   const nodeBackground =
     data.nodeType === 'trend'
@@ -284,19 +333,16 @@ const VisualNode = ({ data }) => {
         }}
       >
         <img
+          key={`${data.nodeType}-${getTrendSvgUrl(data) || data.iconUrl || iconUrl}`}
           src={iconUrl}
           alt={data.label}
           style={{
             width: data.nodeType === 'trend' ? '62%' : '58%',
             height: data.nodeType === 'trend' ? '62%' : '58%',
+            objectFit: 'contain',
           }}
-          onError={(event) => {
-            event.currentTarget.onerror = null;
-            event.currentTarget.src =
-              data.nodeType === 'category'
-                ? '/assets/cat/fallback-cat.svg'
-                : '/assets/fallback-tech.svg';
-          }}
+          onError={(event) => handleViewFlowIconError(event, data.nodeType)}
+          draggable={false}
         />
       </div>
 
@@ -413,6 +459,8 @@ const buildForceLayout = (graphNodes, graphEdges, isMobile = false) => {
       nodeType: 'trend',
       label: trendPreview.trend,
       iconUrl: trendPreview.iconUrl,
+      svg_url: trendPreview.svg_url,
+      svgUrl: trendPreview.svgUrl,
       slug: trendPreview.slug,
     };
   };
@@ -424,6 +472,8 @@ const buildForceLayout = (graphNodes, graphEdges, isMobile = false) => {
       nodeType: node.data.nodeType,
       label: node.data.label,
       iconUrl: node.data.iconUrl,
+      svg_url: node.data.svg_url,
+      svgUrl: node.data.svgUrl,
       slug: node.data.slug || '',
     };
   };
@@ -710,7 +760,18 @@ useEffect(() => {
     return <div>Error loading data: {error}</div>;
   }
 
-  const activePanelData = panelData || defaultTrendPanel; 
+  const activePanelData = panelData || defaultTrendPanel;
+  const activePanelIconSource =
+  activePanelData?.nodeType === 'trend'
+    ? {
+        ...activePanelData,
+        svg_url:
+          selectedTrendPreview?.svg_url ||
+          selectedTrendPreview?.svgUrl ||
+          activePanelData?.svg_url ||
+          activePanelData?.svgUrl,
+      }
+    : activePanelData;
 
   return (
     <>
@@ -735,12 +796,21 @@ useEffect(() => {
                 >
                   <span className="selected-flow-icon">
                     <img
-                      src={resolveIconUrl(activePanelData.iconUrl, activePanelData.nodeType)}
+                      key={`${activePanelData.nodeType}-${
+                        getTrendSvgUrl(activePanelIconSource) ||
+                        activePanelData.iconUrl ||
+                        activePanelData.label
+                      }`}
+                      src={resolveIconUrl(
+                        activePanelData.iconUrl,
+                        activePanelData.nodeType,
+                        activePanelIconSource
+                      )}
                       alt={activePanelData.label}
-                      onError={(event) => {
-                        event.currentTarget.onerror = null;
-                        event.currentTarget.src = '/assets/fallback-tech.svg';
-                      }}
+                      onError={(event) =>
+                        handleViewFlowIconError(event, activePanelData.nodeType)
+                      }
+                      draggable={false}
                     />
                   </span>
 
@@ -763,15 +833,21 @@ useEffect(() => {
                 >
                   <span className="selected-flow-icon secondary">
                     <img
-                      src={resolveIconUrl(activePanelData.iconUrl, activePanelData.nodeType)}
+                      key={`${activePanelData.nodeType}-${
+                        getTrendSvgUrl(activePanelIconSource) ||
+                        activePanelData.iconUrl ||
+                        activePanelData.label
+                      }`}
+                      src={resolveIconUrl(
+                        activePanelData.iconUrl,
+                        activePanelData.nodeType,
+                        activePanelIconSource
+                      )}
                       alt={activePanelData.label}
-                      onError={(event) => {
-                        event.currentTarget.onerror = null;
-                        event.currentTarget.src =
-                          activePanelData.nodeType === 'category'
-                            ? '/assets/cat/fallback-cat.svg'
-                            : '/assets/fallback-tech.svg';
-                      }}
+                      onError={(event) =>
+                        handleViewFlowIconError(event, activePanelData.nodeType)
+                      }
+                      draggable={false}
                     />
                   </span>
 
