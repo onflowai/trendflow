@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/onflowai/trendflow/compare/v1.1.3...v1.2.0) (2026-06-11)
+
+
+### Features
+
+* Add Docker support ([d64974a](https://github.com/onflowai/trendflow/commit/d64974ac71357ce1c6fb21d80e2c49bd305f943e))
+
+
+### Bug Fixes
+
+* Add client dependencies ([f4c2152](https://github.com/onflowai/trendflow/commit/f4c2152b6497821b714d024b2fd6f682a12137a1))
+* Build ARM image ([239a190](https://github.com/onflowai/trendflow/commit/239a1908c9557862d92730847911c6467de6b53d))
+* Remove assets ([4166ca3](https://github.com/onflowai/trendflow/commit/4166ca3037a3c486d03dca746c62589ded53b24f))
+* Remove public folder ([d3adb08](https://github.com/onflowai/trendflow/commit/d3adb08e12e42a50430baae70d010cba6983cbaf))
+
 ## [1.1.3](https://github.com/onflowai/trendflow/compare/v1.1.2...v1.1.3) (2026-05-27)
 
 
