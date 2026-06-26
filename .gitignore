@@ -35,6 +35,7 @@ ecosystem.config.cjs
 #config files
 /config/categories.json
 /config/technologies.json
+/config/skillTypes.json
 
 #scripts
 scripts/
