@@ -114,3 +114,4 @@ export { default as DisclaimerFull } from './DisclaimerFull';
 export { default as ActionsList } from './ActionsList';
 export { default as DangerousMarkdownBasic } from './DangerousMarkdownBasic';
 export { default as FeaturedDevs } from './FeaturedDevs';
+export { default as SubmitTrendPanel } from './SubmitTrendPanel';
