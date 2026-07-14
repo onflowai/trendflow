@@ -2,30 +2,21 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import {
   UserImgLarge,
   SEOProtected,
-  TrendBookMark,
   CustomInfoToast,
-  TrendBlogLoading,
   CustomErrorToast,
+  SubmitTrendPanel,
   FormSelectorIcon,
   FormSelectorIcons,
   AdminSettingModal,
-  DangerousMarkdown,
   FormComponentLogos,
   CustomSuccessToast,
   TrendFallbackSuccess,
   TrendsFallbackEffect,
-  ContentBoxHighlighted,
-  TrendOfficialLinkEditor,
 } from '../components';
-import EditMarkdown from '../components/EditMarkdown.client';
-import EditMarkdownSmall from '../components/EditMarkdownSmall.client';
 import { useUser } from '../context/UserContext';
 import { useDashboardContext } from '../pages/DashboardLayout.jsx';
 import Container from '../assets/wrappers/SubmitFormContainer';
-import { normalizeUrlForSend } from '../utils/urlHelper';
-import { normalizeUrlForOpen } from '../utils/urlHelper';
-import { useOutletContext } from 'react-router-dom';
-import { Form, useNavigation, redirect, useActionData } from 'react-router-dom';
+import { Form, useNavigation, useActionData } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import useWindowSize from '../hooks/useWindowSize';
@@ -47,8 +38,6 @@ import {
 // const TECH_FALLBACK_ICON = '/assets/fallback-tech.svg';
 // const CATEGORY_FALLBACK_ICON = '/assets/cat/fallback-cat.svg';
 const MAX_TREND_TECHS = 5;
-
-const stripSvgExtension = (value = '') => String(value).replace(/\.svg$/i, '');
 
 const ensureAssetPath = (value = '') => {
   const v = String(value || '').trim();
@@ -206,12 +195,10 @@ const AddTrend = () => {
 
   const ADMIN_DRAFT_KEY = 'tf_add_trend_admin_draft_v1';
   const [adminDraft, setAdminDraft] = useLocalStorage(ADMIN_DRAFT_KEY, null);
-  const draftWriteTimerRef = useRef(null);
 
   const [trendCategory, setTrendCategory] = useState([]);
   const [technologies, setTechnologies] = useState([]);
   const [defaultTrendCategory, setDefaultTrendCategory] = useState(null);
-  const [defaultTrendTech, setDefaultTrendTech] = useState(null);
 
   const [selectedTrendTechs, setSelectedTrendTechs] = useState([]); //multi-trend
 
@@ -221,15 +208,6 @@ const AddTrend = () => {
   const [cateIconUrl, setCateIconUrl] = useState(''); //storing category icon URL
 
   const [trendObject, setTrendObject] = useState(null); //generated content state
-  const [generatedBlogPost, setGeneratedBlogPost] = useState(''); //generated content state setGeneratedBlogPost
-  const [trendUse, setTrendUse] = useState(''); //generated content state setTrendUse
-  const [trendOfficialLink, setTrendOfficialLink] = useState(''); //generated content state setTrendOfficialLink
-
-  const [isSavingUse, setIsSavingUse] = useState(false); //saving vars
-  const [isSavingBlog, setIsSavingBlog] = useState(false); //saving vars
-  const [isSavingLink, setIsSavingLink] = useState(false); //saving vars
-  const [isSubmittingForApproval, setIsSubmittingForApproval] = useState(false); //saving vars
-
   const { isMobile } = useWindowSize();
   const showFallback = isSubmitting || !trendObject;
 
@@ -240,10 +218,6 @@ const AddTrend = () => {
 
   const resetAfterApproval = () => {
     setTrendObject(null);
-    setGeneratedBlogPost('');
-    setTrendUse('');
-    setTrendOfficialLink('');
-
     setTrendValue('');
     setExistsState({ exists: false, trend: null });
 
@@ -335,12 +309,9 @@ const AddTrend = () => {
       isSubmittedForApproval: Boolean(adminDraft.isSubmittedForApproval),
     });
 
-    setGeneratedBlogPost(adminDraft.generatedBlogPost || '');
-    setTrendUse(adminDraft.trendUse || '');
-    setTrendOfficialLink(adminDraft.trendOfficialLink || '');
   }, [isAdmin, adminDraft, trendObject]);
 
-    const lastAppliedSlugRef = useRef('');
+  const lastAppliedSlugRef = useRef('');
 
   useEffect(() => {
     if (!actionData) return;
@@ -353,10 +324,6 @@ const AddTrend = () => {
     lastAppliedSlugRef.current = nextSlug; //
 
     setTrendObject(nextTrendObject);
-    setGeneratedBlogPost(nextTrendObject.generatedBlogPost || '');
-    setTrendUse(nextTrendObject.trendUse || '');
-    setTrendOfficialLink(nextTrendObject.trendOfficialLink || '');
-
     if (isAdmin && nextTrendObject?.slug) {
     setAdminDraft({
         slug: nextTrendObject.slug,
@@ -371,40 +338,6 @@ const AddTrend = () => {
   }, [actionData, isAdmin]);// when submit returns treat it as the new source of truth
   //+ persist a draft snapshot applying actionData after submit completes as single source of truth
   
-  useEffect(() => {
-    if (!isAdmin) return;
-    if (!trendObject?.slug) return;
-
-    if (draftWriteTimerRef.current) clearTimeout(draftWriteTimerRef.current);
-
-    draftWriteTimerRef.current = setTimeout(() => {
-      setAdminDraft({
-        slug: trendObject.slug,
-        generatedBlogPost: generatedBlogPost || '',
-        trendUse: trendUse || '',
-        trendOfficialLink: trendOfficialLink || '',
-        trendTechs:
-          trendObject?.trendTechs?.length > 0 ? trendObject.trendTechs : trendTechsPayload,
-        isSubmittedForApproval: Boolean(trendObject?.isSubmittedForApproval),
-        updatedAt: Date.now(),
-      });
-    }, 350);//fast enough not spammy
-
-    return () => {
-      if (draftWriteTimerRef.current) clearTimeout(draftWriteTimerRef.current);
-    };
-  //fetching the icon data from the node server
-  }, [
-    isAdmin,
-    trendObject?.slug,
-    trendObject?.trendTechs,
-    trendObject?.isSubmittedForApproval,
-    generatedBlogPost,
-    trendUse,
-    trendOfficialLink,
-    trendTechsPayload,
-  ]);//persist draft as admin edits debounced to avoid writing on every keystroke
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -437,9 +370,6 @@ const AddTrend = () => {
           setCateIconUrl(trendCategoryList[0].image || CATEGORY_FALLBACK_ICON);
         }
 
-        if (technologiesList.length > 0) {
-          setDefaultTrendTech(technologiesList[0].value);
-        }
       } catch (error) {
         console.error('Error fetching trend icon-data:', error);
       }
@@ -592,148 +522,6 @@ const AddTrend = () => {
       );
     }
   }; //end handleFileChange
-
-  const initial = useMemo(
-    () => ({
-      generatedBlogPost: trendObject?.generatedBlogPost || '',
-      trendUse: trendObject?.trendUse || '',
-      trendOfficialLink: trendObject?.trendOfficialLink || '',
-    }),
-    [
-      trendObject?.generatedBlogPost,
-      trendObject?.trendUse,
-      trendObject?.trendOfficialLink,
-    ]
-  );
-
-  const isUseDirty = trendUse !== initial.trendUse;
-  const isBlogDirty = generatedBlogPost !== initial.generatedBlogPost;
-  const isLinkDirty = trendOfficialLink !== initial.trendOfficialLink;
-
-  const handleUpdateTrendUse = async () => {
-    try {
-      setIsSavingUse(true);
-      await patchTrendBlogFields({ trendUse });
-      toast.success(<CustomSuccessToast message="trendUse updated" />);
-      setTrendObject((prev) => ({ ...(prev || {}), trendUse }));
-      // keep draft in sync after successful save
-      if (isAdmin && trendObject?.slug) {
-        setAdminDraft((d) => ({ ...(d || {}), trendUse, updatedAt: Date.now() }));
-      }
-    } catch (error) {
-      toast.error(
-        <CustomErrorToast
-          message={error?.response?.data?.msg || 'Error updating trendUse'}
-        />
-      );
-    } finally {
-      setIsSavingUse(false);
-    }
-  };
-
-  const handleUpdateGeneratedBlogPost = async () => {
-    try {
-      setIsSavingBlog(true);
-      await patchTrendBlogFields({ generatedBlogPost });
-      toast.success(<CustomSuccessToast message="Blog post updated" />);
-      setTrendObject((prev) => ({ ...(prev || {}), generatedBlogPost }));
-      if (isAdmin && trendObject?.slug) {
-        setAdminDraft((d) => ({
-          ...(d || {}),
-          generatedBlogPost,
-          updatedAt: Date.now(),
-        }));
-      }
-    } catch (error) {
-      toast.error(
-        <CustomErrorToast
-          message={error?.response?.data?.msg || 'Error updating blog post'}
-        />
-      );
-    } finally {
-      setIsSavingBlog(false);
-    }
-  };
-
-  const handleUpdateTrendOfficialLink = async () => {
-    try {
-      setIsSavingLink(true);
-      const normalized = normalizeUrlForSend(trendOfficialLink);
-      await patchTrendBlogFields({ trendOfficialLink: normalized });
-      toast.success(<CustomSuccessToast message="Official link updated" />);
-      setTrendOfficialLink(normalized);
-      setTrendObject((prev) => ({ ...(prev || {}), trendOfficialLink: normalized }));
-      if (isAdmin && trendObject?.slug) {
-        setAdminDraft((d) => ({
-          ...(d || {}),
-          trendOfficialLink: normalized,
-          updatedAt: Date.now(),
-        }));
-      }
-    } catch (error) {
-      toast.error(
-        <CustomErrorToast
-          message={error?.response?.data?.msg || 'Error updating official link'}
-        />
-      );
-    } finally {
-      setIsSavingLink(false);
-    }
-  };
-
-  const handleSubmitForApproval = async () => {
-    try {
-      if (!trendObject?.slug) return;
-      setIsSubmittingForApproval(true);
-      await customFetch.patch(`/trends/${trendObject.slug}/submit-for-approval`);
-      toast.success(<CustomSuccessToast message="Submitted for approval" />);
-      if (isAdmin) setAdminDraft(null);
-      resetAfterApproval();//setting trendObject to null reset on submit for approval
-      //setTrendObject((prev) => ({ ...(prev || {}), isSubmittedForApproval: true }));//already submited switch
-      //if (isAdmin) setAdminDraft(null);
-    } catch (error) {
-      toast.error(
-        <CustomErrorToast
-          message={error?.response?.data?.msg || 'Error submitting for approval'}
-        />
-      );
-    } finally {
-      setIsSubmittingForApproval(false);
-    }
-  };
-
-  const [isSaved, setIsSaved] = useState(false);
-
-  const onSave = async (_id) => {
-    const response = await customFetch.patch('/users/save-trend', { _id });
-    if (response.status !== 200) throw new Error('Failed to save trend');
-  };
-
-  const onRemove = async (_id) => {
-    const response = await customFetch.patch('/users/remove-trend', { _id });
-    if (response.status !== 200) throw new Error('Failed to remove trend');
-  };
-
-  const patchTrendBlogFields = async (partial) => {
-    if (!trendObject?.slug) throw new Error('Missing slug');
-    return customFetch.patch(`/trends/${trendObject.slug}/update-trend-blog`, partial);
-  };
-
-  const onToggleBookmark = async (trendId, nextIsSaved) => {
-    try {
-      if (nextIsSaved) {
-        await onSave(trendId);
-        toast.success(<CustomSuccessToast message='Trend saved successfully' />);
-        setIsSaved(true);
-      } else {
-        await onRemove(trendId);
-        toast.success(<CustomSuccessToast message='Trend removed' />);
-        setIsSaved(false);
-      }
-    } catch (e) {
-      toast.error(e?.response?.data?.msg || e?.message || 'Bookmark error');
-    }
-  };
 
   useEffect(() => {
     if (submitSpinnerTimerRef.current) clearTimeout(submitSpinnerTimerRef.current);
@@ -924,157 +712,20 @@ const AddTrend = () => {
               </div>
             </div>
           </Form>
-
-          <div className="generated-panel">
-            {showSubmitSpinner && <TrendBlogLoading />}
-
-            {!isSubmitting && trendObject && (
-              <>
-                <div className="trend-header-row">
-                  <div className="trend-header-left">
-                    {techIconUrl ? (
-                      <img
-                        className="trend-tech-icon"
-                        src={techIconUrl}
-                        alt=""
-                        draggable={false}
-                      />
-                    ) : (
-                      <div className="trend-tech-icon placeholder" />
-                    )}
-                    <div className="trend-header-title">
-                      <div className="trend-tech-label">{techLabel || 'Technology'}</div>
-                      <div className="trend-name">
-                        {trendObject?.trend || trendObject?.title || 'Trend'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <TrendBookMark
-                    trendId={trendObject?._id}
-                    isSaved={isSaved}
-                    onToggle={onToggleBookmark}
-                    disabled={!trendObject?._id}
-                    title="Save this trend"
-                    className="trend-header-bookmark"
-                  />
-                </div>
-
-                <div className="section">
-                  {isAdmin ? (
-                    <EditMarkdownSmall
-                      initialContent={trendUse}
-                      onContentChange={(val) => setTrendUse(val)}
-                      previewOpen={false}
-                      height={250}
-                    />
-                  ) : (
-                    <div className="box-highlighted">
-                      <ContentBoxHighlighted trendUse={trendUse} isDarkTheme={isDarkTheme} />
-                    </div>
-                  )}
-                  <div className="section-header">
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        className="btn info-btn"
-                        onClick={handleUpdateTrendUse}
-                        disabled={!isUseDirty || isSavingUse}
-                      >
-                        {isSavingUse ? 'saving…' : 'Save'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="section">
-                  {isAdmin ? (
-                    <EditMarkdown
-                      initialContent={generatedBlogPost}
-                      onContentChange={(val) => setGeneratedBlogPost(val)}
-                      previewOpen={false}
-                      height="700px"
-                    />
-                  ) : (
-                    <DangerousMarkdown
-                      content={generatedBlogPost}
-                      small={false}
-                      isDarkTheme={isDarkTheme}
-                    />
-                  )}
-                  <div className="section-header">
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        className="btn info-btn"
-                        onClick={handleUpdateGeneratedBlogPost}
-                        disabled={!isBlogDirty || isSavingBlog}
-                      >
-                        {isSavingBlog ? 'saving…' : 'Save'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="section-link">
-                  {isAdmin ? (
-                    <TrendOfficialLinkEditor
-                      value={trendOfficialLink}
-                      onChange={setTrendOfficialLink}
-                      onUpdate={handleUpdateTrendOfficialLink}
-                      isUpdating={isSavingLink}
-                      iconUrl="/assets/trend-link.svg"
-                    />
-                  ) : (
-                    <a
-                      className="official-link-btn"
-                      href={normalizeUrlForOpen(trendOfficialLink)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        className="official-link-icon"
-                        src="/assets/trend-link.svg"
-                        alt="Official link"
-                      />
-                      <span className="official-link-text">visit for more</span>
-                    </a>
-                  )}
-                </div>
-
-                {isAdmin && (
-                  <div className="section approval-row">
-                    <div className="approval-left">
-                      <TrendBookMark
-                        trendId={trendObject?._id}
-                        isSaved={isSaved}
-                        onToggle={onToggleBookmark}
-                        disabled={!trendObject?._id}
-                        title="Bookmark this trend"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      className="btn-action btn-block form-btn"
-                      onClick={handleSubmitForApproval}
-                      disabled={
-                        isSubmittingForApproval ||
-                        trendObject?.isSubmittedForApproval === true
-                      }
-                    >
-                      {trendObject?.isSubmittedForApproval
-                        ? 'Already submitted'
-                        : isSubmittingForApproval
-                          ? 'submitting…'
-                          : 'Submit for Approval'}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+          <SubmitTrendPanel
+            trendObject={trendObject}
+            setTrendObject={setTrendObject}
+            isSubmitting={isSubmitting}
+            showSubmitSpinner={showSubmitSpinner}
+            isAdmin={isAdmin}
+            isDarkTheme={isDarkTheme}
+            techIconUrl={techIconUrl}
+            techLabel={techLabel}
+            trendTechsPayload={trendTechsPayload}
+            setAdminDraft={setAdminDraft}
+            onApprovalComplete={resetAfterApproval}
+          />
         </div>
-
         <div className="">
           {showFallback ? (
             <TrendsFallbackEffect active={true} iconCount={14} spinSpeed={25} />
