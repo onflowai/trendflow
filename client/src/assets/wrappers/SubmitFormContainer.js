@@ -150,6 +150,12 @@ const Container = styled.section`
     overflow-wrap: anywhere;//long URLs/words stop nuking layout
     word-break: break-word;
   }
+
+  .skill-review-container{
+    margin-top: 12px;
+    margin-top: 12px;
+  }
+
   .trend-header-row {
     display: flex;
     align-items: center;
@@ -323,7 +329,7 @@ const Container = styled.section`
   .settings-icon {
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--text-primary-color);
+    color: var(--icon-btn-color);
     transition: color 0.3s ease;
   }
 
@@ -381,6 +387,354 @@ const Container = styled.section`
       &:active {
         background: var(--grey-200);
       }
+    }
+  }
+
+  .skill-icon-default {
+    opacity: 1;
+  }
+
+  .skill-icon-hover,
+  .skill-icon-active {
+    opacity: 0;
+  }
+
+  .skill-field {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .skill-type-field {
+    min-width: 0;
+  }
+
+  /*
+   * The technology selector and order display span the full form width.
+   */
+  .skill-tech-field {
+    grid-column: 1 / -1;
+  }
+
+  .skill-options-loading {
+    min-height: 47px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    border: 1.5px solid var(--grey-70);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--grey-400);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* ==========================================
+     ORDERED SKILL TECHNOLOGY DISPLAY
+     ========================================== */
+
+  .skill-tech-order {
+    width: 100%;
+    min-width: 0;
+    min-height: 64px;
+    padding: 0.75rem;
+    border: 1.5px solid var(--grey-70);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    overflow-x: auto;
+  }
+
+  .skill-tech-order-item {
+    flex: 0 0 auto;
+    min-width: 150px;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0.2rem;
+    padding: 0.55rem 0.65rem;
+    border: 1.5px solid var(--grey-50);
+    border-radius: var(--border-radius);
+    background: var(--white);
+  }
+
+  .skill-tech-order-item img {
+    grid-row: 1 / span 2;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .skill-tech-order-item span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-color);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .skill-tech-order-item small {
+    color: var(--grey-400);
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .skill-order-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+  }
+
+  .skill-order-actions button {
+    height: 27px;
+    border: 1px solid var(--grey-70);
+    border-radius: calc(var(--border-radius) / 1.5);
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+  }
+
+  .skill-order-actions button:hover:not(:disabled) {
+    border-color: var(--primary-300);
+    background: var(--grey-30);
+  }
+
+  .skill-order-actions button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .skill-order-arrow {
+    flex: 0 0 auto;
+    color: var(--primary-400);
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 768px) {
+    .skill-tech-order {
+      align-items: stretch;
+    }
+
+    .skill-tech-order-item {
+      min-width: 135px;
+    }
+  }
+
+
+  .skill-build-field {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0.85rem;
+  }
+
+  .skill-build-label {
+    margin-bottom: 0.45rem;
+    color: var(--grey-400);
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+
+
+  .skill-tech-pill {
+    flex: 0 0 auto;
+    min-height: 40px;
+    max-width: 230px;
+    padding: 0.35rem 0.45rem;
+    border: 1.5px solid var(--grey-50);
+    border-radius: 999px;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: grab;
+    user-select: none;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .skill-tech-pill:hover {
+    border-color: var(--primary-200);
+    box-shadow:
+      0 3px 9px
+      rgba(0, 0, 0, 0.07);
+  }
+
+  .skill-tech-pill:active {
+    cursor: grabbing;
+  }
+
+  .skill-tech-pill.is-primary {
+    border-color: var(--primary-300);
+  }
+
+  .skill-tech-pill.is-dragging {
+    opacity: 0.45;
+    transform: scale(0.97);
+    border-style: dashed;
+  }
+
+  .skill-tech-drag-handle {
+    flex: 0 0 auto;
+    color: var(--grey-300);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: -0.2rem;
+    cursor: grab;
+  }
+
+  .skill-tech-pill img {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+  }
+
+  .skill-tech-pill-name {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .skill-pill-order-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin-left: 0.1rem;
+  }
+
+  .skill-pill-order-actions button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--grey-500);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+
+  .skill-pill-order-actions
+    button:hover:not(:disabled) {
+    background: var(--grey-50);
+    color: var(--primary-500);
+  }
+
+  .skill-pill-order-actions button:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .skill-order-arrow {
+    flex: 0 0 auto;
+    color: var(--primary-400);
+    font-size: 1.1rem;
+    font-weight: 800;
+    pointer-events: none;
+  }
+
+  .skill-tech-field {
+    grid-column: 1 / -1;
+  }
+
+  .submit-row.skill-submit-full-width {
+    grid-column: 1 / -1;
+  }
+
+  .review-skill-row {
+    width: 100%;
+  }
+
+  .review-skill-btn {
+    min-height: 42px;
+    width: 100%;
+    padding: 0.45rem 0.85rem;
+    border: 1.5px solid var(--grey-50);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .review-skill-btn:hover {
+    border-color: var(--primary-200);
+  }
+
+  .review-skill-btn strong {
+    min-width: 0;
+    color: var(--primary-600);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .review-skill-icon-wrap {
+    position: relative;
+    width: 21px;
+    height: 21px;
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .review-skill-icon {
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    object-fit: contain;
+  }
+
+  .review-skill-icon-default {
+    opacity: 1;
+  }
+
+  .review-skill-icon-hover {
+    opacity: 0;
+  }
+
+  .review-skill-btn:hover .review-skill-icon-default {
+    opacity: 0;
+  }
+
+  .review-skill-btn:hover .review-skill-icon-hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .skill-tech-order {
+      min-height: 58px;
+      padding: 0.6rem;
+    }
+
+    .skill-tech-pill {
+      max-width: 200px;
     }
   }
 
