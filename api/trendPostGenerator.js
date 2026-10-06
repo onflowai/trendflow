@@ -1,14 +1,6 @@
-import { OpenAIApi, Configuration } from 'openai'; //openai's SDK
+import { getOpenAIClient } from '../services/openaiClient.js';
 import { sanitizeOfficialLink } from '../utils/sanitizeLink.js';
-import {
-  MAX_TOKENS_POST,
-  MAX_TOKENS_DESC,
-  MAX_TOKENS_USE,
-  SYSTEM_ROLE_POST,
-  USER_ROLE_POST,
-  TREND_URL_BUTTON,
-} from '../utils/openaiPromptData.js';
-import * as dotenv from 'dotenv';
+import { loadTrendPromptData } from '../utils/promptDataLoader.js';
 
 /**
  * Trend post generator will take values: trend, trendCategory, trendTech and generate Getting Started Guide post for the trend using Structured Chat.
@@ -18,20 +10,26 @@ import * as dotenv from 'dotenv';
  * @param {*} trend
  * @returns
  */
-dotenv.config(); //initializing dotenv once at module load
 const ALLOWED_OPEN_SOURCE = ['open', 'partial', 'closed', 'unknown'];
 
 // async function to generate blog content using OpenAI (single-call version):
 export const generatePostContent = async (
-  trend, 
+  trend,
   trendCategory,
   primaryTechValue = '',
   secondaryTechValues = []
-  ) => {
-  const config = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(config); //new instance of openai
+) => {
+  const {
+    MAX_TOKENS_POST,
+    MAX_TOKENS_DESC,
+    MAX_TOKENS_USE,
+    SYSTEM_ROLE_POST,
+    USER_ROLE_POST,
+    TREND_URL_BUTTON,
+    SYSTEM_RESPONSE_FORMAT,
+  } = await loadTrendPromptData();  //load cached prompt values from MongoDB
+
+  const openai = getOpenAIClient(); //shared client
 
   let trendPost = '';// markdown blog output
   let trendDesc = '';// short description (plain text)
@@ -52,24 +50,7 @@ export const generatePostContent = async (
   const system = `
 ${SYSTEM_ROLE_POST}
 
-You must return STRICT JSON only.
-Do NOT minify JSON values.
-All newline characters inside string values must be preserved exactly (\\n).
-The "trendPost" value must contain real Markdown newlines and blank lines.
-
-Rules:
-- Return JSON only (no backticks, no commentary, no extra keys).
-- trendOfficialLink must be either an https/http URL string or empty string.
-- openSourceStatus must be exactly one of: open, partial, closed, unknown.
-
-You must return valid JSON with the following exact shape:
-{
-  "trendPost": string,   // a startup/how-to tutorial with a brief "Getting Started" section and a tiny CTA at the end
-  "trendDesc": string,   // 1-2 sentence plain-English description
-  "trendUse":  string,    // short paragraph describing best uses
-  "trendOfficialLink": string   // official website URL only https or empty string
-  "openSourceStatus": "open" | "partial" | "closed" | "unknown"  //projects open source status or unknown if unknown
-}
+${SYSTEM_RESPONSE_FORMAT}
 `;
 
 const safeSecondaryTechValues = Array.isArray(secondaryTechValues)
