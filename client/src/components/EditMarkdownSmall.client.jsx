@@ -160,13 +160,20 @@ const Container = styled.div`
     }
 
     .cm-activeLineGutter {
-      background-color: var(--grey-30);
+      background-color: color-mix(
+        in srgb,
+        var(--grey-30) 55%,
+        transparent
+      );
     }
 
     .cm-activeLine {
-      background-color: var(--grey-30);
+      background-color: color-mix(
+        in srgb,
+        var(--grey-30) 55%,
+        transparent
+      );
     }
-  
 
     .md-editor-toolbar button {
       color: var(--grey-100);
@@ -285,12 +292,32 @@ const Container = styled.div`
       box-shadow: 0 0 8px var(--primary-200);
     }
 
-    /* Optional: text selection color */
-    .cm-selectionBackground,
-    .cm-focused .cm-selectionBackground {
+    /* Selection when the editor is not focused */
+    .cm-editor .cm-selectionBackground {
       background-color: color-mix(
         in srgb,
-        var(--primary-200) 35%,
+        var(--primary-400) 50%,
+        transparent
+      ) !important;
+    }
+
+    /* Selection while actively selecting text */
+    .cm-editor.cm-focused
+      > .cm-scroller
+      > .cm-selectionLayer
+      .cm-selectionBackground {
+      background-color: color-mix(
+        in srgb,
+        var(--primary-400) 65%,
+        transparent
+      ) !important;
+    }
+
+    /* Native browser selection fallback */
+    .cm-content ::selection {
+      background-color: color-mix(
+        in srgb,
+        var(--primary-400) 65%,
         transparent
       ) !important;
     }
