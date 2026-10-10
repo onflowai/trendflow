@@ -94,7 +94,7 @@ const Container = styled.div`
   .settings-icon {
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--text-primary-color);
+    color: var(--icon-btn-color);
     transition: color 0.3s ease;
   }
   .settings-icon:hover {
