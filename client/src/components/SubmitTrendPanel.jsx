@@ -78,7 +78,8 @@ const SubmitTrendPanel = ({
     if (draftWriteTimerRef.current) clearTimeout(draftWriteTimerRef.current);
 
     draftWriteTimerRef.current = setTimeout(() => {
-      setAdminDraft({
+      setAdminDraft((currentDraft) => ({
+        ...currentDraft,
         slug: trendObject.slug,
         generatedBlogPost: generatedBlogPost || '',
         trendUse: trendUse || '',
@@ -87,9 +88,11 @@ const SubmitTrendPanel = ({
           trendObject?.trendTechs?.length > 0
             ? trendObject.trendTechs
             : trendTechsPayload,
-        isSubmittedForApproval: Boolean(trendObject?.isSubmittedForApproval),
+        isSubmittedForApproval: Boolean(
+          trendObject?.isSubmittedForApproval
+        ),
         updatedAt: Date.now(),
-      });
+      }));
     }, 350);
 
     return () => {
