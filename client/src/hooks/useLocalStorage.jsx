@@ -1,40 +1,102 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-function useLocalStorage(key, initialValue) {
-  //if localStorage is available (i.e. we're on the client)
+const readStoredValue = (key, initialValue) => {
   const localStorageAvailable =
     typeof window !== 'undefined' && window.localStorage;
 
-  // initialize state safely:
-  const [storedValue, setStoredValue] = useState(() => {
-    if (!localStorageAvailable) {
-      return initialValue;
-    }
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error('Error reading localStorage key "' + key + '": ', error);
-      return initialValue;
-    }
-  });
+  if (!localStorageAvailable) {
+    return initialValue;
+  }
+
+  try {
+    const item = window.localStorage.getItem(key);
+
+    return item !== null
+      ? JSON.parse(item)
+      : initialValue;
+  } catch (error) {
+    console.error(
+      `Error reading localStorage key "${key}": `,
+      error
+    );
+
+    return initialValue;
+  }
+};
+
+function useLocalStorage(key, initialValue) {
+  const [storageState, setStorageState] = useState(() => ({
+    key,
+    value: readStoredValue(key, initialValue),
+  }));
+
+  /*
+   * If the key changes, load the value stored under the new key.
+   */
+  useEffect(() => {
+    setStorageState((current) => {
+      if (current.key === key) {
+        return current;
+      }
+
+      return {
+        key,
+        value: readStoredValue(key, initialValue),
+      };
+    });
+  }, [key, initialValue]);
+
+  const storedValue =
+    storageState.key === key
+      ? storageState.value
+      : readStoredValue(key, initialValue);
 
   const setValue = useCallback(
     (value) => {
-      try {
-        setStoredValue((prev) => {
-          const valueToStore = value instanceof Function ? value(prev) : value;
+      setStorageState((current) => {
+        const currentValue =
+          current.key === key
+            ? current.value
+            : readStoredValue(key, initialValue);
+
+        const valueToStore =
+          typeof value === 'function'
+            ? value(currentValue)
+            : value;
+
+        try {
+          const localStorageAvailable =
+            typeof window !== 'undefined' &&
+            window.localStorage;
+
           if (localStorageAvailable) {
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
+            if (
+              valueToStore === null ||
+              valueToStore === undefined
+            ) {
+              window.localStorage.removeItem(key);
+            } else {
+              window.localStorage.setItem(
+                key,
+                JSON.stringify(valueToStore)
+              );
+            }
           }
-          return valueToStore;
-        });
-      } catch (error) {
-        console.error('Error setting localStorage key "' + key + '": ', error);
-      }
+        } catch (error) {
+          console.error(
+            `Error setting localStorage key "${key}": `,
+            error
+          );
+        }
+
+        return {
+          key,
+          value: valueToStore,
+        };
+      });
     },
-    [key, localStorageAvailable] //fully stable
-  );// creating a setter that updates both state and localStorage (if available)
+    [key, initialValue]
+  );
 
   return [storedValue, setValue];
 }
