@@ -27,6 +27,10 @@ const SkillSchema = new mongoose.Schema(
       required: true,
       unique: true,
       index: true,
+      trim: true,
+      lowercase: true,
+      maxlength: 250,
+      match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
     },
     description: {
       type: String,
@@ -50,7 +54,7 @@ const SkillSchema = new mongoose.Schema(
       ref: 'Trend',
       required: true,
       index: true,
-    },//trend with which skill was generated on submit or after
+    },//trend with which skill was generated on submit (trendSubmit) or after (skillSubmit) attached with a many-to-one relationship
     relatedTrends: [
       {
         type: mongoose.Types.ObjectId,
@@ -126,6 +130,14 @@ const SkillSchema = new mongoose.Schema(
       required: true,
       maxlength: 20000,
     },//final generated SKILL.md content
+    markdownGeneratedAt: {
+      type: Date,
+    },
+    markdownNeedsRegeneration: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
     files: {
       type: [
         {
@@ -180,13 +192,31 @@ const SkillSchema = new mongoose.Schema(
     },
     generationMode: {
       type: String,
-      enum: ['trend-only', 'trend-plus-techs', 'manual', 'bundle-derived'],
+      enum: ['trend-only',
+        'trend-plus-techs',
+        'tech-stack-only',
+        'manual',
+        'bundle-derived'],
       default: 'trend-plus-techs',
     },
     generationSource: {
-      model: String,
-      promptVersion: String,
+      model: {
+        type: String,
+        maxlength: 200,
+      },
+      promptVersion: {
+        type: String,
+        maxlength: 100,
+      },
       generatedAt: Date,
+      usedTrendContext: {
+        type: Boolean,
+        default: true,
+      },
+      usedTrendBlog: {
+        type: Boolean,
+        default: true,
+      },
     },
     safety: {
       hasScripts: {
@@ -239,20 +269,27 @@ SkillSchema.index({ primaryTrend: 1, status: 1 });
 SkillSchema.index({ installCount: -1 });
 
 SkillSchema.pre('validate', async function (next) {
-  if (this.isNew || this.isModified('title')) {
-    this.slug = generateSlug(this.title);
-
-    const exists = await mongoose.models.Skill.findOne({
-      slug: this.slug,
-      _id: { $ne: this._id },
-    }).exec();
-
-    if (exists) {
-      throw new Error('Skill already exists. Duplicate skill slugs are not allowed.');
-    }
+  try {
+    if (this.isNew && !this.slug) {
+      this.slug = generateSlug(this.title);
+    } // fallback for another internal creation path that omits the slug
+    if (this.isNew || this.isModified('slug')) {
+      const exists = await mongoose.models.Skill.findOne({
+        slug: this.slug,
+        _id: {
+          $ne: this._id,
+        },
+      }).exec();
+      if (exists) {
+        throw new Error(
+          'Skill already exists. Duplicate skill slugs are not allowed.'
+        );
+      }
+    } //check uniqueness when the slug itself is new or changed
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  next();
 });
 
 export default mongoose.model('Skill', SkillSchema);
