@@ -24,45 +24,54 @@ const assertAdminRequest = (req) => {
 export const getSkillOptions = async (req, res) => {
   assertAdminRequest(req);
 
-  const [skillTypes, technologies] = await Promise.all([
+    const [skillTypes, technologies] = await Promise.all([
     SkillType.find({
-      isActive: {
+        isActive: {
         $ne: false,
-      },
+        },
     })
-      .select('key label value description isActive')
-      .sort({
+        .select(
+        'key label value description image fullImageUrl isActive sortOrder'
+        )
+        .sort({
+        sortOrder: 1,
         label: 1,
-      })
-      .lean(),
+        })
+        .lean(),
 
     Technology.find({})
-      .select('key label value image fullImageUrl description')
-      .sort({
+        .select('key label value image fullImageUrl description')
+        .sort({
         label: 1,
-      })
-      .lean(),
-  ]);
+        })
+        .lean(),
+    ]);
 
-  res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
     skillTypes: skillTypes.map((type) => ({
-      key: type.key,
-      label: type.label,
-      value: type.value,
-      description: type.description || '',
+        key: type.key,
+        label: type.label,
+        value: type.value,
+        description: type.description || '',
+        image: type.image || '',
+        fullImageUrl: type.fullImageUrl || '',
+        iconUrl:
+        type.fullImageUrl ||
+        type.image ||
+        '/assets/skill-types/fallback-skill-type.svg',
     })),
 
     relatedTechs: technologies.map((technology) => ({
-      key: technology.key,
-      label: technology.label || technology.value,
-      value: technology.value,
-      techIconUrl:
+        key: technology.key,
+        label: technology.label || technology.value,
+        value: technology.value,
+        techIconUrl:
         technology.fullImageUrl ||
         technology.image ||
         '',
-      description: technology.description || '',
+        description: technology.description || '',
     })),
 
     techRoles: TECH_ROLES,
-  });
+    });
 };
