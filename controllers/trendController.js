@@ -21,6 +21,11 @@ import {
   calculateCombinedScore,
   paginateAndSortCursorViews,
 } from '../utils/trendUtils.js';
+import { skillService } from '../services/skillService.js';
+import {
+  parseSkillBoolean,
+  parseSkillJSONField,
+} from '../utils/skillUtils.js';
 import { normalizeCreatorForTrend } from '../utils/normalizeUserForTrend.js';
 import {
   BadRequestError,
@@ -57,6 +62,39 @@ export const submitTrend = async (req, res) => {
 
   const createdBy = req.user.userID;// storing current authenticated user id as author of created trend
   const isAdmin = req.user?.role === 'admin' || req.user?.role === 'superAdmin';
+
+const buildSkill =
+    req.body.buildSkill === undefined
+      ? false
+      : parseSkillBoolean(
+          req.body.buildSkill,
+          'buildSkill'
+        );
+
+  let skillOptions = null;
+
+  if (buildSkill) {
+    if (!isAdmin) {
+      throw new UnauthorizedError(
+        'Only admins can generate a Skill during Trend submission'
+      );
+    }
+
+    skillOptions = parseSkillJSONField(
+      req.body.skill,
+      'skill'
+    );
+
+    if (
+      !skillOptions ||
+      typeof skillOptions !== 'object' ||
+      Array.isArray(skillOptions)
+    ) {
+      throw new BadRequestError(
+        'skill must be an object when buildSkill is true'
+      );
+    }
+  }//end if buildSkill
 
   //only accepting field EXPECTED from UI during submission:
   const {
@@ -146,13 +184,62 @@ export const submitTrend = async (req, res) => {
   }// only override if request was unknown AND ai gave a valid better value
 
   await draftTrend.save();// persist blog fields onto the created trend document
+  let generatedSkill = null;//persisted and available for Skill generation
+  let skillGenerationError = null;
+
+  if (buildSkill) {
+    try {
+      /**
+       * Second AI request: generate the Skill.
+       *
+       * This awaits completion before returning the HTTP response.
+       */
+      generatedSkill = await createSkillFromTrend({
+        trend: draftTrend,
+        body: skillOptions,
+        createdBy,
+      });
+    } catch (error) {
+      skillGenerationError =
+        'Trend was created, but Skill generation failed';
+
+      console.error(
+        'Chained Skill generation failed',
+        {
+          trendId: draftTrend._id,
+          trendSlug: draftTrend.slug,
+          errorName: error?.name || null,
+          message:
+            error?.message ||
+            'Unknown Skill generation error',
+        }
+      );
+    }
+  }
 
   res.status(StatusCodes.CREATED).json({
-  trendObject: draftTrend,
-  msg: isAdmin
-    ? 'Draft trend created'
-    : 'Trend submitted for admin approval',
-});
+    trendObject: draftTrend,
+    skill: generatedSkill
+      ? {
+          slug: generatedSkill.slug,
+          title: generatedSkill.title,
+          description: generatedSkill.description,
+        }
+      : null,
+    skillGeneration: {
+      requested: buildSkill,
+      success: Boolean(generatedSkill),
+
+      ...(skillGenerationError
+        ? {
+            message: skillGenerationError,
+          }
+        : {}),
+    },
+    msg: isAdmin
+      ? 'Draft trend created'
+      : 'Trend submitted for admin approval',
+  });
 }; //end SUBMIT
 
 
@@ -526,7 +613,7 @@ export const deleteTrend = async (req, res) => {
     throw new NotFoundError('Trend not found');
   }
   res.status(StatusCodes.OK).json({ msg: 'Trend deleted', trend: removeTrend });
-};
+};//end editTrend
 
 /**
  * APPROVE TREND - takes existing trend and generated blogpost adds scores interestOverTime and flags it as isApproved true automatically
