@@ -26,6 +26,10 @@ const trendPromptSchema = new Schema(
       type: String,
       required: true,
     },
+    SYSTEM_RESPONSE_FORMAT: {
+      type: String,
+      required: true,
+    },
     USER_ROLE_POST: {
       type: String,
       required: true,
@@ -63,12 +67,14 @@ const skillPromptSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+      minlength: 1,
       maxlength: 200,
     },
     SKILL_PROMPT_VERSION: {
       type: String,
       required: true,
       trim: true,
+      minlength: 1,
       maxlength: 100,
     },
     SKILL_BLUEPRINT_MAX_TOKENS: {
@@ -86,7 +92,23 @@ const skillPromptSchema = new Schema(
     SKILL_DEFAULT_OUTPUT_FORMAT: {
       type: String,
       required: true,
+      trim: true,
+      minlength: 1,
       maxlength: 5000,
+    },
+    SKILL_BLUEPRINT_SYSTEM_PROMPT: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+      maxlength: 50000,
+    },
+    SKILL_BLUEPRINT_USER_PROMPT: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+      maxlength: 50000,
     },
   },
   {
