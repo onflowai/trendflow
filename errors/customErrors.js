@@ -35,3 +35,24 @@ export class UnauthorizedError extends Error {
     this.statusCode = StatusCodes.FORBIDDEN;
   }
 }
+
+/**
+ * used when this application works correctly but an external provider such as OpenAI fails or returns unusable output
+ * public message stays generic while `cause` preserves the original provider error for internal logging and debugging
+ */
+export class ExternalServiceError extends Error {
+  constructor(
+    message,
+    {
+      service,
+      cause,
+      statusCode = StatusCodes.BAD_GATEWAY,
+    } = {}
+  ) {
+    super(message, { cause });
+
+    this.name = 'ExternalServiceError';
+    this.statusCode = statusCode;
+    this.service = service || 'external-service';
+  }
+}
