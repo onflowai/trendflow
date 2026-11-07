@@ -5,19 +5,9 @@ const CACHE_TTL_MS = 60 * 1000; //cache prompts for one minute
 let cachedPromptData = null;
 let cacheExpiresAt = 0;
 
-const replacePromptVariables = (prompt, replacements) => {
-  let result = String(prompt || '');
-
-  for (const [variable, value] of Object.entries(replacements)) {
-    result = result
-      .split(`\${${variable}}`)
-      .join(String(value ?? '')); //replacing every matching placeholder
-  }
-
-  return result;
-};
-
-export const loadPromptData = async ({ forceRefresh = false } = {}) => {
+export const loadPromptData = async ({
+  forceRefresh = false,
+} = {}) => {
   const now = Date.now();
 
   if (
@@ -41,19 +31,20 @@ export const loadPromptData = async ({ forceRefresh = false } = {}) => {
   const trend = {
     ...document.trend,
 
-    USER_ROLE_POST: replacePromptVariables(
-      document.trend.USER_ROLE_POST,
-      {
-        MAX_TOKENS_POST: document.trend.MAX_TOKENS_POST,
-        MAX_TOKENS_DESC: document.trend.MAX_TOKENS_DESC,
-        MAX_TOKENS_USE: document.trend.MAX_TOKENS_USE,
-      }
-    ),
+    USER_ROLE_POST: String(
+      document.trend.USER_ROLE_POST || ''
+    ).replace(
+      '${MAX_TOKENS_POST}',
+      String(document.trend.MAX_TOKENS_POST || 0)
+    ), //
   };
 
   cachedPromptData = Object.freeze({
     trend: Object.freeze(trend),
-    skill: Object.freeze({ ...document.skill }),
+
+    skill: Object.freeze({
+      ...document.skill,
+    }), // skill values stay exactly as stored
   });
 
   cacheExpiresAt = now + CACHE_TTL_MS;
