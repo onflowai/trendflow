@@ -36,6 +36,8 @@ ecosystem.config.cjs
 /config/categories.json
 /config/technologies.json
 /config/skillTypes.json
+/config/prompts.json
+/config/promptSkill.json
 
 #scripts
 scripts/
@@ -51,3 +53,6 @@ utils/script_controller_test.js
 
 #dev
 /routes/devRouter.js
+
+#docs
+DEPLOYMENT.md
