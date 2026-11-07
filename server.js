@@ -23,6 +23,7 @@ import userRouter from './routes/userRouter.js';
 import viewRouter from './routes/viewRouter.js';
 import blogRouter from './routes/blogRouter.js';
 import iconRouter from './routes/iconRouter.js';
+import skillRouter from './routes/skillRoute.js';
 import trendRouter from './routes/trendRouter.js';
 import infoHubRouter from './routes/infoHubRouter.js';
 //dev routes
@@ -212,12 +213,13 @@ app.use('/', robotsRoute);
 //app.use('/', devRouter);
 
 // API Routes
-app.use('/api/v1/trends', trendRouter); //base url
 app.use('/api/v1/auth', csrfProtection, authRouter); //authentication
 app.use('/api/v1/views', viewRouter); //viewFlow route
 app.use('/api/v1/icons', iconRouter); //svg router
 app.use('/api/v1/users', userRouter); //user routers
 app.use('/api/v1/blogs', blogRouter); //blog routers
+app.use('/api/v1/trends', trendRouter); //base url
+app.use('/api/v1/skills', skillRouter); //skill routers
 app.use('/api/v1/infohub', infoHubRouter); //info hub routers (used in blog)
 
 app.use('/api/v1/test', (req, res) => {
