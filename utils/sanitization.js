@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import createDOMPurify from 'dompurify';
 import validator from 'validator';
+import { BadRequestError } from '../errors/customErrors.js';
 
 const { window } = new JSDOM('');
 const DOMPurify = createDOMPurify(window);
@@ -11,8 +12,19 @@ const DOMPurify = createDOMPurify(window);
  * @return {string} The sanitized HTML content.
  */
 export const sanitizeHTML = (html) => {
-  return DOMPurify.sanitize(html);
+  return DOMPurify.sanitize(String(html || ''));
 }; //end sanitizeHTML
+
+/**
+ * Sanitizes fields that must contain plain text only.
+ * Use this for titles, descriptions, labels, and list items.
+ */
+export const sanitizePlainText = (input) => {
+  return DOMPurify.sanitize(String(input || ''), {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
+  });
+};
 
 /**
  * Validates and sanitizes a string input.
