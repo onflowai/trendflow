@@ -15,28 +15,40 @@ html {
 
 :root {
   /* colors */
-  --primary-5: #f4f4fc;
-  --primary-50: #e1e0f7;
-  --primary-100: #c1bff6;
-  --primary-200: #a6a3ef;
-  --primary-300: #9592e8;
-  --primary-400: #8683db;
-  --primary-500: #6864d4;
-  --primary-600: #625eda;
-  --primary-700: #534edc;
-  --primary-800: #4a45da;
-  --primary-900: #352fdc;
+  --primary0-5: #f5fdff;
+  --primary0-50: #e1f8fe;
+  --primary0-100: #d5f6fe;
+  --primary0-200: #c5f2ff;
+  --primary0-300: #a9eafc;
+  --primary0-400: #91e6fd;
+  --primary0-500: #6edffe;
+  --primary0-600: #56d9fd;
+  --primary0-700: #37d0fc;
+  --primary0-800: #1bb8e4;
+  --primary0-900: #0cafdc;
 
-  --primary2-50: #f6d1b8;
-  --primary2-100: #ffcead;
-  --primary2-200: #f8c5a2;
-  --primary2-300: #fab98e;
-  --primary2-400: #f5b285;
-  --primary2-500: #efab7d;
-  --primary2-600: #e8a374;
-  --primary2-700: #da9669;
-  --primary2-800: #d18f63;
-  --primary2-900: #cf7d47;
+  --primary-5: #f2f7ff;
+  --primary-50: #e3edff;
+  --primary-100: #d1e1fe;
+  --primary-200: #b5cefd;
+  --primary-300: #9abcfa;
+  --primary-400: #82abf8;
+  --primary-500: #5e94f8;
+  --primary-600: #3978ed;
+  --primary-700: #2161d9;
+  --primary-800: #104ec1;
+  --primary-900: #003496;
+
+  --primary2-50: #ffd5c9;
+  --primary2-100: #fcbaa8;
+  --primary2-200: #fcb4a0;
+  --primary2-300: #f99e84;
+  --primary2-400: #f79277;
+  --primary2-500: #f98667;
+  --primary2-600: #ef6f4b;
+  --primary2-700: #f96942;
+  --primary2-800: #f95325;
+  --primary2-900: #f14718;
 
   --primary3-50: #fffae6;
   --primary3-100: #fdf5d4;
@@ -45,19 +57,19 @@ html {
   --primary3-400: #fdf0bb;
   --primary3-500: #f9e79e;
   --primary3-600: #fbe797;
-  --primary3-700: #fce690;
-  --primary3-800: #fae488;
-  --primary3-900: #ffd119;
+  --primary3-700: #ffe940;
+  --primary3-800: #ffe520;
+  --primary3-900: #fee000;
 
-  --inference-color-1: #fee000;
-  --inference-color-2: #f24a20;
-  --inference-color-3: #e02d52;
-  --inference-color-4: #762c2f;
-  --inference-color-5: #6a4468;
-  --inference-color-6: #4a45da;
-  --inference-color-7: #003496;
-  --inference-color-8: #0177da;
-  --inference-color-9: #37d0fc;
+  --inference-color-1: #fee000;/* rgba(254, 224, 0, 1) */
+  --inference-color-2: #f65d37;/* rgba(246, 93, 55, 1) */
+  --inference-color-3: #e02d52;/* rgba(224, 45, 82, 1) */
+  --inference-color-4: #762c2f;/* rgba(118, 44, 47, 1) */
+  --inference-color-5: #6a4468;/* rgba(106, 68, 104, 1) */
+  --inference-color-6: #4a45da;/* rgba(74, 69, 218, 1) */
+  --inference-color-7: #003496;/* rgba(0, 52, 150, 1) */
+  --inference-color-8: #0177da;/* rgba(1, 119, 218, 1) */
+  --inference-color-9: #37d0fc;/* rgba(55, 208, 252, 1) */
 
   /* grey */
   --grey-5: #fdfdfd;
