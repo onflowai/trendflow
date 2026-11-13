@@ -8,17 +8,17 @@ export const ThemeProvider = ({ children }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('darkTheme');
-      return savedTheme === null ? true : savedTheme === 'true';
+      return savedTheme === null ? false : savedTheme === 'true';
     }
-    return true;
-  });// default to dark - use stored value if available
+    return false;
+  }); // default to light theme unless a saved preference exists
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('dark-theme', isDarkTheme);
-      localStorage.setItem('darkTheme', isDarkTheme);
-    }// initialize theme based on localStorage
-  }, [isDarkTheme]); // only run in the browser
+      localStorage.setItem('darkTheme', String(isDarkTheme));
+    }
+  }, [isDarkTheme]); // synchronize body class and localStorage
 
   const toggleDarkTheme = () => {
     setIsDarkTheme((prev) => !prev);
