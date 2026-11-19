@@ -1,45 +1,126 @@
-import React, { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import styled, { keyframes } from 'styled-components';
-import LocalCleanedSVG from '../assets/images/logo-hero-03.svg?react';
-import LocalCleanedSVGDark from '../assets/images/logo-hero-03-dark.svg?react';
 
-const cdnCleanedSVG = 'https://cdn.trendflowai.com/content/logo-hero-03.svg';
-const cdnCleanedSVGDark =
-  'https://cdn.trendflowai.com/content/logo-hero-03-dark.svg';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useTheme } from '../context/ThemeContext';
+
+// Local SVG fallbacks - imported as asset URLs, not React components
+import light01 from '../assets/images/logo-hero-01.svg?no-inline';
+import light02 from '../assets/images/logo-hero-02.svg?no-inline';
+import light03 from '../assets/images/logo-hero-03.svg?no-inline';
+import light04 from '../assets/images/logo-hero-04.svg?no-inline';
+
+import dark01 from '../assets/images/logo-hero-01-dark.svg?no-inline';
+import dark02 from '../assets/images/logo-hero-02-dark.svg?no-inline';
+import dark03 from '../assets/images/logo-hero-03-dark.svg?no-inline';
+import dark04 from '../assets/images/logo-hero-04-dark.svg?no-inline';
+
+const CDN_BASE = 'https://cdn.trendflowai.com/content';
+const SESSION_KEY = 'heroLogoIndex';
+
+// Each design has a matching light/dark variant
+const LOGOS = [
+  {
+    light: { cdn: `${CDN_BASE}/logo-hero-01.svg`, local: light01 },
+    dark: { cdn: `${CDN_BASE}/logo-hero-01-dark.svg`, local: dark01 },
+  },
+  {
+    light: { cdn: `${CDN_BASE}/logo-hero-02.svg`, local: light02 },
+    dark: { cdn: `${CDN_BASE}/logo-hero-02-dark.svg`, local: dark02 },
+  },
+  {
+    light: { cdn: `${CDN_BASE}/logo-hero-03.svg`, local: light03 },
+    dark: { cdn: `${CDN_BASE}/logo-hero-03-dark.svg`, local: dark03 },
+  },
+  {
+    light: { cdn: `${CDN_BASE}/logo-hero-04.svg`, local: light04 },
+    dark: { cdn: `${CDN_BASE}/logo-hero-04-dark.svg`, local: dark04 },
+  },
+];
+
+// Generate a random index once per browser tab session
+const getSessionLogoIndex = () => {
+  try {
+    const saved = sessionStorage.getItem(SESSION_KEY);
+
+    if (saved !== null) {
+      const index = Number(saved);
+
+      if (Number.isInteger(index) && index >= 0 && index < LOGOS.length) {
+        return index;
+      }
+    }
+
+    const index = Math.floor(Math.random() * LOGOS.length);
+    sessionStorage.setItem(SESSION_KEY, String(index));
+
+    return index;
+  } catch {
+    return Math.floor(Math.random() * LOGOS.length);
+  }
+};
 
 const HeroAnimated = () => {
   const { isDarkTheme } = useTheme();
-  const [hasError, setHasError] = useState(false);
 
-  // Determine which CDN URL to use based on the theme
-  const cdnSrc = isDarkTheme ? cdnCleanedSVGDark : cdnCleanedSVG;
+  const [logoIndex, setLogoIndex] = useState(null);
+  const [displayedSrc, setDisplayedSrc] = useState(null);
 
-  // Dedicated error handler function for the image
-  const handleImageError = () => {
-    setHasError(true);
-  };
+  // Select after mounting to avoid SSR hydration mismatches
+  useEffect(() => {
+    setLogoIndex(getSessionLogoIndex());
+  }, []);
+
+  // Determine the selected CDN image and its local fallback
+  const asset =
+    logoIndex === null
+      ? null
+      : LOGOS[logoIndex][isDarkTheme ? 'dark' : 'light'];
+
+  useEffect(() => {
+    if (!asset) return;
+
+    let cancelled = false;
+
+    // Preload and decode before replacing the visible image
+    const loadImage = async (src, useFallback = false) => {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = src;
+
+      try {
+        await image.decode();
+
+        if (!cancelled) {
+          setDisplayedSrc(src);
+        }
+      } catch {
+        if (!cancelled && !useFallback) {
+          await loadImage(asset.local, true);
+        }
+      }
+    };
+
+    loadImage(asset.cdn);
+
+    // Ignore previous loads if theme or component changes
+    return () => {
+      cancelled = true;
+    };
+  }, [asset]);
 
   return (
     <Container>
-      {/* Underlay Gradient */}
-      <UnderlayGradient />
-      {/* SVG Container */}
       <div className="svg-container">
         <StyledSVGWrapper>
-          {hasError ? (
-            isDarkTheme ? (
-              <LocalCleanedSVGDark />
-            ) : (
-              <LocalCleanedSVG />
-            )
-          ) : (
-            <img src={cdnSrc} alt="Logo Hero" onError={handleImageError} />
+          {displayedSrc && (
+            <img
+              src={displayedSrc}
+              alt="TrendFlow AI Hero"
+              decoding="async"
+            />
           )}
         </StyledSVGWrapper>
       </div>
-      {/* Overlay Gradient */}
-      <OverlayGradient />
     </Container>
   );
 };
@@ -53,6 +134,7 @@ const Container = styled.div`
   align-items: center; /* Center vertically */
 
   .svg-container {
+    position: relative;
     width: 100%;
     height: 100%;
     position: center;
@@ -61,80 +143,14 @@ const Container = styled.div`
 `;
 
 const StyledSVGWrapper = styled.div`
-  width: 80%; /* Adjust SVG size as needed */
-  height: auto; /* Maintain aspect ratio */
-`;
+  width: 80%;
+  height: auto;
 
-// Animation for gradient movement
-const gradientAnimation = keyframes`
-  0% {
-    background-position: 0% 50%;
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-`;
-
-const waveAnimation = keyframes`
-  0% {
-    stroke: #3498db;
-    stroke-width: 2px;
-    stroke-dasharray: 5, 15;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke: #e74c3c;
-    stroke-width: 4px;
-    stroke-dasharray: 15, 5;
-    stroke-dashoffset: -10;
-  }
-  100% {
-    stroke: #3498db;
-    stroke-width: 2px;
-    stroke-dasharray: 5, 15;
-    stroke-dashoffset: 0;
-  }
-`;
-
-const UnderlayGradient = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background: radial-gradient(
-//     135deg,
-//     rgba(255, 126, 95, 0.01),
-//     rgba(254, 180, 123, 0.08),
-//     rgba(255, 126, 95, 0.2),
-//     rgba(254, 180, 123, 0.1),
-//     rgba(95, 159, 255, 0.1)
-//   );
-//   background-size: 100% 300%;
-//   z-index: 1;
-//   animation: ${gradientAnimation} 20s infinite ease-in-out;
-`;
-
-const OverlayGradient = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background: radial-gradient(
-//     circle,
-//     rgba(106, 17, 203, 0.1),
-//     rgba(37, 117, 252, 0.1),
-//     rgba(106, 17, 203, 0.1),
-//     rgba(37, 117, 252, 0.1),
-//     rgba(106, 17, 203, 0.3)
-//   );
-//   background-size: 200% 200%;
-//   z-index: 3;
-//   animation: ${gradientAnimation} 15s infinite ease-in-out;
 `;
 
 export default HeroAnimated;
