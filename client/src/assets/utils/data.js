@@ -115,7 +115,7 @@ export const socialLinks = [
   { id: 3, href: 'https://github.com/onflowai', icon: 'fab fa-github' },
 ];
 
-export const tagLarge = 'Find New Dev Tech Trends';
+export const tagLarge = 'Find Niche Tech Trends';
 
 export const tagSmall =
   "Don't struggle staying in the know about all new technologies you wish you knew existed, starting now 🌀 .";
